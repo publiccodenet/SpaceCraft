@@ -1,0 +1,54 @@
+{
+  "id": "Barsoom",
+  "title": "Barsoom!",
+  "creator": "Richard A. Lupoff",
+  "date": null,
+  "description": "Article about author Edgar Rice Burroughs, published in September 1982 issue of Heavy Metal magazine. Illustrated by Clyde Caldwell.",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Barsoom",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 12223,
+  "item_size": 12126925,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 105,
+  "favorite_sample": [
+    "aespinoza91690",
+    "ajoso97",
+    "alex_p_rez_mart_nez",
+    "antonio_wolfhard",
+    "antonius_magnus"
+  ],
+  "download_url": "https://archive.org/download/Barsoom/Barsoom1982.epub",
+  "download_url_cached": "scifi/content/Barsoom_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:32:19.166Z",
+  "download_url_etag": "\"6573d386-15b807\"",
+  "download_url_dl_duration": 0.716,
+  "download_url_dl_mbps": 1.8958499311734844
+}

@@ -1,0 +1,84 @@
+name: Unity Build - macOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_target:
+        description: 'Build target'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+      regenerate_schemas:
+        description: 'Regenerate schemas first'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  build:
+    name: Build Unity - macOS
+    runs-on: [self-hosted, mac, silicom, preconfigured]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: SvelteKit/BackSpace/package-lock.json
+
+      - name: Install dependencies
+        working-directory: SvelteKit/BackSpace
+        run: npm ci
+
+      - name: Setup Unity environment
+        working-directory: SvelteKit/BackSpace
+        run: |
+          export UNITY_PRECONFIGURED=true
+          export UNITY_APP="${GITHUB_WORKSPACE}/Unity/CraftSpace"
+          source ./scripts/unity-env.sh
+          echo "Using Unity version: ${UNITY_VERSION}"
+          echo "Unity path: ${UNITY_PATH}"
+
+      - name: Regenerate schemas
+        if: ${{ inputs.regenerate_schemas }}
+        working-directory: SvelteKit/BackSpace
+        run: |
+          # Export schemas from TypeScript to JSON
+          npm run schema:export
+          
+          # Copy to Unity
+          npm run schema:copy-to-unity
+          
+          # Regenerate C# classes from JSON schemas
+          export UNITY_PRECONFIGURED=true
+          export UNITY_APP="${GITHUB_WORKSPACE}/Unity/CraftSpace"
+          source ./scripts/unity-env.sh
+          npm run unity:regenerate-schemas
+
+      - name: Build Unity project
+        working-directory: SvelteKit/BackSpace
+        run: |
+          export UNITY_PRECONFIGURED=true
+          export UNITY_APP="${GITHUB_WORKSPACE}/Unity/CraftSpace"
+          source ./scripts/unity-env.sh
+          
+          if [ "${{ inputs.build_target }}" == "prod" ]; then
+            npm run unity:build-prod
+          else
+            npm run unity:build-dev
+          fi
+
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-build-mac-${{ inputs.build_target }}
+          path: Unity/CraftSpace/Builds/
+          retention-days: 14 

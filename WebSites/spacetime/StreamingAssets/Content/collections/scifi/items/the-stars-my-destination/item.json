@@ -1,0 +1,49 @@
+{
+  "id": "the-stars-my-destination",
+  "title": "The Stars My Destination",
+  "creator": "AA.VV",
+  "date": "1992-01-01T00:00:00Z",
+  "description": "U.S.A 1992",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Alfred Bester",
+    "Science Fiction",
+    "Comics"
+  ],
+  "downloads": 6272,
+  "item_size": 410526500,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 69,
+  "favorite_sample": [
+    "a_new_word",
+    "alternative_greeting",
+    "andrewelliott174",
+    "anirudh_kharvi",
+    "archiveuser9914jmst"
+  ],
+  "download_url": "https://archive.org/download/the-stars-my-destination/The%20Stars%20My%20Destination.epub",
+  "download_url_cached": "scifi/content/the-stars-my-destination_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:15:13.658Z",
+  "download_url_etag": "\"654c2a91-8334961\"",
+  "download_url_dl_duration": 157.54,
+  "download_url_dl_mbps": 0.832838737920742
+}

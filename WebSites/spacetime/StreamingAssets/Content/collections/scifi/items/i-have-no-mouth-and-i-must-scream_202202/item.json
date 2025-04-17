@@ -1,0 +1,54 @@
+{
+  "id": "i-have-no-mouth-and-i-must-scream_202202",
+  "title": "I Have No Mouth And I Must Scream",
+  "creator": "Harlan Ellison",
+  "date": "1995-01-01T00:00:00Z",
+  "description": "Harlan Ellison's classic short story \"I Have No Mouth And I Must Scream\" received a graphic novel adaptation by comics artist John Byrne. It was printed in issues 1-4 of Harlan Ellison's Dream Corridor  by Dark Horse; however, it was removed from future copies of the comic collection.",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "short story",
+    "science fiction",
+    "horror",
+    "graphic novel",
+    "comic"
+  ],
+  "downloads": 106701,
+  "item_size": 32309183,
+  "format": [
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 385,
+  "favorite_sample": [
+    "57ghostsinatrenchcoat",
+    "8lak3",
+    "_eureka_",
+    "aaronzlee",
+    "achli"
+  ],
+  "download_url": "https://archive.org/download/i-have-no-mouth-and-i-must-scream_202202/I%20Have%20No%20Mouth%20And%20I%20Must%20Scream.epub",
+  "download_url_cached": "scifi/content/i-have-no-mouth-and-i-must-scream_202202_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:32:26.826Z",
+  "download_url_etag": "\"654be919-843a\"",
+  "download_url_dl_duration": 0.002,
+  "download_url_dl_mbps": 16.14093780517578
+}

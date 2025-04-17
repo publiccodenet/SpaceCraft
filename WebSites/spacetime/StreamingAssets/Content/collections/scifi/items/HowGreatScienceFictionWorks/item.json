@@ -1,0 +1,42 @@
+{
+  "id": "HowGreatScienceFictionWorks",
+  "title": "How Great Science Fiction Works",
+  "date": null,
+  "description": "How Great Science Fiction Works",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_sf",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": "Science Fiction",
+  "downloads": 2728,
+  "item_size": 83182718,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 51,
+  "favorite_sample": [
+    "abdul_fattah398",
+    "adam_krause",
+    "altomentis",
+    "andyisgreat",
+    "antha1918"
+  ],
+  "download_url": "https://archive.org/download/HowGreatScienceFictionWorks/HowGreatScienceFictionWorks.epub",
+  "download_url_cached": "scifi/content/HowGreatScienceFictionWorks_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:53:32.637Z",
+  "download_url_etag": "\"654b76d1-4852d9\"",
+  "download_url_dl_duration": 1.911,
+  "download_url_dl_mbps": 2.3653723069474935
+}

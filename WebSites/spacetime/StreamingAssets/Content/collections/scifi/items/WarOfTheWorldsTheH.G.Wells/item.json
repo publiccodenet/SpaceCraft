@@ -1,0 +1,51 @@
+{
+  "id": "WarOfTheWorldsTheH.G.Wells",
+  "title": "The War of the Worlds - H. G. Wells",
+  "creator": "H. G. Wells",
+  "date": "1898-01-01T00:00:00Z",
+  "description": "The War of the Worlds - H. G. Wells Project Gutenberg 36",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Science Fiction",
+    "War stories",
+    "Martians",
+    "Mars (Planet)",
+    "Space warfare",
+    "Imaginary wars and battles",
+    "Life on other planets"
+  ],
+  "downloads": 9635,
+  "item_size": 107893513,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 10,
+  "favorite_sample": [
+    "alexdracerom",
+    "angel_espinoza387",
+    "aristo25",
+    "basquette",
+    "dakota_shiflett"
+  ],
+  "download_url": "https://archive.org/download/WarOfTheWorldsTheH.G.Wells/War%20of%20the%20Worlds%2C%20The%20-%20H.%20G.%20Wells.epub",
+  "download_url_cached": "scifi/content/WarOfTheWorldsTheH.G.Wells_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:47:38.946Z",
+  "download_url_etag": "\"5a03f567-81468\"",
+  "download_url_dl_duration": 0.582,
+  "download_url_dl_mbps": 0.8676666574379833
+}

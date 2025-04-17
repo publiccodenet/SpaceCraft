@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Spacecraft Selector</title>
+    <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Mulish:400italic,400,600italic,600,700italic,700" rel="stylesheet">
+    <style>
+      .unselectable {
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+      }
+      body {
+        font-family: "Mulish", Helvetica;
+         padding: 0;
+         border: 0;
+         margin: 0;
+         width: 100vw;
+         height: 100vh;
+         overflow: hidden;
+         touch-action: none;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  </head>
+  <body>
+    <div id="label" class="unselectable" style="margin:20px; opacity:.25; transition: opacity .8s;"><h4>Selector</h4>
+    drag to move selection, mousewheel or pinch/zoom to scale.</div>
+    <div id="target" style="height: 100vh"></div>
+    <script>
+        // Create a single supabase client for interacting with your database
+        const client = supabase.createClient('https://gwodhwyvuftyrvbymmvc.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc')
+
+        const channel = client.channel("selectors")
+
+        var isMobile = navigator.userAgent.toLowerCase().match(/mobile/i),
+            isTablet = navigator.userAgent.toLowerCase().match(/tablet/i),
+            isAndroid = navigator.userAgent.toLowerCase().match(/android/i),
+            isiPhone = navigator.userAgent.toLowerCase().match(/iphone/i),
+            isiPad = navigator.userAgent.toLowerCase().match(/ipad/i);
+
+        let user = isAndroid ? 'Android' : isiPhone ? 'iPhone' : isAndroid ? 'Android' : isTablet ? 'Tablet' : isMobile ? 'Mobile' : 'Computer'
+
+        let userStatus = {
+          user,
+          online_at: new Date().toISOString()
+        };
+
+        let subscribed = false;
+        channel.subscribe((status) => {
+          console.log('subscribe', status)
+          if (status === 'SUBSCRIBED') {
+            channel.track(userStatus);
+            const el = document.getElementById("label");
+            el.style.opacity = '';
+            subscribed = true;
+          }
+        })
+
+        function sendEvent(event, payload) {
+          if (! subscribed) return;
+          console.log('sendEvent', event, payload)
+          channel.send({
+            type: 'broadcast',
+            event,
+            payload,
+          })
+        }
+
+        // Global vars to cache event state
+        const evCache = [];
+        let prevDiff = -1;
+        let prevX = 0;
+        let prevY = 0;
+
+        function removeEvent(ev) {
+          // Remove this event from the target's cache
+          const index = evCache.findIndex(
+            (cachedEv) => cachedEv.pointerId === ev.pointerId,
+          );
+          evCache.splice(index, 1);
+        }
+
+        function pointerdownHandler(ev) {
+          // The pointerdown event signals the start of a touch interaction.
+          // This event is cached to support 2-finger gestures
+          evCache.push(ev);
+        }
+
+        function pointermoveHandler(ev) {
+          // This function implements a 2-pointer horizontal pinch/zoom gesture.
+
+          // Find this event in the cache and update its record with this event
+          const index = evCache.findIndex(
+            (cachedEv) => cachedEv.pointerId === ev.pointerId,
+          );
+          evCache[index] = ev;
+
+          // If two pointers are down, check for pinch gestures
+          if (evCache.length === 2) {
+            // Calculate the distance between the two pointers
+            const curDiff = Math.abs(evCache[0].clientX - evCache[1].clientX);
+
+            if (prevDiff > 0) {
+              sendEvent('zoom', { zoom: curDiff - prevDiff})
+            }
+
+            // Cache the distance for the next move event
+            prevDiff = curDiff;
+          } else if (evCache.length == 1) {
+            // use first pointer
+            let relX = ev.clientX - prevX;
+            if (prevX === 0) relX = 0;
+            let relY = ev.clientY - prevY;
+            if (prevY === 0) relY = 0;
+
+            const isUp = relX < 0;
+            const isRight = relY < 0;
+            sendEvent('pos', { x: relX, y: relY, isUp, isRight })
+
+            prevX = ev.clientX
+            prevY = ev.clientY
+          }
+        }
+
+        function pointerupHandler(ev) {
+          // Remove this pointer from the cache
+          removeEvent(ev);
+
+          // If the number of pointers down is less than two then reset diff tracker
+          if (evCache.length < 2) {
+            prevDiff = -1;
+          }
+        }
+
+        function wheelHandler(ev) {
+          // prevent wheel from zooming
+          if( ev.ctrlKey ) ev.preventDefault()
+          sendEvent('zoom', { zoom: ev.deltaY})
+        }
+
+        window.addEventListener( 'wheel', wheelHandler, { passive: false })
+
+        // Install event handlers for the pointer target
+        const el = document.getElementById("target");
+        el.onpointerdown = pointerdownHandler;
+        el.onpointermove = pointermoveHandler;
+
+        // Use same handler for pointer{up,cancel,out,leave} events since
+        // the semantics for these events - in this app - are the same.
+        el.onpointerup = pointerupHandler;
+        el.onpointercancel = pointerupHandler;
+        el.onpointerout = pointerupHandler;
+        el.onpointerleave = pointerupHandler;
+    </script>
+  </body>
+</html>

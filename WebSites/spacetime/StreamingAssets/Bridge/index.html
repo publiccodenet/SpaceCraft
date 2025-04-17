@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+  <head>
+    <title>BridgeTransportWebServer Client Bridge Scripting Engine</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+    <link rel="stylesheet" type="text/css" href="bridge.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Rubik';
+      }
+    </style>
+    <script>
+      window.onerror = function(message, source, line, column, error) {
+          window.onerror = null;
+          console.log("!!!!!!!!!!!!!!!! WINDOW.ONERROR", "MESSAGE", message, "LINE", line, "COLUMN", column, "SOURCE", source);
+          console.trace();
+      };
+      var gStreamingAssetsURL = '';
+      var gStreamingAssetsBridgeURL = '';
+      var gStreamingAssetsAppURL = '';
+      var gSheetsIndex = [];
+    </script>
+    <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+    <script type="text/javascript" src="jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="socket.io.js"></script>
+    <script type="text/javascript" src="unity.js"></script>
+    <script type="text/javascript" src="google-spreadsheet.js"></script>
+    <script type="text/javascript" src="sheets.js"></script>
+    <script type="text/javascript" src="bridge.js"></script>
+    <script type="text/javascript" src="bridge-transport-webserver.js"></script>
+    <script type="text/javascript" src="jsrand.js"></script>
+    <script type="text/javascript" src="d3.v5.min.js"></script>
+    <script type="text/javascript" src="mindtwin.js"></script>
+    <script>
+      $(InitializeBridgeWebServer);
+    </script>
+  </head>
+
+  <body style="overflow: hidden; margin: 0; padding: 10px; border: 0; background-color: white;">
+    <h1>
+      BridgeTransportWebServer Client Bridge Scripting Engine
+    </h1>
+  </body>
+
+</html>

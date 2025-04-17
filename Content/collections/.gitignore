@@ -1,0 +1,71 @@
+# Don't commit collections for now, but do include .gitattributes .gitignore and README.md, plus other content
+!.gitattributes
+!.gitignore
+!README.md
+collections/*
+!collections/.gitattributes
+!collections/.gitignore
+
+# Completely exclude these large file types (prefer cloud storage)
+*.epub
+*.pdf
+*.mobi
+*.djvu
+*.txt
+*.mp3
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.flac
+*.wav
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+# Don't exclude metadata files
+!*/*.json
+!*/*.md
+
+# Don't exclude important small images
+!*/tile.jpg
+!*/tile.png
+!*/cover.jpg
+!*/cover.png
+!*/thumb.jpg
+!*/thumb.png
+!*/cover-small.jpg
+!*/cover-small.png
+
+# Processing artifacts
+*.extracted/
+*.processed/
+*.tmp/
+
+# Generated content
+*/generated/
+*/temp/
+*/cache/
+
+# Ignore individual collection data files but keep directory structure
+*/items/**/*.json
+
+# Except for the scifi collection which should be preserved
+!scifi/items/**/*.json
+
+# Ignore large binary files
+**/*.pdf
+**/*.jpg
+**/*.png
+**/*.mp3
+**/*.mp4
+
+# But don't ignore thumbnails
+!**/thumbnails/*.jpg
+!**/thumbnails/*.png
+
+# Cache directories
+**/.cache
+**/temp

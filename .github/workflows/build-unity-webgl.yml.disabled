@@ -1,0 +1,62 @@
+name: Build Unity WebGL and Deploy
+
+# This workflow is disabled by default (.disabled suffix)
+# Rename to remove .disabled when ready to use
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Unity/CraftSpace/**'
+  workflow_dispatch:
+    inputs:
+      copy_to_spacetime:
+        description: 'Copy build to WebSites/spacetime'
+        type: boolean
+        default: true
+      trigger_pages_deploy:
+        description: 'Trigger GitHub Pages deployment'
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    name: Build Unity WebGL
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: cd SvelteKit/BackSpace && npm ci
+        
+      - name: Setup Unity environment
+        run: cd SvelteKit/BackSpace && npm run unity:setup
+        
+      - name: Export schemas to Unity
+        run: cd SvelteKit/BackSpace && npm run schemas:export:unity
+        
+      - name: Regenerate Unity schemas
+        run: cd SvelteKit/BackSpace && npm run schemas:regenerate:unity
+        
+      - name: Build Unity WebGL app
+        run: cd SvelteKit/BackSpace && npm run unity:build-webgl
+        
+      - name: Deploy to WebSites/spacetime
+        if: ${{ github.event.inputs.copy_to_spacetime == 'true' || github.event_name == 'push' }}
+        run: cd SvelteKit/BackSpace && npm run unity:deploy-webgl
+        
+      - name: Trigger GitHub Pages deployment
+        if: ${{ github.event.inputs.trigger_pages_deploy == 'true' || github.event_name == 'push' }}
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: spacetime-deploy 

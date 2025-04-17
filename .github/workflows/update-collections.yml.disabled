@@ -1,0 +1,43 @@
+name: Update Collections
+
+# This workflow is disabled by default (.disabled suffix)
+# Rename to remove .disabled when ready to use
+
+on:
+  workflow_dispatch:
+    inputs:
+      full_update:
+        description: 'Run full collection update'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '0 1 * * 1'  # Every Monday at 1 AM
+
+jobs:
+  process:
+    name: Process Collections
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Process collections
+        run: |
+          if [[ "${{ github.event.inputs.full_update }}" == "true" ]]; then
+            echo "Would run full collection update"
+          else
+            echo "Would run incremental collection update"
+          fi
+        
+  deploy:
+    name: Deploy Collections
+    needs: process
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy collections
+        run: echo "Would deploy collections to server and CDN" 
