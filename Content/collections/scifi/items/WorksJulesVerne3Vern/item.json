@@ -1,0 +1,54 @@
+{
+  "id": "WorksJulesVerne3Vern",
+  "title": "Works of Jules Verne",
+  "creator": "Verne, Jules, 1828-1905",
+  "date": "1911-01-01T00:00:00Z",
+  "description": [
+    "15 volumes : 24 cm",
+    "v. 1. Jules Verne. A drama in the air. The watch's soul. A winter in the ice. The pearl of Lima. The mutineers. Five weeks in a balloon.--v. 2. A trip to the center of the earth. Adventures of Captain Hatteras: The English at the North pole.--v. 3. Adventures of Captain Hatteras: The desert of ice. A trip from the earth to the moon. A tour of the moon.--v. 4. In search of the castaways: South America, Australia, New Zealand.--v. 5. Twenty thousand leagues under the sea. The mysterious island: Dropped from the clouds.--v. 6. The mysterious island: Dropped from the clouds (cont'd), The abandoned, The secret of the island--v. 7. A floating city. The blockade runners. Round the world in eighty days. Dr. Ox's experiment.--v. 8. The survivors of the Chancellor. Michael Strogoff",
+    "v. 9. Off on a comet. The underground city.--v. 10 Dick Sands: A captain at fifteen. The dark continent. Measuring a meridian.--v. 11. The five hundred millions of the begum. The tribulations of a Chinaman in China. The giant raft: Eight hundred leagues on the Amazon.--v. 12. The giant raft: The cryptogram. The steam house: The demon of Cawnpore. Tigers and traitors.--v. 13. The Robinson Crusoe school. The star of the south. Purchase of the North pole.--v. 14 Robur the conqueror. The master of the world. The sphinx of ice.--v. 15. The exploration of the world: The world outlined. Seekers and traders. Scientific exploration",
+    "digitized CHLDP 20141032"
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "smithsonian"
+  ],
+  "subject": "Science fiction, French",
+  "downloads": 2122,
+  "item_size": 174310642,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "EPUB",
+    "Item Tile",
+    "MARC",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 7,
+  "favorite_sample": [
+    "alex_88",
+    "bobbello",
+    "bookhunter222",
+    "pamad",
+    "saracpdias"
+  ],
+  "download_url": "https://archive.org/download/WorksJulesVerne3Vern/WorksJulesVerne3Vern.epub",
+  "download_url_cached": "scifi/content/WorksJulesVerne3Vern_epub.epub",
+  "download_url_timestamp": "2025-03-13T17:24:13.695Z",
+  "download_url_etag": "\"66c5f69a-329b51\"",
+  "download_url_dl_duration": 1.132,
+  "download_url_dl_mbps": 2.794098095843312
+}

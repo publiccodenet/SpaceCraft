@@ -1,0 +1,55 @@
+{
+  "id": "ost-english-timemachineinven00welluoft",
+  "title": "The Time Machine",
+  "creator": "H.G. Wells",
+  "date": "1922-01-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "opensource_textbooks",
+    "additional_collections"
+  ],
+  "subject": [
+    "novel",
+    "english literature",
+    "fiction",
+    "romance",
+    "science fiction",
+    "english",
+    "classics",
+    "time travel"
+  ],
+  "downloads": 9833,
+  "item_size": 57323771,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 53,
+  "favorite_sample": [
+    "19omhs72",
+    "2015-16",
+    "_osmium_",
+    "afficiandoarchiver",
+    "afterburnerone"
+  ],
+  "download_url": "https://archive.org/download/ost-english-timemachineinven00welluoft/timemachineinven00welluoft.epub",
+  "download_url_cached": "scifi/content/ost-english-timemachineinven00welluoft_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:36:55.219Z",
+  "download_url_etag": "\"6550b28a-5cd60\"",
+  "download_url_dl_duration": 0.47,
+  "download_url_dl_mbps": 0.7715752784242021
+}

@@ -1,0 +1,39 @@
+{
+  "id": "lesatkins_epubs",
+  "title": "lesatkins.com EPUB collection",
+  "date": null,
+  "description": "Various books (mostly Fantasy & Sci-Fi) in EPUB format downloaded from an open directory at http://www.lesatkins.com/books/epubfiles that is no longer online.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource"
+  ],
+  "subject": [
+    "ebooks",
+    "science-fiction",
+    "fantasy",
+    "fiction",
+    "novel",
+    "epub"
+  ],
+  "downloads": 32590,
+  "item_size": 673414300,
+  "format": [
+    "EPUB",
+    "Metadata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR"
+  ],
+  "favorite_count": 3,
+  "favorite_sample": [
+    "kantorock",
+    "leggc",
+    "sharky14"
+  ],
+  "download_url": "https://archive.org/download/lesatkins_epubs/1984%20-%20Orwell_%20George.epub",
+  "download_url_cached": "scifi/content/lesatkins_epubs_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:36:09.793Z",
+  "download_url_etag": "\"6565223f-4055b\"",
+  "download_url_dl_duration": 0.448,
+  "download_url_dl_mbps": 0.560954213142395
+}

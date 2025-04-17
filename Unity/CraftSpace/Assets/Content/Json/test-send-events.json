@@ -1,0 +1,49 @@
+[
+    {
+        "event": "StartedBridge"
+    },
+    {
+        "event": "Log",
+        "data": {
+            "line": "Hello, world!"
+        }
+    },
+    {
+        "event": "Create",
+        "data": {
+            "id": "1",
+            "prefab": "Prefabs/BridgeObject"
+        }
+    },
+    {
+        "event": "Create",
+        "data": {
+            "id": "2",
+            "prefab": "Prefabs/PlainObject"
+        }
+    },
+    {
+        "event": "Create",
+        "data": {
+            "id": "3",
+            "prefab": "Prefabs/UnityBridge"
+        }
+    },
+    {
+        "event": "Query",
+        "id": "3",
+        "data": {
+            "callbackID": "1",
+            "query": {
+                "time": "time"
+            }
+        }
+    },
+    {
+        "event": "Update",
+        "id": "3",
+        "data": {
+            "timeScale": 0.5
+        }
+    }
+]

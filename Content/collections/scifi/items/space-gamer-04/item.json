@@ -1,0 +1,63 @@
+{
+  "id": "space-gamer-04",
+  "title": "Space Gamer Magazine Issue 04",
+  "date": null,
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "space-gamer",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "game",
+    "tsg",
+    "atk",
+    "eldon",
+    "gaming",
+    "combat",
+    "rules",
+    "games",
+    "stellar",
+    "fantasy",
+    "three fts",
+    "space gamer",
+    "stellar conquest",
+    "lone esc",
+    "science fiction",
+    "fire turn",
+    "fantasy game",
+    "petal throne",
+    "war game",
+    "game design"
+  ],
+  "downloads": 2832,
+  "item_size": 18713416,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 4,
+  "favorite_sample": [
+    "bearboy",
+    "bisatto",
+    "huboff62",
+    "leonardomyst"
+  ],
+  "download_url": "https://archive.org/download/space-gamer-04/Space_Gamer_04.pdf",
+  "download_url_cached": "scifi/content/space-gamer-04_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T14:40:08.642Z",
+  "download_url_etag": "\"4ec9ce90-3d96cb\"",
+  "download_url_dl_duration": 0.995,
+  "download_url_dl_mbps": 3.8686579795339
+}

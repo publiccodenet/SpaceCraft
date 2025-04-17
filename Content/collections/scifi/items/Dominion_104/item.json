@@ -1,0 +1,46 @@
+{
+  "id": "Dominion_104",
+  "title": "Dominion",
+  "creator": "JL Bryan",
+  "date": null,
+  "description": "In the year 2036, the United States of America is ruled by a totalitarian regime controlling all information: education, religion, the mass media, and the internet. Daniel Ruppert is a talking head for the most popular nightly news program in southern California. Restless and weary of reporting propaganda, Ruppert begins digging for the truth. His urge to know puts his career, life, and family at risk as he discovers the clandestine North Atlantic Psychological Command--PSYCOM--and how it manipulates the minds of the Western world. He's following the trail of PSYCOM's darkest secret--and he'll find it, if he can survive.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "1984",
+    "propaganda",
+    "dystopia",
+    "fascism",
+    "American empire",
+    "science fiction",
+    "near-future"
+  ],
+  "downloads": 6701,
+  "item_size": 125376209,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 1,
+  "favorite_sample": [
+    "gnarlybetty"
+  ],
+  "download_url": "https://archive.org/download/Dominion_104/Dominionbook.pdf",
+  "download_url_cached": "scifi/content/Dominion_104_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T10:08:39.325Z",
+  "download_url_etag": "\"4a557d22-e96e6\"",
+  "download_url_dl_duration": 0.708,
+  "download_url_dl_mbps": 1.2879102243541998
+}

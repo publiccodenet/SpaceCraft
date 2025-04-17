@@ -1,0 +1,51 @@
+{
+  "id": "Unknown_201509",
+  "title": "Unknown",
+  "date": "1940-01-01T00:00:00Z",
+  "description": "The 1940 issues of Unknown, John W. Campbell's companion to Astounding.",
+  "mediatype": "texts",
+  "collection": [
+    "unknownworlds",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Fantasy",
+    "Pulp"
+  ],
+  "downloads": 3843,
+  "item_size": 4050751434,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Unknown"
+  ],
+  "favorite_count": 14,
+  "favorite_sample": [
+    "catunderstars",
+    "ded73",
+    "deejf",
+    "functio1",
+    "goodeve"
+  ],
+  "download_url": "https://archive.org/download/Unknown_201509/Unknown_40-01.epub",
+  "download_url_cached": "scifi/content/Unknown_201509_epub.epub",
+  "download_url_timestamp": "2025-03-13T12:03:49.730Z",
+  "download_url_etag": "\"65727ca9-3764072\"",
+  "download_url_dl_duration": 8.406,
+  "download_url_dl_mbps": 6.589428232080903
+}

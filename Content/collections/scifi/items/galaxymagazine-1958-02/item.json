@@ -1,0 +1,63 @@
+{
+  "id": "galaxymagazine-1958-02",
+  "title": "Galaxy Magazine (February 1958)",
+  "date": "1958-02-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "galaxymagazine",
+    "magazine_rack",
+    "additional_collections",
+    "pulpmagazinearchive"
+  ],
+  "subject": [
+    "skarn",
+    "galaxy",
+    "dork",
+    "fiction",
+    "science",
+    "ludovick",
+    "belphin",
+    "jeff",
+    "conn",
+    "galaxy science",
+    "science fiction",
+    "imperial majesty",
+    "chafi three",
+    "bread overhead",
+    "great kom",
+    "blue tower",
+    "traders risk",
+    "tin philosopher",
+    "rose thinker"
+  ],
+  "downloads": 5183,
+  "item_size": 197217756,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 3,
+  "favorite_sample": [
+    "burnshade2",
+    "seymourcoleslaw",
+    "smuc25"
+  ],
+  "download_url": "https://archive.org/download/galaxymagazine-1958-02/Galaxy_1958_02.epub",
+  "download_url_cached": "scifi/content/galaxymagazine-1958-02_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:39:41.798Z",
+  "download_url_etag": "\"659a3b18-bf50e7\"",
+  "download_url_dl_duration": 1.832,
+  "download_url_dl_mbps": 6.526884033169809
+}

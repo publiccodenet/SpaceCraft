@@ -1,0 +1,42 @@
+{
+  "id": "AnatolyDnieprovTheMaxwellEquations",
+  "title": "The Maxwell Equations",
+  "creator": "Anatoly Dnieprov",
+  "date": null,
+  "description": "A soviet science fiction story from compilation “DESTINATION: AMALTHEIA",
+  "mediatype": "texts",
+  "collection": [
+    "mir-titles",
+    "additional_collections"
+  ],
+  "subject": [
+    "soviet literature",
+    "science fiction"
+  ],
+  "downloads": 3213,
+  "item_size": 52388680,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 2,
+  "favorite_sample": [
+    "dryopithecusdinners",
+    "floura28zz"
+  ],
+  "download_url": "https://archive.org/download/AnatolyDnieprovTheMaxwellEquations/Anatoly-Dnieprov-The-Maxwell-Equations.epub",
+  "download_url_cached": "scifi/content/AnatolyDnieprovTheMaxwellEquations_epub.epub",
+  "download_url_timestamp": "2025-03-13T13:47:37.098Z",
+  "download_url_etag": "\"6557278b-18fb742\"",
+  "download_url_dl_duration": 1.965,
+  "download_url_dl_mbps": 12.713608486961771
+}

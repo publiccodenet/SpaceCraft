@@ -1,0 +1,51 @@
+{
+  "id": "ged-1-la-hermandad-de-dune",
+  "title": "La Hermandad de Dune",
+  "creator": "Brian Herbert,Kevin J. Anderson",
+  "date": "2012-01-01T00:00:00Z",
+  "description": "LA HERMANDAD DE DUNE (el primero de una trilogía) está ambientado 80 años después de la Batalla de Corrin y describe los primeros años de la Hermandad Bene Gesserit, la Escuela Mentat, los Navegantes y la Cofradía Espacial, los doctores Suk, los Maestros Espadachines, y el floreciente movimiento antitecnología que recorre el incipiente Imperio.",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_miscellaneous",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Libros",
+    "Books",
+    "Dune",
+    "Science Fiction"
+  ],
+  "downloads": 3978,
+  "item_size": 351391964,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 7,
+  "favorite_sample": [
+    "alexander_bibliteca",
+    "antonio_guerrero748",
+    "estherm1955",
+    "lorie4040",
+    "pau_vejar"
+  ],
+  "download_url": "https://archive.org/download/ged-1-la-hermandad-de-dune/GED1%20La%20hermandad%20de%20Dune.epub",
+  "download_url_cached": "scifi/content/ged-1-la-hermandad-de-dune_epub.epub",
+  "download_url_timestamp": "2025-03-13T11:47:41.992Z",
+  "download_url_etag": "\"655e3d8b-c8531\"",
+  "download_url_dl_duration": 0.571,
+  "download_url_dl_mbps": 1.3704333330411629
+}

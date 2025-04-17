@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazineSpecialEdition1",
+  "title": "Ares Magazine Special Edition 1",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 6688,
+  "item_size": 94097193,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 14,
+  "favorite_sample": [
+    "amandakay",
+    "artursz",
+    "bear1701",
+    "bibianbibian",
+    "bouncetiger"
+  ],
+  "download_url": "https://archive.org/download/AresMagazineSpecialEdition1/Ares%20Magazine%20Special%20Edition%201.epub",
+  "download_url_cached": "scifi/content/AresMagazineSpecialEdition1_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:08:56.649Z",
+  "download_url_etag": "\"65dd14ea-2f92ad\"",
+  "download_url_dl_duration": 2.98,
+  "download_url_dl_mbps": 0.9977548714452142
+}

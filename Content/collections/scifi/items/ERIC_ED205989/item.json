@@ -1,0 +1,51 @@
+{
+  "id": "ERIC_ED205989",
+  "title": "ERIC ED205989: Adventuring with Books: A Booklist for Pre-K-Grade 6. New Edition.",
+  "creator": "ERIC",
+  "date": "1981-01-01T00:00:00Z",
+  "description": "Intended for teachers of preschool through sixth grade children, librarians, parents, educational media specialists, and students of children's literature, this bibliography contains annotations of 2,500 recommended books for children. The annotations, listed in alphabetical order by author, are divided into several categories, including the following: (1) traditional literature, (2) modern fantasy, (3) science fiction, (4) historical fiction, (5) contemporary fiction, (6) poetry, (7) holidays, (8) social studies, (9) biography, (10) the sciences, (11) the arts, (12) sports and games, and (13) hobbies. A professional category lists authors' essays, bibliographies, criticism, teaching methods, and textbooks. The volume concludes with a directory of publishers, and indexes for titles and authors. (HTH)",
+  "mediatype": "texts",
+  "collection": [
+    "ericarchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "ERIC Archive",
+    "Annotated Bibliographies",
+    "Books",
+    "Childrens Literature",
+    "Early Childhood Education",
+    "Elementary Education",
+    "Fantasy",
+    "Fiction",
+    "Poetry",
+    "Reading Materials",
+    "Science Fiction",
+    "Social Studies"
+  ],
+  "downloads": 4406,
+  "item_size": 442215241,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 1,
+  "favorite_sample": [
+    "nct_scddmstr_strnvgtn-tmlrd"
+  ],
+  "download_url": "https://archive.org/download/ERIC_ED205989/ERIC_ED205989.pdf",
+  "download_url_cached": "scifi/content/ERIC_ED205989_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T11:12:48.419Z",
+  "download_url_etag": "\"54cab1f3-94b33b\"",
+  "download_url_dl_duration": 1.554,
+  "download_url_dl_mbps": 5.980538892316389
+}

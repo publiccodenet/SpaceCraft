@@ -1,0 +1,42 @@
+{
+  "id": "H.G.WellsCompleteWorks",
+  "title": "H. G. Wells Complete Works",
+  "creator": "rey",
+  "date": "1986-07-24T00:00:00Z",
+  "description": "H. G. Wells Complete Works",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": "science fiction",
+  "downloads": 4275,
+  "item_size": 5774348351,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 Tar",
+    "Text PDF"
+  ],
+  "favorite_count": 24,
+  "favorite_sample": [
+    "aumnagsvetal",
+    "ezopovskii",
+    "haight1968",
+    "justinman",
+    "kapirajt"
+  ],
+  "download_url": "https://archive.org/download/H.G.WellsCompleteWorks/H.G.%20Wells%20Complete%20Works.epub",
+  "download_url_cached": "scifi/content/H.G.WellsCompleteWorks_epub.epub",
+  "download_url_timestamp": "2025-03-13T11:21:29.344Z",
+  "download_url_etag": "\"6552afe3-aeac0dc3\"",
+  "download_url_dl_duration": 257.13,
+  "download_url_dl_mbps": 10.869028739527153
+}

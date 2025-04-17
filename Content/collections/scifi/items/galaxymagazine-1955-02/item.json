@@ -1,0 +1,63 @@
+{
+  "id": "galaxymagazine-1955-02",
+  "title": "Galaxy Magazine (February 1955)",
+  "date": "1955-02-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "galaxymagazine",
+    "magazine_rack",
+    "additional_collections",
+    "pulpmagazinearchive"
+  ],
+  "subject": [
+    "tarb",
+    "galaxy",
+    "stet",
+    "fiction",
+    "science",
+    "egbert",
+    "delman",
+    "uncle",
+    "fizbian",
+    "science fiction",
+    "galaxy science",
+    "uncle egbert",
+    "jason tarsh",
+    "rich living",
+    "curtis delman",
+    "gillian murray",
+    "open house",
+    "john bridge",
+    "dear senbot"
+  ],
+  "downloads": 3612,
+  "item_size": 220112445,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 3,
+  "favorite_sample": [
+    "denitaarnold",
+    "homsar",
+    "quirx1701"
+  ],
+  "download_url": "https://archive.org/download/galaxymagazine-1955-02/Galaxy_1955_02.epub",
+  "download_url_cached": "scifi/content/galaxymagazine-1955-02_epub.epub",
+  "download_url_timestamp": "2025-03-13T12:41:23.825Z",
+  "download_url_etag": "\"66b6a741-72349d\"",
+  "download_url_dl_duration": 1.289,
+  "download_url_dl_mbps": 5.537505849005179
+}

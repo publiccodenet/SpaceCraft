@@ -1,0 +1,99 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for the collection"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary display title for the collection",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrNullToStringConverter"
+      }
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description for the collection",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrNullToStringConverter"
+      }
+    },
+    "creator": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Creator(s) of this collection.",
+      "x_meta": {
+        "UnitySchemaConverter": "StringArrayOrNullToStringArrayConverter"
+      }
+    },
+    "subject": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Subject tags for this collection.",
+      "x_meta": {
+        "UnitySchemaConverter": "StringArrayOrNullToStringArrayConverter"
+      }
+    },
+    "mediatype": {
+      "type": "string",
+      "default": "collection",
+      "description": "Type of media (always \"collection\" for collections).",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrNullToStringConverter"
+      }
+    },
+    "coverImage": {
+      "type": "string",
+      "description": "URL or path to the cover image.",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrNullToStringConverter"
+      }
+    },
+    "query": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "The query used to populate this collection (e.g., from an external API)",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrArrayOrNullToStringConverter"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "title"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Collection",
+  "description": "Schema for Collection"
+}

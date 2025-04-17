@@ -1,0 +1,43 @@
+name: Full Build and Deploy
+
+# This workflow is disabled by default (.disabled suffix)
+# Rename to remove .disabled when ready to use
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy after build'
+        type: boolean
+        default: false
+
+jobs:
+  build-unity:
+    name: Build Unity WebGL
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Build Unity WebGL
+        run: echo "Would build Unity WebGL here"
+        
+  build-sveltekit:
+    name: Build SvelteKit
+    runs-on: ubuntu-latest
+    needs: build-unity
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Build SvelteKit
+        run: echo "Would build SvelteKit here"
+        
+  deploy:
+    name: Deploy Application
+    if: ${{ github.event.inputs.deploy }}
+    needs: [build-unity, build-sveltekit]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to server
+        run: echo "Would deploy to server here" 

@@ -1,0 +1,63 @@
+{
+  "id": "Asimovs_Science_Fiction_June_2015",
+  "title": "Asimov's Science Fiction June 2015",
+  "date": null,
+  "description": "Asimov's Science Fiction June 2015",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_sf",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "sedu",
+    "silva",
+    "fleming",
+    "vanderbilt",
+    "jacky",
+    "mobs",
+    "kantu",
+    "fiction",
+    "mobcom",
+    "science fiction",
+    "sarah pinsker",
+    "aquatic gardening",
+    "open road",
+    "gardening society",
+    "django wexler",
+    "henry lien",
+    "secret voice",
+    "newport society",
+    "bike kids"
+  ],
+  "downloads": 2588,
+  "item_size": 162283976,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 9,
+  "favorite_sample": [
+    "badwater98",
+    "bharath_manchikalapati",
+    "bowseratediddy",
+    "doccovert",
+    "fugitiveink"
+  ],
+  "download_url": "https://archive.org/download/Asimovs_Science_Fiction_June_2015/Asimovs_Science_Fiction_June_2015.epub",
+  "download_url_cached": "scifi/content/Asimovs_Science_Fiction_June_2015_epub.epub",
+  "download_url_timestamp": "2025-03-13T15:34:05.183Z",
+  "download_url_etag": "\"65e9d7fa-470284e\"",
+  "download_url_dl_duration": 26.646,
+  "download_url_dl_mbps": 2.6649343245363912
+}

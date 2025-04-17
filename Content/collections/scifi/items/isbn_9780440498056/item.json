@@ -1,0 +1,61 @@
+{
+  "id": "isbn_9780440498056",
+  "title": "A wrinkle in time",
+  "creator": "L'Engle, Madeleine",
+  "date": "2005-01-01T00:00:00Z",
+  "description": [
+    "238 pages ; 20 cm",
+    "After their scientist father vanishes a strange midnight visitor leads Meg and her brothers through a wrinkle in time to try and save him",
+    "A wrinkle in time / Madeleine L'Engle. -- A stardust journey with a Wrinkle in time / by Lisa Sonne"
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "marygrovecollege",
+    "internetarchivebooks",
+    "americana",
+    "printdisabled"
+  ],
+  "subject": [
+    "Science fiction",
+    "American fiction"
+  ],
+  "downloads": 2305,
+  "item_size": 538848948,
+  "format": [
+    "ACS Encrypted EPUB",
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item Tile",
+    "JPEG Thumb",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "Log",
+    "MARC",
+    "MARC Binary",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "PNG",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Title Page Detection Log",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 65,
+  "favorite_sample": [
+    "10ktt",
+    "aaronxhill",
+    "alan_thomas518",
+    "amaravilla",
+    "andy_franzel"
+  ]
+}

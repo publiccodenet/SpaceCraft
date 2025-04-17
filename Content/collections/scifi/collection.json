@@ -1,0 +1,13 @@
+{
+  "id": "scifi",
+  "name": "Science Fiction",
+  "description": "",
+  "query": "subject:science fiction mediatype:texts",
+  "sort": "downloads desc",
+  "limit": 0,
+  "includeInUnity": false,
+  "lastUpdated": "2025-03-13T08:32:09.090Z",
+  "totalItems": 1000,
+  "cache_dir": "scifi",
+  "index_cached": "scifi/index.json"
+}

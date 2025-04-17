@@ -1,0 +1,41 @@
+{
+  "id": "Cory_Doctorow_-_Niekto_prichadza",
+  "title": "Cory_Doctorow_-_Niekto_prichadza",
+  "creator": "Pavol Hvizdos",
+  "date": null,
+  "description": "Slovak translation of C. Doctorow's \"Someone comes to town, someone leaves town\".",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "doctorow",
+    "someone",
+    "niekto prichadza",
+    "science fiction"
+  ],
+  "downloads": 5829,
+  "item_size": 144435151,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "HTML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/Cory_Doctorow_-_Niekto_prichadza/CDoctorow_-_Niekto.pdf",
+  "download_url_cached": "scifi/content/Cory_Doctorow_-_Niekto_prichadza_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T10:18:49.670Z",
+  "download_url_etag": "\"471f88d6-15a03f\"",
+  "download_url_dl_duration": 0.794,
+  "download_url_dl_mbps": 1.7022954426724604
+}

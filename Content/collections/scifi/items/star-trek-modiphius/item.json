@@ -1,0 +1,55 @@
+{
+  "id": "star-trek-modiphius",
+  "title": "Star Trek (Modiphius)",
+  "date": null,
+  "description": "Star Trek (Modiphius)",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Science Fiction",
+    "tabletop",
+    "role-playing",
+    "RPG",
+    "pen and paper",
+    "Games",
+    "Star Trek"
+  ],
+  "downloads": 3047,
+  "item_size": 618277953,
+  "format": [
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "ZIP",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 12,
+  "favorite_sample": [
+    "aazard",
+    "adamb13",
+    "audionoir",
+    "bluesmobile",
+    "gurnalon"
+  ],
+  "download_url": "https://archive.org/download/star-trek-modiphius/Modiphius%20-%20MUH051076%20Star%20Trek%20Adventures%20-%20Starfleet%20Tile%20Set%20%5B2017%5D.epub",
+  "download_url_cached": "scifi/content/star-trek-modiphius_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:19:15.367Z",
+  "download_url_etag": "\"66c1ec64-476b69\"",
+  "download_url_dl_duration": 6.043,
+  "download_url_dl_mbps": 0.7386601328277714
+}

@@ -1,0 +1,51 @@
+{
+  "id": "1932BraveNewWorld",
+  "title": "Brave New World",
+  "creator": "Aldous Huxley",
+  "date": "1932-01-01T00:00:00Z",
+  "description": "Brave New World Far in the future, the World Controllers have created the ideal society. Through clever use of genetic engineering, brainwashing and recreational sex and drugs, all its members are happy consumers. Bernard Marx seems alone harbouring an ill-defined longing to break free. A visit to one of the few remaining Savage Reservations, where the old, imperfect life still continues, may be the cure for his distress... Huxley's ingenious fantasy of the future sheds a blazing light on the present and is considered to be his most enduring masterpiece. This is a modified version of the original upload at https://archive.org/details/BraveNewWorld-and-BraveNewWorldRevisited with the following changes: The front & back covers have had colour-corrected. The inner-pages of the book have been converted to black & white for improved readabilty. Blank pages have been removed. Each page has been de-skewed (straightened) in software. The text on each page has been recognised with Optical Character Recognition (OCR) software. See \"Brave New World Revisited\" also:  https://archive.org/details/1958BraveNewWorldRevisited",
+  "mediatype": "texts",
+  "collection": [
+    "offcenter",
+    "deemphasize"
+  ],
+  "subject": [
+    "fiction",
+    "science fiction",
+    "dystopia",
+    "novel"
+  ],
+  "downloads": 4093,
+  "item_size": 259692055,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 61,
+  "favorite_sample": [
+    "109phil",
+    "abigail_veazie",
+    "alicemthornton",
+    "andrefritz",
+    "anna_19"
+  ],
+  "download_url": "https://archive.org/download/1932BraveNewWorld/1932%20-%20Brave%20New%20World%20-%20Aldous%20Huxley.epub",
+  "download_url_cached": "scifi/content/1932BraveNewWorld_epub.epub",
+  "download_url_timestamp": "2025-03-13T11:39:13.127Z",
+  "download_url_etag": "\"65538227-6452260\"",
+  "download_url_dl_duration": 12.402,
+  "download_url_dl_mbps": 8.08908985115178
+}

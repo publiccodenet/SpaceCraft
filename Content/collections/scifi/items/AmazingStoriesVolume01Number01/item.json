@@ -1,0 +1,60 @@
+{
+  "id": "AmazingStoriesVolume01Number01",
+  "title": "Amazing Stories Volume 01 Number 01",
+  "creator": [
+    "Gernsback, Hugo",
+    "Verne, Jules Gabriel, 1828-1905",
+    "Wells, Herbert George, 1866-1946",
+    "Wertenbaker, Green Peyton, 1907-1968",
+    "England, George Allan, 1877-1936",
+    "Hall, Austin, 1885-1933",
+    "Poe, Edgar Allan, 1809-1849"
+  ],
+  "date": "1926-04-01T00:00:00Z",
+  "description": "Amazing Stories Volume 01 Number 01 (April 1926). Scanned copy of a pulp magazine published by Experimenter Publishing Co. and edited by Hugo Gernsback. Periodical copyright not renewed. Individual contributions' copyrights not renewed. This magazine and its contents are now in the public domain. This is the first issue of the first science fiction magazine in history. Featuring: Off on a Comet (Jules Verne; 1/2), The New Accelerator (H. G. Wells), The Man From the Atom (G. Peyton Wertenbaker), The Thing From—\"Outside\" (George Allan England), The Man Who Saved the Earth (Austin Hall), and The Facts in the Case of M. Valdemar (Edgar Allan Poe).",
+  "mediatype": "texts",
+  "collection": [
+    "amazingstoriesmagazine",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "pulp",
+    "pulps",
+    "pulp magazine",
+    "science fiction",
+    "amazing stories"
+  ],
+  "downloads": 31847,
+  "item_size": 122489461,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Generic Raw Book Zip",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 131,
+  "favorite_sample": [
+    "19omhs72",
+    "_opas",
+    "aaron_everly",
+    "aimi_h",
+    "alpha_beta_mu"
+  ],
+  "download_url": "https://archive.org/download/AmazingStoriesVolume01Number01/AmazingStoriesVolume01Number01.epub",
+  "download_url_cached": "scifi/content/AmazingStoriesVolume01Number01_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:36:14.805Z",
+  "download_url_etag": "\"655c0085-3137b3\"",
+  "download_url_dl_duration": 1.288,
+  "download_url_dl_mbps": 2.3882751879484756
+}

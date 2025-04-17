@@ -1,0 +1,48 @@
+{
+  "id": "ost-english-theworksofedgarallanpoe",
+  "title": "A Descent into the Maelstrom",
+  "creator": "Edgar Allan Poe",
+  "date": "1841-01-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "opensource_textbooks",
+    "additional_collections"
+  ],
+  "subject": [
+    "english",
+    "short story",
+    "english literature",
+    "fiction",
+    "science fiction",
+    "sea story",
+    "classics"
+  ],
+  "downloads": 2153,
+  "item_size": 755961842,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 1,
+  "favorite_sample": [
+    "ramap"
+  ],
+  "download_url": "https://archive.org/download/ost-english-theworksofedgarallanpoe/TheWorksOfEdgarAllanPoe.pdf",
+  "download_url_cached": "scifi/content/ost-english-theworksofedgarallanpoe_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T17:19:54.639Z",
+  "download_url_etag": "\"50a1bcfb-464f15\"",
+  "download_url_dl_duration": 0.973,
+  "download_url_dl_mbps": 4.51624577239018
+}

@@ -1,0 +1,51 @@
+{
+  "id": "the-moon-maid",
+  "title": "Edgar Rice Burroughs public domain collection",
+  "creator": "Edgar Rice Burroughs",
+  "date": "1920-01-01T00:00:00Z",
+  "description": "Edgar Rice Burroughs public domain collection",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_miscellaneous",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Edgar Rice Burroughs",
+    "Fantasy",
+    "Fiction",
+    "Science fiction"
+  ],
+  "downloads": 2875,
+  "item_size": 4840688771,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 41,
+  "favorite_sample": [
+    "aetherealization",
+    "aksirt_1",
+    "alexlex9066",
+    "amazingmrb",
+    "amsp76"
+  ],
+  "download_url": "https://archive.org/download/the-moon-maid/A%20princess%20of%20Mars.epub",
+  "download_url_cached": "scifi/content/the-moon-maid_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:36:12.538Z",
+  "download_url_etag": "\"656b95cf-570d3\"",
+  "download_url_dl_duration": 0.441,
+  "download_url_dl_mbps": 0.7710770414529744
+}

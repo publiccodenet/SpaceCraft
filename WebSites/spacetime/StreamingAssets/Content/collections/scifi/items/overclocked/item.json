@@ -1,0 +1,45 @@
+{
+  "id": "overclocked",
+  "title": "overclocked",
+  "creator": "Cory Doctorow",
+  "date": "2007-01-01T00:00:00Z",
+  "description": "Have you ever wondered what it's like to get bitten by a zombie? To live through a bioweapon attack? To have every aspect of your life governed by invisible ants? In Cory Doctorow's collection of novellas, he wields his formidable experience in technology and computing to give us mindbending sci-fi tales that explore the possibilities of information technology — and its various uses — run amok. \"Anda's Game\" is a spin on the bizarre new phenomenon of \"cyber sweatshops,\" in which people are paid very low wages to play online games all day in order to generate in-game wealth, which can be converted into actual money. Another tale tells of the heroic exploits of \"sysadmins\" — systems administrators — as they defend the cyber-world, and hence the world at large, from worms and bioweapons. And yes, there is a story about zombies, too. Included in this collection are Printcrime When Sysadmins Ruled the Earth Anda’s Game I, Robot I, Row-Boat After the Siege Archived by Unglue.it",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_miscellaneous",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": "science fiction",
+  "downloads": 2557,
+  "item_size": 116008132,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "MOBI",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 11,
+  "favorite_sample": [
+    "acuchetto",
+    "boohradley",
+    "cyberpunkmonkey",
+    "daathar",
+    "kaznam"
+  ],
+  "download_url": "https://archive.org/download/overclocked/overclocked.epub",
+  "download_url_cached": "scifi/content/overclocked_epub.epub",
+  "download_url_timestamp": "2025-03-13T15:36:00.135Z",
+  "download_url_etag": "\"55d896c0-38902\"",
+  "download_url_dl_duration": 0.414,
+  "download_url_dl_mbps": 0.5336936545256832
+}

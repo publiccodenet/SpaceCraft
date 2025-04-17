@@ -1,0 +1,45 @@
+{
+  "id": "CoryDoctorowMalyBrat",
+  "title": "Cory Doctorow: Maly brat",
+  "creator": "Pavol Hvizdos",
+  "date": null,
+  "description": "Slovak translation of C. Doctorow's \"Little Brother\"",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "doctorow",
+    "little brother",
+    "maly brat",
+    "science fiction"
+  ],
+  "downloads": 7825,
+  "item_size": 161138927,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Word Document"
+  ],
+  "favorite_count": 1,
+  "favorite_sample": [
+    "mackie_grady"
+  ],
+  "download_url": "https://archive.org/download/CoryDoctorowMalyBrat/Cory_Doctorow_-_Little_Brother-sk.epub",
+  "download_url_cached": "scifi/content/CoryDoctorowMalyBrat_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:03:54.074Z",
+  "download_url_etag": "\"659a5dbb-6ef93\"",
+  "download_url_dl_duration": 0.548,
+  "download_url_dl_mbps": 0.791039780108598
+}

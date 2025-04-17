@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for the item"
+    },
+    "collectionId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ID of the collection this item belongs to"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Title of the item"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Description of the item (can be a string or array of strings)"
+    },
+    "content": {
+      "type": "string",
+      "description": "Main content of the item"
+    },
+    "coverImage": {
+      "type": "string",
+      "description": "Path to cover image"
+    },
+    "creator": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Creator/author of the item (can be a string or array of strings)"
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of item"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of tags for the item"
+    },
+    "language": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Language(s) of the item"
+    },
+    "created": {
+      "type": "string",
+      "description": "ISO date of creation"
+    },
+    "modified": {
+      "type": "string",
+      "description": "ISO date of modification"
+    },
+    "publicdate": {
+      "type": "string",
+      "description": "ISO date when the item was made public"
+    },
+    "year": {
+      "type": "number",
+      "description": "Year of publication or creation"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of associated files"
+    },
+    "licenseurl": {
+      "type": "string",
+      "description": "URL to the license of the item"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {},
+      "description": "Additional metadata"
+    }
+  },
+  "required": [
+    "id",
+    "collectionId",
+    "title",
+    "description",
+    "creator",
+    "language",
+    "created",
+    "modified",
+    "publicdate"
+  ],
+  "additionalProperties": false,
+  "description": "Schema for Item"
+}

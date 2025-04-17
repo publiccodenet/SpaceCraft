@@ -1,0 +1,41 @@
+{
+  "id": "anthem01249gut",
+  "title": "Anthem",
+  "creator": "Rand, Ayn, 1905-1982",
+  "date": null,
+  "description": "Book from Project Gutenberg: Anthem Library of Congress Classification: PS Note: There is a different edition at #1250. The file anthm10z.* is a comparison of both.",
+  "mediatype": "texts",
+  "collection": [
+    "gutenberg"
+  ],
+  "subject": [
+    "Individuality -- Fiction",
+    "Love stories",
+    "Men -- Psychology -- Fiction",
+    "Psychological fiction",
+    "Science fiction",
+    "Time travel -- Fiction"
+  ],
+  "downloads": 2241,
+  "item_size": 556744,
+  "format": [
+    "Archive BitTorrent",
+    "EPUB",
+    "Metadata",
+    "PalmOS Plucker",
+    "Text",
+    "Unknown",
+    "ZIP"
+  ],
+  "favorite_count": 2,
+  "favorite_sample": [
+    "bessmyra",
+    "domlaw124"
+  ],
+  "download_url": "https://archive.org/download/anthem01249gut/pg1249.epub",
+  "download_url_cached": "scifi/content/anthem01249gut_epub.epub",
+  "download_url_timestamp": "2025-03-13T17:11:38.798Z",
+  "download_url_etag": "\"4de95d56-f488\"",
+  "download_url_dl_duration": 0.168,
+  "download_url_dl_mbps": 0.3553572155180431
+}

@@ -1,0 +1,50 @@
+{
+  "id": "the-complete-asimov-isaac-asimov-z-lib.org",
+  "title": "The Complete Asimov ( Isaac Asimov) (z Lib.org)",
+  "date": null,
+  "description": "Complete Asimov Collection",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Asimov",
+    "science",
+    "fiction",
+    "novels",
+    "literature"
+  ],
+  "downloads": 2779,
+  "item_size": 3204224899,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 13,
+  "favorite_sample": [
+    "erik53794",
+    "fisherdale",
+    "gbloom498",
+    "greg_meloche",
+    "jday0001"
+  ],
+  "download_url": "https://archive.org/download/the-complete-asimov-isaac-asimov-z-lib.org/The%20Complete%20Asimov%20(Isaac%20Asimov)%20(z-lib.org).epub",
+  "download_url_cached": "scifi/content/the-complete-asimov-isaac-asimov-z-lib.org_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:51:31.001Z",
+  "download_url_etag": "\"654d9299-6d3082\"",
+  "download_url_dl_duration": 2.441,
+  "download_url_dl_mbps": 2.7957159883904685
+}

@@ -1,0 +1,45 @@
+{
+  "id": "SpaceViking",
+  "title": "Space Viking",
+  "creator": "H. Beam Piper",
+  "date": "1963-01-01T00:00:00Z",
+  "description": "Space Viking is a science fiction novel written by H. Beam Piper and is set in his Terro-Human future history. It tells the story of one man's search for his wife's murderer and its unexpected consequences. The story was originally serialized in Analog magazine. Background Ten thousand refugees from the losing side of The Big War (The System States War of The Cosmic Computer) fled far beyond the boundaries of the Terran Federation and colonized the planet Excalibur. By the beginning of Space Viking, they had expanded to a handful of Sword Worlds (so-called because they are named after legendary swords) and had grown to a total population of three and a half billion, organized in a feudal system of kingdoms, duchies, and other small states, ruled by frequently-warring noblemen. Despite their isolation and the political instability, the inhabitants managed to retain a high level of technology, including space flight. One day, a starship rediscovered the Old Federation. Civilization had collapsed, presumably due to the war; many of the planets had regressed to varying stages of semi-barbarism. Taking advantage of the situation, \"Space Vikings\" (reminiscent of Norse vikings) proceeded to raid the poorly defended Federation worlds over the next three hundred years for loot. Archived by Unglue.it",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_sf",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": "Science Fiction",
+  "downloads": 2441,
+  "item_size": 140123000,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "MOBI",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 12,
+  "favorite_sample": [
+    "altgaming",
+    "anlashok",
+    "calader",
+    "captainstarchaser",
+    "catzilly"
+  ],
+  "download_url": "https://archive.org/download/SpaceViking/SpaceViking.epub",
+  "download_url_cached": "scifi/content/SpaceViking_epub.epub",
+  "download_url_timestamp": "2025-03-13T16:14:15.028Z",
+  "download_url_etag": "\"55031c71-1bb540\"",
+  "download_url_dl_duration": 0.889,
+  "download_url_dl_mbps": 1.9479758023411136
+}

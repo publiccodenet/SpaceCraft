@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine09_DeltaVee",
+  "title": "Ares Magazine 09 - DeltaVee",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 6093,
+  "item_size": 82558734,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 6,
+  "favorite_sample": [
+    "artursz",
+    "bouncetiger",
+    "drkiwi",
+    "kamil_aleksander_muzyka",
+    "maruchan"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine09_DeltaVee/Ares%20Magazine%2009%20-%20DeltaVee.epub",
+  "download_url_cached": "scifi/content/AresMagazine09_DeltaVee_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:16:12.285Z",
+  "download_url_etag": "\"65dd12ef-18d61c\"",
+  "download_url_dl_duration": 0.734,
+  "download_url_dl_mbps": 2.1148130744289637
+}

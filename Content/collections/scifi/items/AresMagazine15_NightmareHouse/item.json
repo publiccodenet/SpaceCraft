@@ -1,0 +1,51 @@
+{
+  "id": "AresMagazine15_NightmareHouse",
+  "title": "Ares Magazine 15 - Nightmare House",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 6929,
+  "item_size": 115684327,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 25,
+  "favorite_sample": [
+    "aleitheia",
+    "artursz",
+    "asu12000",
+    "avp999",
+    "bear1701"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine15_NightmareHouse/Ares%20Magazine%2015%20-%20Nightmare%20House.epub",
+  "download_url_cached": "scifi/content/AresMagazine15_NightmareHouse_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:07:02.536Z",
+  "download_url_etag": "\"65dd134a-5c3576\"",
+  "download_url_dl_duration": 1.296,
+  "download_url_dl_mbps": 4.446799372449333
+}

@@ -1,0 +1,62 @@
+{
+  "id": "jumpergoulrich",
+  "title": "Jumper",
+  "creator": "Gould, Steven",
+  "date": "2008-01-01T00:00:00Z",
+  "description": [
+    "\"A Tom Doherty Associates book.\"",
+    "\"Movie tie-in\"--Spine",
+    "Blessed with the ability to \"jump\"--to teleport himself to any place on Earth that he has been to before--Davy is determined to locate others like himself, but interference from the government could prevent him from doing so"
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "americana",
+    "bannedbooks",
+    "printdisabled",
+    "openlibrary-d-ol",
+    "unb-ol"
+  ],
+  "subject": [
+    "Teleportation",
+    "Science fiction"
+  ],
+  "downloads": 2032,
+  "item_size": 455680089,
+  "format": [
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Animated GIF",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item Tile",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "MARC",
+    "MARC Binary",
+    "MARC Source",
+    "Metadata",
+    "Metadata Log",
+    "OCLC xISBN JSON",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 19,
+  "favorite_sample": [
+    "adam_cavanaugh",
+    "brittish_brittish",
+    "carmen_dom_nguez",
+    "cookie20185079",
+    "diana_nanguang"
+  ]
+}

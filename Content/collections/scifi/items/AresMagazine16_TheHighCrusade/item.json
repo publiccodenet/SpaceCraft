@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine16_TheHighCrusade",
+  "title": "Ares Magazine 16 - The High Crusade",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 7069,
+  "item_size": 107375303,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 16,
+  "favorite_sample": [
+    "artursz",
+    "bear1701",
+    "codemonk1922",
+    "drkiwi",
+    "gumbashoe"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine16_TheHighCrusade/Ares%20Magazine%2016%20-%20The%20High%20Crusade.epub",
+  "download_url_cached": "scifi/content/AresMagazine16_TheHighCrusade_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:06:44.947Z",
+  "download_url_etag": "\"654b2ed4-4587eb\"",
+  "download_url_dl_duration": 1.165,
+  "download_url_dl_mbps": 3.7302000839822793
+}

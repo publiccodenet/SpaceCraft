@@ -1,0 +1,52 @@
+{
+  "id": "epic-illustrated-001-1980",
+  "title": "Epic Illustrated 1980 - 1986",
+  "creator": "Aeonic Library",
+  "date": null,
+  "description": "Epic Illustrated Issue 1-34 1980 - 1986",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "epic_illustrated",
+    "comics",
+    "adult_science_fiction_comics",
+    "comics_collections"
+  ],
+  "downloads": 2655,
+  "item_size": 2831826972,
+  "format": [
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 76,
+  "favorite_sample": [
+    "88y53",
+    "aimi_h",
+    "ajoso97",
+    "anon_nerd",
+    "arch_z"
+  ],
+  "download_url": "https://archive.org/download/epic-illustrated-001-1980/Epic%20Illustrated%20001%20(1980).epub",
+  "download_url_cached": "scifi/content/epic-illustrated-001-1980_epub.epub",
+  "download_url_timestamp": "2025-03-13T15:23:32.914Z",
+  "download_url_etag": "\"6681db16-1ae9da4\"",
+  "download_url_dl_duration": 2.537,
+  "download_url_dl_mbps": 10.608390414155654
+}

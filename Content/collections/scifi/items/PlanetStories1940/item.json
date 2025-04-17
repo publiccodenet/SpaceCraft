@@ -1,0 +1,49 @@
+{
+  "id": "PlanetStories1940",
+  "title": "Planet Stories",
+  "date": "1940-01-01T00:00:00Z",
+  "description": "1940 issues of Planet Stories",
+  "mediatype": "texts",
+  "collection": [
+    "planetstories",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Fantasy",
+    "Pulp"
+  ],
+  "downloads": 3468,
+  "item_size": 914608652,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Unknown"
+  ],
+  "favorite_count": 14,
+  "favorite_sample": [
+    "a_whale_from_hell",
+    "acidzooey",
+    "bibulousrana",
+    "bricklebean",
+    "darkindo"
+  ],
+  "download_url": "https://archive.org/download/PlanetStories1940/Planet%20Stories%20v01n02%20(1940-Spring)%20(Microfilm).epub",
+  "download_url_cached": "scifi/content/PlanetStories1940_epub.epub",
+  "download_url_timestamp": "2025-03-13T13:12:01.762Z",
+  "download_url_etag": "\"6557e09a-607e29\"",
+  "download_url_dl_duration": 1.207,
+  "download_url_dl_mbps": 4.9965209771308805
+}

@@ -1,0 +1,92 @@
+# ==========================
+# Unity3D .gitignore
+# ==========================
+
+# Unity-generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+
+# Unity Package Cache and large files
+Library/PackageCache/
+Library/ArtifactDB
+Library/SourceAssetDB
+Library/Bee/
+Library/BurstCache/
+*.wasm
+*.wasm.gz
+*.a
+*.o
+*.dylib
+*.so
+*.dll
+*.exe
+*.dat
+*.bhc
+*.tsv
+
+# Auto-generated Visual Studio and JetBrains Rider files
+.vscode/
+.idea/
+*.sln
+*.csproj
+*.unityproj
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# Unity package manager cache
+Packages/com.unity.package-manager/
+Packages/package-lock.json
+
+# Other Unity-specific files
+Assets/StreamingAssets/*.meta
+Assets/AddressableAssetsData/*.bin*
+
+# ScriptableObject-generated caches
+*.asset
+
+# Ignore Play mode test results
+Assets/PlayModeTestResults/
+
+# Ignore cache and logs
+*.log
+*.stacktrace
+
+# ==========================
+# macOS ignore files
+# ==========================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# macOS system files
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
+.metadata_never_index
+.fseventsd
+
+# ==========================
+# Emacs ignore files
+# ==========================
+*~
+\#*\#
+
+# ==========================
+# Miscellaneous
+# ==========================
+# Ignore any file inside a .gitignored folder (double check required)
+!.gitignore

@@ -1,0 +1,57 @@
+{
+  "id": "seventhtower00nixg",
+  "title": "The seventh tower",
+  "creator": "Nix, Garth",
+  "date": "2005-01-01T00:00:00Z",
+  "description": "The fall -- Castle -- Aenir",
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "americana",
+    "inlibrary",
+    "printdisabled",
+    "openlibrary-d-ol"
+  ],
+  "subject": [
+    "Imaginary places",
+    "Science fiction"
+  ],
+  "downloads": 2418,
+  "item_size": 478286207,
+  "format": [
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Animated GIF",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item Tile",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "MARC",
+    "MARC Binary",
+    "MARC Source",
+    "Metadata",
+    "Metadata Log",
+    "OCLC xISBN JSON",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 32,
+  "favorite_sample": [
+    "anel1992",
+    "angeni4105",
+    "asquiffy",
+    "breakfastyet",
+    "caitygoose"
+  ]
+}

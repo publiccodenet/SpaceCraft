@@ -1,0 +1,61 @@
+{
+  "id": "galaxymagazine-1954-02",
+  "title": "Galaxy Magazine (February 1954)",
+  "date": "1954-02-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "galaxymagazine",
+    "magazine_rack",
+    "additional_collections",
+    "pulpmagazinearchive"
+  ],
+  "subject": [
+    "galaxy",
+    "fiction",
+    "weinbaum",
+    "science",
+    "tylo",
+    "dirac",
+    "terrans",
+    "wald",
+    "farrell",
+    "science fiction",
+    "galaxy science",
+    "project hush",
+    "pet farm",
+    "dana lje",
+    "inanimate objection",
+    "three ghosts",
+    "paper clips",
+    "lenny valley",
+    "galaxy publishing"
+  ],
+  "downloads": 5104,
+  "item_size": 134772929,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 2,
+  "favorite_sample": [
+    "millieg",
+    "miranda_kros"
+  ],
+  "download_url": "https://archive.org/download/galaxymagazine-1954-02/Galaxy_1954_02.pdf",
+  "download_url_cached": "scifi/content/galaxymagazine-1954-02_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T10:42:51.165Z",
+  "download_url_etag": "\"4efacd3d-41ece18\"",
+  "download_url_dl_duration": 10.207,
+  "download_url_dl_mbps": 6.458833727533417
+}

@@ -1,0 +1,49 @@
+{
+  "id": "AstoundingStories-1930s",
+  "title": "Astounding Stories - 1930s",
+  "date": null,
+  "description": "American pulp science fiction magazine of the 1930s",
+  "mediatype": "texts",
+  "collection": [
+    "magazine_packs",
+    "magazine_rack"
+  ],
+  "subject": [
+    "pulp",
+    "science fiction",
+    "american",
+    "1930s",
+    "magazine"
+  ],
+  "downloads": 14355,
+  "item_size": 1482797600,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 18,
+  "favorite_sample": [
+    "346nyc",
+    "a_new_word",
+    "allie2026",
+    "chrisgherr",
+    "dixiedog1956"
+  ],
+  "download_url": "https://archive.org/download/AstoundingStories-1930s/asf1930-01.epub",
+  "download_url_cached": "scifi/content/AstoundingStories-1930s_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:24:48.528Z",
+  "download_url_etag": "\"6594d8f8-374c72\"",
+  "download_url_dl_duration": 1.429,
+  "download_url_dl_mbps": 2.4185888078181037
+}

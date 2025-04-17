@@ -1,0 +1,60 @@
+{
+  "id": "BladeRunnerSouvenirMagazine",
+  "title": "Blade Runner Souvenir Magazine",
+  "creator": "Ira Friedman",
+  "date": "1982-01-01T00:00:00Z",
+  "description": "Tie-in magazine for the 1982 film. Scan by Sawa .",
+  "mediatype": "texts",
+  "collection": [
+    "cinemamagazinesmisc",
+    "cinemamagazines",
+    "magazine_rack"
+  ],
+  "subject": [
+    "Movie/Tv Tie-Ins",
+    "Movies",
+    "Motion Pictures",
+    "Films",
+    "Tie-In",
+    "Movie Magazines",
+    "Making-Of",
+    "One Shot",
+    "Science Fiction",
+    "Sci-Fi",
+    "Harrison Ford",
+    "Philip K. Dick",
+    "Philip K. Dick (1928-1982)",
+    "Ridley Scott (1937-)",
+    "Ridley Scott",
+    "Harrison Ford (1942-)"
+  ],
+  "downloads": 5628,
+  "item_size": 522736517,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 117,
+  "favorite_sample": [
+    "204-06-_",
+    "_amp_quot_thomas_james_amp_quot_",
+    "alchemical",
+    "andradesamuel",
+    "anonymous_anonymous143"
+  ],
+  "download_url": "https://archive.org/download/BladeRunnerSouvenirMagazine/Blade%20Runner%20Souvenir%20Magazine.epub",
+  "download_url_cached": "scifi/content/BladeRunnerSouvenirMagazine_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:20:52.465Z",
+  "download_url_etag": "\"65d1cae8-53c7c13\"",
+  "download_url_dl_duration": 6.356,
+  "download_url_dl_mbps": 13.181291937903087
+}

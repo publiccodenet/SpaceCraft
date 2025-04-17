@@ -1,0 +1,50 @@
+{
+  "id": "CaffeineANovel",
+  "title": "Caffeine: A Novel",
+  "creator": "Ryan Grabow",
+  "date": "2011-11-15T00:00:00Z",
+  "description": "A 2009 science-fiction novel. Brandon Dauphin feels like a dying ember. He's jobless and feels worthless, and falling in love has only made his problem worse. In an authoritarian and overstimulated 22nd-century America, all he can do to relieve his pain is indulge in the computer-simulated fantasies of a network called Dynamic Reality, until a virus takes control of the simulation. Unable to return to the real world, Brandon finds that the virus shares his questions about existence, and that she will stop at nothing for her answers.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "caffeine novel",
+    "caffeine fiction",
+    "grabow novel",
+    "grabow fiction",
+    "christian science fiction",
+    "christian sci-fi",
+    "malvirai",
+    "dynamic reality",
+    "computer virus fiction",
+    "christian existentialism"
+  ],
+  "downloads": 2409,
+  "item_size": 302156116,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "ZIP"
+  ],
+  "favorite_count": 1,
+  "favorite_sample": [
+    "lowkey_liz56"
+  ],
+  "download_url": "https://archive.org/download/CaffeineANovel/Caffeine.pdf",
+  "download_url_cached": "scifi/content/CaffeineANovel_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T16:17:58.562Z",
+  "download_url_etag": "\"4ec824c8-1a3044\"",
+  "download_url_dl_duration": 0.759,
+  "download_url_dl_mbps": 2.156500131559309
+}

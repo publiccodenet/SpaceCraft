@@ -1,0 +1,61 @@
+{
+  "id": "theone-magazine-30",
+  "title": "TheOne Magazine Issue 30",
+  "date": "1991-03-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "theone-magazine-uk",
+    "videogamemagazines",
+    "magazine_rack"
+  ],
+  "subject": [
+    "amiga",
+    "ihe",
+    "march",
+    "game",
+    "ibm",
+    "games",
+    "software",
+    "atari",
+    "graphics",
+    "disk",
+    "compatibles price",
+    "science fiction",
+    "super cars",
+    "red baron",
+    "paul presley",
+    "laurence scotford",
+    "electronic arts",
+    "amiga price",
+    "image works",
+    "code masters"
+  ],
+  "downloads": 2085,
+  "item_size": 181716717,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 3,
+  "favorite_sample": [
+    "artursz",
+    "jordan_kar",
+    "yopachi"
+  ],
+  "download_url": "https://archive.org/download/theone-magazine-30/TheOne_30_Mar_1991.pdf",
+  "download_url_cached": "scifi/content/theone-magazine-30_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T17:42:38.717Z",
+  "download_url_etag": "\"4f7d1a30-38e37eb\"",
+  "download_url_dl_duration": 8.564,
+  "download_url_dl_mbps": 6.642766446501559
+}

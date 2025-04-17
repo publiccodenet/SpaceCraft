@@ -1,0 +1,61 @@
+{
+  "id": "zzap64-magazine-042",
+  "title": "ZZap!64 Magazine Issue 042",
+  "date": "1988-10-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "zzap64-magazine",
+    "computermagazines",
+    "magazine_rack",
+    "additional_collections",
+    "commodoremagazines"
+  ],
+  "subject": [
+    "ihe",
+    "game",
+    "ihc",
+    "thai",
+    "offer",
+    "graphics",
+    "software",
+    "games",
+    "amiga",
+    "personal computer",
+    "pepsi challenge",
+    "software house",
+    "earls court",
+    "dark side",
+    "computer games",
+    "computer challenge",
+    "science fiction",
+    "olympic challenge",
+    "national computer"
+  ],
+  "downloads": 5528,
+  "item_size": 95820010,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 1,
+  "favorite_sample": [
+    "user_48307"
+  ],
+  "download_url": "https://archive.org/download/zzap64-magazine-042/ZZap_64_Issue_042_1988_Oct.pdf",
+  "download_url_cached": "scifi/content/zzap64-magazine-042_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T10:22:59.066Z",
+  "download_url_etag": "\"4e5fd203-22c30e4\"",
+  "download_url_dl_duration": 5.326,
+  "download_url_dl_mbps": 6.526837436677458
+}

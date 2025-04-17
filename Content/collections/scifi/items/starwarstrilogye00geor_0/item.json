@@ -1,0 +1,78 @@
+{
+  "id": "starwarstrilogye00geor_0",
+  "title": "The Star Wars trilogy",
+  "creator": [
+    "Lucas, George, 1944- Star wars",
+    "Glut, Donald F. Empire strikes back",
+    "Kahn, James. Return of the Jedi"
+  ],
+  "date": "2002-01-01T00:00:00Z",
+  "description": [
+    "\"A Del Rey book.\"",
+    "Star wars / by George Lucas -- The Empire strikes back / by Donald F. Glut ; based on a story by George Lucas -- Return of the Jedi / by James Kahn ; based on a story by George Lucas ; screenplay by Lawrence Kasdan and George Lucas",
+    "A twenty-fifth anniversary edition brings together the original, complete \"Star Wars\" novels in a single volume that includes \"Star Wars: a New Hope,\" \"The Empire Strikes Back,\" and \"Return of the Jedi.\""
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled",
+    "bpljordan-ol",
+    "delawarecountydistrictlibrary-ol",
+    "openlibrary-d-ol",
+    "worthingtonlibraries-ol"
+  ],
+  "subject": [
+    "Fiction",
+    "Fiction - Science Fiction",
+    "Media Tie-In - General",
+    "Science Fiction - Star Wars",
+    "Fiction / Movie or Television Tie-In",
+    "Movie-TV Tie-In - General",
+    "Science fiction",
+    "Science fiction, American",
+    "Star Wars fiction"
+  ],
+  "downloads": 2515,
+  "item_size": 1667562575,
+  "format": [
+    "ACS Encrypted EPUB",
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item CDX Index",
+    "Item CDX Meta-Index",
+    "Item Tile",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "Log",
+    "MARC",
+    "MARC Binary",
+    "MARC Source",
+    "Metadata",
+    "Metadata Log",
+    "OCLC xISBN JSON",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "WARC CDX Index",
+    "Web ARChive GZ",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 91,
+  "favorite_sample": [
+    "2000adarchivist",
+    "aglotydn",
+    "alejandra_c",
+    "ananag",
+    "andrewf643"
+  ]
+}

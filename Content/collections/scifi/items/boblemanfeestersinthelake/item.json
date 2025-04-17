@@ -1,0 +1,51 @@
+{
+  "id": "boblemanfeestersinthelake",
+  "title": "Feesters in the Lake and Other Stories",
+  "creator": "Bob Leman",
+  "date": "2002-04-01T00:00:00Z",
+  "description": "Feesters in the Lake and Other stories is a horror anthology by American horror and science fiction author Bob Leman, known for his short stories published in The Magazine of Fantasy and Science Fiction. This collection has only 460 printed copies in existence.",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_fiction",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "literature",
+    "science fiction",
+    "horror",
+    "short story",
+    "anthology",
+    "collection",
+    "rare"
+  ],
+  "downloads": 2004,
+  "item_size": 2055795817,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 34,
+  "favorite_sample": [
+    "balom1",
+    "betelgeuse2754",
+    "carnaefon",
+    "congo1992000",
+    "discworld1"
+  ],
+  "download_url": "https://archive.org/download/boblemanfeestersinthelake/Bob%20Leman%20-%20Feesters%20in%20the%20Lake.epub",
+  "download_url_cached": "scifi/content/boblemanfeestersinthelake_epub.epub",
+  "download_url_timestamp": "2025-03-13T18:35:45.098Z",
+  "download_url_etag": "\"6567d8cd-3af59876\"",
+  "download_url_dl_duration": 605.378,
+  "download_url_dl_mbps": 1.5582821343170206
+}

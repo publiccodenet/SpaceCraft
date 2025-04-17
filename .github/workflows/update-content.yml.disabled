@@ -1,0 +1,61 @@
+name: Content Development Pipeline
+
+# This workflow is disabled by default (.disabled suffix)
+# Rename to remove .disabled when ready to use
+
+on:
+  workflow_dispatch:
+    inputs:
+      content_type:
+        description: 'Type of content to update'
+        required: true
+        default: 'collections'
+        type: choice
+        options:
+          - collections
+          - javascript
+          - both
+
+jobs:
+  process-content:
+    name: Process Content Updates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: echo "Would install dependencies here"
+        
+      - name: Process content updates
+        run: echo "Would process content updates here"
+        
+  deploy-content:
+    name: Deploy Content Updates
+    needs: process-content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to targets
+        run: echo "Would deploy content to SvelteKit static dir, Unity Resources, and CDN"
+        
+  deploy-javascript:
+    name: Deploy JavaScript Hot-Patches
+    needs: process-content
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.content_type == 'javascript' || github.event.inputs.content_type == 'both' }}
+    steps:
+      - name: Deploy JavaScript modules
+        run: echo "Would deploy JS modules for hot-patching"
+        
+  invalidate-cache:
+    name: Invalidate CDN Cache
+    needs: [deploy-content, deploy-javascript]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Purge CDN cache
+        run: echo "Would purge CDN cache here" 

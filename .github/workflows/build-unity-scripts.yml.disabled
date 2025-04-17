@@ -1,0 +1,168 @@
+name: Build & Deploy Unity JavaScript
+
+# This workflow is disabled by default (.disabled suffix)
+# Rename to remove .disabled when ready to use
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      minify:
+        description: 'Minify JavaScript'
+        type: boolean
+        default: false
+      purge_cache:
+        description: 'Purge CDN cache'
+        type: boolean
+        default: true
+
+jobs:
+  prepare:
+    name: Prepare JavaScript/JSON Assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: |
+          cd SvelteKit/BackSpace
+          npm ci
+          
+      - name: Lint JavaScript
+        run: |
+          cd SvelteKit/BackSpace
+          echo "Would run: npm run lint:js"
+          
+      - name: Bundle JavaScript modules
+        run: |
+          cd SvelteKit/BackSpace
+          echo "Would run: npm run build:unity-scripts"
+          
+      - name: Validate JSON
+        run: |
+          cd SvelteKit/BackSpace
+          echo "Would validate JSON configuration files"
+          
+      - name: Minify if required
+        if: ${{ github.event.inputs.minify == 'true' }}
+        run: |
+          cd SvelteKit/BackSpace
+          echo "Would minify JavaScript files"
+          
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: unity-js-artifacts
+          path: |
+            SvelteKit/BackSpace/static/js/unity-extensions/
+            SvelteKit/BackSpace/static/js/unity-config/
+          retention-days: 1
+
+  deploy-development:
+    name: Deploy to Development Environment
+    needs: prepare
+    if: ${{ github.event.inputs.environment == 'development' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: unity-js-artifacts
+          path: ./artifacts
+          
+      - name: Deploy to local development
+        run: |
+          echo "Would deploy to development environment"
+          echo "This would typically update files in the SvelteKit static directory"
+          
+      - name: Print deployment summary
+        run: |
+          echo "Deployed JavaScript modules to development environment"
+          echo "Access at: http://localhost:5173/js/unity-extensions/"
+
+  deploy-staging:
+    name: Deploy to Staging Environment
+    needs: prepare
+    if: ${{ github.event.inputs.environment == 'staging' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: unity-js-artifacts
+          path: ./artifacts
+          
+      - name: Deploy to staging server
+        run: |
+          echo "Would deploy JavaScript modules to staging server"
+          echo "Would deploy to Unity Resources directory in staging"
+          
+      - name: Invalidate staging CDN cache
+        if: ${{ github.event.inputs.purge_cache == 'true' }}
+        run: |
+          echo "Would purge staging CDN cache"
+
+  deploy-production:
+    name: Deploy to Production Environment
+    needs: prepare
+    if: ${{ github.event.inputs.environment == 'production' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: unity-js-artifacts
+          path: ./artifacts
+          
+      - name: Deploy to production CDN
+        run: |
+          echo "Would deploy JavaScript modules to production CDN"
+          
+      - name: Deploy to Unity Resources directory
+        run: |
+          echo "Would update Unity Resources directory in production"
+          
+      - name: Invalidate production CDN cache
+        if: ${{ github.event.inputs.purge_cache == 'true' }}
+        run: |
+          echo "Would purge production CDN cache"
+          
+      - name: Create deployment record
+        run: |
+          echo "Would create a deployment record for version tracking"
+          VERSION=$(date +%Y%m%d%H%M%S)
+          echo "Deployed Unity JavaScript version: $VERSION"
+
+  notify:
+    name: Notify Deployment Complete
+    needs: [deploy-development, deploy-staging, deploy-production]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send deployment notification
+        run: |
+          echo "Would send deployment notification"
+          echo "This could notify team members via Slack, email, etc."
+          
+      - name: Generate deployment report
+        run: |
+          echo "===== Unity JavaScript Deployment Report ====="
+          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "Minified: ${{ github.event.inputs.minify }}"
+          echo "Cache Purged: ${{ github.event.inputs.purge_cache }}"
+          echo "Timestamp: $(date)"
+          echo "==============================================" 

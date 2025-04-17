@@ -1,0 +1,58 @@
+{
+  "id": "ultraman-manga",
+  "title": "ULTRAMAN [Manga]",
+  "creator": "Tsuburaya",
+  "date": "2011-10-01T00:00:00Z",
+  "description": "Several years have passed since the events of Ultraman (the 1966 TV Show), with the legendary \"Giant of Light\" now a memory, as it is believed he returned home after fighting the many giant aliens that invaded the Earth. Shin Hayata's son Shinjiro seems to possess a strange ability, and it is this ability, along with his father's revelation that he was Ultraman, that leads Shinjiro to battle the new aliens invading the Earth as the new Ultraman.",
+  "mediatype": "texts",
+  "collection": [
+    "manga_unsorted",
+    "manga_library",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Manga",
+    "Action",
+    "Adventure",
+    "Aliens",
+    "Sci-Fi",
+    "Science Fiction",
+    "Kyodai",
+    "Kaiju"
+  ],
+  "downloads": 3316,
+  "item_size": 6339957462,
+  "format": [
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "Comic Book ZIP",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 81,
+  "favorite_sample": [
+    "1dragon_lord1",
+    "alphonso_cade560",
+    "altgaming",
+    "artatjays",
+    "baba_martin903"
+  ],
+  "download_url": "https://archive.org/download/ultraman-manga/Ultraman%20v01%20(2015)%20(Digital)%20(BlackManta-Empire).epub",
+  "download_url_cached": "scifi/content/ultraman-manga_epub.epub",
+  "download_url_timestamp": "2025-03-13T13:32:47.965Z",
+  "download_url_etag": "\"6594227b-18b54\"",
+  "download_url_dl_duration": 0.27,
+  "download_url_dl_mbps": 0.3574653908058449
+}

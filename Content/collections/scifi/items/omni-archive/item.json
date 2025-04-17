@@ -1,0 +1,52 @@
+{
+  "id": "omni-archive",
+  "title": "OMNI Magazine Archive",
+  "date": null,
+  "description": "Omni was a science and science fiction magazine published in the US and the UK. It contained articles on science, parapsychology, and short works of science fiction and fantasy. It was published as a print version between October 1978 and 1995. The first Omni e-magazine was published on CompuServe in 1986 and the magazine switched to a purely online presence in 1996. It ceased publication abruptly in late 1997, following the death of co-founder Kathy Keeton; activity on the magazine's website ended the following April",
+  "mediatype": "texts",
+  "collection": [
+    "magazine_packs",
+    "magazine_rack"
+  ],
+  "subject": [
+    "OMNI Magazine",
+    "Science",
+    "Science Fiction",
+    "Fantasy",
+    "Parapsychology",
+    "Magazine"
+  ],
+  "downloads": 45742,
+  "item_size": 31855718064,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 434,
+  "favorite_sample": [
+    "-cub-",
+    "000_1_i",
+    "0xdeadbeef404",
+    "315970",
+    "68000heartonfire"
+  ],
+  "download_url": "https://archive.org/download/omni-archive/Best_of_OMNI_1_1980.epub",
+  "download_url_cached": "scifi/content/omni-archive_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:34:35.419Z",
+  "download_url_etag": "\"6565cb90-34b705e\"",
+  "download_url_dl_duration": 5.086,
+  "download_url_dl_mbps": 10.364713605069944
+}

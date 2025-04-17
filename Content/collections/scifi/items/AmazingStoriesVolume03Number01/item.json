@@ -1,0 +1,60 @@
+{
+  "id": "AmazingStoriesVolume03Number01",
+  "title": "Amazing Stories Volume 03 Number 01",
+  "creator": [
+    "Gernsback, Hugo",
+    "Wells, Herbert George, 1866-1946",
+    "Keller, David Henry, 1880-1966",
+    "Aldinger, Harley S.",
+    "Harris, Clare Winger, 1891-1968",
+    "Copeland, Leland Stanford, 1886-1973",
+    "Grant, Hal",
+    "Wolfe, Charles, S.",
+    "Christie, William Henry, 1896-1955"
+  ],
+  "date": "1928-04-01T00:00:00Z",
+  "description": "Amazing Stories Volume 03 Number 01 (April 1928). Scanned copy of a pulp magazine published by Experimenter Publishing Co. and edited by Hugo Gernsback. Periodical copyright not renewed. Individual contributions' copyrights not renewed. Featuring: A Story of the Days to Come (H. G. Wells), The Yeast Men (David H. Keller), The Way of a Dinosaur (Harley S. Aldinger), Baron Münchausen's Scientific Adventures (Hugo Gernsback; 3/6), The Miracle of the Lily (Clare Winger Harris), When Hearts Remember Home (Leland S. Copeland), The Ancient Horror (Hal Grant), The Master Key (Charles S. Wolfe), and The Return of the Martians (Cecil B. White).",
+  "mediatype": "texts",
+  "collection": [
+    "amazingstoriesmagazine",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "pulp",
+    "pulps",
+    "pulp magazine",
+    "science fiction"
+  ],
+  "downloads": 7439,
+  "item_size": 138008828,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Generic Raw Book Zip",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 33,
+  "favorite_sample": [
+    "19omhs72",
+    "alpha_beta_mu",
+    "arctorus",
+    "ash_ostrofski",
+    "aviduslector"
+  ],
+  "download_url": "https://archive.org/download/AmazingStoriesVolume03Number01/AmazingStoriesVolume03Number01.epub",
+  "download_url_cached": "scifi/content/AmazingStoriesVolume03Number01_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:05:33.792Z",
+  "download_url_etag": "\"65b3f2a7-4a905e\"",
+  "download_url_dl_duration": 2.778,
+  "download_url_dl_mbps": 1.6775543179934278
+}

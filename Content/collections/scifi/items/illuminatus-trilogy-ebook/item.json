@@ -1,0 +1,49 @@
+{
+  "id": "illuminatus-trilogy-ebook",
+  "title": "Illuminatus! TRILOGY EBOOK",
+  "creator": "Robert Shea & Robert Anton Wilson",
+  "date": "1975-01-01T00:00:00Z",
+  "description": "The Illuminatus! Trilogy  is a  series of three novels  by American writers  Robert Shea  and  Robert Anton Wilson , first published in 1975. [1]  The trilogy is a  satirical ,  postmodern ,  science fiction -influenced adventure story; a drug-, sex-, and magic-laden trek through a number of  conspiracy theories , both historical and imaginary, related to the authors' version of the  Illuminati . The narrative often switches between  third-  and  first-person  perspectives in a  nonlinear narrative . It is thematically dense, covering topics like  counterculture ,  numerology , and  Discordianism . The trilogy comprises three parts which contain five books and appendices:  The Eye in the Pyramid  (first two books),  The Golden Apple  (third and part of fourth book),  Leviathan  (part of fourth and all of fifth book, and the appendices). The parts were first published as three separate volumes starting in September 1975. In 1984 they were published as an omnibus edition and are now more commonly reprinted in the latter form. In 1986 the trilogy won the  Prometheus Hall of Fame Award . [2] The authors went on to write several works, both fiction and nonfiction, that dealt further with the themes of the trilogy. Illuminatus!  has been adapted for the stage, as an audio book and has influenced several modern writers, artists, musicians, and games-makers. The popularity of the word \" fnord \" and the  23 enigma  can both be attributed to the trilogy.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "science fiction",
+    "satirical",
+    "conspiracy theories"
+  ],
+  "downloads": 5851,
+  "item_size": 473525163,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 37,
+  "favorite_sample": [
+    "ak-47-ak-74",
+    "aoloa",
+    "bamboohouses",
+    "bomberfan9187",
+    "btraven"
+  ],
+  "download_url": "https://archive.org/download/illuminatus-trilogy-ebook/Illuminatus%20TRILOGY%20EBOOK.epub",
+  "download_url_cached": "scifi/content/illuminatus-trilogy-ebook_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:18:25.881Z",
+  "download_url_etag": "\"654ba5d3-f8580\"",
+  "download_url_dl_duration": 1.056,
+  "download_url_dl_mbps": 0.9186484596946022
+}

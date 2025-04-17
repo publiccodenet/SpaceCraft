@@ -1,0 +1,43 @@
+{
+  "id": "AnatolyDneprovCrabsOnTheIsland",
+  "title": "Crabs On The Island",
+  "creator": "Anatoly Dneprov",
+  "date": "1968-01-01T00:00:00Z",
+  "description": "Soviet science fiction, From the SF compilation “THE MOLECULAR CAFE”",
+  "mediatype": "texts",
+  "collection": [
+    "mir-titles",
+    "additional_collections"
+  ],
+  "subject": [
+    "soviet literature",
+    "science fiction"
+  ],
+  "downloads": 4885,
+  "item_size": 25471067,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 3,
+  "favorite_sample": [
+    "jgarzten3",
+    "kelley_parsons",
+    "queen_wolfen"
+  ],
+  "download_url": "https://archive.org/download/AnatolyDneprovCrabsOnTheIsland/Anatoly-Dneprov-Crabs-On-The-Island.epub",
+  "download_url_cached": "scifi/content/AnatolyDneprovCrabsOnTheIsland_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:50:04.680Z",
+  "download_url_etag": "\"6555d89b-bf111a\"",
+  "download_url_dl_duration": 12.454,
+  "download_url_dl_mbps": 0.9588626293686547
+}

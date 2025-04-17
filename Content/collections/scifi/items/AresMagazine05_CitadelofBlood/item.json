@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine05_CitadelofBlood",
+  "title": "Ares Magazine 05 - Citadel of Blood",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 9322,
+  "item_size": 65760103,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 12,
+  "favorite_sample": [
+    "aheavydeath",
+    "alex_monge",
+    "artursz",
+    "cassiecasper",
+    "compulink"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine05_CitadelofBlood/Ares%20Magazine%2005%20-%20Citadel%20of%20Blood.epub",
+  "download_url_cached": "scifi/content/AresMagazine05_CitadelofBlood_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:50:17.287Z",
+  "download_url_etag": "\"65dd1412-d8a55\"",
+  "download_url_dl_duration": 0.56,
+  "download_url_dl_mbps": 1.5112008367265972
+}

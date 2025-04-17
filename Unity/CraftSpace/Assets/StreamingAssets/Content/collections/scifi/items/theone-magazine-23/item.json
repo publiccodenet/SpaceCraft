@@ -1,0 +1,60 @@
+{
+  "id": "theone-magazine-23",
+  "title": "TheOne Magazine Issue 23",
+  "date": "1990-08-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "theone-magazine-uk",
+    "videogamemagazines",
+    "magazine_rack"
+  ],
+  "subject": [
+    "alien",
+    "amiga",
+    "ihe",
+    "aliens",
+    "atari",
+    "software",
+    "games",
+    "ega",
+    "game",
+    "billy",
+    "cga ega",
+    "fun school",
+    "amiga price",
+    "mail order",
+    "midnight resistance",
+    "science fiction",
+    "holder lockable",
+    "electronic arts",
+    "suit larry",
+    "sim city"
+  ],
+  "downloads": 2861,
+  "item_size": 231686277,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 2,
+  "favorite_sample": [
+    "char_rob",
+    "guesdon_arma"
+  ],
+  "download_url": "https://archive.org/download/theone-magazine-23/TheOne_23_Aug_1990.pdf",
+  "download_url_cached": "scifi/content/theone-magazine-23_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T14:36:30.376Z",
+  "download_url_etag": "\"4f7d19df-47e86eb\"",
+  "download_url_dl_duration": 9.424,
+  "download_url_dl_mbps": 7.630299125341082
+}

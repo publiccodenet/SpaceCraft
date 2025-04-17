@@ -1,0 +1,45 @@
+{
+  "id": "complete-ray-bradbury-chronicles-comics",
+  "title": "The Complete Ray Bradbury Chronicles Comics",
+  "date": null,
+  "description": "All seven issues of the The Complete Ray Bradbury Chronicles comic series adapting several of his short stories.",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Ray Bradbury",
+    "Horror",
+    "comic book",
+    "comic",
+    "sci-fi",
+    "science fiction",
+    "Ray Bradbury Chronicles"
+  ],
+  "downloads": 4387,
+  "item_size": 582167801,
+  "format": [
+    "Archive BitTorrent",
+    "Comic Book ZIP",
+    "Image Container PDF",
+    "Item Tile",
+    "JPEG",
+    "Metadata"
+  ],
+  "favorite_count": 32,
+  "favorite_sample": [
+    "69arobot",
+    "aggressiveart5",
+    "audiophilearchive",
+    "bouncetiger",
+    "chromat"
+  ],
+  "download_url": "https://archive.org/download/complete-ray-bradbury-chronicles-comics/The%20Ray%20Bradbury%20Chronicles%201.pdf",
+  "download_url_cached": "scifi/content/complete-ray-bradbury-chronicles-comics_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T11:14:00.408Z",
+  "download_url_etag": "\"63cd6e6a-2589580\"",
+  "download_url_dl_duration": 7.241,
+  "download_url_dl_mbps": 5.183883306647908
+}

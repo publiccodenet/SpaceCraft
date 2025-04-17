@@ -1,0 +1,48 @@
+{
+  "id": "AresMagazine17_MongooseandCobra",
+  "title": "Ares Magazine 17 - Mongoose and Cobra",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 5750,
+  "item_size": 119929848,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 3,
+  "favorite_sample": [
+    "drkiwi",
+    "maruchan",
+    "shortstack1981"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine17_MongooseandCobra/Ares%20Magazine%2017%20-%20Mongoose%20and%20Cobra.epub",
+  "download_url_cached": "scifi/content/AresMagazine17_MongooseandCobra_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:20:07.218Z",
+  "download_url_etag": "\"65dd168a-85bb41\"",
+  "download_url_dl_duration": 1.831,
+  "download_url_dl_mbps": 4.564836857294138
+}

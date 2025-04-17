@@ -1,0 +1,50 @@
+{
+  "id": "Blakes7Annual1979",
+  "title": "Blake's 7 Annual 1979",
+  "date": "1979-01-01T00:00:00Z",
+  "description": "Blake's 7 Annual 1979 .",
+  "mediatype": "texts",
+  "collection": [
+    "pulp_misc_sf",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Television",
+    "British Television",
+    "Television Series",
+    "Blake's 7",
+    "Blakes 7",
+    "Terry Nation"
+  ],
+  "downloads": 2235,
+  "item_size": 72740328,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 33,
+  "favorite_sample": [
+    "a_whale_from_hell",
+    "arbeaone",
+    "bkde",
+    "bouncetiger",
+    "captainstarchaser"
+  ],
+  "download_url": "https://archive.org/download/Blakes7Annual1979/Blakes%207%20Annual%201979.epub",
+  "download_url_cached": "scifi/content/Blakes7Annual1979_epub.epub",
+  "download_url_timestamp": "2025-03-13T17:11:58.662Z",
+  "download_url_etag": "\"66af933a-cad3d2\"",
+  "download_url_dl_duration": 15.129,
+  "download_url_dl_mbps": 0.8379082519321466
+}

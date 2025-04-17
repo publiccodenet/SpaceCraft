@@ -1,0 +1,49 @@
+{
+  "id": "TheConcreteMixer",
+  "title": "The Concrete Mixer",
+  "creator": "Ray Bradbury",
+  "date": null,
+  "description": "Short story published in Thrilling Wonder Stories (April 1949). Blurb: \"When the Martians planned their glorious conquest of Earth, Ettil Vrye foresaw defeat, but he was given his choice of joining the Legion of War -- or burning!\"",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 2993,
+  "item_size": 34422309,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 3,
+  "favorite_sample": [
+    "drieu",
+    "lastchinchilla",
+    "zetarriaga"
+  ],
+  "download_url": "https://archive.org/download/TheConcreteMixer/ConcreteMixerByRayBradbury1949.epub",
+  "download_url_cached": "scifi/content/TheConcreteMixer_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:25:59.797Z",
+  "download_url_etag": "\"658f9364-1bc3a5\"",
+  "download_url_dl_duration": 0.862,
+  "download_url_dl_mbps": 2.013068188094208
+}

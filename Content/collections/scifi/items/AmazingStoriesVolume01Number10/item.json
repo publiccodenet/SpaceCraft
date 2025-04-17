@@ -1,0 +1,58 @@
+{
+  "id": "AmazingStoriesVolume01Number10",
+  "title": "Amazing Stories Volume 01 Number 10",
+  "creator": [
+    "Gernsback, Hugo, 1884-1967",
+    "Leinster, Murray, 1896-1975",
+    "Verrill, Alpheus Hyatt, 1871-1954",
+    "Wells, Herbert George, 1866-1946",
+    "Breuer, Miles John, 1889-1945",
+    "Serviss, Garrett Putman, 1851-1929"
+  ],
+  "date": "1927-01-01T00:00:00Z",
+  "description": "Amazing Stories, volume 1, number 10 (January 1927). Scanned copy of a pulp magazine published by Experimenter Publishing Co. and edited by Hugo Gernsback. Periodical copyright not renewed. Individual contributions' copyrights not renewed. This magazine and its contents are now in the public domain. Featuring: The Red Dust (Murray Leinster), The Man Who Could Vanish (A. Hyatt Verrill), The First Men in the Moon (H. G. Wells), The Man with the Strange Head (Miles J. Breuer), and The Second Deluge (Garrett P. Serviss).",
+  "mediatype": "texts",
+  "collection": [
+    "amazingstoriesmagazine",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "pulp",
+    "pulps",
+    "pulp magazine",
+    "science fiction",
+    "amazing stories"
+  ],
+  "downloads": 5584,
+  "item_size": 182726445,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Generic Raw Book Zip",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 14,
+  "favorite_sample": [
+    "19omhs72",
+    "alpha_beta_mu",
+    "col_ernest_t_bass",
+    "donovan_summoner",
+    "fugitiveink"
+  ],
+  "download_url": "https://archive.org/download/AmazingStoriesVolume01Number10/AmazingStoriesVolume01Number10.epub",
+  "download_url_cached": "scifi/content/AmazingStoriesVolume01Number10_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:22:10.788Z",
+  "download_url_etag": "\"65ab4ecf-58e37e\"",
+  "download_url_dl_duration": 1.345,
+  "download_url_dl_mbps": 4.130513074229641
+}

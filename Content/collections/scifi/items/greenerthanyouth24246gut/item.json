@@ -1,0 +1,30 @@
+{
+  "id": "greenerthanyouth24246gut",
+  "title": "Greener Than You Think",
+  "creator": "Moore, Ward, 1903-1978",
+  "date": null,
+  "description": "Book from Project Gutenberg: Greener Than You Think Library of Congress Classification: PS",
+  "mediatype": "texts",
+  "collection": [
+    "gutenberg"
+  ],
+  "subject": "Science fiction",
+  "downloads": 3723,
+  "item_size": 4692256,
+  "format": [
+    "Archive BitTorrent",
+    "EPUB",
+    "Metadata",
+    "PalmOS Plucker",
+    "Text",
+    "Unknown",
+    "ZIP"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/greenerthanyouth24246gut/pg24246-images.epub",
+  "download_url_cached": "scifi/content/greenerthanyouth24246gut_epub.epub",
+  "download_url_timestamp": "2025-03-13T12:18:53.922Z",
+  "download_url_etag": "\"4e1d39e6-5331f\"",
+  "download_url_dl_duration": 0.464,
+  "download_url_dl_mbps": 0.7003895167646736
+}

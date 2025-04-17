@@ -1,0 +1,55 @@
+{
+  "id": "star-wars-manga-collection",
+  "title": "Star Wars Manga Collection",
+  "creator": "The Walt Disney Company",
+  "date": "2023-01-01T00:00:00Z",
+  "description": "Some special stuff.",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Manga",
+    "Action",
+    "Space",
+    "Fantasy",
+    "Sci-Fi",
+    "Science Fiction",
+    "Aliens"
+  ],
+  "downloads": 2320,
+  "item_size": 2971419584,
+  "format": [
+    "Archive BitTorrent",
+    "Comic Book ZIP",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 46,
+  "favorite_sample": [
+    "10ealms",
+    "alban_barker",
+    "alex_diadiun",
+    "alexander_s_archives",
+    "altgaming"
+  ],
+  "download_url": "https://archive.org/download/star-wars-manga-collection/Star%20Wars%20-%20The%20Legends%20of%20Luke%20Skywalker%20(2020)%20(digital)%20(aKraa).epub",
+  "download_url_cached": "scifi/content/star-wars-manga-collection_epub.epub",
+  "download_url_timestamp": "2025-03-13T16:39:49.628Z",
+  "download_url_etag": "\"657d5028-5f13b87\"",
+  "download_url_dl_duration": 17.81,
+  "download_url_dl_mbps": 5.338407245531035
+}

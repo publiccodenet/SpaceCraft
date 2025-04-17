@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine11_AlbionLandofFaerie",
+  "title": "Ares Magazine 11 - Albion, Land of Faerie",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 11385,
+  "item_size": 88482473,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 11,
+  "favorite_sample": [
+    "artursz",
+    "burnsibub",
+    "cryptbooker",
+    "deepsepia",
+    "drkiwi"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine11_AlbionLandofFaerie/Ares%20Magazine%2011%20-%20Albion%2C%20Land%20of%20Faerie.epub",
+  "download_url_cached": "scifi/content/AresMagazine11_AlbionLandofFaerie_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:33:24.229Z",
+  "download_url_etag": "\"65dd11fe-a1bbb\"",
+  "download_url_dl_duration": 0.555,
+  "download_url_dl_mbps": 1.1383245657156178
+}

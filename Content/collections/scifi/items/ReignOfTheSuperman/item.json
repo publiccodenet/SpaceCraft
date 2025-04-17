@@ -1,0 +1,49 @@
+{
+  "id": "ReignOfTheSuperman",
+  "title": "Reign of the Superman",
+  "creator": "Jerry Siegel; Joe Shuster",
+  "date": "1933-01-01T00:00:00Z",
+  "description": "From \"Science Fiction: The Vanguard of Future Civilization\" Vol. 1 No. 3. Jan. 1933 This was a home produced zine edited by Jerry Siegel and Joe Shuster.",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_politics",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "science fiction",
+    "superman",
+    "comic books"
+  ],
+  "downloads": 8018,
+  "item_size": 10119486,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 7,
+  "favorite_sample": [
+    "adelaide_riverwood",
+    "alexander_stukoff",
+    "austin_proctor",
+    "ciacos1987",
+    "jamesstepsr"
+  ],
+  "download_url": "https://archive.org/download/ReignOfTheSuperman/RSM.epub",
+  "download_url_cached": "scifi/content/ReignOfTheSuperman_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:03:17.285Z",
+  "download_url_etag": "\"65a2be1e-21561a\"",
+  "download_url_dl_duration": 0.863,
+  "download_url_dl_mbps": 2.4142768126097645
+}

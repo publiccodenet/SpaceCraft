@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Spacecraft in Unity</title>
+    <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="qrcode.min.js"></script>
+    <style>
+      body {
+        font-family: "Mulish", Helvetica;
+        padding: 0;
+        border: 0;
+        margin: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+      
+      /* Ensure QR codes are above everything and clickable */
+      #qrcodes-container {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999; /* Very high z-index to be above everything */
+        width: 120px;
+        max-width: 120px;
+        text-align: center;
+        pointer-events: auto; /* Explicitly enable pointer events */
+        cursor: pointer;
+      }
+      
+      /* Basic QR code styling */
+      .qrcode {
+        display: block;
+        width: 100px;
+        height: 100px;
+        margin: 5px auto;
+        opacity: 0.7;
+        transition: opacity 0.3s;
+        cursor: pointer; /* Show clickable cursor */
+      }
+      
+      .qrcode:hover {
+        opacity: 1;
+      }
+      
+      /* Labels */
+      .label {
+        color: white;
+        font-size: 12px;
+        margin: 0 auto 15px auto;
+        width: 100px;
+        text-align: center;
+        cursor: pointer; /* Show clickable cursor */
+      }
+      
+      /* Links */
+      a {
+        display: block;
+        text-decoration: none;
+        cursor: pointer; /* Show clickable cursor */
+      }
+    </style>
+    
+    <script>
+      const qrcodeDefaults = {
+        dim: 100,
+        pad: 1,
+        pal: ['#000','#fff']
+      }
+    </script>
+
+    <script type="text/javascript">
+      console.log("[IndexHTML] Loading Bridge scripts...");
+    </script>
+    <script type="text/javascript" src="StreamingAssets/Bridge/unity.js"></script>
+    <script type="text/javascript" src="StreamingAssets/Bridge/bridge.js"></script>
+    <script type="text/javascript" src="StreamingAssets/Bridge/spacecraft.js"></script>
+    <script type="text/javascript">
+        console.log("[IndexHTML] Bridge scripts loaded.");
+    </script>
+
+    <script>
+      // Call this *after* bridge scripts are loaded, but *before* createUnityInstance
+      if (typeof InitializeSpacecraftBridge === 'function') {
+        console.log("[IndexHTML] Calling InitializeSpacecraftBridge()...");
+        InitializeSpacecraftBridge(); 
+      } else {
+        console.error("[IndexHTML] InitializeSpacecraftBridge function not found! Check script loading order and spacecraft.js.");
+      }
+    </script>
+
+    <script>
+      // Create a single supabase client for interacting with your database
+      const client = supabase.createClient('https://gwodhwyvuftyrvbymmvc.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc')
+
+      const navigatorChannel = client.channel("navigators")
+
+      let subscribed = false;
+      function sendEvent(event, payload) {
+        if (! subscribed) return;
+        console.log('sendEvent', name, payload)
+        navigatorChannel.send({
+          type: 'broadcast',
+          event,
+          payload,
+        })
+      }
+
+      // handlers to send events into Unity
+      function handlePos(payload) {
+        console.debug('handlePos', payload);
+        bridge.updateObject(window.spaceShip, {
+          "component:InputManager/method:PushCameraPosition": [-payload.x, payload.y],
+        });
+      }
+
+      function handleZoom(zoom) {
+        console.debug('handleZoom', zoom);
+        bridge.updateObject(window.spaceShip, {
+          "component:InputManager/method:PushCameraZoom": [zoom],
+        });
+      }
+
+      function handlePresence(id, payload) {
+        const el = document.getElementById(id);
+        console.debug('handlePresence', id, payload, el)
+        userCount = Object.keys(payload).length
+        el.style.opacity = userCount ? 1 : '';
+      }
+
+      function handleSelectPos(payload) {
+        console.debug('handleSelectPos', payload)
+      }
+
+      // handlers to send events into Unity
+      function handleSelectZoom(payload) {
+        console.debug('handleSelectZoom', payload)
+      }
+
+      // Subscribe to the navigatorChannel
+      navigatorChannel
+        .subscribe((status) => {
+          console.log('subscribe', status)
+          if (status === 'SUBSCRIBED') {
+            subscribed = true;
+          }
+        })
+        .on(
+          'broadcast',
+          { event: 'pos' },
+          (data) => handlePos(data.payload)
+        )
+        .on(
+          'broadcast',
+          { event: 'zoom' },
+          (data) => handleZoom(data.payload.zoom)
+        )
+        .on('presence', { event: 'sync' }, () => {
+          const newState = navigatorChannel.presenceState()
+          handlePresence('navigator', newState)
+        })
+
+      const selectorChannel = client.channel("selectors")
+      // Subscribe to the selectorChannel
+      selectorChannel
+        .subscribe((status) => {
+          console.debug('subscribe', status)
+          if (status === 'SUBSCRIBED') {
+            subscribed = true;
+          }
+        })
+        .on(
+          'broadcast',
+          { event: 'pos' },
+          (data) => handleSelectPos(data.payload)
+        )
+        .on(
+          'broadcast',
+          { event: 'zoom' },
+          (data) => handleSelectZoom(data.payload.zoom)
+        )
+        .on('presence', { event: 'sync' }, () => {
+          const newState = selectorChannel.presenceState()
+          handlePresence('selector', newState)
+        })
+    </script>
+
+    <!-- Canvas must come BEFORE the QR codes in the DOM to avoid z-index issues -->
+    <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #1F1F20; z-index: 1;"></canvas>
+    
+    <!-- QR codes container with explicit high z-index -->
+    <div id="qrcodes-container">
+      <!-- Navigator QR code - Simplified direct HTML -->
+      <a href="navigator.html" target="_blank" onclick="window.open('navigator.html', '_blank')">
+        <svg id="navigator" class="qrcode"></svg>
+        <div class="label">navigator</div>
+      </a>
+      
+      <!-- Selector QR code - Simplified direct HTML -->
+      <a href="selector.html" target="_blank" onclick="window.open('selector.html', '_blank')">
+        <svg id="selector" class="qrcode"></svg>
+        <div class="label">selector</div>
+      </a>
+    </div>
+    
+    <script src="Build/SpaceCraft.loader.js"></script>
+
+    <script>
+      console.log("[IndexHTML] Unity Loader script loaded.");
+
+      console.log("[IndexHTML] Calling createUnityInstance...");
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+
+        var canvas = document.querySelector("#unity-canvas");
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.position = "fixed";
+
+        document.body.style.textAlign = "left";
+      }
+
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        arguments: [],
+        dataUrl: "Build/SpaceCraft.data",
+        frameworkUrl: "Build/SpaceCraft.framework.js",
+        codeUrl: "Build/SpaceCraft.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "SpaceCraft",
+        productName: "Spacecraft in Unity",
+        productVersion: "1.0",
+        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+      }).then(() => {
+          console.log("[IndexHTML] createUnityInstance promise resolved (Unity content loaded).");
+          // --- Start the Bridge now that Unity is ready ---
+          if (window.bridge) {
+              console.log("[IndexHTML] Unity instance ready, calling bridge.start('WebGL', ...)");
+              // TODO: Pass actual configuration if needed
+              window.bridge.start("WebGL", window.bridge.configuration || "{}"); 
+
+              window.spaceShip = bridge.createObject({"prefab": "Prefabs/SpaceShip"});
+              
+          } else {
+              console.error("[IndexHTML] Unity instance ready, but window.bridge is not defined! Bridge initialization failed earlier.");
+          }
+          // --- End Bridge Start ---
+      }).catch((error) => {
+          console.error("[IndexHTML] createUnityInstance failed:", error);
+      });
+
+      console.log("[IndexHTML] createUnityInstance call finished.");
+    </script>
+
+    <script>
+      // Initialize QR codes when page loads
+      window.addEventListener('load', function() {
+        // Create navigator QR code
+        const navigatorSvg = document.getElementById('navigator');
+        const navigatorQR = QRCode({
+          ...qrcodeDefaults, 
+          msg: window.location.origin + window.location.pathname + 'navigator.html'
+        });
+        
+        // Replace the empty SVG with the QR code
+        navigatorSvg.parentNode.replaceChild(navigatorQR, navigatorSvg);
+        navigatorQR.id = 'navigator';
+        navigatorQR.className = 'qrcode';
+        
+        // Create selector QR code
+        const selectorSvg = document.getElementById('selector');
+        const selectorQR = QRCode({
+          ...qrcodeDefaults, 
+          msg: window.location.origin + window.location.pathname + 'selector.html'
+        });
+        
+        // Replace the empty SVG with the QR code
+        selectorSvg.parentNode.replaceChild(selectorQR, selectorSvg);
+        selectorQR.id = 'selector';
+        selectorQR.className = 'qrcode';
+      });
+    </script>
+
+  </body>
+
+</html>

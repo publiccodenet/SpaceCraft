@@ -1,0 +1,58 @@
+{
+  "id": "viewfromyear300000hart",
+  "title": "A view from the year 3000 : a ranking of the 100 most influential persons of all time",
+  "creator": "Hart, Michael H",
+  "date": "1999-01-01T00:00:00Z",
+  "description": "Includes index",
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "inlibrary",
+    "printdisabled",
+    "universityofoklahoma-ol"
+  ],
+  "subject": [
+    "Biographical fiction, American",
+    "Science fiction, American",
+    "Biography"
+  ],
+  "downloads": 2203,
+  "item_size": 575185978,
+  "format": [
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Animated GIF",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item Tile",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "MARC",
+    "MARC Binary",
+    "MARC Source",
+    "METS",
+    "Metadata",
+    "Metadata Log",
+    "OCLC xISBN JSON",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 9,
+  "favorite_sample": [
+    "benica11",
+    "emad_sadeghi",
+    "folkatoon",
+    "foysal_shinthiyak",
+    "joseph_waldman"
+  ]
+}

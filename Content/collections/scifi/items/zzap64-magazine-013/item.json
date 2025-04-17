@@ -1,0 +1,62 @@
+{
+  "id": "zzap64-magazine-013",
+  "title": "ZZap!64 Magazine Issue 013",
+  "date": "1986-05-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "zzap64-magazine",
+    "computermagazines",
+    "magazine_rack",
+    "additional_collections",
+    "commodoremagazines"
+  ],
+  "subject": [
+    "ihe",
+    "game",
+    "thai",
+    "arcade",
+    "poke",
+    "games",
+    "graphics",
+    "software",
+    "zzapi",
+    "commodore",
+    "fire button",
+    "disk drive",
+    "hocus focus",
+    "science fiction",
+    "power pod",
+    "role playing",
+    "melbourne house",
+    "ihe game",
+    "gold medal",
+    "geoff capes"
+  ],
+  "downloads": 4857,
+  "item_size": 83995355,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 1,
+  "favorite_sample": [
+    "jordan_kar"
+  ],
+  "download_url": "https://archive.org/download/zzap64-magazine-013/ZZap_64_Issue_013_1986_May.pdf",
+  "download_url_cached": "scifi/content/zzap64-magazine-013_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T10:50:31.329Z",
+  "download_url_etag": "\"4e5fd105-1f3399b\"",
+  "download_url_dl_duration": 2.35,
+  "download_url_dl_mbps": 13.277261206444273
+}

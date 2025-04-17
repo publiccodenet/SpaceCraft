@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine01_Worldkiller",
+  "title": "Ares Magazine 01 - Worldkiller",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 7960,
+  "item_size": 71743825,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 17,
+  "favorite_sample": [
+    "akbenjamin",
+    "andrew_lipscomb",
+    "archivepapi",
+    "artursz",
+    "coalbiter"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine01_Worldkiller/Ares%20Magazine%2001%20-%20Worldkiller.epub",
+  "download_url_cached": "scifi/content/AresMagazine01_Worldkiller_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:03:28.545Z",
+  "download_url_etag": "\"65dd126e-5ef2e3\"",
+  "download_url_dl_duration": 1.262,
+  "download_url_dl_mbps": 4.702296763327912
+}

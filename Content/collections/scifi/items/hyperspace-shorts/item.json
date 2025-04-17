@@ -1,0 +1,56 @@
+{
+  "id": "hyperspace-shorts",
+  "title": "Star Wars Hyperspace Shorts",
+  "creator": "Lucasfilm",
+  "date": null,
+  "description": "Star Wars Hyperspace was the official Star Wars fan club from 2004 to 2011. Members could subscribe for a fee, and gain access to exclusive content. Collected here are a number of stories from this service.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "star",
+    "wars",
+    "hyperspace",
+    "george",
+    "lucas",
+    "lucasfilm",
+    "science",
+    "fiction"
+  ],
+  "downloads": 3055,
+  "item_size": 1052557636,
+  "format": [
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "RAR",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Word Document",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 4,
+  "favorite_sample": [
+    "immi_thrax",
+    "matt_p7178",
+    "rookdigoo",
+    "waarlock"
+  ],
+  "download_url": "https://archive.org/download/hyperspace-shorts/01.%20The%20History%20of%20Xim%20and%20the%20Tion%20Cluster.epub",
+  "download_url_cached": "scifi/content/hyperspace-shorts_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:18:56.296Z",
+  "download_url_etag": "\"660acafb-b0429\"",
+  "download_url_dl_duration": 0.583,
+  "download_url_dl_mbps": 1.1809874153464368
+}

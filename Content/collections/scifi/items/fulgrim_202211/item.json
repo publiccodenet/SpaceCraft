@@ -1,0 +1,53 @@
+{
+  "id": "fulgrim_202211",
+  "title": "Fulgrim",
+  "creator": "Graham McNeill",
+  "date": "2007-01-01T00:00:00Z",
+  "description": "En la novela, se yuxtaponen la lucha de Fulgrim y los Hijos del Emperador con el trabajo de los Rememoradores que trabajan en la 28ª Flota Expedicionaria y sus caídas paralelas en la decadencia. Los Hijos del Emperador estaban obsesionados con la perfección: debido a la falta de guerreros cuando se unieron a Fulgrim, no había manera de que la Legión pudiese compararse con los Lobos Lunares o los Ultramarines en cantidad de victorias, así que se concentraron en la calidad de esas victorias. Durante la campaña de Laeran, se le ordenó al Apotecario Fabius mejorar a los guerreros de la Legión añadiendo nuevos órganos a los Marines Espaciales. Mediante la manipulación de la semilla genética de la Legión, Fulgrim ya estaba cometiendo herejía, pero aún así continuó modificando a su Legión a escondidas. Esta mutación se efectuó sobre muchos Astartes, incluido Eidolon. Al final de la campaña el Primarca tomó un arma de la capital de Laeran, una espada que podia desatar al Demonio que habitaba en ella. Empezó a llevar esta espada más que Filo de Fuego, el arma forjada para él por Ferrus Manus.",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_miscellaneous",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Ciencia Ficción",
+    "Books",
+    "Libros",
+    "Warhammer 40k"
+  ],
+  "downloads": 3011,
+  "item_size": 319499864,
+  "format": [
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 18,
+  "favorite_sample": [
+    "alexess",
+    "anthelios",
+    "antony_riquelme_carrera_miranda",
+    "artursz",
+    "j_o353"
+  ],
+  "download_url": "https://archive.org/download/fulgrim_202211/Fulgrim.epub",
+  "download_url_cached": "scifi/content/fulgrim_202211_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:24:37.469Z",
+  "download_url_etag": "\"6554ee36-1dc7da\"",
+  "download_url_dl_duration": 0.847,
+  "download_url_dl_mbps": 2.1975110807272453
+}

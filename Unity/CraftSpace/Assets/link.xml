@@ -1,0 +1,7 @@
+<linker>
+    <!-- Preserve WebGL input functionality for production builds -->
+    <assembly fullname="UnityEngine.WebGLModule" preserve="all"/>
+    
+    <!-- Add other preservation rules below if needed -->
+    <!-- e.g., <assembly fullname="YourAssemblyName" preserve="all"/> -->
+</linker> 

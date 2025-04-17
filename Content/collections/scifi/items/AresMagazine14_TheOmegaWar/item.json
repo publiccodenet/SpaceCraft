@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine14_TheOmegaWar",
+  "title": "Ares Magazine 14 - The Omega War",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 5865,
+  "item_size": 114855861,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 11,
+  "favorite_sample": [
+    "alex_monge",
+    "artursz",
+    "bear1701",
+    "cole_gray",
+    "drkiwi"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine14_TheOmegaWar/AresMagazine14_TheOmegaWar.epub",
+  "download_url_cached": "scifi/content/AresMagazine14_TheOmegaWar_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:18:19.844Z",
+  "download_url_etag": "\"65dd0f12-109de36\"",
+  "download_url_dl_duration": 2.475,
+  "download_url_dl_mbps": 6.713838673601247
+}

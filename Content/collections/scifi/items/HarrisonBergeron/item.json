@@ -1,0 +1,55 @@
+{
+  "id": "HarrisonBergeron",
+  "title": "Harrison Bergeron (& Activity)",
+  "creator": "Vonnegut, Kurt",
+  "date": null,
+  "description": "In a world where every person is equal, those that exhibit above-average intelligence are kept in check via loud earpieces to distract them from thinking too much.  Suggested Level: LS (Lower Secondary)",
+  "mediatype": "texts",
+  "collection": [
+    "bell_literature",
+    "bell",
+    "additional_collections"
+  ],
+  "subject": [
+    "LIT",
+    "LS",
+    "LIT.LS",
+    "Short Stories",
+    "Science Fiction",
+    "Mediocrity--Fiction",
+    "Gifted persons--Fiction",
+    "Dissenters--Fiction",
+    "Games and activities--(Secondary)"
+  ],
+  "downloads": 803071,
+  "item_size": 4691534,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 68,
+  "favorite_sample": [
+    "1st_ragamuffin",
+    "a_m_santos",
+    "adelebezzie",
+    "adrienne_deeble",
+    "alexander_chavez933"
+  ],
+  "download_url": "https://archive.org/download/HarrisonBergeron/Harrison%20Bergeron.epub",
+  "download_url_cached": "scifi/content/HarrisonBergeron_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:32:16.166Z",
+  "download_url_etag": "\"6553eaed-2e39\"",
+  "download_url_dl_duration": 0.004,
+  "download_url_dl_mbps": 2.821207046508789
+}

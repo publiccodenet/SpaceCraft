@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine12_StarTrader",
+  "title": "Ares Magazine 12 - Star Trader",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 7392,
+  "item_size": 84037821,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 6,
+  "favorite_sample": [
+    "artursz",
+    "drkiwi",
+    "leonardomyst",
+    "maruchan",
+    "shortstack1981"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine12_StarTrader/Ares%20Magazine%2012%20-%20Star%20Trader.epub",
+  "download_url_cached": "scifi/content/AresMagazine12_StarTrader_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:05:44.312Z",
+  "download_url_etag": "\"65dd14c0-14a9b9\"",
+  "download_url_dl_duration": 0.778,
+  "download_url_dl_mbps": 1.6599436958528728
+}

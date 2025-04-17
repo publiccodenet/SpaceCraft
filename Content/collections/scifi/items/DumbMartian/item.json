@@ -1,0 +1,51 @@
+{
+  "id": "DumbMartian",
+  "title": "Dumb Martian",
+  "creator": "John Wyndham",
+  "date": null,
+  "description": "Novelette published in Galaxy Science Fiction (July 1952). Blurb: \"When Duncan took Lellie for company he knew it might help preserve his sanity. But what got him wasn't the upkeep -- it was the cost!\"",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 6853,
+  "item_size": 18210656,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 5,
+  "favorite_sample": [
+    "chriswatchesthepast91",
+    "dolge",
+    "edsquid",
+    "goodeve",
+    "thegreenflyingkiwi"
+  ],
+  "download_url": "https://archive.org/download/DumbMartian/DumbMartianByJohnWyndham1952.epub",
+  "download_url_cached": "scifi/content/DumbMartian_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:07:16.683Z",
+  "download_url_etag": "\"65a9f1d8-b40ad\"",
+  "download_url_dl_duration": 0.561,
+  "download_url_dl_mbps": 1.253636338069052
+}

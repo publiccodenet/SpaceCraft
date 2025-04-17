@@ -1,0 +1,50 @@
+{
+  "id": "amazing-stories-v-26n-09-1952-09",
+  "title": "Amazing Stories v26n09 [1952-09]",
+  "date": "1952-09-01T00:00:00Z",
+  "description": "Amazing Stories v26n09 [1952-09].",
+  "mediatype": "texts",
+  "collection": [
+    "amazingstoriesmagazine",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "Pulps",
+    "Pulp Magazines",
+    "Amazing Stories",
+    "Science Fiction",
+    "Fantasy"
+  ],
+  "downloads": 6584,
+  "item_size": 290589744,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Comic Book ZIP",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 46,
+  "favorite_sample": [
+    "4mri7",
+    "a_new_word",
+    "aladdin_collar",
+    "amitkskj",
+    "antonio_wolfhard"
+  ],
+  "download_url": "https://archive.org/download/amazing-stories-v-26n-09-1952-09/Amazing%20Stories%20v26n09%20(1952-09).epub",
+  "download_url_cached": "scifi/content/amazing-stories-v-26n-09-1952-09_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:10:36.108Z",
+  "download_url_etag": "\"6560e186-42b3bd6\"",
+  "download_url_dl_duration": 88.576,
+  "download_url_dl_mbps": 0.7530494533866817
+}

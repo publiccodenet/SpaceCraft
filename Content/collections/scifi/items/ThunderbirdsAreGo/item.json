@@ -1,0 +1,52 @@
+{
+  "id": "ThunderbirdsAreGo",
+  "title": "Thunderbirds Are Go!",
+  "creator": "Gerry Anderson; Sylvia Anderson",
+  "date": null,
+  "description": "TV Century 21 comic issue devoted to British science-fiction manned-mission-to-Mars film Thunderbirds Are Go (1966), featuring \"Supermarionation\" puppetry of creators Gerry and Sylvia Anderson.",
+  "mediatype": "texts",
+  "collection": [
+    "magazine_contributions",
+    "magazine_rack"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 3765,
+  "item_size": 132126404,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Unknown"
+  ],
+  "favorite_count": 36,
+  "favorite_sample": [
+    "aziz_rahmad",
+    "beltor",
+    "berdzior",
+    "bookduders",
+    "boydsipe"
+  ],
+  "download_url": "https://archive.org/download/ThunderbirdsAreGo/ThunderbirdsAreGo1966.epub",
+  "download_url_cached": "scifi/content/ThunderbirdsAreGo_epub.epub",
+  "download_url_timestamp": "2025-03-13T12:16:47.905Z",
+  "download_url_etag": "\"6559bf22-1d888e9\"",
+  "download_url_dl_duration": 7.64,
+  "download_url_dl_mbps": 3.865631587842372
+}

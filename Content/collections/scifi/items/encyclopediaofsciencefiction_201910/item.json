@@ -1,0 +1,50 @@
+{
+  "id": "encyclopediaofsciencefiction_201910",
+  "title": "Encyclopedia of Science Fiction",
+  "creator": "Umair Mirza",
+  "date": "2005-09-01T00:00:00Z",
+  "description": "Encyclopedia of Science Fiction",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_encyclopedia",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Encyclopedia of Science Fiction",
+    "Science Fiction",
+    "Non Fiction",
+    "Literature",
+    "English Literature",
+    "Encyclopedia",
+    "Encyclopedias",
+    "Science Encyclopedia"
+  ],
+  "downloads": 2287,
+  "item_size": 352048307,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 51,
+  "favorite_sample": [
+    "1edan",
+    "adamw653",
+    "agus_made",
+    "altgaming",
+    "ancient_witch"
+  ],
+  "download_url": "https://archive.org/download/encyclopediaofsciencefiction_201910/Encyclopedia%20of%20Science%20Fiction.pdf",
+  "download_url_cached": "scifi/content/encyclopediaofsciencefiction_201910_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T16:56:00.194Z",
+  "download_url_etag": "\"5db04351-231748\"",
+  "download_url_dl_duration": 1.453,
+  "download_url_dl_mbps": 1.5094176868037035
+}

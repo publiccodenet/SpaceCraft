@@ -1,0 +1,61 @@
+{
+  "id": "ufo-alien-warren",
+  "title": "UFO and Alien Comix (Warren Publishing)",
+  "date": "1978-01-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "pulp_misc_sf",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "anp",
+    "lor",
+    "color",
+    "order",
+    "warren",
+    "pie",
+    "monsters",
+    "horror",
+    "star wars",
+    "rush order",
+    "comix international",
+    "convenient rush",
+    "full color",
+    "warren publishing",
+    "frank frazetta",
+    "science fiction",
+    "famous monsters"
+  ],
+  "downloads": 6698,
+  "item_size": 98658946,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Generic Raw Book Zip",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 61,
+  "favorite_sample": [
+    "andrey_devyatov",
+    "andria_holt",
+    "anthony_scabies",
+    "artursz",
+    "awakenedveteran"
+  ],
+  "download_url": "https://archive.org/download/ufo-alien-warren/ufo_and_alien_comix_warren_1978.pdf",
+  "download_url_cached": "scifi/content/ufo-alien-warren_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T10:08:50.325Z",
+  "download_url_etag": "\"4ef4438c-57c6f0\"",
+  "download_url_dl_duration": 5.761,
+  "download_url_dl_mbps": 0.9522771611848528
+}

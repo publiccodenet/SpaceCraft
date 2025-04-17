@@ -1,0 +1,62 @@
+{
+  "id": "space-gamer-05",
+  "title": "Space Gamer Magazine Issue 05",
+  "date": null,
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "space-gamer",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "laser",
+    "game",
+    "atk",
+    "stellar",
+    "games",
+    "lasers",
+    "beam",
+    "eldon",
+    "tsg",
+    "komal",
+    "red moon",
+    "pulse laser",
+    "stellar conquest",
+    "white bear",
+    "laser beam",
+    "fusion warhead",
+    "continuous output",
+    "force field",
+    "science fiction",
+    "laser rifle"
+  ],
+  "downloads": 2716,
+  "item_size": 24534809,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 3,
+  "favorite_sample": [
+    "bisatto",
+    "leonardomyst",
+    "sullycide"
+  ],
+  "download_url": "https://archive.org/download/space-gamer-05/Space_Gamer_05.pdf",
+  "download_url_cached": "scifi/content/space-gamer-05_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T14:54:04.156Z",
+  "download_url_etag": "\"4ec9ce99-51404d\"",
+  "download_url_dl_duration": 1.172,
+  "download_url_dl_mbps": 4.332933816486658
+}

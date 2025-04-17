@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine02_TheWreckoftheBSMPandora",
+  "title": "Ares Magazine 02 - The Wreck of the BSM Pandora",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 7812,
+  "item_size": 60767122,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 14,
+  "favorite_sample": [
+    "artursz",
+    "bastognebulldog",
+    "brian_mclain",
+    "drkiwi",
+    "eroxxxx"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine02_TheWreckoftheBSMPandora/Ares%20Magazine%2002%20-%20The%20Wreck%20of%20the%20BSM%20Pandora.epub",
+  "download_url_cached": "scifi/content/AresMagazine02_TheWreckoftheBSMPandora_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:03:58.207Z",
+  "download_url_etag": "\"65dd11b5-14006b\"",
+  "download_url_dl_duration": 0.773,
+  "download_url_dl_mbps": 1.6172083352546642
+}

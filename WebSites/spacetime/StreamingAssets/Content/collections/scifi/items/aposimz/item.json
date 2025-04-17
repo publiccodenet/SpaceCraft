@@ -1,0 +1,52 @@
+{
+  "id": "aposimz",
+  "title": "APOSIMZ",
+  "creator": "Tsutomu Nihei",
+  "date": "2023-02-23T00:00:00Z",
+  "description": "This story takes place on the frigid, massive artificial planet known as Aposimz. Eo, Biko and Etherow, residents of the White Diamond Beam, are in the middle of combat training when suddenly a girl appears, Rebedoan Empire soldiers in hot pursuit. The girl asks for their help in keeping safe a “code” and seven mysterious “bullets.” This chance encounter marks a major shift in the fate of the entire planet…",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "MANGA",
+    "ACTION",
+    "ADVENTURE",
+    "SCIENCE-FICTION"
+  ],
+  "downloads": 2688,
+  "item_size": 5649828963,
+  "format": [
+    "Archive BitTorrent",
+    "Comic Book ZIP",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 40,
+  "favorite_sample": [
+    "aj_the_artist",
+    "alexandre_crz",
+    "alif_hilmi",
+    "baigo",
+    "blackthumber"
+  ],
+  "download_url": "https://archive.org/download/aposimz/APOSIMZ%20(1).epub",
+  "download_url_cached": "scifi/content/aposimz_epub.epub",
+  "download_url_timestamp": "2025-03-13T15:10:20.173Z",
+  "download_url_etag": "\"65d05058-18b40faa\"",
+  "download_url_dl_duration": 36.488,
+  "download_url_dl_mbps": 10.832433244738237
+}

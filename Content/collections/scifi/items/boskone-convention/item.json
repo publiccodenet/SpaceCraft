@@ -1,0 +1,40 @@
+{
+  "id": "boskone-convention",
+  "title": "Boskone",
+  "creator": "NESFA",
+  "date": "1941-01-01T00:00:00Z",
+  "description": "Science fiction convention held from 1941 to 9999. See Wikipedia ; Wikidata ; SFcentral ; Fancyclopedia",
+  "mediatype": "texts",
+  "collection": [
+    "science-fiction-conventions",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Convention"
+  ],
+  "downloads": 3371,
+  "item_size": 699984013,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/boskone-convention/0000.pdf",
+  "download_url_cached": "scifi/content/boskone-convention_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T13:22:01.519Z",
+  "download_url_etag": "\"62aee2fa-25094\"",
+  "download_url_dl_duration": 0.292,
+  "download_url_dl_mbps": 0.4954534034206443
+}

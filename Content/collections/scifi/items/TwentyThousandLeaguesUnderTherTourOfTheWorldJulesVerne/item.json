@@ -1,0 +1,40 @@
+{
+  "id": "TwentyThousandLeaguesUnderTherTourOfTheWorldJulesVerne",
+  "title": "Twenty Thousand Leagues Under the Sea - Jules Verne",
+  "creator": "Jules Verne",
+  "date": "1871-01-01T00:00:00Z",
+  "description": "Twenty Thousand Leagues Under the Sea Jules Verne Project Gutenberg 2488",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Submarines (Ships)",
+    "Fiction",
+    "Sea stories",
+    "Underwater exploration"
+  ],
+  "downloads": 8476,
+  "item_size": 953078,
+  "format": [
+    "Archive BitTorrent",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata"
+  ],
+  "favorite_count": 2,
+  "favorite_sample": [
+    "basquette",
+    "spencer_baker"
+  ],
+  "download_url": "https://archive.org/download/TwentyThousandLeaguesUnderTherTourOfTheWorldJulesVerne/Twenty%20Thousand%20Leagues%20Under%20ther%20Tour%20of%20the%20World%20-%20Jules%20Verne.epub",
+  "download_url_cached": "scifi/content/TwentyThousandLeaguesUnderTherTourOfTheWorldJulesVerne_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:57:13.572Z",
+  "download_url_etag": "\"5a04a242-9d650\"",
+  "download_url_dl_duration": 0.597,
+  "download_url_dl_mbps": 1.0298532457207914
+}

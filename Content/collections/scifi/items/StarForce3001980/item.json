@@ -1,0 +1,49 @@
+{
+  "id": "StarForce3001980",
+  "title": "Wargaming Manuals",
+  "date": null,
+  "description": "Various wargaming manuals and materials",
+  "mediatype": "texts",
+  "collection": [
+    "manual_packs",
+    "manuals",
+    "additional_collections"
+  ],
+  "subject": [
+    "Wargaming Manuals",
+    "Science Fiction",
+    "Sci-Fi"
+  ],
+  "downloads": 11106,
+  "item_size": 2028678284,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata",
+    "PNG",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 24,
+  "favorite_sample": [
+    "baha_tuna",
+    "chris_jenkins214",
+    "chris_nicole",
+    "eroguro",
+    "gabriel_jaloto"
+  ],
+  "download_url": "https://archive.org/download/StarForce3001980/1987_04_issue36.pdf",
+  "download_url_cached": "scifi/content/StarForce3001980_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T09:35:17.644Z",
+  "download_url_etag": "\"5a76b7d6-16336fb\"",
+  "download_url_dl_duration": 3.05,
+  "download_url_dl_mbps": 7.278991136394564
+}

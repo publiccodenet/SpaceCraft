@@ -1,0 +1,41 @@
+{
+  "id": "LocusMagazine667",
+  "title": "Locus Magazine #667",
+  "creator": "Locus Magazine",
+  "date": "2016-08-01T00:00:00Z",
+  "description": "Locus Magazine Issue 667 Vol 77 No 2 August 2016 Sample issue of Locus Magazine.   The Magazine of the Science Fiction & Fantasy Field https://web.archive.org/web/20190417190659/http://subscribers.locusmag.com/sample-issue",
+  "mediatype": "texts",
+  "collection": [
+    "magazine_contributions",
+    "magazine_rack"
+  ],
+  "subject": [
+    "magazines",
+    "science fiction",
+    "fantasy",
+    "fiction",
+    "reviews",
+    "samples"
+  ],
+  "downloads": 2000,
+  "item_size": 231253413,
+  "format": [
+    "Abbyy GZ",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "MOBI",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/LocusMagazine667/Locus-2016-08_1.epub",
+  "download_url_cached": "scifi/content/LocusMagazine667_epub.epub",
+  "download_url_timestamp": "2025-03-13T18:36:14.146Z",
+  "download_url_etag": "\"5cd615c5-967e40\"",
+  "download_url_dl_duration": 2.475,
+  "download_url_dl_mbps": 3.8003324258207067
+}

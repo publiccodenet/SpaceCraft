@@ -1,0 +1,54 @@
+{
+  "id": "TheFaceOnMars",
+  "title": "The Face on Mars",
+  "creator": "Harvey Comics",
+  "date": null,
+  "description": "Race for the Moon #2 (September 1958, Harvey Comics)",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Comics",
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 2920,
+  "item_size": 3933248,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Unknown"
+  ],
+  "favorite_count": 21,
+  "favorite_sample": [
+    "19omhs72",
+    "awakenedveteran",
+    "benji527",
+    "bumblebee1976",
+    "creaturefan"
+  ],
+  "download_url": "https://archive.org/download/TheFaceOnMars/TheFaceOnMars1958.epub",
+  "download_url_cached": "scifi/content/TheFaceOnMars_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:34:33.175Z",
+  "download_url_etag": "\"66771e73-c67e6\"",
+  "download_url_dl_duration": 0.672,
+  "download_url_dl_mbps": 1.153818198612758
+}

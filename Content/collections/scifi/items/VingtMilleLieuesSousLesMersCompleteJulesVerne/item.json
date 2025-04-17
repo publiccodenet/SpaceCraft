@@ -1,0 +1,46 @@
+{
+  "id": "VingtMilleLieuesSousLesMersCompleteJulesVerne",
+  "title": "Vingt mille lieues sous les mers - Jules Verne",
+  "creator": "Jules Verne",
+  "date": "1871-01-01T00:00:00Z",
+  "description": "Vingt mille lieues sous les mers complete Jules Verne Project Gutenberg 5097",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Submarines (Ships)",
+    "Fiction",
+    "Sea stories",
+    "Underwater exploration",
+    "French",
+    "français",
+    "exploration sous-marine",
+    "fiction scientifique",
+    "romans"
+  ],
+  "downloads": 14420,
+  "item_size": 942776,
+  "format": [
+    "Archive BitTorrent",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata"
+  ],
+  "favorite_count": 3,
+  "favorite_sample": [
+    "alex_88",
+    "basquette",
+    "jpurroy"
+  ],
+  "download_url": "https://archive.org/download/VingtMilleLieuesSousLesMersCompleteJulesVerne/Vingt%20mille%20Lieues%20Sous%20Les%20Mers%20--%20Complete%20-%20Jules%20Verne.epub",
+  "download_url_cached": "scifi/content/VingtMilleLieuesSousLesMersCompleteJulesVerne_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:24:45.006Z",
+  "download_url_etag": "\"5a04bace-9c505\"",
+  "download_url_dl_duration": 0.637,
+  "download_url_dl_mbps": 0.9585564701673187
+}

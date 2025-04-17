@@ -1,0 +1,72 @@
+name: Build and Deploy SvelteKit Only
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'SvelteKit/BackSpace/**'
+      - '!SvelteKit/BackSpace/README.md'
+      - '!SvelteKit/BackSpace/.github/**'
+  workflow_dispatch:
+    inputs:
+      enable:
+        description: 'Set to true to run this workflow'
+        required: true
+        default: 'false'
+
+jobs:
+  build:
+    name: Build SvelteKit App Only
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.enable == 'true' }}
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'SvelteKit/BackSpace/package-lock.json'
+      
+      - name: Install SvelteKit Dependencies
+        working-directory: SvelteKit/BackSpace
+        run: npm ci
+      
+      - name: Build SvelteKit App
+        working-directory: SvelteKit/BackSpace
+        run: npm run build
+      
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sveltekit-build
+          path: SvelteKit/BackSpace/build
+          retention-days: 7
+
+  deploy:
+    name: Deploy SvelteKit App
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && github.event.inputs.enable == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: sveltekit-build
+          path: ./build
+      
+      - name: Deploy to Digital Ocean
+        uses: digitalocean/app_action@v1.1.5
+        with:
+          app_name: craftspace-web
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          images: '[
+            {
+              "name": "sveltekit-app",
+              "artifact": "./build"
+            }
+          ]' 

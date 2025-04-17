@@ -1,0 +1,51 @@
+{
+  "id": "infiniteadventures",
+  "title": "Infinite Adventures",
+  "creator": "Mirco Hensel, yury und Tobias Frei, infiniteadventures.de",
+  "date": "2019-04-01T00:00:00Z",
+  "description": "Eine frei lizenzierte Romanserie über ein witzig-verrücktes Verbrecher-Quartett, schräge Raumpiraten, böse Diktatoren und die Benutzung eines Helikopters als Raumschiff. Open Source, geschrieben in LaTeX (LuaTeX).  🍕 💡 💣 💻 German: Freely licensed novel series about absurd crime and science fiction, featuring crazy space pirates, evil dictators and a modified helicopter used as a spaceship. Open source, written in LaTeX (LuaTeX).",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "novel",
+    "crazy",
+    "science fiction",
+    "absurd",
+    "crime"
+  ],
+  "downloads": 2362,
+  "item_size": 234740481,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "HTML",
+    "Image Container PDF",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata",
+    "PNG",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Unknown"
+  ],
+  "favorite_count": 2,
+  "favorite_sample": [
+    "carksen",
+    "tobefree"
+  ],
+  "download_url": "https://archive.org/download/infiniteadventures/infiniteadventures.epub",
+  "download_url_cached": "scifi/content/infiniteadventures_epub.epub",
+  "download_url_timestamp": "2025-03-13T16:23:31.075Z",
+  "download_url_etag": "\"5d4a51e8-74a40b\"",
+  "download_url_dl_duration": 1.368,
+  "download_url_dl_mbps": 5.328983591313947
+}

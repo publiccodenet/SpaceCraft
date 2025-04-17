@@ -1,0 +1,62 @@
+{
+  "id": "space-gamer-20",
+  "title": "Space Gamer Magazine Issue 20",
+  "date": null,
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "space-gamer",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "web",
+    "psionic",
+    "hex",
+    "player",
+    "fantasy",
+    "terrain",
+    "subs",
+    "game",
+    "infantry",
+    "combat",
+    "science fiction",
+    "attack subs",
+    "web player",
+    "web generator",
+    "psionic strength",
+    "space gamer",
+    "laser tanks",
+    "web infantry",
+    "met zip",
+    "spi box"
+  ],
+  "downloads": 3253,
+  "item_size": 36034054,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 2,
+  "favorite_sample": [
+    "bisatto",
+    "leonardomyst"
+  ],
+  "download_url": "https://archive.org/download/space-gamer-20/Space_Gamer_20.pdf",
+  "download_url_cached": "scifi/content/space-gamer-20_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T13:34:48.261Z",
+  "download_url_etag": "\"4ec9cedb-109e86c\"",
+  "download_url_dl_duration": 3.317,
+  "download_url_dl_mbps": 5.010323672543313
+}

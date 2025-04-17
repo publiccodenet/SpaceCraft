@@ -1,0 +1,41 @@
+{
+  "id": "AsimovEdTheGreatSFStories021940",
+  "title": "Asimov Ed The Great SF Stories 02 1940",
+  "date": null,
+  "description": "The Great SF stories edited by Asimov",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": "American Science fiction stories",
+  "downloads": 17176,
+  "item_size": 16541311040,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 31,
+  "favorite_sample": [
+    "abdul_fattah398",
+    "basia_krol",
+    "bouncetiger",
+    "btraven",
+    "chelle_silverstein"
+  ],
+  "download_url": "https://archive.org/download/AsimovEdTheGreatSFStories021940/Asimov_ed%20-%20Best%20Science%20Fiction%20of%20the%2019th%20Century.epub",
+  "download_url_cached": "scifi/content/AsimovEdTheGreatSFStories021940_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:41:42.261Z",
+  "download_url_etag": "\"654da2c2-d7b80f4\"",
+  "download_url_dl_duration": 29.689,
+  "download_url_dl_mbps": 7.26595650565978
+}

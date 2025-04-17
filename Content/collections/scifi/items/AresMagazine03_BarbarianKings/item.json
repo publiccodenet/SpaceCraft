@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine03_BarbarianKings",
+  "title": "Ares Magazine 03 - Barbarian Kings",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 6727,
+  "item_size": 61270934,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 5,
+  "favorite_sample": [
+    "artursz",
+    "badwolf500",
+    "blackmatt",
+    "drkiwi",
+    "shortstack1981"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine03_BarbarianKings/Ares%20Magazine%2003%20-%20Barbarian%20Kings.epub",
+  "download_url_cached": "scifi/content/AresMagazine03_BarbarianKings_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:08:09.382Z",
+  "download_url_etag": "\"65dd12de-1f2ed4\"",
+  "download_url_dl_duration": 0.842,
+  "download_url_dl_mbps": 2.314646850006031
+}

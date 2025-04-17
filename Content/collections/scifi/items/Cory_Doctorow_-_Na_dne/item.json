@@ -1,0 +1,41 @@
+{
+  "id": "Cory_Doctorow_-_Na_dne",
+  "title": "Cory_Doctorow_-_Na_dne",
+  "creator": "Pavol Hvizdos",
+  "date": null,
+  "description": "Slovak translation of C. Doctorow's \"Down and Out in the Magic Kingdom\"",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "doctorow",
+    "science fiction",
+    "down and out"
+  ],
+  "downloads": 2158,
+  "item_size": 63290136,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "HTML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Word Document"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/Cory_Doctorow_-_Na_dne/CDoctorow_Na_dne-sk.pdf",
+  "download_url_cached": "scifi/content/Cory_Doctorow_-_Na_dne_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T17:19:50.106Z",
+  "download_url_etag": "\"4676381b-8c019\"",
+  "download_url_dl_duration": 0.602,
+  "download_url_dl_mbps": 0.9084698369732728
+}

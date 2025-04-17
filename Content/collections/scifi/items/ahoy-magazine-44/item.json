@@ -1,0 +1,58 @@
+{
+  "id": "ahoy-magazine-44",
+  "title": "Ahoy! Magazine Issue 44",
+  "date": "1987-08-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "ahoymagazine",
+    "commodoremagazines",
+    "computermagazines",
+    "magazine_rack"
+  ],
+  "subject": [
+    "commodore",
+    "program",
+    "disk",
+    "data",
+    "software",
+    "computer",
+    "color",
+    "screen",
+    "ccsz",
+    "disk drive",
+    "column mode",
+    "ccsz ram",
+    "science fiction",
+    "machine language",
+    "free trial",
+    "bug repellent",
+    "bit map",
+    "letter quality"
+  ],
+  "downloads": 2425,
+  "item_size": 130074516,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 1,
+  "favorite_sample": [
+    "artursz"
+  ],
+  "download_url": "https://archive.org/download/ahoy-magazine-44/Ahoy_44_August_1987.pdf",
+  "download_url_cached": "scifi/content/ahoy-magazine-44_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T16:17:11.926Z",
+  "download_url_etag": "\"4e5f2bfd-23acbc3\"",
+  "download_url_dl_duration": 69.651,
+  "download_url_dl_mbps": 0.5121928832804511
+}

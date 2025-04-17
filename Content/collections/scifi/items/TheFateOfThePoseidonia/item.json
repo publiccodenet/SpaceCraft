@@ -1,0 +1,52 @@
+{
+  "id": "TheFateOfThePoseidonia",
+  "title": "The Fate of the Poseidonia",
+  "creator": "Clare Winger Harris",
+  "date": null,
+  "description": "Science Fiction short story published in June 1927 issue of Amazing Stories magazine. Synopsis: A woman aboard the captured space liner “Poseidonia” is taken to the Red Planet amid a clandestine campaign by Martians to steal Earth’s water.",
+  "mediatype": "texts",
+  "collection": [
+    "amazingstoriesmagazine",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 4471,
+  "item_size": 25108588,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 5,
+  "favorite_sample": [
+    "19omhs72",
+    "fantasyking2",
+    "goodeve",
+    "liho-liho",
+    "sideshift"
+  ],
+  "download_url": "https://archive.org/download/TheFateOfThePoseidonia/TheFateOfThePoseidoniaByClareWingerHarris-AmazingStoriesjune1927.epub",
+  "download_url_cached": "scifi/content/TheFateOfThePoseidonia_epub.epub",
+  "download_url_timestamp": "2025-03-13T11:00:44.783Z",
+  "download_url_etag": "\"66cd5c21-68599\"",
+  "download_url_dl_duration": 0.457,
+  "download_url_dl_mbps": 0.891940077232845
+}

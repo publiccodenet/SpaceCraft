@@ -1,0 +1,47 @@
+{
+  "id": "nei-labirinti-della-fantascienza",
+  "title": "Nei Labirinti Della Fantascienza",
+  "creator": "Un' Ambigua Utopia",
+  "date": "1979-01-01T00:00:00Z",
+  "description": "Milano 1979",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Fantascienza",
+    "Narrativa",
+    "Science Fiction",
+    "Guida"
+  ],
+  "downloads": 2339,
+  "item_size": 277786341,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 7,
+  "favorite_sample": [
+    "diomaligno",
+    "diomaligno666",
+    "dmurano",
+    "dregy74",
+    "giandy"
+  ],
+  "download_url": "https://archive.org/download/nei-labirinti-della-fantascienza/Nei%20labirinti%20della%20fantascienza.epub",
+  "download_url_cached": "scifi/content/nei-labirinti-della-fantascienza_epub.epub",
+  "download_url_timestamp": "2025-03-13T16:28:19.983Z",
+  "download_url_etag": "\"65514585-7eb4dbf\"",
+  "download_url_dl_duration": 7.229,
+  "download_url_dl_mbps": 17.52752538109274
+}

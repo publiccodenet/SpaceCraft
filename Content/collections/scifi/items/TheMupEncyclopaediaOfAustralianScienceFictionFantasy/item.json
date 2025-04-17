@@ -1,0 +1,49 @@
+{
+  "id": "TheMupEncyclopaediaOfAustralianScienceFictionFantasy",
+  "title": "The MUP Encyclopaedia of Australian Science Fiction & Fantasy",
+  "date": null,
+  "description": "Reference book published in 1998 by Melbourne University Press.",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_fiction",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci Fi",
+    "SF",
+    "Encyclopedias",
+    "Encyclopaedias"
+  ],
+  "downloads": 7898,
+  "item_size": 293580550,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 11,
+  "favorite_sample": [
+    "allenrhya",
+    "blue_tyson",
+    "catac",
+    "douglasamcintosh",
+    "irohamca"
+  ],
+  "download_url": "https://archive.org/download/TheMupEncyclopaediaOfAustralianScienceFictionFantasy/MupEncyclopaediaOfAustralianScienceFictionFantasy1998.epub",
+  "download_url_cached": "scifi/content/TheMupEncyclopaediaOfAustralianScienceFictionFantasy_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:03:48.513Z",
+  "download_url_etag": "\"661ee7da-957d2\"",
+  "download_url_dl_duration": 0.587,
+  "download_url_dl_mbps": 0.9947879147895151
+}

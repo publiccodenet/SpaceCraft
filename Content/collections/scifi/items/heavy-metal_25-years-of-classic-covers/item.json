@@ -1,0 +1,53 @@
+{
+  "id": "heavy-metal_25-years-of-classic-covers",
+  "title": "Heavy Metal: 25 Years Of Classic Covers",
+  "creator": "John Workman",
+  "date": "2002-06-01T00:00:00Z",
+  "description": "Every cover of Heavy Metal Magazine, in chronological order.",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "magazine covers",
+    "magazine",
+    "fantasy",
+    "science fiction",
+    "heavy metal",
+    "heavy metal magazine"
+  ],
+  "downloads": 3100,
+  "item_size": 140497714,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 82,
+  "favorite_sample": [
+    "ajoso97",
+    "amigone",
+    "auyhnr",
+    "battlinjack",
+    "bee_sea"
+  ],
+  "download_url": "https://archive.org/download/heavy-metal_25-years-of-classic-covers/Heavy%20Metal%2025%20Years%20of%20Classic%20Covers.epub",
+  "download_url_cached": "scifi/content/heavy-metal_25-years-of-classic-covers_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:17:40.723Z",
+  "download_url_etag": "\"65508d70-2417dac\"",
+  "download_url_dl_duration": 3.812,
+  "download_url_dl_mbps": 9.468305773900164
+}

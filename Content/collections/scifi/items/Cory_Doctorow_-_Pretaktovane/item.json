@@ -1,0 +1,41 @@
+{
+  "id": "Cory_Doctorow_-_Pretaktovane",
+  "title": "Cory_Doctorow_-_Pretaktovane",
+  "creator": "Pavol Hvizdos",
+  "date": null,
+  "description": "Slovak translation of C. Doctorow's short stories collection \"Overclocked\"",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "doctorow",
+    "science fiction",
+    "overclocked"
+  ],
+  "downloads": 3853,
+  "item_size": 92548521,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "HTML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Word Document"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/Cory_Doctorow_-_Pretaktovane/Cory_Doctorow_-_Pretaktovane-sk.pdf",
+  "download_url_cached": "scifi/content/Cory_Doctorow_-_Pretaktovane_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T12:03:28.092Z",
+  "download_url_etag": "\"46763ab8-e709f\"",
+  "download_url_dl_duration": 0.672,
+  "download_url_dl_mbps": 1.342999083655221
+}

@@ -1,0 +1,48 @@
+{
+  "id": "DraftSupermanWeeklies",
+  "title": "Draft Superman Weeklies",
+  "creator": "Jerry Siegel; Joe Shuster",
+  "date": "1937-01-01T00:00:00Z",
+  "description": "Some experimental comic strips that Siegel and Schuster tried to sell to various comic syndicates. Develops much of the \"canon\" of the Superman legend",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_politics",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "science fiction",
+    "superman",
+    "comic books"
+  ],
+  "downloads": 2482,
+  "item_size": 10480993,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 9,
+  "favorite_sample": [
+    "adelaide_riverwood",
+    "anirudh_kharvi",
+    "dennis_mcnulty",
+    "hepup",
+    "heroinecomplex"
+  ],
+  "download_url": "https://archive.org/download/DraftSupermanWeeklies/Superman.epub",
+  "download_url_cached": "scifi/content/DraftSupermanWeeklies_epub.epub",
+  "download_url_timestamp": "2025-03-13T16:10:30.883Z",
+  "download_url_etag": "\"6564fe31-2b6876\"",
+  "download_url_dl_duration": 0.992,
+  "download_url_dl_mbps": 2.734882216299734
+}

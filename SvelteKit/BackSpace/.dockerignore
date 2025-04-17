@@ -1,0 +1,59 @@
+# Repository and version control
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Development artifacts
+node_modules/
+.svelte-kit/
+dist-scripts/
+**/node_modules/
+**/.DS_Store
+.vscode/
+.idea/
+*.sublime*
+
+# Build artifacts not needed in container
+# Note: build/ is excluded because we rebuild inside the container
+build/
+
+# Test files
+**/*.spec.js
+**/*.spec.ts
+**/*.test.js
+**/*.test.ts
+coverage/
+jest.config.js
+tests/
+
+# Documentation and notes
+*.md
+Notes/
+docs/
+README.md
+LICENSE
+
+# Unity project - not needed in Docker image
+Unity/
+!SvelteKit/BackSpace/static/Build/WebGL/
+
+# Local environment files
+.env*
+.npmrc
+.yarnrc
+*.local
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Editor backup files
+*~
+\#*\#
+.#* 

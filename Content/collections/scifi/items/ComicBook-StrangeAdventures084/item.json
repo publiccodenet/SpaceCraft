@@ -1,0 +1,51 @@
+{
+  "id": "ComicBook-StrangeAdventures084",
+  "title": "Comic Book - Strange Adventures #084",
+  "date": null,
+  "description": "This long-running comic had stories that blended SciFi, mystery, horror and the supernatural. In this issue \"Prisoners Of The Atom Universe\". Use CDisplay to read it. CDisplay is available on archive.org",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Mystery",
+    "Horror",
+    "Supernatural",
+    "Suspense",
+    "Thriller",
+    "Science Fiction"
+  ],
+  "downloads": 2518,
+  "item_size": 14197700,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Comic Book ZIP",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Unknown"
+  ],
+  "favorite_count": 21,
+  "favorite_sample": [
+    "bookduders",
+    "captainstarchaser",
+    "chet_ubetcha",
+    "clark_kent683",
+    "davidszo"
+  ],
+  "download_url": "https://archive.org/download/ComicBook-StrangeAdventures084/StrangeAdventures0841957-09.dcC2c.pdf",
+  "download_url_cached": "scifi/content/ComicBook-StrangeAdventures084_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T15:55:33.229Z",
+  "download_url_etag": "\"5482a39e-12bd2b\"",
+  "download_url_dl_duration": 0.9,
+  "download_url_dl_mbps": 1.3013150956895616
+}

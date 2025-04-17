@@ -1,0 +1,44 @@
+{
+  "id": "23ScienceFictionBooks-ArthurClarke",
+  "title": "23 SCIENCE FICTION BOOKS - ARTHUR CLARKE",
+  "creator": "ARTHUR C. CLARKE",
+  "date": null,
+  "description": "SCIENCE FICTION",
+  "mediatype": "texts",
+  "collection": [
+    "ArvindGupta",
+    "JaiGyan"
+  ],
+  "subject": "SCIENCE FICTION",
+  "downloads": 13860,
+  "item_size": 2243961310,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 41,
+  "favorite_sample": [
+    "alan_rogers",
+    "altairk",
+    "andreasfobes",
+    "aru13",
+    "bejoy_chandran"
+  ],
+  "download_url": "https://archive.org/download/23ScienceFictionBooks-ArthurClarke/ClarkeArthur-23ScienceFictionBooks.epub",
+  "download_url_cached": "scifi/content/23ScienceFictionBooks-ArthurClarke_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:26:54.064Z",
+  "download_url_etag": "\"654ed9a5-428f99aa\"",
+  "download_url_dl_duration": 123.984,
+  "download_url_dl_mbps": 8.589616528263798
+}

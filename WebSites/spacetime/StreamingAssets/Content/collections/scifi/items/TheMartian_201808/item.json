@@ -1,0 +1,50 @@
+{
+  "id": "TheMartian_201808",
+  "title": "The Martian",
+  "creator": "Andy Weir",
+  "date": null,
+  "description": "The Martian book",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_fiction",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "space",
+    "mars",
+    "technology",
+    "NASA",
+    "sci-fi",
+    "science fiction"
+  ],
+  "downloads": 36626,
+  "item_size": 541379469,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 136,
+  "favorite_sample": [
+    "0born",
+    "153316word-123",
+    "69arobot",
+    "_ol_wuch",
+    "abdelo3124"
+  ],
+  "download_url": "https://archive.org/download/TheMartian_201808/The%20Martian.epub",
+  "download_url_cached": "scifi/content/TheMartian_201808_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:35:02.988Z",
+  "download_url_etag": "\"654ba20b-1081ccc6\"",
+  "download_url_dl_duration": 13.573,
+  "download_url_dl_mbps": 19.458667465926077
+}

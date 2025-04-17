@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine10_TheReturnoftheStainlessSteelRat",
+  "title": "Ares Magazine 10 - The Return of the Stainless Steel Rat",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 8356,
+  "item_size": 86836703,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 16,
+  "favorite_sample": [
+    "artursz",
+    "doccovert",
+    "domolish",
+    "drkiwi",
+    "dynamicranger"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine10_TheReturnoftheStainlessSteelRat/Ares%20Magazine%2010%20-%20The%20Return%20of%20the%20Stainless%20Steel%20Rat.epub",
+  "download_url_cached": "scifi/content/AresMagazine10_TheReturnoftheStainlessSteelRat_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:00:41.657Z",
+  "download_url_etag": "\"65bc8802-8c6104\"",
+  "download_url_dl_duration": 2.286,
+  "download_url_dl_mbps": 3.8380076357490225
+}

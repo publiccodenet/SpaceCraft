@@ -1,0 +1,52 @@
+{
+  "id": "YellowMenOfMars",
+  "title": "Yellow Men of Mars",
+  "creator": "Edgar Rice Burroughs",
+  "date": null,
+  "description": "Science Fiction novella published August 1941 issue of Amazing Stories magazine. Blurb: \"Never had John Carter faced more danger than in the polar hothouse city of the yellow men of Mars.\"",
+  "mediatype": "texts",
+  "collection": [
+    "pulp_misc_sf",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 2420,
+  "item_size": 52132727,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 17,
+  "favorite_sample": [
+    "19omhs72",
+    "aya862001",
+    "bouncetiger",
+    "ghislaindavid",
+    "goodeve"
+  ],
+  "download_url": "https://archive.org/download/YellowMenOfMars/YellowMenOfMarsByEdgarRiceBurroughs1941.epub",
+  "download_url_cached": "scifi/content/YellowMenOfMars_epub.epub",
+  "download_url_timestamp": "2025-03-13T16:17:21.325Z",
+  "download_url_etag": "\"65fc329a-1ad6be\"",
+  "download_url_dl_duration": 0.77,
+  "download_url_dl_mbps": 2.1784770024287234
+}

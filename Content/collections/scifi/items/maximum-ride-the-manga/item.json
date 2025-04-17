@@ -1,0 +1,57 @@
+{
+  "id": "maximum-ride-the-manga",
+  "title": "Maximum Ride: The Manga",
+  "creator": "James Patterson and NaRae Lee",
+  "date": "2009-01-01T00:00:00Z",
+  "description": "Fourteen-year-old Maximum Ride knows what it's like to soar above the world. She and all the members of her 'flock' are just like ordinary kids, except they have wings and can fly! When the mysterious lab known as the 'School' turns up and kidnaps the Flock's youngest member, Max and the Flock organize a rescue. I heard Volume 10 is going to be released in 2022... We'll see.",
+  "mediatype": "texts",
+  "collection": [
+    "manga_unsorted",
+    "manga_library",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Manga",
+    "Action",
+    "Adventure",
+    "Sci-Fi",
+    "Science Fiction",
+    "Mutants",
+    "Heroine"
+  ],
+  "downloads": 5274,
+  "item_size": 3186506041,
+  "format": [
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "Comic Book ZIP",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 104,
+  "favorite_sample": [
+    "4wakish",
+    "aisha_venegas_hernandez",
+    "alexiabowerman",
+    "andrews_jackson",
+    "applestrawberry"
+  ],
+  "download_url": "https://archive.org/download/maximum-ride-the-manga/Maximum%20Ride%20-%20The%20Manga%20v01%20(2009)%20(Digital)%20(Mr.%20Kimiko).epub",
+  "download_url_cached": "scifi/content/maximum-ride-the-manga_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:38:54.175Z",
+  "download_url_etag": "\"65822850-20442\"",
+  "download_url_dl_duration": 0.289,
+  "download_url_dl_mbps": 0.43612285468817585
+}

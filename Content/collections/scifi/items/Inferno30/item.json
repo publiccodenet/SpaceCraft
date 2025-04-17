@@ -1,0 +1,47 @@
+{
+  "id": "Inferno30",
+  "title": "Inferno! Magazine",
+  "date": null,
+  "description": "Inferno! was a bi-monthly magazine published from 1997 to 2004 by Games Workshop's publishing division, Black Library, which was initially just the name of the team brought together to work on Inferno! It presented fiction, artwork, and comics set in the fictional universe's of Games Workshop's fantasy and science fiction games. These initially included Warhammer Fantasy Battle, Warhammer 40,000, and Necromunda, and later added the Mordheim and Gorkamorka settings. Inferno! was cancelled in November 2004 after publishing 46 issues.",
+  "mediatype": "texts",
+  "collection": [
+    "magazine_packs",
+    "magazine_rack"
+  ],
+  "subject": [
+    "Inferno!",
+    "Wargaming",
+    "Fantasy",
+    "Science Fiction"
+  ],
+  "downloads": 15895,
+  "item_size": 5400696719,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 92,
+  "favorite_sample": [
+    "aethylthryth",
+    "alexander_lansing",
+    "angelusirae",
+    "archlords",
+    "battlinjack"
+  ],
+  "download_url": "https://archive.org/download/Inferno30/Inferno%20%2301.epub",
+  "download_url_cached": "scifi/content/Inferno30_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:43:44.133Z",
+  "download_url_etag": "\"6565edf8-12017bc\"",
+  "download_url_dl_duration": 2.597,
+  "download_url_dl_mbps": 6.9333055545423505
+}

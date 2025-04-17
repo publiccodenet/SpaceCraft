@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine07_RescuefromtheHive",
+  "title": "Ares Magazine 07 - Rescue from the Hive",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 5829,
+  "item_size": 74576136,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 5,
+  "favorite_sample": [
+    "artursz",
+    "doccovert",
+    "drkiwi",
+    "gunnercoz",
+    "shortstack1981"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine07_RescuefromtheHive/Ares%20Magazine%2007%20-%20Rescue%20from%20the%20Hive.epub",
+  "download_url_cached": "scifi/content/AresMagazine07_RescuefromtheHive_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:18:47.222Z",
+  "download_url_etag": "\"65dd15c0-4081c0\"",
+  "download_url_dl_duration": 1.567,
+  "download_url_dl_mbps": 2.572863590359764
+}

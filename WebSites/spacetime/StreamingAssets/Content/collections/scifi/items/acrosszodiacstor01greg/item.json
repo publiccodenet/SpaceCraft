@@ -1,0 +1,65 @@
+{
+  "id": "acrosszodiacstor01greg",
+  "title": "Across the zodiac : the story of a wrecked record",
+  "creator": [
+    "Greg, Percy, 1836-1889",
+    "Ballantyne Press"
+  ],
+  "date": "1880-01-01T00:00:00Z",
+  "description": [
+    "Printed at the Ballantyne Press",
+    "Reginald, R. Science fiction"
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "dulutl",
+    "duke_libraries",
+    "americana"
+  ],
+  "subject": [
+    "Science fiction, English",
+    "Utopias"
+  ],
+  "downloads": 4660,
+  "item_size": 318944585,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Cloth Cover Detection Log",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "EPUB",
+    "Grayscale PDF",
+    "Item Tile",
+    "MARC",
+    "MARC Binary",
+    "MARC Source",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 15,
+  "favorite_sample": [
+    "altomentis",
+    "bouncetiger",
+    "ccojr",
+    "douglasamcintosh",
+    "elyaqim"
+  ],
+  "download_url": "https://archive.org/download/acrosszodiacstor01greg/acrosszodiacstor01greg.epub",
+  "download_url_cached": "scifi/content/acrosszodiacstor01greg_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:53:27.951Z",
+  "download_url_etag": "\"6679af9b-2f2c59\"",
+  "download_url_dl_duration": 1.387,
+  "download_url_dl_mbps": 2.12568641998137
+}

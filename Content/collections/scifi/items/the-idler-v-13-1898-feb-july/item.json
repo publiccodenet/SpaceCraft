@@ -1,0 +1,48 @@
+{
+  "id": "the-idler-v-13-1898-feb-july",
+  "title": "The Idler (Complete Series)",
+  "creator": "Jerome K. Jerome",
+  "date": "1892-01-01T00:00:00Z",
+  "description": "The Idler was one of the finest of the English illustrated magazines built on the model of The Strand . It featured an unusually large amount of science fiction, fantasy, and supernatural content, and is of considerable historical interest. This is a complete collection.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "English magazines",
+    "science fiction",
+    "supernatural"
+  ],
+  "downloads": 2246,
+  "item_size": 51412737138,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 13,
+  "favorite_sample": [
+    "abigail_stewart240",
+    "anne-white-star",
+    "crh123",
+    "erasergirl",
+    "galadrielredpill"
+  ],
+  "download_url": "https://archive.org/download/the-idler-v-13-1898-feb-july/The%20Idler%20v01%201892%20(Feb-July).pdf",
+  "download_url_cached": "scifi/content/the-idler-v-13-1898-feb-july_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T17:10:55.217Z",
+  "download_url_etag": "\"61708259-e0c3dc8\"",
+  "download_url_dl_duration": 73.392,
+  "download_url_dl_mbps": 3.062528386104593
+}

@@ -1,0 +1,48 @@
+{
+  "id": "WomenInScienceFictionAndFantasy",
+  "title": "Women in Science Fiction and Fantasy",
+  "date": null,
+  "description": "Two-volume reference book published in 2009 by Greenwood Press.",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_fiction",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci Fi",
+    "SF",
+    "Fantasy"
+  ],
+  "downloads": 19594,
+  "item_size": 566879854,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 25,
+  "favorite_sample": [
+    "0born",
+    "allenrhya",
+    "anbo31",
+    "antonela_di_massimo",
+    "dawinder_singh"
+  ],
+  "download_url": "https://archive.org/download/WomenInScienceFictionAndFantasy/WomenInScienceFictionAndFantasy2009.epub",
+  "download_url_cached": "scifi/content/WomenInScienceFictionAndFantasy_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:40:47.490Z",
+  "download_url_etag": "\"65e5fc22-160677\"",
+  "download_url_dl_duration": 1.395,
+  "download_url_dl_mbps": 0.9867945025044103
+}

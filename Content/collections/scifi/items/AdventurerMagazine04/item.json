@@ -1,0 +1,40 @@
+{
+  "id": "AdventurerMagazine04",
+  "title": "Adventurer Magazine",
+  "date": null,
+  "description": "Adventurer Magazine Subtitled \"The Superior Fantasy & Science Fiction Games Magazine\", this independent role-playing magazine published adventures and articles related to a number of different RPGs. The magazine was published from 1986 to 1987 by Mersey Leisure Publishing, lasting only 11 issues.",
+  "mediatype": "texts",
+  "collection": [
+    "magazine_packs",
+    "magazine_rack"
+  ],
+  "subject": "Pulp Magazine Fantasy Science Fiction Games",
+  "downloads": 7988,
+  "item_size": 1182390224,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 71,
+  "favorite_sample": [
+    "adam_thomson160",
+    "allosaur",
+    "amandakay",
+    "anita_morgan",
+    "batawampus"
+  ],
+  "download_url": "https://archive.org/download/AdventurerMagazine04/Adventurer%20Magazine%2001.pdf",
+  "download_url_cached": "scifi/content/AdventurerMagazine04_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T10:03:25.729Z",
+  "download_url_etag": "\"5a6fd8bc-1137c3b\"",
+  "download_url_dl_duration": 3.149,
+  "download_url_dl_mbps": 5.467713465952578
+}

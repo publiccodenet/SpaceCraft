@@ -1,0 +1,49 @@
+{
+  "id": "book-all-tomorrows_202109",
+  "title": "Book of All Tomorrows",
+  "creator": "C.M.Kosemen",
+  "date": "2006-01-01T00:00:00Z",
+  "description": "All Tomorrows: A Billion Year Chronicle of the Myriad Species and Mixed Fortunes of Man is a 2006 work of speculative evolution in science fiction format written and illustrated by the Turkish artist C. M. Kosemen under the pen name Nemo Ramjet.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "speculative evolution",
+    "science fiction",
+    "art"
+  ],
+  "downloads": 2806,
+  "item_size": 106552002,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 36,
+  "favorite_sample": [
+    "altgaming",
+    "awesome_cool",
+    "benjuller40",
+    "boneheadellie",
+    "buzzleooh"
+  ],
+  "download_url": "https://archive.org/download/book-all-tomorrows_202109/book%20all%20tomorrows.epub",
+  "download_url_cached": "scifi/content/book-all-tomorrows_202109_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:47:16.026Z",
+  "download_url_etag": "\"654b72fd-192fc\"",
+  "download_url_dl_duration": 0.273,
+  "download_url_dl_mbps": 0.3603840922261332
+}

@@ -1,0 +1,63 @@
+{
+  "id": "dhalgren00samu",
+  "title": "Dhalgren",
+  "creator": "Delany, Samuel R",
+  "date": "1975-01-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "delawarecountydistrictlibrary",
+    "americana",
+    "inlibrary",
+    "printdisabled",
+    "bostonuniversitylibraries-ol",
+    "library_of_atlantis",
+    "openlibrary-d-ol",
+    "uni-ol"
+  ],
+  "subject": [
+    "Science Fiction - General",
+    "Fiction - Science Fiction"
+  ],
+  "downloads": 2264,
+  "item_size": 1673724820,
+  "format": [
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Animated GIF",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item Tile",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "MARC",
+    "MARC Binary",
+    "MARC Source",
+    "Metadata",
+    "Metadata Log",
+    "OCLC xISBN JSON",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "WARC CDX Index",
+    "Web ARChive GZ",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 45,
+  "favorite_sample": [
+    "agrig",
+    "april_follies",
+    "arctorus",
+    "bakdur",
+    "boewjr"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "MysteryInSpaceTheMartianHorse",
+  "title": "Mystery in Space: The Martian Horse",
+  "creator": "DC Comics",
+  "date": null,
+  "description": "Mystery in Space #9 (Aug-Sept 1952, DC)",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Comics",
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Fantasy",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 2223,
+  "item_size": 7680725,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Unknown"
+  ],
+  "favorite_count": 22,
+  "favorite_sample": [
+    "austin_proctor",
+    "chet_ubetcha",
+    "davidszo",
+    "fianna_fajohn",
+    "fromthepointedhill"
+  ],
+  "download_url": "https://archive.org/download/MysteryInSpaceTheMartianHorse/MysteryInSpace-TheMartianHorsedc1951.epub",
+  "download_url_cached": "scifi/content/MysteryInSpaceTheMartianHorse_epub.epub",
+  "download_url_timestamp": "2025-03-13T17:13:14.918Z",
+  "download_url_etag": "\"6633719c-146ae8\"",
+  "download_url_dl_duration": 1.248,
+  "download_url_dl_mbps": 1.0225161527976012
+}

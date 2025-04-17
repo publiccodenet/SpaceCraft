@@ -1,0 +1,53 @@
+{
+  "id": "frankensteinorth41445gut",
+  "title": "Frankenstein; Or, The Modern Prometheus",
+  "creator": "Mary Wollstonecraft Shelley",
+  "date": null,
+  "description": "Book from Project Gutenberg: Frankenstein; Or, The Modern Prometheus",
+  "mediatype": "texts",
+  "collection": [
+    "gutenberg"
+  ],
+  "subject": [
+    "Precursors of Science Fiction",
+    "Science Fiction by Women",
+    "PR",
+    "Frankenstein's monster (Fictitious character) -- Fiction",
+    "Scientists -- Fiction",
+    "Horror tales",
+    "Monsters -- Fiction",
+    "Gothic fiction (Literary genre)",
+    "Science fiction",
+    "Frankenstein, Victor (Fictitious character) -- Fiction"
+  ],
+  "downloads": 3206,
+  "item_size": 86475785,
+  "format": [
+    "Archive BitTorrent",
+    "EPUB",
+    "HTML",
+    "Item Tile",
+    "JPEG",
+    "Log",
+    "MOBI",
+    "Metadata",
+    "PNG",
+    "Text",
+    "Unknown",
+    "ZIP"
+  ],
+  "favorite_count": 7,
+  "favorite_sample": [
+    "benderbrodriguez",
+    "davie_forbes",
+    "leejns34",
+    "norimori",
+    "rachel_moloney"
+  ],
+  "download_url": "https://archive.org/download/frankensteinorth41445gut/pg41445-images.epub",
+  "download_url_cached": "scifi/content/frankensteinorth41445gut_epub.epub",
+  "download_url_timestamp": "2025-03-13T13:48:19.712Z",
+  "download_url_etag": "\"5b5e6b29-3fc64\"",
+  "download_url_dl_duration": 0.418,
+  "download_url_dl_mbps": 0.5959780022288054
+}

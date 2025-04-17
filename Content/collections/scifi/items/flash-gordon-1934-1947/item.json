@@ -1,0 +1,54 @@
+{
+  "id": "flash-gordon-1934-1947",
+  "title": "Flash Gordon 1934-1947",
+  "creator": "Alex Raymond",
+  "date": "1934-01-01T00:00:00Z",
+  "description": "A large collection of the Flash Gordon color strips that I picked up many years ago from a now-defunct blog. Thanks to whomever compiled them.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource"
+  ],
+  "subject": [
+    "Flash Gordon",
+    "Alex Raymond",
+    "Newspaper",
+    "Comics",
+    "Comic Strips",
+    "Science Fiction",
+    "Outer Space",
+    "Adventure"
+  ],
+  "downloads": 4386,
+  "item_size": 1409894612,
+  "format": [
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 42,
+  "favorite_sample": [
+    "4x2",
+    "amit_yadav623",
+    "andrew_cooke",
+    "artguy55",
+    "babelfish2324"
+  ],
+  "download_url": "https://archive.org/download/flash-gordon-1934-1947/Flash%20Gordon%20S001%20-%20On%20Mongo%20(07%20Jan%201934%20-%2008%20Apr%201934).epub",
+  "download_url_cached": "scifi/content/flash-gordon-1934-1947_epub.epub",
+  "download_url_timestamp": "2025-03-13T11:14:03.394Z",
+  "download_url_etag": "\"65653c90-554bea\"",
+  "download_url_dl_duration": 1.364,
+  "download_url_dl_mbps": 3.908382482892257
+}

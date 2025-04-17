@@ -1,0 +1,54 @@
+{
+  "id": "R.U.R.",
+  "title": "R. U. R. (& Activity)",
+  "creator": "Čapek, Karel (1890-1938)",
+  "date": null,
+  "description": "Rossum's Universal Robots: the story of a factory where they make artificial people. But the robots can think for themselves and after a while begin to conspire against their masters.  Suggested Level: US (Upper Secondary)",
+  "mediatype": "texts",
+  "collection": [
+    "bell_literature",
+    "bell",
+    "additional_collections"
+  ],
+  "subject": [
+    "LIT",
+    "US",
+    "LIT.US",
+    "Drama (Long)",
+    "Robots--Drama",
+    "Czech drama--20th century",
+    "Science Fiction",
+    "Games and activities--(Secondary)"
+  ],
+  "downloads": 6138,
+  "item_size": 36903529,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 6,
+  "favorite_sample": [
+    "data_hoarder_956",
+    "miki1975",
+    "njgriffin",
+    "ponybraddock",
+    "pyjamakama"
+  ],
+  "download_url": "https://archive.org/download/R.U.R./DesignYourOwnRobot.pdf",
+  "download_url_cached": "scifi/content/R.U.R._text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T10:15:59.307Z",
+  "download_url_etag": "\"52386e1a-9ee65\"",
+  "download_url_dl_duration": 0.614,
+  "download_url_dl_mbps": 1.0109149671921125
+}

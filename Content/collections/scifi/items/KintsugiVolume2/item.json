@@ -1,0 +1,55 @@
+{
+  "id": "KintsugiVolume2",
+  "title": "Kintsugi Magazine",
+  "creator": "Erdal Ozdemir",
+  "date": "2017-09-28T00:00:00Z",
+  "description": "Volume 2 - September 2017 Kintsugi Magazine  borrows its name from the Japanese art of repairing broken pottery to give it a new lease of life. The philosophy behind this has its roots in the Wabi-Sabi tradition, which sees existence as  imperfect, incomplete and impermanent; instilling a sense of appreciation, acceptance and harmony in the way we live and interact with nature and people. Our mission is to bring people together. At Kintsugi, we celebrate the diversity of people and ideas.  The Kintsugi magazine covers a diverse set of themes and ideas. We celebrate the value of goodness and and the broken lines in each one of us, akin to repaired pottery. We believe that everyone has a stake in the world and everyone matters. Kintsugi is a project organised and put together through social media, mainly the Mastodon network. The contributors have not met in person or face to face. Our aim here was to show that people can do good and put together something unique and different. We want to encourage others to come forward and do the same.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Kintsugi",
+    "magazine",
+    "free",
+    "culture",
+    "art",
+    "photography",
+    "fiction",
+    "science fiction",
+    "erdal ozdemir",
+    "current affairs"
+  ],
+  "downloads": 31778,
+  "item_size": 117964370,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "JPEG Thumb",
+    "MOBI",
+    "Metadata",
+    "PNG",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Unknown"
+  ],
+  "favorite_count": 5,
+  "favorite_sample": [
+    "artursz",
+    "blacgurl",
+    "ns_13",
+    "samannecarrillo",
+    "zvarde"
+  ],
+  "download_url": "https://archive.org/download/KintsugiVolume2/KINTSUGI-Generic.epub",
+  "download_url_cached": "scifi/content/KintsugiVolume2_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:36:18.991Z",
+  "download_url_etag": "\"59cd4a61-3f2470\"",
+  "download_url_dl_duration": 1.131,
+  "download_url_dl_mbps": 3.489297855016302
+}

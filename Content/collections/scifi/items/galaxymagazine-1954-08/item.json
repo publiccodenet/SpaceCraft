@@ -1,0 +1,61 @@
+{
+  "id": "galaxymagazine-1954-08",
+  "title": "Galaxy Magazine (August 1954)",
+  "date": "1954-08-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "galaxymagazine",
+    "magazine_rack",
+    "additional_collections",
+    "pulpmagazinearchive"
+  ],
+  "subject": [
+    "mundin",
+    "galaxy",
+    "fiction",
+    "science",
+    "dirk",
+    "amelia",
+    "ethan",
+    "coett",
+    "lavin",
+    "science fiction",
+    "galaxy science",
+    "impossible voyage",
+    "belly rave",
+    "young man",
+    "subsistence level",
+    "outlying patrol",
+    "osborne blatch",
+    "control room",
+    "colonel faust"
+  ],
+  "downloads": 3800,
+  "item_size": 209762194,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 2,
+  "favorite_sample": [
+    "mark_raven",
+    "wazzock_wizard"
+  ],
+  "download_url": "https://archive.org/download/galaxymagazine-1954-08/Galaxy_1954_08.pdf",
+  "download_url_cached": "scifi/content/galaxymagazine-1954-08_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T12:15:00.925Z",
+  "download_url_etag": "\"4efacd82-50e3c44\"",
+  "download_url_dl_duration": 11.621,
+  "download_url_dl_mbps": 6.960649968793866
+}

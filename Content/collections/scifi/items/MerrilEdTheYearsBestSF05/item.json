@@ -1,0 +1,44 @@
+{
+  "id": "MerrilEdTheYearsBestSF05",
+  "title": "Merril Ed The Year's Best SF 05",
+  "date": null,
+  "description": "The Year's Best Science Fiction edited by Judith Merril",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Science fiction anthology - Science fiction stories",
+    "America - Judith Merril"
+  ],
+  "downloads": 5486,
+  "item_size": 2252737993,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 8,
+  "favorite_sample": [
+    "don_lickley",
+    "fugitiveink",
+    "irohamca",
+    "picture_engine",
+    "stardust_me"
+  ],
+  "download_url": "https://archive.org/download/MerrilEdTheYearsBestSF05/Merril_ed%20-%20SF12.epub",
+  "download_url_cached": "scifi/content/MerrilEdTheYearsBestSF05_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:37:16.589Z",
+  "download_url_etag": "\"663cc1b9-2df7846\"",
+  "download_url_dl_duration": 3.384,
+  "download_url_dl_mbps": 13.583588543794962
+}

@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine13_DamoclesMissionFirstContact",
+  "title": "Ares Magazine 13 - Damocles Mission, First Contact",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 6376,
+  "item_size": 611821986,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 11,
+  "favorite_sample": [
+    "alxalx",
+    "artursz",
+    "bear1701",
+    "brian_mclain",
+    "drkiwi"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine13_DamoclesMissionFirstContact/Ares%20Magazine%2013%20-%20Damocles%20Mission%2C%20First%20Contact.epub",
+  "download_url_cached": "scifi/content/AresMagazine13_DamoclesMissionFirstContact_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:12:00.146Z",
+  "download_url_etag": "\"65dd12f4-b8fa406\"",
+  "download_url_dl_duration": 22.653,
+  "download_url_dl_mbps": 8.165697469851494
+}

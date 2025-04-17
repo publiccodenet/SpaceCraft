@@ -1,0 +1,55 @@
+{
+  "id": "ost-english-brave_new_world_aldous_huxley",
+  "title": "Brave New World",
+  "creator": "Aldous Huxley",
+  "date": "1932-01-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "opensource_textbooks",
+    "additional_collections"
+  ],
+  "subject": [
+    "dystopia",
+    "social criticism",
+    "classic",
+    "english language",
+    "fiction",
+    "science fiction",
+    "novel",
+    "english"
+  ],
+  "downloads": 380467,
+  "item_size": 123143091,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 238,
+  "favorite_sample": [
+    "_ami94",
+    "a-good-for-nothing",
+    "abadan12",
+    "abdelmonem_ibrahim",
+    "abesim"
+  ],
+  "download_url": "https://archive.org/download/ost-english-brave_new_world_aldous_huxley/Brave_New_World_Aldous_Huxley.epub",
+  "download_url_cached": "scifi/content/ost-english-brave_new_world_aldous_huxley_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:32:18.390Z",
+  "download_url_etag": "\"654afa8a-420f1\"",
+  "download_url_dl_duration": 0.443,
+  "download_url_dl_mbps": 0.5824883420096025
+}

@@ -1,0 +1,56 @@
+{
+  "id": "L.Istituto.Stephen.King",
+  "title": "L'istituto",
+  "creator": "Stephen King",
+  "date": "2019-09-10T00:00:00Z",
+  "description": "È notte fonda a Minneapolis, quando un misterioso gruppo di persone si introduce in casa di Luke Ellis, uccide i suoi genitori e lo porta via in un SUV nero. Bastano due minuti, sprofondati nel silenzio irreale di una tranquilla strada di periferia, per sconvolgere la vita di Luke, per sempre. Quando si sveglia, il ragazzo si trova in una camera del tutto simile alla sua, ma senza finestre, nel famigerato Istituto dove sono rinchiusi altri bambini come lui. Dietro porte tutte uguali, lungo corridoi illuminati da luci spettrali, si trovano piccoli geni con poteri speciali (telepatia e telecinesi). Appena arrivati, sono destinati alla Prima Casa, dove Luke trova infatti i compagni Kalisha, Nick, George, Iris e Avery Dixon, che ha solo dieci anni. Poi, qualcuno finisce nella Seconda Casa. «È come il motel di un film dell'orrore», dice Kalisha. «Chi prende una stanza non ne esce più». Sono le regole della feroce signora Sigsby, direttrice dell'Istituto, convinta di poter estrarre i loro doni: con qualunque mezzo, a qualunque costo. Chi non si adegua subisce punizioni implacabili. E così, uno alla volta, i compagni di Luke spariscono, mentre lui cerca disperatamente una via d'uscita. Solo che nessuno, finora, è mai riuscito a evadere dall'Istituto.",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_fiction",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Horror",
+    "Fiction",
+    "Thriller",
+    "Science Fiction",
+    "Fantasy",
+    "Mystery",
+    "Paranormal",
+    "Mystery Thriller",
+    "Adult"
+  ],
+  "downloads": 2100,
+  "item_size": 392975652,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 5,
+  "favorite_sample": [
+    "alyssa_dewar",
+    "ama_liaa",
+    "byronfreyjus",
+    "julio_perez941",
+    "tsila288"
+  ],
+  "download_url": "https://archive.org/download/L.Istituto.Stephen.King/L'istituto%20-%20Stephen%20King.epub",
+  "download_url_cached": "scifi/content/L.Istituto.Stephen.King_epub.epub",
+  "download_url_timestamp": "2025-03-13T17:39:47.103Z",
+  "download_url_etag": "\"63162737-f4b1f\"",
+  "download_url_dl_duration": 1.788,
+  "download_url_dl_mbps": 0.5345861917107431
+}

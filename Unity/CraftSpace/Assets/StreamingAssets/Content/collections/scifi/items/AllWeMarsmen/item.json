@@ -1,0 +1,53 @@
+{
+  "id": "AllWeMarsmen",
+  "title": "All We Marsmen",
+  "creator": "Philip K. Dick",
+  "date": null,
+  "description": "Science Fiction serial novel published in the August, October and December 1963 issues of Worlds of Tomorrow magazine.",
+  "mediatype": "texts",
+  "collection": [
+    "pulp_misc_sf",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 3407,
+  "item_size": 331772588,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 14,
+  "favorite_sample": [
+    "allison5668",
+    "artie_dregs",
+    "greengoth",
+    "irohamca",
+    "jennilein"
+  ],
+  "download_url": "https://archive.org/download/AllWeMarsmen/AllWeMarsmenByPkd1963.epub",
+  "download_url_cached": "scifi/content/AllWeMarsmen_epub.epub",
+  "download_url_timestamp": "2025-03-13T13:19:04.934Z",
+  "download_url_etag": "\"65565dd2-f41c2d\"",
+  "download_url_dl_duration": 1.606,
+  "download_url_dl_mbps": 9.499924565905502
+}

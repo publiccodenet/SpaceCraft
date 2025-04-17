@@ -1,0 +1,45 @@
+{
+  "id": "TheAdventure-JayantNarlikar",
+  "title": "THE ADVENTURE - JAYANT NARLIKAR",
+  "creator": "JAYANT NARLIKAR",
+  "date": null,
+  "description": "SCIENCE FICTION, ENGLISH, THE ADVENTURE, JAYANT NARLIKAR",
+  "mediatype": "texts",
+  "collection": [
+    "ArvindGupta",
+    "JaiGyan"
+  ],
+  "subject": [
+    "SCIENCE FICTION",
+    "ENGLISH",
+    "THE ADVENTURE",
+    "JAYANT NARLIKAR"
+  ],
+  "downloads": 23550,
+  "item_size": 23084721,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 2,
+  "favorite_sample": [
+    "bejoy_chandran",
+    "nonfxnl"
+  ],
+  "download_url": "https://archive.org/download/TheAdventure-JayantNarlikar/narlikar-adventure.epub",
+  "download_url_cached": "scifi/content/TheAdventure-JayantNarlikar_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:38:37.551Z",
+  "download_url_etag": "\"654ce756-aa8735\"",
+  "download_url_dl_duration": 15.415,
+  "download_url_dl_mbps": 0.6914050943310912
+}

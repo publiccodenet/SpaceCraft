@@ -1,0 +1,48 @@
+{
+  "id": "controrealta",
+  "title": "Controrealtà",
+  "creator": "AA.VV",
+  "date": "2010-01-01T00:00:00Z",
+  "description": "Milano 2010",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_miscellaneous",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Fantascienza",
+    "Science Fiction",
+    "SF"
+  ],
+  "downloads": 3498,
+  "item_size": 1011200686,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 6,
+  "favorite_sample": [
+    "a_lesilio",
+    "carthorse",
+    "francesco_verde",
+    "nicola_calanducci",
+    "uomovariabile"
+  ],
+  "download_url": "https://archive.org/download/controrealta/Controrealt%C3%A0.epub",
+  "download_url_cached": "scifi/content/controrealta_epub.epub",
+  "download_url_timestamp": "2025-03-13T13:10:14.445Z",
+  "download_url_etag": "\"654cef73-12c86177\"",
+  "download_url_dl_duration": 44.047,
+  "download_url_dl_mbps": 6.822798263851538
+}

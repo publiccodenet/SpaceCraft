@@ -1,0 +1,63 @@
+{
+  "id": "completestories01asim",
+  "title": "The complete stories",
+  "creator": "Asimov, Isaac, 1920-1992",
+  "date": "1990-01-01T00:00:00Z",
+  "description": [
+    "v. ; 24 cm",
+    "\"A Foundation book.\""
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "americana",
+    "printdisabled",
+    "bostonuniversitylibraries-ol",
+    "cnusd-ol",
+    "gwulibraries-ol",
+    "johnshopkins-ol",
+    "randolph-macon-college-ol",
+    "spokanepubliclibrary-ol",
+    "unb-ol",
+    "universityofarizona-ol",
+    "universityofcoloradoboulder-ol",
+    "worthingtonlibraries-ol"
+  ],
+  "subject": "Science fiction, American",
+  "downloads": 2280,
+  "item_size": 830058710,
+  "format": [
+    "ACS Encrypted PDF",
+    "Animated GIF",
+    "Cloth Cover Detection Log",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item Tile",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "MARC",
+    "MARC Source",
+    "Metadata",
+    "Metadata Log",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 52,
+  "favorite_sample": [
+    "aldoran3484",
+    "aloversdiscourse",
+    "anita_morgan",
+    "antong77",
+    "avaddon1982"
+  ]
+}

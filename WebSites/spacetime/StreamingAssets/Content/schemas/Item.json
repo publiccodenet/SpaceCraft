@@ -1,0 +1,109 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for the item",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrNullToStringConverter"
+      }
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the item",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrNullToStringConverter"
+      }
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Description of the item",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrArrayOrNullToStringConverter"
+      }
+    },
+    "creator": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Creator/author of the item (string or array)",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrArrayOrNullToStringConverter"
+      }
+    },
+    "subject": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Subject tags for this item.",
+      "x_meta": {
+        "UnitySchemaConverter": "StringArrayOrNullToStringArrayConverter"
+      }
+    },
+    "collection": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Collections this item belongs to.",
+      "x_meta": {
+        "UnitySchemaConverter": "StringArrayOrNullToStringArrayConverter"
+      }
+    },
+    "mediatype": {
+      "type": "string",
+      "description": "Type of media (texts, movies, audio, etc).",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrNullToStringConverter"
+      }
+    },
+    "coverImage": {
+      "type": "string",
+      "description": "URL or path to the cover image.",
+      "x_meta": {
+        "UnitySchemaConverter": "StringOrNullToStringConverter"
+      }
+    }
+  },
+  "required": [
+    "id"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Item",
+  "description": "Schema for Item"
+}

@@ -1,0 +1,50 @@
+{
+  "id": "jeffhawke",
+  "title": "Jeff Hawke",
+  "creator": "Sydney Jordan",
+  "date": "1982-01-01T00:00:00Z",
+  "description": "Sydney Jordan, Milano Libri Edizioni, Milano 1982",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Fantascienza",
+    "SF",
+    "Science Fiction",
+    "Fumetto",
+    "Comics"
+  ],
+  "downloads": 2823,
+  "item_size": 587830920,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 20,
+  "favorite_sample": [
+    "alexo000",
+    "bobbello",
+    "boydsipe",
+    "diomaligno",
+    "dougall1991"
+  ],
+  "download_url": "https://archive.org/download/jeffhawke/Jeff%20Hawke.epub",
+  "download_url_cached": "scifi/content/jeffhawke_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:45:34.061Z",
+  "download_url_etag": "\"6563b37d-95ba179\"",
+  "download_url_dl_duration": 302.153,
+  "download_url_dl_mbps": 0.4955334616410139
+}

@@ -1,0 +1,51 @@
+{
+  "id": "TheMartianWay",
+  "title": "The Martian Way",
+  "creator": "Isaac Asimov",
+  "date": null,
+  "description": "Novella published in Galaxy Science Fiction (November 1952). Blurb: \"It was junk they hunted, but enormously valuable and urgently needed junk that cost only bravery and the cheapest fuel ... yet they were kept from collecting it by an even cheaper lie!\"",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 8126,
+  "item_size": 31792123,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 13,
+  "favorite_sample": [
+    "ajacks01",
+    "ayin007",
+    "coelho99",
+    "grainofrice",
+    "jdlin"
+  ],
+  "download_url": "https://archive.org/download/TheMartianWay/MartianWayByIsaacAsimov1950s.epub",
+  "download_url_cached": "scifi/content/TheMartianWay_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:01:01.366Z",
+  "download_url_etag": "\"654f2851-12c91e\"",
+  "download_url_dl_duration": 0.697,
+  "download_url_dl_mbps": 1.6845062781269617
+}

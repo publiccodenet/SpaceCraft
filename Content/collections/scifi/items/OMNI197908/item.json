@@ -1,0 +1,45 @@
+{
+  "id": "OMNI197908",
+  "title": "OMNI Magazine Collection",
+  "date": null,
+  "description": "Omni was a science and science fiction magazine published in the US and the UK. It contained articles on science, parapsychology, and short works of science fiction and fantasy.  It was published as a print version between October 1978 and 1995.",
+  "mediatype": "texts",
+  "collection": [
+    "magazine_packs",
+    "magazine_rack"
+  ],
+  "subject": [
+    "Omni",
+    "Science Fiction",
+    "Magazine",
+    "Science"
+  ],
+  "downloads": 34380,
+  "item_size": 4379934876,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 356,
+  "favorite_sample": [
+    "69ad",
+    "a_new_word",
+    "adiazpaz",
+    "adrien_wittersheim",
+    "agentamber"
+  ],
+  "download_url": "https://archive.org/download/OMNI197908/Best_of_OMNI_1_1980.epub",
+  "download_url_cached": "scifi/content/OMNI197908_epub.epub",
+  "download_url_timestamp": "2025-03-13T08:36:06.642Z",
+  "download_url_etag": "\"657f072c-28a3d87\"",
+  "download_url_dl_duration": 56.382,
+  "download_url_dl_mbps": 0.7207977958241587
+}

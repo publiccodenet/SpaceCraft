@@ -1,0 +1,54 @@
+{
+  "id": "RoundTrip_199",
+  "title": "Round Trip",
+  "creator": "EC Comics",
+  "date": null,
+  "description": "Weird Science-Fantasy No. 28 (March/April 1955, EC Comics)",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Comics",
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 3946,
+  "item_size": 12905116,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Unknown"
+  ],
+  "favorite_count": 32,
+  "favorite_sample": [
+    "amitkskj",
+    "archive777son",
+    "barovian_ghost",
+    "bookduders",
+    "bookklover"
+  ],
+  "download_url": "https://archive.org/download/RoundTrip_199/RoundTrip1955.epub",
+  "download_url_cached": "scifi/content/RoundTrip_199_epub.epub",
+  "download_url_timestamp": "2025-03-13T11:48:05.126Z",
+  "download_url_etag": "\"6688a378-265193\"",
+  "download_url_dl_duration": 0.874,
+  "download_url_dl_mbps": 2.740178010010883
+}

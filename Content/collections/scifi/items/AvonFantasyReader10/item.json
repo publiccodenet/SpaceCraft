@@ -1,0 +1,61 @@
+{
+  "id": "AvonFantasyReader10",
+  "title": "Avon Fantasy Reader 10",
+  "creator": [
+    "Wollheim, Donald Allen, 1914-1990",
+    "Howard, Robert Ervin, 1906-1936",
+    "Morgan, Grace Jones, 1885-1977",
+    "Lovecraft, Howard Phillips, 1890-1937",
+    "Weiss, George Henry, 1898-1946",
+    "Jameson, Malcolm Routh, 1891-1945",
+    "Breuer, Miles John, 1889-1945",
+    "Long, Amelia Reynolds, 1904-1978"
+  ],
+  "date": "1949-01-01T00:00:00Z",
+  "description": "A scanned copy of the magazine \"Avon Fantasy Reader\" issue 10. Published by Avon Novels, Inc. in 1949. Edited by Donald A. Wollheim. Periodical copyright not renewed; contributions' copyrights not renewed. This publication is now in the public domain. Featuring: A Witch Shall Be Born by Robert E. Howard; Bimini by Bassett Morgan (aka Grace Jones Morgan); The Statement of Randolph Carter by H. P. Lovecraft; The Mentanicals by Francis Flagg (aka George Weiss); Vengeance in Her Bones by Malcolm Jameson; The Gostak and the Doshes by Miles J. Breuer, M.D.; Storm Warning by Millard Verne Gordon (aka Donald A. Wollheim); and Omega by Amelia Reynolds Long.",
+  "mediatype": "texts",
+  "collection": [
+    "pulp_misc_fantasy",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "pulp",
+    "pulps",
+    "pulp magazine",
+    "science fiction",
+    "fantasy"
+  ],
+  "downloads": 4001,
+  "item_size": 345591809,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Generic Raw Book Zip",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Original JPEG Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 26,
+  "favorite_sample": [
+    "alpha_beta_mu",
+    "anita_morgan",
+    "arty93",
+    "bee_sea",
+    "captainstarchaser"
+  ],
+  "download_url": "https://archive.org/download/AvonFantasyReader10/AvonFantasyReader10.epub",
+  "download_url_cached": "scifi/content/AvonFantasyReader10_epub.epub",
+  "download_url_timestamp": "2025-03-13T11:47:38.761Z",
+  "download_url_etag": "\"65ad8353-90f28\"",
+  "download_url_dl_duration": 0.579,
+  "download_url_dl_mbps": 0.9778933615676274
+}

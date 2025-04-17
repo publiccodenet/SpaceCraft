@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine08_Ragnarok",
+  "title": "Ares Magazine 08 - Ragnarok",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 6138,
+  "item_size": 94189705,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 10,
+  "favorite_sample": [
+    "artursz",
+    "drkiwi",
+    "elvmann",
+    "ghislaindavid",
+    "gustavetu"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine08_Ragnarok/Ares%20Magazine%2008%20-%20Ragnarok.epub",
+  "download_url_cached": "scifi/content/AresMagazine08_Ragnarok_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:15:57.036Z",
+  "download_url_etag": "\"65dd147e-49e9d2\"",
+  "download_url_dl_duration": 1.137,
+  "download_url_dl_mbps": 4.062959575401447
+}

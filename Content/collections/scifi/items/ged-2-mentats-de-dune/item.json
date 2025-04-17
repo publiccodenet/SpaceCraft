@@ -1,0 +1,51 @@
+{
+  "id": "ged-2-mentats-de-dune",
+  "title": "Mentats de Dune",
+  "creator": "Brian Herbert,Kevin J. Anderson",
+  "date": "2014-01-01T00:00:00Z",
+  "description": "En esta apasionante extensión del universo Dune, los Mentats, los Navegantes y la Hermandad deben enfrentar cada uno destructivos brotes del fanatismo Butleriano. MENTATS DE DUNE es majestuoso, lleno de acción, y digno de sus clásicos predecesores.",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_fiction",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Libros",
+    "Books",
+    "Dune",
+    "Science Fiction"
+  ],
+  "downloads": 2384,
+  "item_size": 315333732,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 8,
+  "favorite_sample": [
+    "andrew_jaden",
+    "blackcandy589",
+    "estherm1955",
+    "forouzanfar",
+    "jocelyn_vila_hern_ndez"
+  ],
+  "download_url": "https://archive.org/download/ged-2-mentats-de-dune/GED2%20Mentats%20de%20Dune.epub",
+  "download_url_cached": "scifi/content/ged-2-mentats-de-dune_epub.epub",
+  "download_url_timestamp": "2025-03-13T16:22:43.031Z",
+  "download_url_etag": "\"65519cbf-b33e1\"",
+  "download_url_dl_duration": 0.555,
+  "download_url_dl_mbps": 1.261559907380525
+}

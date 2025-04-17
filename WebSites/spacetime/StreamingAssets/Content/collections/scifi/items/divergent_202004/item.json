@@ -1,0 +1,45 @@
+{
+  "id": "divergent_202004",
+  "title": "Divergent",
+  "date": null,
+  "description": "The book is first installment in Divergent series written by Veronica Roth.",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_fiction",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Adult",
+    "Science Fiction"
+  ],
+  "downloads": 3608,
+  "item_size": 312999590,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 59,
+  "favorite_sample": [
+    "243790475823",
+    "aanchal_m750",
+    "aferr630",
+    "alecia_giles",
+    "alicjaab"
+  ],
+  "download_url": "https://archive.org/download/divergent_202004/Divergent.epub",
+  "download_url_cached": "scifi/content/divergent_202004_epub.epub",
+  "download_url_timestamp": "2025-03-13T12:44:14.122Z",
+  "download_url_etag": "\"6563a7b6-8492fda\"",
+  "download_url_dl_duration": 168.236,
+  "download_url_dl_mbps": 0.7880250511803418
+}

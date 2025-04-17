@@ -1,0 +1,50 @@
+{
+  "id": "AresMagazine04_ArenaofDeath",
+  "title": "Ares Magazine 04 - Arena of Death",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 6056,
+  "item_size": 88694048,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 10,
+  "favorite_sample": [
+    "artursz",
+    "drkiwi",
+    "ghislaindavid",
+    "opal_curtain",
+    "polarcow"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine04_ArenaofDeath/Ares%20Magazine%2004%20-%20Arena%20of%20Death.epub",
+  "download_url_cached": "scifi/content/AresMagazine04_ArenaofDeath_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:16:59.109Z",
+  "download_url_etag": "\"65dd1583-902824\"",
+  "download_url_dl_duration": 2.451,
+  "download_url_dl_mbps": 3.675968974816561
+}

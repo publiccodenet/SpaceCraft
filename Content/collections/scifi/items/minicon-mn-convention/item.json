@@ -1,0 +1,42 @@
+{
+  "id": "minicon-mn-convention",
+  "title": "Minicon (MN)",
+  "creator": "Minicon (MN)",
+  "date": "1968-01-01T00:00:00Z",
+  "description": "Science fiction convention held from 1968. See Wikipedia ; Wikidata ; SFcentral ; Fancyclopedia",
+  "mediatype": "texts",
+  "collection": [
+    "science-fiction-conventions",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Convention"
+  ],
+  "downloads": 3242,
+  "item_size": 2823449147,
+  "format": [
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/minicon-mn-convention/0000.pdf",
+  "download_url_cached": "scifi/content/minicon-mn-convention_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T13:35:22.722Z",
+  "download_url_etag": "\"62ade637-24b9d\"",
+  "download_url_dl_duration": 0.358,
+  "download_url_dl_mbps": 0.400727021627586
+}

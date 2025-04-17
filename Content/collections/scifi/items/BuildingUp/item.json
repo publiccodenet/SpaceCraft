@@ -1,0 +1,40 @@
+{
+  "id": "BuildingUp",
+  "title": "Building Up",
+  "creator": "James E. D. Cline",
+  "date": null,
+  "description": "Science fiction novel, of the high tech type, in which construction and first use of the anchored tether space elevator, the Centristation wet-launch of the classical wheel-type space station in ow earth orbit, and a KESTS (kinetic energy supported transportation structure) between ground and geostationary earth orbit, are built. Also book contains two short stories and extensive technical background.",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "science fiction",
+    "KESTS",
+    "space elevator",
+    "Centristation"
+  ],
+  "downloads": 2817,
+  "item_size": 227894932,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/BuildingUp/Building_Up.pdf",
+  "download_url_cached": "scifi/content/BuildingUp_text_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T14:47:00.257Z",
+  "download_url_etag": "\"4bf939bd-7f314a\"",
+  "download_url_dl_duration": 1.501,
+  "download_url_dl_mbps": 5.296158202881022
+}

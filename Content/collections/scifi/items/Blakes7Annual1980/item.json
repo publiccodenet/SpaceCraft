@@ -1,0 +1,51 @@
+{
+  "id": "Blakes7Annual1980",
+  "title": "Blake's 7 Annual 1980",
+  "date": "1980-01-01T00:00:00Z",
+  "description": "Blake's 7 Annual 1980 .",
+  "mediatype": "texts",
+  "collection": [
+    "pulp_misc_sf",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Television",
+    "Television Series",
+    "British Television",
+    "Terry Nation",
+    "Blake's 7",
+    "Blakes 7"
+  ],
+  "downloads": 2027,
+  "item_size": 89001238,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 29,
+  "favorite_sample": [
+    "a_whale_from_hell",
+    "arbeaone",
+    "bkde",
+    "bluemax0",
+    "bouncetiger"
+  ],
+  "download_url": "https://archive.org/download/Blakes7Annual1980/Blakes%207%20Annual%201980.epub",
+  "download_url_cached": "scifi/content/Blakes7Annual1980_epub.epub",
+  "download_url_timestamp": "2025-03-13T18:06:24.565Z",
+  "download_url_etag": "\"661a8741-19b7c51\"",
+  "download_url_dl_duration": 7.02,
+  "download_url_dl_mbps": 3.663511493606785
+}

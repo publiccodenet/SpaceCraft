@@ -1,0 +1,42 @@
+{
+  "id": "thehero35770gut",
+  "title": "The Hero",
+  "creator": "Wilber, Elaine",
+  "date": null,
+  "description": "Book from Project Gutenberg: The Hero",
+  "mediatype": "texts",
+  "collection": [
+    "gutenberg"
+  ],
+  "subject": "Science fiction",
+  "downloads": 2709,
+  "item_size": 12647246,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "MOBI",
+    "Metadata",
+    "PalmOS Plucker",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text",
+    "Text PDF",
+    "Unknown",
+    "ZIP"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/thehero35770gut/pg35770-images.epub",
+  "download_url_cached": "scifi/content/thehero35770gut_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:56:41.184Z",
+  "download_url_etag": "\"4e00565c-4695a\"",
+  "download_url_dl_duration": 0.454,
+  "download_url_dl_mbps": 0.6073140887962039
+}

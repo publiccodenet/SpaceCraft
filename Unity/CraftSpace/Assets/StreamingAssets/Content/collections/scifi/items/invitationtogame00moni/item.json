@@ -1,0 +1,72 @@
+{
+  "id": "invitationtogame00moni",
+  "title": "Invitation to the game",
+  "creator": "Hughes, Monica",
+  "date": "1993-01-01T00:00:00Z",
+  "description": [
+    "\"Half Moon Books.\"",
+    "Unemployed after high school in the highly robotic society of 2154, Lisse and seven friends resign themselves to a boring existence in their \"Designated Area\" until the government invites them to play The Game"
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "inlibrary",
+    "printdisabled",
+    "cnusd-ol",
+    "openlibrary-d-ol",
+    "universityofoklahoma-ol"
+  ],
+  "subject": [
+    "Science Fiction, Fantasy, & Magic",
+    "Fiction",
+    "Children's Books - Young Adult Fiction",
+    "Children: Grades 4-6",
+    "Juvenile Fiction / Science Fiction, Fantasy, Magic",
+    "Science Fiction - Space Opera",
+    "Science Fiction",
+    "Children's Books - Young Adult",
+    "Unemployment",
+    "Science fiction"
+  ],
+  "downloads": 3011,
+  "item_size": 316915937,
+  "format": [
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Animated GIF",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item CDX Index",
+    "Item CDX Meta-Index",
+    "Item Tile",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "MARC",
+    "MARC Binary",
+    "MARC Source",
+    "Metadata",
+    "Metadata Log",
+    "OCLC xISBN JSON",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "WARC CDX Index",
+    "Web ARChive GZ",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 41,
+  "favorite_sample": [
+    "aford42",
+    "afranklin78",
+    "alduncan81",
+    "alextiming",
+    "andythestreet"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "SevenCameBack",
+  "title": "Seven Came Back",
+  "creator": "Clifford D. Simak",
+  "date": null,
+  "description": "1950 Science Fiction novelette reprinted in the May 1966 issue of Fantastic magazine. Blurb: \"So it was, so it must be with the myth that told about the great and glowing city that had stood above all other things of Mars -- a city that was known to the far ends of the planet.\"",
+  "mediatype": "texts",
+  "collection": [
+    "pulp_misc_sf",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "downloads": 2303,
+  "item_size": 28816925,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 4,
+  "favorite_sample": [
+    "goodeve",
+    "kyrakat",
+    "paul_maybury",
+    "stellardragon"
+  ],
+  "download_url": "https://archive.org/download/SevenCameBack/SevenCameBackByCliffordD.Simak19501966.epub",
+  "download_url_cached": "scifi/content/SevenCameBack_epub.epub",
+  "download_url_timestamp": "2025-03-13T16:54:26.138Z",
+  "download_url_etag": "\"657f748e-17e67c\"",
+  "download_url_dl_duration": 0.727,
+  "download_url_dl_mbps": 2.054705088535398
+}

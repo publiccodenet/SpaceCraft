@@ -1,0 +1,45 @@
+{
+  "id": "BeetaHuaBhavishya-Hindi",
+  "title": "BEETA HUA BHAVISHYA - HINDI",
+  "creator": "ED. BAL PHONDKE",
+  "date": null,
+  "description": "COLLECTION OF SCIENCE FICTION STORIES, HINDI, NBT, NATIONAL BOOK TRUST,ED. BAL PHONDKE",
+  "mediatype": "texts",
+  "collection": [
+    "ArvindGupta",
+    "JaiGyan"
+  ],
+  "subject": [
+    "COLLECTION OF SCIENCE FICTION STORIES",
+    "HINDI",
+    "NBT",
+    "NATIONAL BOOK TRUST",
+    "ED. BAL PHONDKE"
+  ],
+  "downloads": 2807,
+  "item_size": 416511323,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Unknown"
+  ],
+  "favorite_count": 1,
+  "favorite_sample": [
+    "glen25"
+  ],
+  "download_url": "https://archive.org/download/BeetaHuaBhavishya-Hindi/BitaHuaBhavishya.hindibookspdf.com.pdf",
+  "download_url_cached": "scifi/content/BeetaHuaBhavishya-Hindi_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T14:47:11.597Z",
+  "download_url_etag": "\"58c6266c-e02cff\"",
+  "download_url_dl_duration": 1.371,
+  "download_url_dl_mbps": 10.219537107549733
+}

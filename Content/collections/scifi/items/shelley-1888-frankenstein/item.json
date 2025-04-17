@@ -1,0 +1,57 @@
+{
+  "id": "shelley-1888-frankenstein",
+  "title": "Frankenstein",
+  "creator": "Mary W. Shelley",
+  "date": null,
+  "description": "Frankenstein, by Mary W. Shelley, in 316 bookmarked and searchable pdf pages. Wikipedia has an entry on British novelist Shelley (1797-1851), and also on her science fiction novel, Frankenstein; or, The Modern Prometheus (1818). Internet Archive has a selection of works by or about Mary Shelley. Attached to the pdf document is a multilingual HTML version.  Book digitized by Google and compiled by Robert Bedrosian.",
+  "mediatype": "texts",
+  "collection": [
+    "robert-bedrosian-library",
+    "additional_collections"
+  ],
+  "subject": [
+    "Literature",
+    "Genre",
+    "Science Fiction",
+    "Sci Fi",
+    "Horrors",
+    "Wonders",
+    "Science",
+    "Ethics",
+    "Morality",
+    "Artificial Life"
+  ],
+  "downloads": 3268,
+  "item_size": 225520649,
+  "format": [
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 15,
+  "favorite_sample": [
+    "alina_luna345",
+    "astyages7365",
+    "avery_abruzzo",
+    "caitlynn_kelley131",
+    "castiel_winchester394"
+  ],
+  "download_url": "https://archive.org/download/shelley-1888-frankenstein/Shelley_1888_Frankenstein.epub",
+  "download_url_cached": "scifi/content/shelley-1888-frankenstein_epub.epub",
+  "download_url_timestamp": "2025-03-13T13:34:14.511Z",
+  "download_url_etag": "\"66acdac3-58bd9\"",
+  "download_url_dl_duration": 0.454,
+  "download_url_dl_mbps": 0.7635297229111457
+}

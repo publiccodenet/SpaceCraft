@@ -1,0 +1,52 @@
+{
+  "id": "ost-english-warofworlds00welluoft",
+  "title": "The War of the Worlds",
+  "creator": "H.G. Wells",
+  "date": "1898-01-01T00:00:00Z",
+  "description": "",
+  "mediatype": "texts",
+  "collection": [
+    "opensource_textbooks",
+    "additional_collections"
+  ],
+  "subject": [
+    "martians",
+    "science fiction",
+    "british imperialism",
+    "english",
+    "invasion",
+    "classics"
+  ],
+  "downloads": 2296,
+  "item_size": 222811070,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 11,
+  "favorite_sample": [
+    "_osmium_",
+    "aeb_nh",
+    "alyssa_jorgensen",
+    "anandhu_sasikumar",
+    "bookklover"
+  ],
+  "download_url": "https://archive.org/download/ost-english-warofworlds00welluoft/warofworlds00welluoft.epub",
+  "download_url_cached": "scifi/content/ost-english-warofworlds00welluoft_epub.epub",
+  "download_url_timestamp": "2025-03-13T16:54:31.024Z",
+  "download_url_etag": "\"6554fbed-4f17f\"",
+  "download_url_dl_duration": 0.438,
+  "download_url_dl_mbps": 0.7053858613314694
+}

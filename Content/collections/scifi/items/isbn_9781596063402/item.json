@@ -1,0 +1,71 @@
+{
+  "id": "isbn_9781596063402",
+  "title": "The collected stories of Philip K. Dick",
+  "creator": "Dick, Philip K",
+  "date": "2010-01-01T00:00:00Z",
+  "description": [
+    "[This is] a uniform, five-volume edition of The collected stories of Philip K. Dick",
+    "v. 1. The king of elves, 1947-1952 -- v. 3. Upon the dull earth, 1953-1954"
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "delawarecountydistrictlibrary",
+    "americana",
+    "inlibrary",
+    "printdisabled",
+    "americanuniversity-ol",
+    "delawarecountydistrictlibrary-ol",
+    "library_of_atlantis",
+    "spokanepubliclibrary-ol",
+    "wilsoncollege-ol",
+    "worthingtonlibraries-ol"
+  ],
+  "subject": [
+    "Science fiction, American",
+    "Short stories, American"
+  ],
+  "downloads": 2267,
+  "item_size": 685260957,
+  "format": [
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Animated GIF",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item CDX Index",
+    "Item CDX Meta-Index",
+    "Item Tile",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "MARC",
+    "MARC Binary",
+    "MARC Source",
+    "METS",
+    "Metadata",
+    "Metadata Log",
+    "OCLC xISBN JSON",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "WARC CDX Index",
+    "Web ARChive GZ",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 72,
+  "favorite_sample": [
+    "05012020",
+    "1-9user",
+    "alchemical",
+    "ashdroid",
+    "blu5220"
+  ]
+}

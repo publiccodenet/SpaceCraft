@@ -1,0 +1,49 @@
+{
+  "id": "the-mysterious-island_202102",
+  "title": "Jules Verne collection public domain",
+  "creator": "Jules Verne",
+  "date": "1910-01-01T00:00:00Z",
+  "description": "A floating city and the blockade runners.pdf 12 MB A journey to the centre of the earth.pdf 7.2 MB Around the world in eighty days.pdf 5.7 MB Dr. Ox's experiment, and other stories.pdf 15 MB Dropped from the clouds. Translated from the French by W.H.G. Kingston.pdf 15 MB From the Earth to the Moon direct in ninety-seven hours and twenty minutes, and a trip round it.pdf 19 MB Godfrey Morgan, a Californian mystery.pdf 7.9 MB Hector Servadac.pdf 13 MB Jules Verne. A drama in the air..pdf 16 MB Meridiana The adventures of three Englishmen and three Russians in South Africa.pdf 13 MB Michael Strogoff the courier of the czar.pdf 8.3 MB Mistress Branican.pdf 9.3 MB Robur the conquero,The master of the world. and The sphinx of ice..pdf 17 MB Texar's revenge, or, North against South (Nord contre Sud) A tale of the American Civil War.pdf 9.6 MB The adventures of a Chinaman in China.pdf 7.6 MB The begum's fortune.pdf 17 MB The castle of the Carpathians.pdf 9.6 MB The clipper of the clouds.pdf 18 MB The desert of ice. The further adventures of Captain Hatteras;.pdf 18 MB The exploration of the world.pdf 32 MB The fur country; or, Seventy degrees north latitude.pdf 25 MB The master of the world a tale of mystery and marvel.pdf 8.1 MB The mysterious island.pdf 41 MB Twenty thousand leagues under the sea.pdf Jules Verne",
+  "mediatype": "texts",
+  "collection": [
+    "folkscanomy_miscellaneous",
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "subject": [
+    "Science fiction",
+    "Jules Verne"
+  ],
+  "downloads": 4119,
+  "item_size": 7177204040,
+  "format": [
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 37,
+  "favorite_sample": [
+    "88y53",
+    "amsp76",
+    "ayy259",
+    "bookduders",
+    "bookhunter222"
+  ],
+  "download_url": "https://archive.org/download/the-mysterious-island_202102/A%20floating%20city%20and%20the%20blockade%20runners.epub",
+  "download_url_cached": "scifi/content/the-mysterious-island_202102_epub.epub",
+  "download_url_timestamp": "2025-03-13T11:31:13.967Z",
+  "download_url_etag": "\"6570be82-50e72\"",
+  "download_url_dl_duration": 0.458,
+  "download_url_dl_mbps": 0.6900146017949134
+}

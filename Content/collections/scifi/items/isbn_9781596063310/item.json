@@ -1,0 +1,69 @@
+{
+  "id": "isbn_9781596063310",
+  "title": "The best of Larry Niven",
+  "creator": [
+    "Niven, Larry",
+    "Strahan, Jonathan"
+  ],
+  "date": "2010-01-01T00:00:00Z",
+  "description": [
+    "Becalmed in Hell -- Bordered in black -- Neutron star -- The soft weapon -- All the myriad ways -- Not long before the end -- Man of steel, woman of Kleenex -- Inconstant moon -- Rammer -- Cloak of anarchy -- The fourth profession -- Flash crowd -- The defenseless dead -- The flight of the horse -- The hole man -- Night on Mispec Moor -- Flatlander -- The magic goes away -- Cautionary tales -- Limits -- A teardrop falls -- The return of William Proxmire -- The borderland of Sol -- Smut talk -- The missing mass",
+    "Presents a collection of twenty-seven short science fiction stories that were written over a period of thirty-five years, including \"Neutron Star,\" \"The Magic Goes Away,\" and \"The Borderland of Sol.\""
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "inlibrary",
+    "printdisabled",
+    "americanuniversity-ol",
+    "wilsoncollege-ol",
+    "worthingtonlibraries-ol"
+  ],
+  "subject": [
+    "Science fiction, American",
+    "Short stories, American"
+  ],
+  "downloads": 2445,
+  "item_size": 920951006,
+  "format": [
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Animated GIF",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item CDX Index",
+    "Item CDX Meta-Index",
+    "Item Tile",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "MARC",
+    "MARC Binary",
+    "MARC Source",
+    "METS",
+    "Metadata",
+    "Metadata Log",
+    "OCLC xISBN JSON",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "WARC CDX Index",
+    "Web ARChive GZ",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 36,
+  "favorite_sample": [
+    "ajshell1",
+    "amigone",
+    "andre_kurozaki",
+    "bantock",
+    "bibulousrana"
+  ]
+}

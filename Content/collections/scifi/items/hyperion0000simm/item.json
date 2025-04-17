@@ -1,0 +1,53 @@
+{
+  "id": "hyperion0000simm",
+  "title": "Hyperion",
+  "creator": "Simmons, Dan",
+  "date": "1990-01-01T00:00:00Z",
+  "description": "502 pages",
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled"
+  ],
+  "subject": [
+    "Science fiction, American",
+    "English fiction"
+  ],
+  "downloads": 2466,
+  "item_size": 1036431254,
+  "format": [
+    "ACS Encrypted PDF",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item Tile",
+    "JPEG Thumb",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "Log",
+    "MARC",
+    "MARC Binary",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "PNG",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Title Page Detection Log",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 82,
+  "favorite_sample": [
+    "a-o-x",
+    "a_shw",
+    "adam_fajner",
+    "aj4360",
+    "andrewelliott174"
+  ]
+}

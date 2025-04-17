@@ -1,0 +1,40 @@
+{
+  "id": "FantasyModeling2Winter1980",
+  "title": "Fantasy Modeling Magazine",
+  "date": null,
+  "description": "Fantasy Modeling Magazine",
+  "mediatype": "texts",
+  "collection": [
+    "magazine_packs",
+    "magazine_rack"
+  ],
+  "subject": "Wargaming Science Fiction Modeling Fantasy",
+  "downloads": 6396,
+  "item_size": 526137415,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "Image Container PDF",
+    "JPEG Thumb",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 63,
+  "favorite_sample": [
+    "acwstudies",
+    "adam_jones269",
+    "amirdejesus",
+    "amongstothers",
+    "andrew_werdna463"
+  ],
+  "download_url": "https://archive.org/download/FantasyModeling2Winter1980/Fantasy%20Modeling%201%2C%20Fall%201980.pdf",
+  "download_url_cached": "scifi/content/FantasyModeling2Winter1980_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T10:11:36.061Z",
+  "download_url_etag": "\"5a6e6f35-ae9250\"",
+  "download_url_dl_duration": 1.696,
+  "download_url_dl_mbps": 6.433208033723651
+}

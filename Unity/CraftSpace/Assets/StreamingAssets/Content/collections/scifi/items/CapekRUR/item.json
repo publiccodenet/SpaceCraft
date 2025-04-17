@@ -1,0 +1,50 @@
+{
+  "id": "CapekRUR",
+  "title": "Rossum's Universal Robots",
+  "creator": "Karel Čapek",
+  "date": "1921-01-01T00:00:00Z",
+  "description": "La fameuse pièce de théatre...",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Karel Čapek",
+    "robot",
+    "science-fiction",
+    "automatisation"
+  ],
+  "downloads": 2854,
+  "item_size": 38670609,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Word Document"
+  ],
+  "favorite_count": 7,
+  "favorite_sample": [
+    "astrid14633",
+    "bara_galgeek_com",
+    "kemo1234",
+    "mastermind93",
+    "pantzini"
+  ],
+  "download_url": "https://archive.org/download/CapekRUR/Capek_RUR.epub",
+  "download_url_cached": "scifi/content/CapekRUR_epub.epub",
+  "download_url_timestamp": "2025-03-13T14:36:57.934Z",
+  "download_url_etag": "\"6561f703-8c9f6\"",
+  "download_url_dl_duration": 0.608,
+  "download_url_dl_mbps": 0.9034652458994012
+}

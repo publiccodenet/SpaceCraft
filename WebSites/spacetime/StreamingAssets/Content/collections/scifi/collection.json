@@ -1,0 +1,6 @@
+{
+  "id": "scifi",
+  "title": "Science Fiction Classics",
+  "description": "A curated collection of classic science fiction works from the Internet Archive",
+  "query": "subject:science fiction mediatype:texts"
+} 

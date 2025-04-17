@@ -1,0 +1,51 @@
+{
+  "id": "AresMagazine06_VoyageoftheBSMPandora",
+  "title": "Ares Magazine 06 - Voyage of the BSM Pandora",
+  "date": null,
+  "description": "The magazine of science fiction and fantasy simulation.",
+  "mediatype": "texts",
+  "collection": [
+    "ares_magazine",
+    "magazine_rack",
+    "additional_collections",
+    "gamemagazines"
+  ],
+  "subject": [
+    "Magazines",
+    "Wargames",
+    "Science fiction",
+    "Fantasy simulation"
+  ],
+  "downloads": 10031,
+  "item_size": 72444926,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 11,
+  "favorite_sample": [
+    "andrey_devyatov",
+    "artursz",
+    "bouncetiger",
+    "brian_mclain",
+    "cajunatx"
+  ],
+  "download_url": "https://archive.org/download/AresMagazine06_VoyageoftheBSMPandora/Ares%20Magazine%2006%20-%20Voyage%20of%20the%20BSM%20Pandora.epub",
+  "download_url_cached": "scifi/content/AresMagazine06_VoyageoftheBSMPandora_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:36:48.647Z",
+  "download_url_etag": "\"65d25178-15f891\"",
+  "download_url_dl_duration": 6.15,
+  "download_url_dl_mbps": 0.22328213947575265
+}

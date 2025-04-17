@@ -1,0 +1,52 @@
+{
+  "id": "ComicBook-StrangeAdventures072",
+  "title": "Comic Book - Strange Adventures #072",
+  "date": null,
+  "description": "This long-running comic had stories that blended SciFi, mystery, horror and the supernatural. In this issue \"The Skyscraper That Came To Life\". Use CDisplay to read it. CDisplay is available on archive.org",
+  "mediatype": "texts",
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Mystery",
+    "Horror",
+    "Supernatural",
+    "Suspense",
+    "Thriller",
+    "Science Fiction"
+  ],
+  "downloads": 2637,
+  "item_size": 20033397,
+  "format": [
+    "Abbyy GZ",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "Comic Book ZIP",
+    "DjVu",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "Unknown"
+  ],
+  "favorite_count": 14,
+  "favorite_sample": [
+    "a_whale_from_hell",
+    "blackmatt",
+    "chet_ubetcha",
+    "chronos-x",
+    "davidszo"
+  ],
+  "download_url": "https://archive.org/download/ComicBook-StrangeAdventures072/StrangeAdventures0721956-09.dc28p.epub",
+  "download_url_cached": "scifi/content/ComicBook-StrangeAdventures072_epub.epub",
+  "download_url_timestamp": "2025-03-13T15:29:08.253Z",
+  "download_url_etag": "\"66aaf651-516dc1\"",
+  "download_url_dl_duration": 1.173,
+  "download_url_dl_mbps": 4.338700244900312
+}

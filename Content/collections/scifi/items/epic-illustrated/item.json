@@ -1,0 +1,58 @@
+{
+  "id": "epic-illustrated",
+  "title": "Epic Illustrated",
+  "date": "1980-01-01T00:00:00Z",
+  "description": "Epic Illustrated ",
+  "mediatype": "texts",
+  "collection": [
+    "magazine_packs",
+    "magazine_rack"
+  ],
+  "subject": [
+    "epic comics",
+    "comic book",
+    "illustrated magazine",
+    "rick veitch",
+    "Steve bissette",
+    "Howard chaykin",
+    "p Craig Russell",
+    "fantasy",
+    "sci fi",
+    "science fiction"
+  ],
+  "downloads": 7506,
+  "item_size": 987778048,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Comic Book RAR",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 186,
+  "favorite_sample": [
+    "7374296576992",
+    "a8m",
+    "a_whale_from_hell",
+    "acottt",
+    "acwstudies"
+  ],
+  "download_url": "https://archive.org/download/epic-illustrated/Epic%20Illustrated%20(10).epub",
+  "download_url_cached": "scifi/content/epic-illustrated_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:05:15.321Z",
+  "download_url_etag": "\"662c7558-dfbb\"",
+  "download_url_dl_duration": 0.155,
+  "download_url_dl_mbps": 0.3523980417559224
+}

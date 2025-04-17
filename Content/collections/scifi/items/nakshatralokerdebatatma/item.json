@@ -1,0 +1,43 @@
+{
+  "id": "nakshatralokerdebatatma",
+  "title": "Nakshatraloker Debatatma",
+  "creator": "Narayan Sanyal",
+  "date": "1987-04-26T00:00:00Z",
+  "description": "A remarkable Science Fiction by renowned Bengali writer Narayan Sanyal. This is not just a science fiction, but a rich philosophical work, though enjoyable smooth reading.",
+  "mediatype": "texts",
+  "collection": [
+    "booksbylanguage_bengali",
+    "booksbylanguage"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Narayan Sanyal",
+    "Bengali"
+  ],
+  "downloads": 2800,
+  "item_size": 37006706,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Djvu XML",
+    "Image Container PDF",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP"
+  ],
+  "favorite_count": 5,
+  "favorite_sample": [
+    "atri_banerjee989",
+    "lucke133",
+    "mj_sadu",
+    "mm_videos",
+    "subhajit_mitra"
+  ],
+  "download_url": "https://archive.org/download/nakshatralokerdebatatma/Nakshatraloker%20Debatatma.pdf",
+  "download_url_cached": "scifi/content/nakshatralokerdebatatma_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T14:47:27.530Z",
+  "download_url_etag": "\"5e12352b-327465\"",
+  "download_url_dl_duration": 1.039,
+  "download_url_dl_mbps": 3.035049695482153
+}

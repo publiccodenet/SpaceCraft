@@ -1,0 +1,47 @@
+{
+  "id": "unitedstatesser00unkngoog",
+  "title": "The United States service magazine",
+  "creator": "Coopée, Henry, 1821-1825, [from old catalog] ed",
+  "date": "1864-01-01T00:00:00Z",
+  "description": [
+    "Book digitized by Google from the library of Harvard University and uploaded to the Internet Archive by user tpb.",
+    "Serial"
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "americana"
+  ],
+  "subject": [
+    "United States. Army",
+    "Military art and science"
+  ],
+  "downloads": 2456,
+  "item_size": 297276791,
+  "format": [
+    "Abbyy GZ",
+    "Additional Text PDF",
+    "Animated GIF",
+    "Archive BitTorrent",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Image Container PDF",
+    "Item Tile",
+    "MARC",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed TIFF ZIP",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 0,
+  "download_url": "https://archive.org/download/unitedstatesser00unkngoog/unitedstatesser00unkngoog.pdf",
+  "download_url_cached": "scifi/content/unitedstatesser00unkngoog_image_container_pdf.pdf",
+  "download_url_timestamp": "2025-03-13T16:13:38.102Z",
+  "download_url_etag": "\"473c3b59-2a6c2f4\"",
+  "download_url_dl_duration": 5.133,
+  "download_url_dl_mbps": 8.264678741044847
+}

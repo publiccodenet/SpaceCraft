@@ -1,0 +1,56 @@
+{
+  "id": "the-collected-stories-of-philip-k.-dick",
+  "title": "The Collected Stories Of Philip K. Dick",
+  "creator": "Philip K. Dick",
+  "date": null,
+  "description": "The Collected Stories of Philip K. Dick is a collection of 118 science fiction stories by American writer Philip K. Dick. It was first published by Underwood-Miller in 1987 as a five volume set. See Philip K. Dick bibliography for information about the mass market reprints. ",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Philip K. Dick",
+    "Science Fiction",
+    "Author",
+    "Writer",
+    "Stories",
+    "Fiction",
+    "Science",
+    "Technology",
+    "Space Exploration",
+    "Time Travel",
+    "Parallel Universes",
+    "Extraterrestrial Life"
+  ],
+  "downloads": 4841,
+  "item_size": 428277114,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 48,
+  "favorite_sample": [
+    "70gogol",
+    "a_and_k",
+    "certainty",
+    "chuck9000",
+    "cinnamonk35"
+  ],
+  "download_url": "https://archive.org/download/the-collected-stories-of-philip-k.-dick/The%20collected%20stories%20of%20Philip%20K.%20Dick.epub",
+  "download_url_cached": "scifi/content/the-collected-stories-of-philip-k.-dick_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:50:57.626Z",
+  "download_url_etag": "\"654e342b-493b75\"",
+  "download_url_dl_duration": 1.119,
+  "download_url_dl_mbps": 4.090273348319946
+}

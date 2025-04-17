@@ -1,0 +1,25 @@
+{
+    "name": "CraftSpace.Editor",
+    "rootNamespace": "CraftSpace.Editor",
+    "references": [
+        "Unity.TextMeshPro",
+        "Unity.InputSystem",
+        "Unity.Splines",
+        "Unity.Newtonsoft.Json",
+        "CraftSpace",
+        "SchemaGenerator"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+} 

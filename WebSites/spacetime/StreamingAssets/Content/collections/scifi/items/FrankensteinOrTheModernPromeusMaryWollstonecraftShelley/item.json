@@ -1,0 +1,45 @@
+{
+  "id": "FrankensteinOrTheModernPromeusMaryWollstonecraftShelley",
+  "title": "Frankenstein; or, the Modern Prometheus - Mary Wollstonecraft Shelley",
+  "creator": "Mary Wollstonecraft Shelley",
+  "date": "1831-01-01T00:00:00Z",
+  "description": "Frankenstein; or, the Modern Prometheus Mary Wollstonecraft Shelley Project Gutenberg 84",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": [
+    "Science Fiction",
+    "Horror tales",
+    "Gothic fiction",
+    "Scientists",
+    "Monsters",
+    "Frankenstein",
+    "Frankenstein's monster"
+  ],
+  "downloads": 7900,
+  "item_size": 1008785,
+  "format": [
+    "Archive BitTorrent",
+    "EPUB",
+    "Item Tile",
+    "JPEG",
+    "JPEG Thumb",
+    "Metadata"
+  ],
+  "favorite_count": 6,
+  "favorite_sample": [
+    "basquette",
+    "lab_seven",
+    "littlerollycat",
+    "lostokie",
+    "miredsounds"
+  ],
+  "download_url": "https://archive.org/download/FrankensteinOrTheModernPromeusMaryWollstonecraftShelley/Frankenstein%3B%20Or%2C%20The%20Modern%20Promeus%20-%20Mary%20Wollstonecraft%20Shelley.epub",
+  "download_url_cached": "scifi/content/FrankensteinOrTheModernPromeusMaryWollstonecraftShelley_epub.epub",
+  "download_url_timestamp": "2025-03-13T10:03:45.762Z",
+  "download_url_etag": "\"59fe0967-8a86f\"",
+  "download_url_dl_duration": 0.571,
+  "download_url_dl_mbps": 0.9476733499984609
+}

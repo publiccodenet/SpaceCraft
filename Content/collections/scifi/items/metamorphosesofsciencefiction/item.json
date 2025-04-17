@@ -1,0 +1,41 @@
+{
+  "id": "metamorphosesofsciencefiction",
+  "title": "Metamorphoses of Science Fiction",
+  "date": "1979-01-01T00:00:00Z",
+  "description": "Metamorphoses of Science Fiction by Darko Suvin (1980)",
+  "mediatype": "texts",
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "subject": "Science Fiction",
+  "downloads": 3519,
+  "item_size": 470889963,
+  "format": [
+    "Abbyy GZ",
+    "Archive BitTorrent",
+    "Daisy",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF"
+  ],
+  "favorite_count": 29,
+  "favorite_sample": [
+    "astyages7365",
+    "bettisamsa",
+    "caminantestelar",
+    "carolispink",
+    "daimonbell93"
+  ],
+  "download_url": "https://archive.org/download/metamorphosesofsciencefiction/Metamorphoses%201980%20edition.epub",
+  "download_url_cached": "scifi/content/metamorphosesofsciencefiction_epub.epub",
+  "download_url_timestamp": "2025-03-13T13:03:27.127Z",
+  "download_url_etag": "\"655238eb-da4ea81\"",
+  "download_url_dl_duration": 199.075,
+  "download_url_dl_mbps": 1.0966080719841107
+}

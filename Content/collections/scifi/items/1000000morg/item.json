@@ -1,0 +1,69 @@
+{
+  "id": "1000000morg",
+  "title": "The 100",
+  "creator": "Morgan, Kass, author",
+  "date": "2013-01-01T00:00:00Z",
+  "description": [
+    "323 pages ; 20 cm",
+    "When 100 juvenile delinquents are sent on a mission to recolonize Earth, they get a second chance at freedom, friendship, and love, as they fight to survive in a dangerous new world",
+    "Sequel: Day 21",
+    "Accelerated Reader 5.9",
+    "Reading Counts RC High School 5.6"
+  ],
+  "mediatype": "texts",
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled",
+    "cnusd-ol",
+    "delawarecountydistrictlibrary-ol",
+    "hamiltonpubliclibrary-ol",
+    "miltonpubliclibrary-ol",
+    "unb-ol",
+    "worthingtonlibraries-ol"
+  ],
+  "subject": [
+    "Survival -- Fiction",
+    "Juvenile delinquents -- Fiction",
+    "Science fiction",
+    "Juvenile delinquents",
+    "Survival"
+  ],
+  "downloads": 9112,
+  "item_size": 621539601,
+  "format": [
+    "ACS Encrypted EPUB",
+    "ACS Encrypted PDF",
+    "Abbyy GZ",
+    "Cloth Cover Detection Log",
+    "DjVuTXT",
+    "Djvu XML",
+    "Dublin Core",
+    "Item Tile",
+    "JPEG Thumb",
+    "JSON",
+    "LCP Encrypted EPUB",
+    "LCP Encrypted PDF",
+    "Log",
+    "MARC",
+    "MARC Binary",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "PNG",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Original JP2 Tar",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 89,
+  "favorite_sample": [
+    "1234_10154",
+    "23_789",
+    "abella_sullivan",
+    "addison_de_wit",
+    "aisya_kamila_z"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "gigant-manga",
+  "title": "GIGANT",
+  "creator": "Hiroya Oku",
+  "date": "2017-01-01T00:00:00Z",
+  "description": "Rei Yokoyamada is a 16 year old high school student who wants to follow in his movie producer father's footsteps by making a movie to submit to a film festival. After a classmate asked to take the role of the female lead bows out, he wanders the neighborhood and sees posters announcing that Papico (real name \"Chiho Johansson\"), a buxom AV actress that Rei is a fan of, lives in the area. Events soon transpire that cause Rei and Chiho to meet in person. The two quickly become friends and start chatting online. Then Chiho finds a middle-aged man in his underwear bleeding on the sidewalk. When she tries to help, the man turns into a doll, leaving her with a DVD and a mysterious device implanted into her wrist that allows her to turn into a giant. Yes, really. I wasn't making that up.",
+  "mediatype": "texts",
+  "collection": [
+    "manga_unsorted",
+    "manga_library",
+    "comics",
+    "additional_collections"
+  ],
+  "subject": [
+    "Manga",
+    "Drama",
+    "Romance",
+    "Sci-Fi",
+    "Science Fiction",
+    "Horror"
+  ],
+  "downloads": 11660,
+  "item_size": 6431261601,
+  "format": [
+    "Archive BitTorrent",
+    "Comic Book ZIP",
+    "DjVuTXT",
+    "Djvu XML",
+    "EPUB",
+    "Item Tile",
+    "Metadata",
+    "OCR Page Index",
+    "OCR Search Text",
+    "Page Numbers JSON",
+    "Scandata",
+    "Single Page Processed JP2 ZIP",
+    "Text PDF",
+    "chOCR",
+    "hOCR"
+  ],
+  "favorite_count": 123,
+  "favorite_sample": [
+    "420tw",
+    "69arobot",
+    "_riot_iori_",
+    "abdullah_shawesh",
+    "adam_no"
+  ],
+  "download_url": "https://archive.org/download/gigant-manga/GIGANT%20v01%20(2020)%20(Digital)%20(LuCaZ).epub",
+  "download_url_cached": "scifi/content/gigant-manga_epub.epub",
+  "download_url_timestamp": "2025-03-13T09:33:13.836Z",
+  "download_url_etag": "\"655a7c7d-16ef1\"",
+  "download_url_dl_duration": 0.147,
+  "download_url_dl_mbps": 0.6094238385051286
+}
