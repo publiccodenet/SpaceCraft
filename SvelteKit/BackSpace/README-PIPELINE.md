@@ -4,6 +4,8 @@
 
 The Content Pipeline is a system for exporting content from Internet Archive to Unity's StreamingAssets directory. The pipeline follows a pull-based approach with efficient caching.
 
+The pipeline manages the workflow of content from sources to Unity's StreamingAssets directory. It consists of several phases: bootstrap, pull, and export.
+
 ## Architecture
 
 ```mermaid
@@ -17,6 +19,12 @@ The pipeline operates in three stages:
 1. **Bootstrap**: Generate a skeleton whitelist from existing Unity content
 2. **Pull**: Fetch content from Internet Archive to a shared content cache
 3. **Export**: Export cached content to Unity StreamingAssets
+
+The pipeline is built with a modular architecture:
+
+- `pipeline.js` - Core pipeline class with bootstrap, pull, and export phases
+- `pipeline-run.js` - Runner script that executes all phases
+- `pipeline-export.js` - Specialized script for the export phase
 
 ## Directory Structure
 
@@ -50,6 +58,30 @@ Unity/CraftSpace/Assets/StreamingAssets/Content/
 │               └── cover.jpg
 ```
 
+### Collections and Items
+
+Content is organized into collections, each containing items:
+
+```
+Content/
+  collections/
+    spacecraft/
+      collection.json
+      Items/
+        apollo11/
+          item.json
+          cover.jpg
+        voyager/
+          item.json
+          cover.jpg
+    parts/
+      collection.json
+      Items/
+        engine-a/
+          item.json
+          cover.jpg
+```
+
 ## Data Structure
 
 The skeleton whitelist (`index-deep.json`) follows this structure:
@@ -70,6 +102,55 @@ The skeleton whitelist (`index-deep.json`) follows this structure:
   "collectionsIndex": ["scifi", ...]  // List of collection IDs
 }
 ```
+
+The importer behavior with this structure:
+- Collections listed in `collectionsIndex` will be created if missing
+- Collections not listed in `collectionsIndex` will be removed
+- For each collection, items listed in its `itemsIndex` will be included
+- Items not listed in `itemsIndex` will be excluded
+
+## Configuration Files
+
+### index-deep.json
+
+This file defines the content structure that will be exported to Unity, including:
+
+- `collectionsIndex`: Array of collection IDs that should be included
+- `collections`: Object containing metadata for each collection
+  - Each collection contains an `itemsIndex` array listing item IDs to include
+
+### collections-filter.json
+
+This configuration file controls which collections and items are exported:
+
+```json
+{
+  "version": "1.0",
+  "description": "Filter configuration for exporting collections and items",
+  "collections": {
+    "spacecraft": {
+      "enabled": true,
+      "include": ["*"],
+      "exclude": ["wip-*", "deprecated-*"]
+    },
+    "parts": {
+      "enabled": true,
+      "include": ["*"],
+      "exclude": ["test-*"]
+    }
+  },
+  "metadata": {
+    "includeImages": true,
+    "includeVideos": true,
+    "includeModels": true,
+    "includeSounds": true
+  }
+}
+```
+
+- `enabled`: Controls whether a collection is exported
+- `include`: List of patterns for items to include (wildcards supported)
+- `exclude`: List of patterns for items to exclude (wildcards supported)
 
 ## Cache Mechanism
 
@@ -243,6 +324,23 @@ pipeline:pull       # Pull content from Internet Archive to cache
 pipeline:export     # Export content from cache to Unity
 pipeline:run        # Run the complete pipeline (bootstrap, pull, export)
 ```
+
+Run the full pipeline:
+```
+node scripts/pipeline.js run
+```
+
+Run specific phases:
+```
+node scripts/pipeline.js bootstrap
+node scripts/pipeline.js pull
+node scripts/pipeline.js export
+```
+
+Options:
+- `--verbose` or `-v`: Enable detailed logging
+- `--clean`: Clean destination directories before operation
+- `--force` or `-f`: Force operation, overwriting existing files
 
 ## Key Principles
 
