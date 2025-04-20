@@ -65,7 +65,7 @@ public class CollectionSchema : SchemaGeneratedObject
     /// <summary>
     /// Creator(s) of this collection.
     /// Schema Path: creator
-    /// UnitySchemaConverter: StringArrayOrNullToStringArrayConverter
+    /// UnitySchemaConverter: StringOrArrayOrNullToStringArrayConverter
     /// </summary>
     [SerializeField] private string _creator = string.Empty;
     public string Creator { get { return _creator; } set { _creator = value; } }
@@ -73,7 +73,7 @@ public class CollectionSchema : SchemaGeneratedObject
     /// <summary>
     /// Subject tags for this collection.
     /// Schema Path: subject
-    /// UnitySchemaConverter: StringArrayOrNullToStringArrayConverter
+    /// UnitySchemaConverter: StringOrArrayOrNullToStringArrayConverter
     /// </summary>
     [SerializeField] private string _subject = string.Empty;
     public string Subject { get { return _subject; } set { _subject = value; } }

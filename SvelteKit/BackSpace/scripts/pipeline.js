@@ -26,6 +26,14 @@ import sharp from 'sharp';
 // Import constants from lib
 import { EMOJI, CLI_FORMATTING, PATHS } from '../src/lib/constants/index.ts';
 
+// Define log levels
+const LOG_LEVELS = {
+  DEBUG: 0,
+  INFO: 1,
+  WARN: 2,
+  ERROR: 3
+};
+
 // Default paths
 const DEFAULT_CONFIG_DIR = path.resolve(PATHS.ROOT_DIR, 'Content/Configs');
 const DEFAULT_CONTENT_CACHE = path.resolve(PATHS.ROOT_DIR, 'Content/collections');

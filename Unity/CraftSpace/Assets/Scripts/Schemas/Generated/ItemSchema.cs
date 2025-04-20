@@ -66,7 +66,7 @@ public class ItemSchema : SchemaGeneratedObject
     /// <summary>
     /// Creator/author of the item (string or array)
     /// Schema Path: creator
-    /// UnitySchemaConverter: StringOrArrayOrNullToStringConverter
+    /// UnitySchemaConverter: StringOrArrayOrNullToStringArrayConverter
     /// </summary>
     [SerializeField] private string _creator = string.Empty;
     public string Creator { get { return _creator; } set { _creator = value; } }
@@ -74,7 +74,7 @@ public class ItemSchema : SchemaGeneratedObject
     /// <summary>
     /// Subject tags for this item.
     /// Schema Path: subject
-    /// UnitySchemaConverter: StringArrayOrNullToStringArrayConverter
+    /// UnitySchemaConverter: StringOrArrayOrNullToStringArrayConverter
     /// </summary>
     [SerializeField] private string _subject = string.Empty;
     public string Subject { get { return _subject; } set { _subject = value; } }
@@ -82,7 +82,7 @@ public class ItemSchema : SchemaGeneratedObject
     /// <summary>
     /// Collections this item belongs to.
     /// Schema Path: collection
-    /// UnitySchemaConverter: StringArrayOrNullToStringArrayConverter
+    /// UnitySchemaConverter: StringOrArrayOrNullToStringArrayConverter
     /// </summary>
     [SerializeField] private string _collection = string.Empty;
     public string Collection { get { return _collection; } set { _collection = value; } }
@@ -102,6 +102,22 @@ public class ItemSchema : SchemaGeneratedObject
     /// </summary>
     [SerializeField] private string _coverImage = string.Empty;
     public string CoverImage { get { return _coverImage; } set { _coverImage = value; } }
+
+    /// <summary>
+    /// Width of the cover image in pixels.
+    /// Schema Path: coverWidth
+    /// UnitySchemaConverter: NumberOrNullToNumberConverter
+    /// </summary>
+    [SerializeField] private float _coverWidth = 0f;
+    public float CoverWidth { get { return _coverWidth; } set { _coverWidth = value; } }
+
+    /// <summary>
+    /// Height of the cover image in pixels.
+    /// Schema Path: coverHeight
+    /// UnitySchemaConverter: NumberOrNullToNumberConverter
+    /// </summary>
+    [SerializeField] private float _coverHeight = 0f;
+    public float CoverHeight { get { return _coverHeight; } set { _coverHeight = value; } }
 
     protected override void ImportKnownProperties(JObject json)
     {
@@ -183,6 +199,26 @@ public class ItemSchema : SchemaGeneratedObject
                 _coverImage = json["coverImage"].ToString();
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' directly: {ex.Message}"); }
+        }
+
+        // Processing property 'coverWidth'
+        if (json["coverWidth"] != null)
+        {
+            try
+            {
+                _coverWidth = json["coverWidth"].Value<float>();
+            }
+            catch (Exception ex) { Debug.LogError($"Error converting 'coverWidth' directly: {ex.Message}"); }
+        }
+
+        // Processing property 'coverHeight'
+        if (json["coverHeight"] != null)
+        {
+            try
+            {
+                _coverHeight = json["coverHeight"].Value<float>();
+            }
+            catch (Exception ex) { Debug.LogError($"Error converting 'coverHeight' directly: {ex.Message}"); }
         }
 
     }
@@ -270,6 +306,26 @@ public class ItemSchema : SchemaGeneratedObject
             catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' directly: {ex.Message}"); }
         }
 
+        // Processing property 'coverWidth'
+        if (_coverWidth != null)
+        {
+            try
+            {
+                json["coverWidth"] = JToken.FromObject(_coverWidth); // Basic types can use FromObject safely
+            }
+            catch (Exception ex) { Debug.LogError($"Error converting 'coverWidth' directly: {ex.Message}"); }
+        }
+
+        // Processing property 'coverHeight'
+        if (_coverHeight != null)
+        {
+            try
+            {
+                json["coverHeight"] = JToken.FromObject(_coverHeight); // Basic types can use FromObject safely
+            }
+            catch (Exception ex) { Debug.LogError($"Error converting 'coverHeight' directly: {ex.Message}"); }
+        }
+
         return json;
     }
 
@@ -285,6 +341,8 @@ public class ItemSchema : SchemaGeneratedObject
             case "collection":
             case "mediatype":
             case "coverImage":
+            case "coverWidth":
+            case "coverHeight":
             case "extraFields":
                 return true;
             default:

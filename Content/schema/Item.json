@@ -47,7 +47,7 @@
       ],
       "description": "Creator/author of the item (string or array)",
       "x_meta": {
-        "UnitySchemaConverter": "StringOrArrayOrNullToStringConverter"
+        "UnitySchemaConverter": "StringOrArrayOrNullToStringArrayConverter"
       }
     },
     "subject": {
@@ -64,7 +64,7 @@
       ],
       "description": "Subject tags for this item.",
       "x_meta": {
-        "UnitySchemaConverter": "StringArrayOrNullToStringArrayConverter"
+        "UnitySchemaConverter": "StringOrArrayOrNullToStringArrayConverter"
       }
     },
     "collection": {
@@ -81,7 +81,7 @@
       ],
       "description": "Collections this item belongs to.",
       "x_meta": {
-        "UnitySchemaConverter": "StringArrayOrNullToStringArrayConverter"
+        "UnitySchemaConverter": "StringOrArrayOrNullToStringArrayConverter"
       }
     },
     "mediatype": {
@@ -96,6 +96,20 @@
       "description": "URL or path to the cover image.",
       "x_meta": {
         "UnitySchemaConverter": "StringOrNullToStringConverter"
+      }
+    },
+    "coverWidth": {
+      "type": "number",
+      "description": "Width of the cover image in pixels.",
+      "x_meta": {
+        "UnitySchemaConverter": "NumberOrNullToNumberConverter"
+      }
+    },
+    "coverHeight": {
+      "type": "number",
+      "description": "Height of the cover image in pixels.",
+      "x_meta": {
+        "UnitySchemaConverter": "NumberOrNullToNumberConverter"
       }
     }
   },
