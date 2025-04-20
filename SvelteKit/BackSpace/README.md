@@ -222,3 +222,115 @@ To check your current environment configuration:
 ```bash
 npm run unity:env
 ```
+
+# SpaceCraft Content Pipeline
+
+The SpaceCraft content pipeline manages the workflow of content from sources to Unity's StreamingAssets directory. It consists of several phases: bootstrap, pull, and export.
+
+## Architecture
+
+The pipeline is built with a modular architecture:
+
+- `pipeline.js` - Core pipeline class with bootstrap, pull, and export phases
+- `pipeline-run.js` - Runner script that executes all phases
+- `pipeline-export.js` - Specialized script for the export phase
+
+## Content Structure
+
+### Collections and Items
+
+Content is organized into collections, each containing items:
+
+```
+Content/
+  collections/
+    spacecraft/
+      collection.json
+      Items/
+        apollo11/
+          item.json
+          cover.jpg
+        voyager/
+          item.json
+          cover.jpg
+    parts/
+      collection.json
+      Items/
+        engine-a/
+          item.json
+          cover.jpg
+```
+
+### Configuration Files
+
+#### index-deep.json
+
+This file defines the content structure that will be exported to Unity, including:
+
+- `collectionsIndex`: Array of collection IDs that should be included
+- `collections`: Object containing metadata for each collection
+  - Each collection contains an `itemsIndex` array listing item IDs to include
+
+The importer behavior with this structure:
+- Collections listed in `collectionsIndex` will be created if missing
+- Collections not listed in `collectionsIndex` will be removed
+- For each collection, items listed in its `itemsIndex` will be included
+- Items not listed in `itemsIndex` will be excluded
+
+#### collections-filter.json
+
+This configuration file controls which collections and items are exported:
+
+```json
+{
+  "version": "1.0",
+  "description": "Filter configuration for exporting collections and items",
+  "collections": {
+    "spacecraft": {
+      "enabled": true,
+      "include": ["*"],
+      "exclude": ["wip-*", "deprecated-*"]
+    },
+    "parts": {
+      "enabled": true,
+      "include": ["*"],
+      "exclude": ["test-*"]
+    }
+  },
+  "metadata": {
+    "includeImages": true,
+    "includeVideos": true,
+    "includeModels": true,
+    "includeSounds": true
+  }
+}
+```
+
+- `enabled`: Controls whether a collection is exported
+- `include`: List of patterns for items to include (wildcards supported)
+- `exclude`: List of patterns for items to exclude (wildcards supported)
+
+## Workflow
+
+1. **Bootstrap Phase**: Sets up the initial content structure
+2. **Pull Phase**: Downloads content from external sources (e.g., Internet Archive)
+3. **Export Phase**: Copies filtered content to Unity StreamingAssets
+
+## Usage
+
+Run the full pipeline:
+```
+node scripts/pipeline.js run
+```
+
+Run specific phases:
+```
+node scripts/pipeline.js bootstrap
+node scripts/pipeline.js pull
+node scripts/pipeline.js export
+```
+
+Options:
+- `--verbose` or `-v`: Enable detailed logging
+- `--clean`: Clean destination directories before operation
+- `--force` or `-f`: Force operation, overwriting existing files

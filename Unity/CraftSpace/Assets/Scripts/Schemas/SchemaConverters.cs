@@ -28,10 +28,50 @@ public static class SchemaConverters
     /// </summary>
     public static IEnumerable<JsonConverter> All => new JsonConverter[]
     {
+        new NumberOrNullToNumberConverter(),
         new StringOrNullToStringConverter(),
         new StringOrArrayOrNullToStringConverter(),
         new ArrayOrNullToStringArrayConverter(),
+        new StringOrArrayOrNullToStringArrayConverter(),
     };
+}
+
+/// <summary>
+/// Converts number or null/missing to number (default to 0).
+/// </summary>
+public class NumberOrNullToNumberConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType) => objectType == typeof(int) || objectType == typeof(float) || objectType == typeof(double);
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.Null || reader.TokenType == JsonToken.None)
+            return 0;
+
+        var token = JToken.ReadFrom(reader);
+        
+        // Handle different numeric types
+        if (objectType == typeof(int))
+        {
+            return token.ToObject<int>();
+        }
+        else if (objectType == typeof(float))
+        {
+            return token.ToObject<float>();
+        }
+        else if (objectType == typeof(double))
+        {
+            return token.ToObject<double>();
+        }
+        
+        // Default fallback
+        return Convert.ToDouble(token.ToString());
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        writer.WriteValue(value ?? 0);
+    }
 }
 
 /// <summary>
@@ -131,6 +171,59 @@ public class ArrayOrNullToStringArrayConverter : JsonConverter
                 // Fallback for other unexpected token types, return as single element array
                 var fallbackStr = token.ToString();
                  return string.IsNullOrEmpty(fallbackStr) ? new string[0] : new[] { fallbackStr };
+        }
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        writer.WriteStartArray();
+        if (value is string[] array && array.Length > 0)
+        {
+            // Filter out null or empty strings before writing
+            foreach (var item in array.Where(s => !string.IsNullOrEmpty(s)))
+            {
+                writer.WriteValue(item);
+            }
+        }
+        writer.WriteEndArray();
+    }
+}
+
+/// <summary>
+/// Converts string[], string, or null/missing to string[].
+/// String -> single-element array
+/// Null/missing -> empty array
+/// Identical to ArrayOrNullToStringArrayConverter but with a different name for schema consistency.
+/// </summary>
+public class StringOrArrayOrNullToStringArrayConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType) => objectType == typeof(string[]);
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.Null || reader.TokenType == JsonToken.None)
+            return new string[0];
+
+        var token = JToken.ReadFrom(reader);
+
+        switch (token.Type)
+        {
+            case JTokenType.Array:
+                var array = token.ToObject<string[]>();
+                if (array == null)
+                    return new string[0];
+                // Filter out null or empty strings
+                return array.Where(s => !string.IsNullOrEmpty(s)).ToArray();
+
+            case JTokenType.String:
+                var str = token.Value<string>();
+                // If the string itself is null or empty, return empty array
+                return string.IsNullOrEmpty(str) ? new string[0] : new[] { str };
+
+            default:
+                // Fallback for other unexpected token types, return as single element array
+                var fallbackStr = token.ToString();
+                return string.IsNullOrEmpty(fallbackStr) ? new string[0] : new[] { fallbackStr };
         }
     }
 
