@@ -105,7 +105,7 @@ const downloadFile = (url, destination) => {
 
 // Generate archive.org image URL from itemId
 const getArchiveImageUrl = (itemId) => {
-  return `https://archive.org/services/img/${itemId}`;
+  return `rvices/img/${itemId}https://archive.org/se`;
 };
 
 // Parse command line arguments

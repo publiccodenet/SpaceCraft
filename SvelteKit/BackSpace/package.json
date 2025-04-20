@@ -51,7 +51,17 @@
     "unity:diff-webgl": "tsx scripts/unity-automation.js diff-webgl",
     "unity:deploy-webgl": "rm -rf ../../WebSites/spacetime && cp -r ../../Unity/CraftSpace/Builds/SpaceCraft ../../WebSites/spacetime",
     "unity:build-and-deploy": "npm run unity:build-webgl && npm run unity:deploy-webgl",
-    "unity:deploy-all": "npm run schemas:regenerate:unity && npm run unity:build-and-deploy"
+    "unity:deploy-all": "npm run schemas:regenerate:unity && npm run unity:build-and-deploy",
+    "pipeline": "node scripts/pipeline.js",
+    "pipeline:run": "node scripts/pipeline.js run",
+    "pipeline:bootstrap": "node scripts/pipeline.js bootstrap",
+    "pipeline:pull": "node scripts/pipeline.js pull",
+    "pipeline:export": "node scripts/pipeline.js export",
+    "pipeline:run:force": "node scripts/pipeline.js run --force",
+    "pipeline:run:clean": "node scripts/pipeline.js run --clean",
+    "pipeline:run:verbose": "node scripts/pipeline.js run --verbose",
+    "lint": "prettier --plugin-search-dir . --check . && eslint .",
+    "format": "prettier --plugin-search-dir . --write ."
   },
   "dependencies": {
     "async-retry": "^1.3.3",
