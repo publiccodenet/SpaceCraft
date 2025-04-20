@@ -35,7 +35,7 @@
       ],
       "description": "Creator(s) of this collection.",
       "x_meta": {
-        "UnitySchemaConverter": "StringArrayOrNullToStringArrayConverter"
+        "UnitySchemaConverter": "StringOrArrayOrNullToStringArrayConverter"
       }
     },
     "subject": {
@@ -52,7 +52,7 @@
       ],
       "description": "Subject tags for this collection.",
       "x_meta": {
-        "UnitySchemaConverter": "StringArrayOrNullToStringArrayConverter"
+        "UnitySchemaConverter": "StringOrArrayOrNullToStringArrayConverter"
       }
     },
     "mediatype": {
