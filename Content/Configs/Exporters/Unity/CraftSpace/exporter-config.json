@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "name": "SpaceCraft Content",
+  "description": "Configuration for exporting SpaceCraft content to Unity",
+  "className": "UnityExporter",
+  "outputPath": "Content/Configs/Exporters/Unity/CraftSpace",
+  "streamingAssetsPath": "Unity/CraftSpace/Assets/StreamingAssets",
+  "indexDeepFileName": "index-deep.json",
+  "statsFileName": "stats.json",
+  "exportOptions": {
+  },
+  "logging": {
+    "level": "info",
+    "outputToFile": true,
+    "logFilePath": "./Logs/unity-export.log"
+  }
+}

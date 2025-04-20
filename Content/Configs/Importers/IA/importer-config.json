@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "description": "Configuration for importing Internet Archive content into SpaceCraft",
+  "className": "IAImporter",
+  "apiEndpoint": "https://archive.org/services/search/v1/scrape",
+  "defaultFields": ["identifier", "title", "creator", "date", "description", "subject", "collection", "mediatype"],
+  "maxResults": 10000,
+  "cacheDirectory": "./Cache/IA",
+  "mediaTypes": ["texts", "movies", "audio", "software", "image"],
+  "collections": {
+    "scifi": {
+      "query": "subject:science fiction mediatype:texts",
+      "fields": ["identifier", "title", "creator", "date", "description", "subject", "collection", "mediatype", "downloads", "format"]
+    }
+  },
+  "logging": {
+    "level": "info",
+    "outputToFile": true,
+    "logFilePath": "./Logs/ia-import.log"
+  }
+} 
