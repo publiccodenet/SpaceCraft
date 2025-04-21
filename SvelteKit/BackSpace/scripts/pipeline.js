@@ -22,6 +22,8 @@ import { promisify } from 'util';
 import { glob } from 'glob';
 import os from 'os';
 import sharp from 'sharp';
+import InternetArchive from 'internetarchive-sdk-js';
+import * as converters from '../src/lib/schemas/converters.js';
 
 // Import constants from lib
 import { EMOJI, CLI_FORMATTING, PATHS } from '../src/lib/constants/index.ts';
@@ -259,13 +261,7 @@ class ContentPipeline {
     this.force = options.force || false;
     this.clean = options.clean || false;
     
-    // Ensure directories exist
-    this.ensureDirectoryExists(this.configDir);
-    this.ensureDirectoryExists(path.join(this.configDir, 'Importers'));
-    this.ensureDirectoryExists(path.join(this.configDir, 'Exporters'));
-    this.ensureDirectoryExists(this.contentCache);
-    
-    // Create a logger with receipt
+    // Create a logger with receipt - MUST be initialized before calling any methods
     const logLevel = this.verbose ? LOG_LEVELS.DEBUG : LOG_LEVELS.INFO;
     this.logger = new PipelineLogger(logLevel);
     
@@ -273,6 +269,20 @@ class ContentPipeline {
     if (options.downloaderInfo) {
       this.logger.setDownloadInfo(options.downloaderInfo);
     }
+    
+    // Initialize Internet Archive API client
+    this.api = new InternetArchive();
+    
+    // Create temporary directory for downloads
+    this.tempDir = path.join(os.tmpdir(), 'spacecraft-pipeline');
+    this.ensureDirectoryExists(this.tempDir);
+    this.ensureDirectoryExists(path.join(this.tempDir, 'covers'));
+    
+    // Ensure directories exist
+    this.ensureDirectoryExists(this.configDir);
+    this.ensureDirectoryExists(path.join(this.configDir, 'Importers'));
+    this.ensureDirectoryExists(path.join(this.configDir, 'Exporters'));
+    this.ensureDirectoryExists(this.contentCache);
   }
   
   /**
@@ -611,24 +621,24 @@ class ContentPipeline {
   
   /**
    * Fetch item from Internet Archive
-   * @param {string} spaceId Space ID
+   * @param {string} collectionId Collection ID
    * @param {string} itemId Item ID
    * @param {Object} options Fetch options
    * @returns {Promise<Object>} Item data
    */
-  async fetchItem(spaceId, itemId, options = {}) {
-    const context = { function: 'fetchItem', spaceId, itemId, ...options };
+  async fetchItem(collectionId, itemId, options = {}) {
+    const context = { function: 'fetchItem', collectionId, itemId, ...options };
     this.logger.increment('item_requested_count', 1, context);
     
     try {
-      this.logger.info(`Fetching item ${itemId} from space ${spaceId}`, null, context);
+      this.logger.info(`Fetching item ${itemId} from collection ${collectionId}`, null, context);
       
       // Track API metrics
       const startTime = Date.now();
       this.logger.increment('api_calls_total', 1, context);
       
-      // Make API request
-      const response = await this.api.getItem(spaceId, itemId);
+      // Make API request using Internet Archive SDK
+      const response = await this.api.getItem(itemId);
       
       // Calculate metrics
       const endTime = Date.now();
@@ -639,8 +649,18 @@ class ContentPipeline {
       this.logger.add('api_response_bytesDownloaded', responseSize, context);
       this.logger.add('api_response_time', duration, context);
       
-      if (response && response.id) {
-        const item = response;
+      if (response && response.metadata) {
+        const item = {
+          id: itemId,
+          name: response.metadata.title || itemId,
+          title: response.metadata.title,
+          description: response.metadata.description,
+          creator: response.metadata.creator,
+          subject: response.metadata.subject,
+          collection: response.metadata.collection,
+          publicdate: response.metadata.publicdate,
+          ...response.metadata
+        };
         this.logger.info(`Successfully fetched item: ${item.name} (${item.id})`, null, context);
         
         // Always set the coverImage URL based on item ID
@@ -654,7 +674,7 @@ class ContentPipeline {
         if (options.processCoverImage !== false) {
           try {
             const coverUrl = normalizedItem.coverImage;
-            const filename = path.basename(coverUrl);
+            const filename = `${itemId}.jpg`;
             const localPath = path.join(this.tempDir, 'covers', filename);
             
             // Download cover image
@@ -666,14 +686,19 @@ class ContentPipeline {
             normalizedItem.coverImageWidth = imageMetadata.width;
             normalizedItem.coverImageHeight = imageMetadata.height;
             this.logger.info(`Cover image dimensions: ${normalizedItem.coverImageWidth}x${normalizedItem.coverImageHeight}`, null, context);
+            
+            // Save cover image to the item directory in cache
+            const itemDir = path.join(this.contentCache, collectionId, 'Items', itemId);
+            await fs.ensureDir(itemDir);
+            await fs.copyFile(localPath, path.join(itemDir, 'cover.jpg'));
+            
+            // Save the normalized item to cache
+            await fs.writeJSON(path.join(itemDir, 'item.json'), normalizedItem, { spaces: 2 });
           } catch (error) {
             this.logger.error(`Error processing cover image for ${normalizedItem.id}`, error, context);
             this.logger.increment('cover_image_errors', 1, context);
           }
         }
-        
-        // Save the normalized item to cache here
-        // ... (this would be part of the import process)
         
         return normalizedItem;
       } else {
@@ -682,7 +707,7 @@ class ContentPipeline {
         throw new Error(`Invalid item response for ${itemId}`);
       }
     } catch (error) {
-      this.logger.error(`Error fetching item ${itemId} from space ${spaceId}`, error, context);
+      this.logger.error(`Error fetching item ${itemId} from collection ${collectionId}`, error, context);
       this.logger.increment('api_errors', 1, context);
       throw error;
     }
@@ -796,26 +821,23 @@ class ContentPipeline {
    * @returns {any} Converted value
    */
   convertType(value, type) {
-    switch (type) {
-      case 'StringOrNullToString':
-        return value === null || value === undefined ? '' : String(value);
-        
-      case 'StringOrArrayOrNullToString':
-        if (value === null || value === undefined) return '';
-        return Array.isArray(value) ? value.join('\n') : String(value);
-        
-      case 'StringArrayOrNullToStringArray':
-      case 'ArrayOrNullToStringArray':
-      case 'StringOrArrayOrNullToStringArray':
-        if (value === null || value === undefined) return [];
-        return Array.isArray(value) ? value : [String(value)];
-        
-      case 'NumberOrNullToNumber':
-        if (value === null || value === undefined) return 0;
-        return typeof value === 'number' ? value : Number(value);
-        
-      default:
-        return value;
+    // Define converter map for backward compatibility
+    const converterMap = {
+      'StringOrNullToString': 'StringOrNullToStringConverter',
+      'NumberOrNullToNumber': 'StringOrNumberOrNullToNumberConverter',
+      'StringArrayOrStringOrNull': 'StringArrayOrStringOrNullToStringConverter',
+      'StringArrayOrStringOrNullToStringArray': 'StringArrayOrStringOrNullToStringArrayConverter',
+      'SemicolonSplitStringOrStringArrayOrNullToStringArray': 'SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter'
+    };
+    
+    // Use the map for backward compatibility, otherwise construct the name directly
+    const converterName = converterMap[type] || `${type}Converter`;
+    
+    if (converters[converterName]) {
+      return converters[converterName](value);
+    } else {
+      this.logger.warn(`Converter not found: ${converterName}`, null, { function: 'convertType' });
+      return value;
     }
   }
   
@@ -827,11 +849,11 @@ class ContentPipeline {
   normalizeItemData(item) {
     const normalized = { ...item };
     
-    // Type conversions for common fields
-    normalized.title = this.convertType(normalized.title, 'StringOrNullToString');
-    normalized.description = this.convertType(normalized.description, 'StringOrArrayOrNullToString');
-    normalized.creator = this.convertType(normalized.creator, 'StringOrArrayOrNullToStringArray');
-    normalized.subject = this.convertType(normalized.subject, 'StringArrayOrNullToStringArray');
+    // Type conversions for common fields using standardized converter names
+    normalized.title = converters.StringArrayOrStringOrNullToStringConverter(normalized.title);
+    normalized.description = converters.StringArrayOrStringOrNullToStringConverter(normalized.description);
+    normalized.creator = converters.StringArrayOrStringOrNullToStringArrayConverter(normalized.creator);
+    normalized.subject = converters.SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter(normalized.subject);
     
     // Process collection array - extract favorite counts and filter out fav_ prefix entries
     let favoriteCount = 0;
@@ -846,9 +868,9 @@ class ContentPipeline {
       favoriteCount = originalLength - normalized.collection.length;
       
       // Ensure collection is consistent
-      normalized.collection = this.convertType(normalized.collection, 'StringArrayOrNullToStringArray');
+      normalized.collection = converters.StringArrayOrStringOrNullToStringArrayConverter(normalized.collection);
     } else {
-      normalized.collection = this.convertType(normalized.collection, 'StringArrayOrNullToStringArray');
+      normalized.collection = converters.StringArrayOrStringOrNullToStringArrayConverter(normalized.collection);
     }
     
     // Add favorite count to metadata
@@ -878,30 +900,26 @@ class ContentPipeline {
       // Add item to the enhanced index if an item.json exists in cache
       if (fs.existsSync(itemCachePath)) {
         // Read item data from cache - already normalized during import
-        const normalizedItem = await fs.readJSON(itemCachePath);
+        const cachedItem = await fs.readJSON(itemCachePath);
         
-        // Add to enhanced index - this is where all metadata lives, not in individual files
-        if (enhancedIndex.collections[collectionId]) {
-          enhancedIndex.collections[collectionId].items[itemId] = {
-            id: itemId,
-            name: normalizedItem.title || itemId,
-            description: normalizedItem.description || '',
-            item: normalizedItem
-          };
-        }
-      } else {
-        throw new Error(`Item ${itemId} not found in cache`);
-      }
-      
-      // Always ensure cover image information is included in the enhanced index
-      if (enhancedIndex.collections[collectionId]?.items[itemId]) {
-        // Source URL from Internet Archive API
-        const coverImageUrl = `https://archive.org/services/img/${itemId}`;
+        // Filter to only include whitelisted keys
+        const filteredItem = {
+          id: cachedItem.id,
+          title: cachedItem.title,
+          description: cachedItem.description,
+          creator: cachedItem.creator,
+          subject: cachedItem.subject,
+          collection: cachedItem.collection,
+          mediatype: cachedItem.mediatype,
+          coverImage: cachedItem.coverImage,
+          coverWidth: cachedItem.coverImageWidth,
+          coverHeight: cachedItem.coverImageHeight,
+          favoriteCount: cachedItem.favoriteCount
+        };
         
-        // Initialize cover image information
-        enhancedIndex.collections[collectionId].items[itemId].coverImage = {
-          sourceUrl: coverImageUrl,
-          fileName: 'cover.jpg'
+        // Set ONLY the item key - no coverImage or any other keys
+        enhancedIndex.collections[collectionId].items[itemId] = {
+          item: filteredItem
         };
         
         // Copy cover image file if it exists locally
@@ -911,16 +929,11 @@ class ContentPipeline {
             coverCachePath,
             path.join(unityItemDir, 'cover.jpg')
           );
-          
-          // Get image dimensions and add to enhanced index
-          const dimensions = await this.getImageDimensions(coverCachePath);
-          if (dimensions) {
-            enhancedIndex.collections[collectionId].items[itemId].coverImage.width = dimensions.width;
-            enhancedIndex.collections[collectionId].items[itemId].coverImage.height = dimensions.height;
-          }
         } else {
-          this.logger.debug(`No local cover image found for ${collectionId}/${itemId}, but source URL included in index`, null, context);
+          this.logger.debug(`No local cover image found for ${collectionId}/${itemId}`, null, context);
         }
+      } else {
+        throw new Error(`Item ${itemId} not found in cache`);
       }
     } catch (error) {
       this.logger.error(`Error exporting item ${collectionId}/${itemId}`, error, context);
@@ -1052,6 +1065,22 @@ class ContentPipeline {
         this.logger.info(`Updated cache copy of index-deep.json in ${exporterConfig._configDir}`, null, { function: 'export' });
       }
       
+      // Clear and rebuild Unity StreamingAssets directories
+      const unityCollectionsDir = path.join(this.unityDir, 'Assets/StreamingAssets/Content/collections');
+      const unityStreamingAssetsDir = path.join(this.unityDir, 'Assets/StreamingAssets');
+
+      // Remove and recreate collections directory
+      this.logger.info(`Removing and recreating ${unityCollectionsDir}`, null, { function: 'export' });
+      await fs.remove(unityCollectionsDir);
+      await fs.ensureDir(unityCollectionsDir);
+
+      // Copy index-deep.json to the Unity StreamingAssets root for easier access from Unity/web
+      this.logger.info(`Copying index-deep.json to ${unityStreamingAssetsDir}`, null, { function: 'export' });
+      await fs.copyFile(
+        path.join(this.unityContentDir, 'index-deep.json'),
+        path.join(unityStreamingAssetsDir, 'index-deep.json')
+      );
+      
       // Finalize and write receipt file if receiptFileName is configured
       if (exporterConfig.receiptFileName) {
         // Set end time for export phase
@@ -1101,7 +1130,7 @@ class ContentPipeline {
    * @returns {Promise<Object>} Refinement stats
    */
   async refine(options = {}) {
-    this.logger.info(`${EMOJI.START} Starting content refinement phase...${CLI_FORMATTING.RESET}`);
+    console.log(`${CLI_FORMATTING.BLUE}${EMOJI.START} Starting content refinement phase...${CLI_FORMATTING.RESET}`);
     
     // For now, this is a placeholder for future refinement passes:
     // - LLM-generated descriptions
@@ -1109,13 +1138,11 @@ class ContentPipeline {
     // - Duplicate detection
     // - Scoring and analysis
     
-    this.logger.success(`Content refinement phase completed.`);
+    this.logger.success(`Content refinement phase completed.`, null, { function: 'refine' });
     
     return {
       status: 'success',
-      stats: {
-        itemsRefined: 0
-      }
+      receipt: this.logger.getReceipt()
     };
   }
   

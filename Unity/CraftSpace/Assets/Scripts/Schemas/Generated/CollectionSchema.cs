@@ -19,7 +19,7 @@
 //     1. NEVER modify this generated file directly
 //     2. ALWAYS modify the schema generator: Unity/CraftSpace/Assets/Editor/SchemaGenerator/SchemaGenerator.cs
 //     3. Update schema definitions in SvelteKit/BackSpace/src/lib/schemas/
-//     4. Run npm run schema:export in SvelteKit/BackSpace directory
+//     4. Run  npm run schemas:export in SvelteKit/BackSpace directory
 //     5. Regenerate using CraftSpace > Schema Generator in Unity
 //
 //     Any changes made directly to this file WILL BE LOST when regenerated.
@@ -42,6 +42,7 @@ public class CollectionSchema : SchemaGeneratedObject
     /// <summary>
     /// Unique identifier for the collection
     /// Schema Path: id
+    /// UnitySchemaConverter: StringOrNullToStringConverter
     /// </summary>
     [SerializeField] private string _id = string.Empty;
     public override string Id { get { return _id; } set { _id = value; } }
@@ -57,7 +58,7 @@ public class CollectionSchema : SchemaGeneratedObject
     /// <summary>
     /// Optional description for the collection
     /// Schema Path: description
-    /// UnitySchemaConverter: StringOrNullToStringConverter
+    /// UnitySchemaConverter: StringArrayOrStringOrNullToStringConverter
     /// </summary>
     [SerializeField] private string _description = string.Empty;
     public string Description { get { return _description; } set { _description = value; } }
@@ -65,7 +66,7 @@ public class CollectionSchema : SchemaGeneratedObject
     /// <summary>
     /// Creator(s) of this collection.
     /// Schema Path: creator
-    /// UnitySchemaConverter: StringOrArrayOrNullToStringArrayConverter
+    /// UnitySchemaConverter: StringOrNullToStringConverter
     /// </summary>
     [SerializeField] private string _creator = string.Empty;
     public string Creator { get { return _creator; } set { _creator = value; } }
@@ -73,7 +74,7 @@ public class CollectionSchema : SchemaGeneratedObject
     /// <summary>
     /// Subject tags for this collection.
     /// Schema Path: subject
-    /// UnitySchemaConverter: StringOrArrayOrNullToStringArrayConverter
+    /// UnitySchemaConverter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
     /// </summary>
     [SerializeField] private string _subject = string.Empty;
     public string Subject { get { return _subject; } set { _subject = value; } }
@@ -97,91 +98,99 @@ public class CollectionSchema : SchemaGeneratedObject
     /// <summary>
     /// The query used to populate this collection (e.g., from an external API)
     /// Schema Path: query
-    /// UnitySchemaConverter: StringOrArrayOrNullToStringConverter
+    /// UnitySchemaConverter: StringOrNullToStringConverter
     /// </summary>
     [SerializeField] private string _query = string.Empty;
     public string Query { get { return _query; } set { _query = value; } }
 
     protected override void ImportKnownProperties(JObject json)
     {
-        // Processing property 'id'
+        // Use converter: StringOrNullToStringConverter
         if (json["id"] != null)
         {
             try
             {
-                _id = json["id"].ToString();
+                var converter = new StringOrNullToStringConverter();
+                _id = (string)converter.ReadJson(json["id"].CreateReader(), typeof(string), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'id' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'id' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'title'
+        // Use converter: StringOrNullToStringConverter
         if (json["title"] != null)
         {
             try
             {
-                _title = json["title"].ToString();
+                var converter = new StringOrNullToStringConverter();
+                _title = (string)converter.ReadJson(json["title"].CreateReader(), typeof(string), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'title' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'title' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'description'
+        // Use converter: StringArrayOrStringOrNullToStringConverter
         if (json["description"] != null)
         {
             try
             {
-                _description = json["description"].ToString();
+                var converter = new StringArrayOrStringOrNullToStringConverter();
+                _description = (string)converter.ReadJson(json["description"].CreateReader(), typeof(string), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'description' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'description' with StringArrayOrStringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'creator'
+        // Use converter: StringOrNullToStringConverter
         if (json["creator"] != null)
         {
             try
             {
-                _creator = json["creator"].ToString();
+                var converter = new StringOrNullToStringConverter();
+                _creator = (string)converter.ReadJson(json["creator"].CreateReader(), typeof(string), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'creator' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'creator' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'subject'
+        // Use converter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
         if (json["subject"] != null)
         {
             try
             {
-                _subject = json["subject"].ToString();
+                var converter = new SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter();
+                _subject = (string)converter.ReadJson(json["subject"].CreateReader(), typeof(string), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'subject' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'subject' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
         }
 
-        // Processing property 'mediatype'
+        // Use converter: StringOrNullToStringConverter
         if (json["mediatype"] != null)
         {
             try
             {
-                _mediatype = json["mediatype"].ToString();
+                var converter = new StringOrNullToStringConverter();
+                _mediatype = (string)converter.ReadJson(json["mediatype"].CreateReader(), typeof(string), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'mediatype' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'mediatype' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'coverImage'
+        // Use converter: StringOrNullToStringConverter
         if (json["coverImage"] != null)
         {
             try
             {
-                _coverImage = json["coverImage"].ToString();
+                var converter = new StringOrNullToStringConverter();
+                _coverImage = (string)converter.ReadJson(json["coverImage"].CreateReader(), typeof(string), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'query'
+        // Use converter: StringOrNullToStringConverter
         if (json["query"] != null)
         {
             try
             {
-                _query = json["query"].ToString();
+                var converter = new StringOrNullToStringConverter();
+                _query = (string)converter.ReadJson(json["query"].CreateReader(), typeof(string), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'query' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'query' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
     }
@@ -189,84 +198,108 @@ public class CollectionSchema : SchemaGeneratedObject
     protected override JObject ExportKnownProperties()
     {
         var json = new JObject();
-        // Processing property 'id'
+        // Use converter: StringOrNullToStringConverter
         if (_id != null)
         {
             try
             {
-                json["id"] = JToken.FromObject(_id); // Basic types can use FromObject safely
+                var tempWriter = new JTokenWriter();
+                var converter = new StringOrNullToStringConverter();
+                converter.WriteJson(tempWriter, _id, null);
+                json["id"] = tempWriter.Token;
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'id' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'id' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'title'
+        // Use converter: StringOrNullToStringConverter
         if (_title != null)
         {
             try
             {
-                json["title"] = JToken.FromObject(_title); // Basic types can use FromObject safely
+                var tempWriter = new JTokenWriter();
+                var converter = new StringOrNullToStringConverter();
+                converter.WriteJson(tempWriter, _title, null);
+                json["title"] = tempWriter.Token;
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'title' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'title' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'description'
+        // Use converter: StringArrayOrStringOrNullToStringConverter
         if (_description != null)
         {
             try
             {
-                json["description"] = JToken.FromObject(_description); // Basic types can use FromObject safely
+                var tempWriter = new JTokenWriter();
+                var converter = new StringArrayOrStringOrNullToStringConverter();
+                converter.WriteJson(tempWriter, _description, null);
+                json["description"] = tempWriter.Token;
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'description' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'description' with StringArrayOrStringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'creator'
+        // Use converter: StringOrNullToStringConverter
         if (_creator != null)
         {
             try
             {
-                json["creator"] = JToken.FromObject(_creator); // Basic types can use FromObject safely
+                var tempWriter = new JTokenWriter();
+                var converter = new StringOrNullToStringConverter();
+                converter.WriteJson(tempWriter, _creator, null);
+                json["creator"] = tempWriter.Token;
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'creator' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'creator' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'subject'
+        // Use converter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
         if (_subject != null)
         {
             try
             {
-                json["subject"] = JToken.FromObject(_subject); // Basic types can use FromObject safely
+                var tempWriter = new JTokenWriter();
+                var converter = new SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter();
+                converter.WriteJson(tempWriter, _subject, null);
+                json["subject"] = tempWriter.Token;
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'subject' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'subject' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
         }
 
-        // Processing property 'mediatype'
+        // Use converter: StringOrNullToStringConverter
         if (_mediatype != null)
         {
             try
             {
-                json["mediatype"] = JToken.FromObject(_mediatype); // Basic types can use FromObject safely
+                var tempWriter = new JTokenWriter();
+                var converter = new StringOrNullToStringConverter();
+                converter.WriteJson(tempWriter, _mediatype, null);
+                json["mediatype"] = tempWriter.Token;
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'mediatype' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'mediatype' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'coverImage'
+        // Use converter: StringOrNullToStringConverter
         if (_coverImage != null)
         {
             try
             {
-                json["coverImage"] = JToken.FromObject(_coverImage); // Basic types can use FromObject safely
+                var tempWriter = new JTokenWriter();
+                var converter = new StringOrNullToStringConverter();
+                converter.WriteJson(tempWriter, _coverImage, null);
+                json["coverImage"] = tempWriter.Token;
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
-        // Processing property 'query'
+        // Use converter: StringOrNullToStringConverter
         if (_query != null)
         {
             try
             {
-                json["query"] = JToken.FromObject(_query); // Basic types can use FromObject safely
+                var tempWriter = new JTokenWriter();
+                var converter = new StringOrNullToStringConverter();
+                converter.WriteJson(tempWriter, _query, null);
+                json["query"] = tempWriter.Token;
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'query' directly: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'query' with StringOrNullToStringConverter: {ex.Message}"); }
         }
 
         return json;

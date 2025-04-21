@@ -1,14 +1,10 @@
 {
   "id": "aposimz",
+  "name": "APOSIMZ",
   "title": "APOSIMZ",
-  "creator": "Tsutomu Nihei",
-  "date": "2023-02-23T00:00:00Z",
-  "description": "This story takes place on the frigid, massive artificial planet known as Aposimz. Eo, Biko and Etherow, residents of the White Diamond Beam, are in the middle of combat training when suddenly a girl appears, Rebedoan Empire soldiers in hot pursuit. The girl asks for their help in keeping safe a “code” and seven mysterious “bullets.” This chance encounter marks a major shift in the fate of the entire planet…",
-  "mediatype": "texts",
-  "collection": [
-    "comics_inbox",
-    "comics",
-    "additional_collections"
+  "description": "<span style=\"font-family:Maax, 'Century Gothic', Futura, helvetica, arial, sans-serif;font-size:16px;background-color:rgb(255,255,255);\">This story takes place on the frigid, massive artificial planet known as Aposimz. Eo, Biko and Etherow, residents of the White Diamond Beam, are in the middle of combat training when suddenly a girl appears, Rebedoan Empire soldiers in hot pursuit. The girl asks for their help in keeping safe a “code” and seven mysterious “bullets.” This chance encounter marks a major shift in the fate of the entire planet…</span>",
+  "creator": [
+    "Tsutomu Nihei"
   ],
   "subject": [
     "MANGA",
@@ -16,37 +12,43 @@
     "ADVENTURE",
     "SCIENCE-FICTION"
   ],
-  "downloads": 2688,
-  "item_size": 5649828963,
-  "format": [
-    "Archive BitTorrent",
-    "Comic Book ZIP",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
   ],
-  "favorite_count": 40,
-  "favorite_sample": [
-    "aj_the_artist",
-    "alexandre_crz",
-    "alif_hilmi",
-    "baigo",
-    "blackthumber"
+  "publicdate": "2023-04-14 11:53:22",
+  "identifier": "aposimz",
+  "mediatype": "texts",
+  "date": "2023-02-23",
+  "scanner": "Internet Archive HTML5 Uploader 1.7.0",
+  "uploader": "pedro.hassan@hotmail.com",
+  "addeddate": "2023-04-14 11:53:22",
+  "curation": "[curator]validator@archive.org[/curator][date]20230414115337[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/aposimz",
+  "identifier-ark": "ark:/13960/s22n4n19kqt",
+  "ocr": "tesseract 5.3.0-3-g9920",
+  "ocr_parameters": "-l urd+chi_sim+mon+deu+amh+que+srp+kir+kaz+spa+fas+nor+eng+ara+rus+Cyrillic+Latin+Arabic",
+  "ocr_module_version": "0.0.20",
+  "ocr_autonomous": "true",
+  "ocr_detected_script": [
+    "Bengali",
+    "Cyrillic",
+    "Latin",
+    "Arabic"
   ],
-  "download_url": "https://archive.org/download/aposimz/APOSIMZ%20(1).epub",
-  "download_url_cached": "scifi/content/aposimz_epub.epub",
-  "download_url_timestamp": "2025-03-13T15:10:20.173Z",
-  "download_url_etag": "\"65d05058-18b40faa\"",
-  "download_url_dl_duration": 36.488,
-  "download_url_dl_mbps": 10.832433244738237
+  "ocr_detected_script_conf": [
+    "0.3051",
+    "0.0890",
+    "0.2537",
+    "0.0778"
+  ],
+  "ocr_detected_lang": "la",
+  "ocr_detected_lang_conf": "1.0000",
+  "page_number_confidence": "95.73",
+  "pdf_module_version": "0.0.22",
+  "coverImage": "https://archive.org/services/img/aposimz",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 245
 }

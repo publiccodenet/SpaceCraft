@@ -1,14 +1,10 @@
 {
   "id": "axa-01-000",
+  "name": "Axa - Collection complète",
   "title": "Axa - Collection complète",
-  "creator": "Donne Avenell",
-  "date": "1981-01-01T00:00:00Z",
-  "description": "AXA Scénario : Avenell, Donne Dessin : Romero Couleurs : N&B Dépot légal : 04/1981 Axa est un comic strip britannique qui se situe sur la terre en 2080. Axa, qui a la tête (et le corps) de Brigitte Bardot est une jeune qui décide de quitter le havre de paix du \"Dome\" pour vivre libre dans l'atmosphère. C'est sans doute pour profiter de cette liberté qu'elle se balade les seins nus au fil des pages. Cette Conan en jupons (mais sans jupon) vit des aventures de pure héroïc fantasy avec ici et là des éléments science-fictionnels. Le dessin n'est pas désagréable mais les histoires sont assez nazes et l'album ne respecte pas le format original ce qui ne facilite pas la lecture (les bandes sont réduites). Une curiosité.",
-  "mediatype": "texts",
-  "collection": [
-    "adultcomics",
-    "deemphasize",
-    "no-preview"
+  "description": "<div>AXA<br /></div><div><br /></div><div>Scénario : Avenell, Donne</div>Dessin : Romero<br />Couleurs : N&amp;B<br /><div>Dépot légal : 04/1981 <br /></div><div><br /></div><div><span>Axa est un comic strip britannique qui se \nsitue sur la terre en 2080. Axa, qui a la tête (et le corps) de Brigitte \nBardot est une jeune qui décide de quitter le havre de paix du \"Dome\" \npour vivre libre dans l'atmosphère.<br />\nC'est sans doute pour profiter de cette liberté qu'elle se balade les seins nus au fil des pages.<br />\nCette Conan en jupons (mais sans jupon) vit des aventures de pure héroïc\n fantasy avec ici et là des éléments science-fictionnels.<br />\nLe dessin n'est pas désagréable mais les histoires sont assez nazes et \nl'album ne respecte pas le format original ce qui ne facilite pas la \nlecture (les bandes sont réduites).<br />\nUne curiosité.                                                        </span></div>",
+  "creator": [
+    "Donne Avenell"
   ],
   "subject": [
     "Bande dessinée",
@@ -16,6 +12,8 @@
     "Comic Books",
     "Comics",
     "Comic strip",
+    "Comic Books",
+    "Comics",
     "Science-Fiction",
     "héroïc fantasy",
     "science fiction",
@@ -24,37 +22,39 @@
     "nude",
     "nudity"
   ],
-  "downloads": 16126,
-  "item_size": 1780579123,
-  "format": [
-    "Additional Text PDF",
-    "Archive BitTorrent",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Image Container PDF",
-    "Item Tile",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "adultcomics",
+    "deemphasize",
+    "no-preview"
   ],
-  "favorite_count": 78,
-  "favorite_sample": [
-    "alexander_scott420",
-    "altgaming",
-    "amsp",
-    "annoushka_reger",
-    "ashish_gupta_india"
+  "publicdate": "2024-01-07 11:43:01",
+  "identifier": "axa-01-000",
+  "mediatype": "texts",
+  "date": "1981",
+  "language": "fre",
+  "scanner": "Internet Archive HTML5 Uploader 1.7.0",
+  "uploader": "iboja.borte@gmail.com",
+  "addeddate": "2024-01-07 11:43:01",
+  "curation": "[curator]jscott@archive.org[/curator][date]20240107070620[/date][state][/state][comment]Moved automatically by CHARM Script Setting.[/comment]",
+  "identifier-access": "http://archive.org/details/axa-01-000",
+  "identifier-ark": "ark:/13960/s2wqfjssbvb",
+  "ppi": "96",
+  "ocr": "tesseract 5.3.0-6-g76ae",
+  "ocr_parameters": "-l fra",
+  "ocr_module_version": "0.0.21",
+  "ocr_detected_script": "Latin",
+  "ocr_detected_script_conf": "0.3419",
+  "ocr_detected_lang": "am",
+  "ocr_detected_lang_conf": "1.0000",
+  "page_number_confidence": "0",
+  "page_number_module_version": "1.0.3",
+  "pdf_module_version": "0.0.23",
+  "collection_added": [
+    "deemphasize",
+    "no-preview"
   ],
-  "download_url": "https://archive.org/download/axa-01-000/Axa%20-%2001%20%20000.epub",
-  "download_url_cached": "scifi/content/axa-01-000_epub.epub",
-  "download_url_timestamp": "2025-03-13T08:43:31.359Z",
-  "download_url_etag": "\"65c79149-3ba806b\"",
-  "download_url_dl_duration": 91.003,
-  "download_url_dl_mbps": 0.655542696868805
+  "coverImage": "https://archive.org/services/img/axa-01-000",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 244
 }

@@ -1,13 +1,10 @@
 {
   "id": "TheMartianWay",
+  "name": "The Martian Way",
   "title": "The Martian Way",
-  "creator": "Isaac Asimov",
-  "date": null,
-  "description": "Novella published in Galaxy Science Fiction (November 1952). Blurb: \"It was junk they hunted, but enormously valuable and urgently needed junk that cost only bravery and the cheapest fuel ... yet they were kept from collecting it by an even cheaper lie!\"",
-  "mediatype": "texts",
-  "collection": [
-    "opensource",
-    "community"
+  "description": "Novella published in Galaxy Science Fiction (November 1952).\nBlurb: \"It was junk they hunted, but enormously valuable and urgently needed junk that cost only bravery and the cheapest fuel ... yet they were kept from collecting it by an even cheaper lie!\"",
+  "creator": [
+    "Isaac Asimov"
   ],
   "subject": [
     "Science Fiction",
@@ -17,35 +14,26 @@
     "Martians",
     "Martian SFF"
   ],
-  "downloads": 8126,
-  "item_size": 31792123,
-  "format": [
-    "Abbyy GZ",
-    "Additional Text PDF",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Image Container PDF",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP"
+  "collection": [
+    "opensource",
+    "community"
   ],
-  "favorite_count": 13,
-  "favorite_sample": [
-    "ajacks01",
-    "ayin007",
-    "coelho99",
-    "grainofrice",
-    "jdlin"
-  ],
-  "download_url": "https://archive.org/download/TheMartianWay/MartianWayByIsaacAsimov1950s.epub",
-  "download_url_cached": "scifi/content/TheMartianWay_epub.epub",
-  "download_url_timestamp": "2025-03-13T10:01:01.366Z",
-  "download_url_etag": "\"654f2851-12c91e\"",
-  "download_url_dl_duration": 0.697,
-  "download_url_dl_mbps": 1.6845062781269617
+  "publicdate": "2012-01-18 07:14:11",
+  "mediatype": "texts",
+  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "identifier": "TheMartianWay",
+  "uploader": "geoffgconklin@gmail.com",
+  "addeddate": "2012-01-18 07:06:41",
+  "language": "English",
+  "identifier-access": "http://www.archive.org/details/TheMartianWay",
+  "identifier-ark": "ark:/13960/t7mp6315k",
+  "ppi": "72",
+  "ocr": "ABBYY FineReader 8.0",
+  "repub_state": "4",
+  "curation": "[curator]malware@archive.org[/curator][date]20140321115425[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia903707_27",
+  "coverImage": "https://archive.org/services/img/TheMartianWay",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 249
 }

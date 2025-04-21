@@ -1,15 +1,10 @@
 {
   "id": "sundome-milky-way-v-02-2021-digital-danke-empire",
+  "name": "Sundome!! Milky Way Volumes 1-9",
   "title": "Sundome!! Milky Way Volumes 1-9",
-  "creator": "Kazuki Funatsu",
-  "date": "2016-06-01T00:00:00Z",
-  "description": "Sundome!! Milky Way is a Japanese manga series written and illustrated by Kazuki Funatsu. It was serialized in Shueisha's seinen manga magazine Grand Jump from June 2016 to November 2019, with its chapters collected in nine tankōbon volumes. An alternate ending, titled Sundome!! Plot: Sakura Yoshitake is a salaryman who works for a food company. One day while driving home, he crashes when he sees a UFO and a terrifying alien. He wakes up in his apartment to find a beautiful woman named Lune near him. She says she has fallen in love with him and wants his child. However, whenever she gets embarrassed, like whenever they try to have sex, she loses control of herself and transforms into the terrifying alien, complicating their love life.",
-  "mediatype": "texts",
-  "collection": [
-    "adultmanga",
-    "adultcomics",
-    "deemphasize",
-    "no-preview"
+  "description": "Sundome!! Milky Way is a Japanese manga series written and illustrated by Kazuki Funatsu. It was serialized in Shueisha's seinen manga magazine Grand Jump from June 2016 to November 2019, with its chapters collected in nine tankōbon volumes. An alternate ending, titled Sundome!!<br />\n<br />\nPlot: Sakura Yoshitake is a salaryman who works for a food company. One day while driving home, he crashes when he sees a UFO and a terrifying alien. He wakes up in his apartment to find a beautiful woman named Lune near him. She says she has fallen in love with him and wants his child. However, whenever she gets embarrassed, like whenever they try to have sex, she loses control of herself and transforms into the terrifying alien, complicating their love life.",
+  "creator": [
+    "Kazuki Funatsu"
   ],
   "subject": [
     "Erotic comedy",
@@ -27,37 +22,44 @@
     "Harem manga",
     "Science fiction manga"
   ],
-  "downloads": 7118,
-  "item_size": 4394762942,
-  "format": [
-    "Archive BitTorrent",
-    "Comic Book ZIP",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "adultmanga",
+    "adultcomics",
+    "deemphasize",
+    "no-preview"
   ],
-  "favorite_count": 37,
-  "favorite_sample": [
-    "amsp",
-    "aum7",
-    "blindchild98",
-    "boewjr",
-    "bookaholicholly"
+  "publicdate": "2024-05-10 03:09:39",
+  "identifier": "sundome-milky-way-v-02-2021-digital-danke-empire",
+  "mediatype": "texts",
+  "date": "2016-06-01",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.7.0",
+  "uploader": "gideonmadu64@gmail.com",
+  "addeddate": "2024-05-10 03:09:39",
+  "curation": "[curator]validator@archive.org[/curator][date]20240510031023[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/sundome-milky-way-v-02-2021-digital-danke-empire",
+  "identifier-ark": "ark:/13960/s24rzx7vdm2",
+  "ocr": "tesseract 5.3.0-6-g76ae",
+  "ocr_parameters": "-l eng",
+  "ocr_module_version": "0.0.21",
+  "ocr_detected_script": "Cyrillic",
+  "ocr_detected_script_conf": "0.3950",
+  "ocr_detected_lang": "en",
+  "ocr_detected_lang_conf": "1.0000",
+  "page_number_confidence": "0",
+  "page_number_module_version": "1.0.5",
+  "pdf_module_version": "0.0.23",
+  "year": "2016",
+  "collection_added": [
+    "magazine_rack",
+    "comics",
+    "additional_collections",
+    "adultcomics",
+    "deemphasize",
+    "no-preview"
   ],
-  "download_url": "https://archive.org/download/sundome-milky-way-v-02-2021-digital-danke-empire/Sundome!!%20Milky%20Way%20v01%20(2021)%20(Digital)%20(danke-Empire).epub",
-  "download_url_cached": "scifi/content/sundome-milky-way-v-02-2021-digital-danke-empire_epub.epub",
-  "download_url_timestamp": "2025-03-13T10:06:35.825Z",
-  "download_url_etag": "\"6688d15a-dbc8c8e\"",
-  "download_url_dl_duration": 22.777,
-  "download_url_dl_mbps": 9.649396984205687
+  "coverImage": "https://archive.org/services/img/sundome-milky-way-v-02-2021-digital-danke-empire",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 257
 }

@@ -23,60 +23,15 @@ using Newtonsoft.Json.Linq;
 /// </summary>
 public static class SchemaConverters
 {
-    /// <summary>
-    /// Get all schema converters in a deterministic order
-    /// </summary>
-    public static IEnumerable<JsonConverter> All => new JsonConverter[]
-    {
-        new NumberOrNullToNumberConverter(),
-        new StringOrNullToStringConverter(),
-        new StringOrArrayOrNullToStringConverter(),
-        new ArrayOrNullToStringArrayConverter(),
-        new StringOrArrayOrNullToStringArrayConverter(),
-    };
+    // NOTE: We don't register converters globally with Json.NET
+    // Instead, we use direct lookup by name in UnitySchemaConverter.cs
+    // This ensures exact naming matches between JSON schema metadata and converter implementations
 }
 
 /// <summary>
-/// Converts number or null/missing to number (default to 0).
-/// </summary>
-public class NumberOrNullToNumberConverter : JsonConverter
-{
-    public override bool CanConvert(Type objectType) => objectType == typeof(int) || objectType == typeof(float) || objectType == typeof(double);
-
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-    {
-        if (reader.TokenType == JsonToken.Null || reader.TokenType == JsonToken.None)
-            return 0;
-
-        var token = JToken.ReadFrom(reader);
-        
-        // Handle different numeric types
-        if (objectType == typeof(int))
-        {
-            return token.ToObject<int>();
-        }
-        else if (objectType == typeof(float))
-        {
-            return token.ToObject<float>();
-        }
-        else if (objectType == typeof(double))
-        {
-            return token.ToObject<double>();
-        }
-        
-        // Default fallback
-        return Convert.ToDouble(token.ToString());
-    }
-
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-    {
-        writer.WriteValue(value ?? 0);
-    }
-}
-
-/// <summary>
-/// Converts string or null/missing to string.
-/// Null/missing -> empty string
+/// Converts string or null/missing to string (default to empty string).
+/// - string → unchanged
+/// - null/undefined → empty string
 /// </summary>
 public class StringOrNullToStringConverter : JsonConverter
 {
@@ -88,6 +43,11 @@ public class StringOrNullToStringConverter : JsonConverter
             return "";
 
         var token = JToken.ReadFrom(reader);
+
+        if (token.Type == JTokenType.String)
+            return token.Value<string>() ?? "";
+            
+        // Fallback for other token types
         return token.ToString();
     }
 
@@ -98,11 +58,77 @@ public class StringOrNullToStringConverter : JsonConverter
 }
 
 /// <summary>
-/// Converts string, string[], or null/missing to string.
-/// String[] -> newline-separated string
-/// Null/missing -> empty string
+/// Converts string, number, or null/missing to number (default to 0).
+/// - number → unchanged
+/// - string → parsed to number (0 if invalid)
+/// - null/undefined → 0
 /// </summary>
-public class StringOrArrayOrNullToStringConverter : JsonConverter
+public class StringOrNumberOrNullToNumberConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType) => objectType == typeof(int) || objectType == typeof(float) || objectType == typeof(double);
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.Null || reader.TokenType == JsonToken.None)
+            return 0;
+
+        var token = JToken.ReadFrom(reader);
+        
+        // For string representations, try to parse
+        if (token.Type == JTokenType.String)
+        {
+            var str = token.ToString();
+            if (objectType == typeof(int))
+            {
+                if (int.TryParse(str, out var result))
+                    return result;
+                return 0;
+            }
+            else if (objectType == typeof(float))
+            {
+                if (float.TryParse(str, out var result))
+                    return result;
+                return 0f;
+            }
+            else if (objectType == typeof(double))
+            {
+                if (double.TryParse(str, out var result))
+                    return result;
+                return 0.0;
+            }
+        }
+        
+        // For non-string (likely numeric already)
+        try
+        {
+            if (objectType == typeof(int))
+                return token.ToObject<int>();
+            else if (objectType == typeof(float))
+                return token.ToObject<float>();
+            else if (objectType == typeof(double))
+                return token.ToObject<double>();
+        }
+        catch
+        {
+            return 0; // Default to 0 on error
+        }
+        
+        return 0; // Default fallback
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        writer.WriteValue(value ?? 0);
+    }
+}
+
+/// <summary>
+/// Converts string array, string, or null/missing to string.
+/// - string[] → newline-joined string
+/// - string → unchanged
+/// - null/undefined → empty string
+/// </summary>
+public class StringArrayOrStringOrNullToStringConverter : JsonConverter
 {
     public override bool CanConvert(Type objectType) => objectType == typeof(string);
 
@@ -138,64 +164,12 @@ public class StringOrArrayOrNullToStringConverter : JsonConverter
 }
 
 /// <summary>
-/// Converts string[], string, or null/missing to string[].
-/// String -> single-element array
-/// Null/missing -> empty array
+/// Converts string array, string, or null/missing to string array.
+/// - string[] → filtered string[] (removes nulls and empty strings)
+/// - string → single-element array [string]
+/// - null/undefined → empty array []
 /// </summary>
-public class ArrayOrNullToStringArrayConverter : JsonConverter
-{
-    public override bool CanConvert(Type objectType) => objectType == typeof(string[]);
-
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-    {
-        if (reader.TokenType == JsonToken.Null || reader.TokenType == JsonToken.None)
-            return new string[0];
-
-        var token = JToken.ReadFrom(reader);
-
-        switch (token.Type)
-        {
-            case JTokenType.Array:
-                var array = token.ToObject<string[]>();
-                if (array == null)
-                    return new string[0];
-                // Filter out null or empty strings
-                return array.Where(s => !string.IsNullOrEmpty(s)).ToArray();
-
-            case JTokenType.String:
-                var str = token.Value<string>();
-                // If the string itself is null or empty, return empty array
-                return string.IsNullOrEmpty(str) ? new string[0] : new[] { str };
-
-            default:
-                // Fallback for other unexpected token types, return as single element array
-                var fallbackStr = token.ToString();
-                 return string.IsNullOrEmpty(fallbackStr) ? new string[0] : new[] { fallbackStr };
-        }
-    }
-
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-    {
-        writer.WriteStartArray();
-        if (value is string[] array && array.Length > 0)
-        {
-            // Filter out null or empty strings before writing
-            foreach (var item in array.Where(s => !string.IsNullOrEmpty(s)))
-            {
-                writer.WriteValue(item);
-            }
-        }
-        writer.WriteEndArray();
-    }
-}
-
-/// <summary>
-/// Converts string[], string, or null/missing to string[].
-/// String -> single-element array
-/// Null/missing -> empty array
-/// Identical to ArrayOrNullToStringArrayConverter but with a different name for schema consistency.
-/// </summary>
-public class StringOrArrayOrNullToStringArrayConverter : JsonConverter
+public class StringArrayOrStringOrNullToStringArrayConverter : JsonConverter
 {
     public override bool CanConvert(Type objectType) => objectType == typeof(string[]);
 
@@ -224,6 +198,72 @@ public class StringOrArrayOrNullToStringArrayConverter : JsonConverter
                 // Fallback for other unexpected token types, return as single element array
                 var fallbackStr = token.ToString();
                 return string.IsNullOrEmpty(fallbackStr) ? new string[0] : new[] { fallbackStr };
+        }
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        writer.WriteStartArray();
+        if (value is string[] array && array.Length > 0)
+        {
+            // Filter out null or empty strings before writing
+            foreach (var item in array.Where(s => !string.IsNullOrEmpty(s)))
+            {
+                writer.WriteValue(item);
+            }
+        }
+        writer.WriteEndArray();
+    }
+}
+
+/// <summary>
+/// Converts string with semicolons, string array, or null/missing to string array.
+/// - string[] → filtered string[] (removes nulls and empty strings)
+/// - string → split by semicolons, trimmed, and filtered
+/// - null/undefined → empty array []
+/// </summary>
+public class SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType) => objectType == typeof(string[]);
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.Null || reader.TokenType == JsonToken.None)
+            return new string[0];
+
+        var token = JToken.ReadFrom(reader);
+
+        switch (token.Type)
+        {
+            case JTokenType.Array:
+                var array = token.ToObject<string[]>();
+                if (array == null)
+                    return new string[0];
+                // Filter out null or empty strings
+                return array.Where(s => !string.IsNullOrEmpty(s)).ToArray();
+
+            case JTokenType.String:
+                var str = token.Value<string>();
+                if (string.IsNullOrEmpty(str))
+                    return new string[0];
+                    
+                // Split by semicolons, trim each element, and filter out empty strings
+                return str.Split(';')
+                          .Select(s => s.Trim())
+                          .Where(s => !string.IsNullOrEmpty(s))
+                          .ToArray();
+
+            default:
+                // Fallback for other unexpected token types
+                var fallbackStr = token.ToString();
+                if (string.IsNullOrEmpty(fallbackStr))
+                    return new string[0];
+                    
+                // Split by semicolons, trim each element, and filter out empty strings
+                return fallbackStr.Split(';')
+                                 .Select(s => s.Trim())
+                                 .Where(s => !string.IsNullOrEmpty(s))
+                                 .ToArray();
         }
     }
 

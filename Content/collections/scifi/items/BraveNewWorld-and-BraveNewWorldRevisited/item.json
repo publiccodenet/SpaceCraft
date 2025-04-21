@@ -1,14 +1,10 @@
 {
   "id": "BraveNewWorld-and-BraveNewWorldRevisited",
+  "name": "Brave New World and Brave New World Revisited",
   "title": "Brave New World and Brave New World Revisited",
-  "creator": "Aldous Huxley",
-  "date": null,
-  "description": "Brave New World  (1932) 326 pages - Far in the future, the World Controllers have created the ideal society. Through clever use of genetic engineering, brainwashing and recreational sex and drugs, all its members are happy consumers. Bernard Marx seems alone harbouring an ill-defined longing to break free. A visit to one of the few remaining Savage Reservations, where the old, imperfect life still continues, may be the cure for his distress... Huxley's ingenious fantasy of the future sheds a blazing light on the present and is considered to be his most enduring masterpiece. Brave New World Revisited (1958) 132 pages - When the novel Brave New World first appeared in 1932, its shocking analysis of a scientific dictatorship seemed a projection into the remote future. Here, in one of the most important and fascinating books of his career, Aldous Huxley uses his tremendous knowledge of human relations to compare the modern-day world with his prophetic fantasy. He scrutinizes threats to humanity, such as overpopulation, propaganda, and chemical persuasion, and explains why we have found it virtually impossible to avoid them. Brave New World Revisited is a trenchant plea that humankind should educate itself for freedom before it is too late. Also available here and here",
-  "mediatype": "texts",
-  "collection": [
-    "folkscanomy_fiction",
-    "folkscanomy",
-    "additional_collections"
+  "description": "Brave New World  (1932) 326 pages - <br /><br />Far in the future, the World Controllers have created the ideal society. Through clever use of genetic engineering, brainwashing and recreational sex and drugs, all its members are happy consumers. Bernard Marx seems alone harbouring an ill-defined longing to break free. A visit to one of the few remaining Savage Reservations, where the old, imperfect life still continues, may be the cure for his distress... Huxley's ingenious fantasy of the future sheds a blazing light on the present and is considered to be his most enduring masterpiece.<br /><br />Brave New World Revisited (1958) 132 pages - <br /><br />When the novel Brave New World first appeared in 1932, its shocking analysis of a scientific dictatorship seemed a projection into the remote future. Here, in one of the most important and fascinating books of his career, Aldous Huxley uses his tremendous knowledge of human relations to compare the modern-day world with his prophetic fantasy. He scrutinizes threats to humanity, such as overpopulation, propaganda, and chemical persuasion, and explains why we have found it virtually impossible to avoid them. Brave New World Revisited is a trenchant plea that humankind should educate itself for freedom before it is too late.<br /><br />\nAlso available <a href=\"https://openlibrary.org/works/OL64468W/Brave_New_World\" rel=\"nofollow\">here</a> and <a href=\"https://openlibrary.org/works/OL64448W/Brave_New_World_Revisited\" rel=\"nofollow\">here</a>",
+  "creator": [
+    "Aldous Huxley"
   ],
   "subject": [
     "dystopian",
@@ -19,35 +15,27 @@
     "science fiction",
     "novel"
   ],
-  "downloads": 203575,
-  "item_size": 351086567,
-  "format": [
-    "Abbyy GZ",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "Daisy",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
+  "collection": [
+    "folkscanomy_fiction",
+    "folkscanomy",
+    "additional_collections"
   ],
-  "favorite_count": 258,
-  "favorite_sample": [
-    "008gent",
-    "abdul_fattah398",
-    "abdur_rahman985",
-    "aford42",
-    "aitt_19867"
-  ],
-  "download_url": "https://archive.org/download/BraveNewWorld-and-BraveNewWorldRevisited/Brave-New-World-Revisited_-_Aldous-Huxley.epub",
-  "download_url_cached": "scifi/content/BraveNewWorld-and-BraveNewWorldRevisited_epub.epub",
-  "download_url_timestamp": "2025-03-13T08:32:21.755Z",
-  "download_url_etag": "\"65538183-16a0e8\"",
-  "download_url_dl_duration": 0.822,
-  "download_url_dl_mbps": 1.720539844819229
+  "publicdate": "2015-11-19 07:52:58",
+  "identifier": "BraveNewWorld-and-BraveNewWorldRevisited",
+  "mediatype": "texts",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
+  "uploader": "nickonta@yahoo.com.au",
+  "addeddate": "2015-11-19 07:52:58",
+  "curation": "[curator]validator@archive.org[/curator][date]20151119075827[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/BraveNewWorld-and-BraveNewWorldRevisited",
+  "identifier-ark": "ark:/13960/t46q5qs6s",
+  "ppi": "600",
+  "ocr": "ABBYY FineReader 11.0",
+  "repub_state": "4",
+  "backup_location": "ia905505_12",
+  "coverImage": "https://archive.org/services/img/BraveNewWorld-and-BraveNewWorldRevisited",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 316
 }

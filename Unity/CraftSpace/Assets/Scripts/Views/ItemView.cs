@@ -614,7 +614,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     /// - Add pulsing/animation effects for high counts
     /// - Display numeric indicator for multiple users
     /// 
-    /// This method is called by SpaceShipBridge when highlight state changes
+    /// This method is called by SpaceCraft when highlight state changes
     /// either locally or from networked users.
     /// </summary>
     public void SetHighlightCount(int count)

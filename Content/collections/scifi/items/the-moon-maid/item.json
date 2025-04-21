@@ -1,14 +1,10 @@
 {
   "id": "the-moon-maid",
+  "name": "Edgar Rice Burroughs public domain collection",
   "title": "Edgar Rice Burroughs public domain collection",
-  "creator": "Edgar Rice Burroughs",
-  "date": "1920-01-01T00:00:00Z",
   "description": "Edgar Rice Burroughs public domain collection",
-  "mediatype": "texts",
-  "collection": [
-    "folkscanomy_miscellaneous",
-    "folkscanomy",
-    "additional_collections"
+  "creator": [
+    "Edgar Rice Burroughs"
   ],
   "subject": [
     "Edgar Rice Burroughs",
@@ -16,36 +12,34 @@
     "Fiction",
     "Science fiction"
   ],
-  "downloads": 2875,
-  "item_size": 4840688771,
-  "format": [
-    "Archive BitTorrent",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "folkscanomy_miscellaneous",
+    "folkscanomy",
+    "additional_collections"
   ],
-  "favorite_count": 41,
-  "favorite_sample": [
-    "aetherealization",
-    "aksirt_1",
-    "alexlex9066",
-    "amazingmrb",
-    "amsp76"
-  ],
-  "download_url": "https://archive.org/download/the-moon-maid/A%20princess%20of%20Mars.epub",
-  "download_url_cached": "scifi/content/the-moon-maid_epub.epub",
-  "download_url_timestamp": "2025-03-13T14:36:12.538Z",
-  "download_url_etag": "\"656b95cf-570d3\"",
-  "download_url_dl_duration": 0.441,
-  "download_url_dl_mbps": 0.7710770414529744
+  "publicdate": "2021-02-27 06:41:47",
+  "identifier": "the-moon-maid",
+  "mediatype": "texts",
+  "date": "1920",
+  "language": "eng",
+  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
+  "uploader": "webdeveloper5050@gmail.com",
+  "addeddate": "2021-02-27 06:41:47",
+  "curation": "[curator]validator@archive.org[/curator][date]20210227070223[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/the-moon-maid",
+  "identifier-ark": "ark:/13960/t7mq58j0x",
+  "ppi": "500",
+  "ocr": "tesseract 5.0.0-alpha-20201231-7-gc75f",
+  "ocr_parameters": "-l eng",
+  "ocr_module_version": "0.0.11",
+  "ocr_detected_script": "Latin",
+  "ocr_detected_script_conf": "0.9970",
+  "ocr_detected_lang": "en",
+  "ocr_detected_lang_conf": "1.0000",
+  "page_number_confidence": "96.33",
+  "coverImage": "https://archive.org/services/img/the-moon-maid",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 270
 }

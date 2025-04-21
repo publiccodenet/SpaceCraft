@@ -1,14 +1,10 @@
 {
   "id": "TheMysteryOfTheRhymingRiddle",
+  "name": "Wonder Woman: The Mystery of the Rhyming Riddle",
   "title": "Wonder Woman: The Mystery of the Rhyming Riddle",
-  "creator": "DC Comics",
-  "date": null,
   "description": "Wonder Woman #34 (March-April 1949, DC). Wonder Woman's amazing adventure on the planet Mars.",
-  "mediatype": "texts",
-  "collection": [
-    "comics_inbox",
-    "comics",
-    "additional_collections"
+  "creator": [
+    "DC Comics"
   ],
   "subject": [
     "Comics",
@@ -20,36 +16,65 @@
     "Martians",
     "Martian SFF"
   ],
-  "downloads": 3509,
-  "item_size": 69180731,
-  "format": [
-    "Abbyy GZ",
-    "Additional Text PDF",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Image Container PDF",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Unknown"
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
   ],
-  "favorite_count": 32,
-  "favorite_sample": [
-    "19omhs72",
-    "88y53",
-    "a_whale_from_hell",
-    "alban_barker",
-    "alhaide_sa"
+  "publicdate": "2011-07-03 18:25:21",
+  "identifier": "TheMysteryOfTheRhymingRiddle",
+  "mediatype": "texts",
+  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "addeddate": "2011-07-03 18:07:22",
+  "uploader": "lyndawwcarter@hotmail.com",
+  "updater": [
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter"
   ],
-  "download_url": "https://archive.org/download/TheMysteryOfTheRhymingRiddle/WonderWomanNo.341949.epub",
-  "download_url_cached": "scifi/content/TheMysteryOfTheRhymingRiddle_epub.epub",
-  "download_url_timestamp": "2025-03-13T13:08:13.270Z",
-  "download_url_etag": "\"666a5b9c-ba4a59\"",
-  "download_url_dl_duration": 1.893,
-  "download_url_dl_mbps": 6.150634592321268
+  "updatedate": [
+    "2011-07-04 15:39:53",
+    "2011-07-07 06:27:45",
+    "2011-07-08 05:49:55",
+    "2011-07-11 02:51:26",
+    "2011-07-12 16:07:54",
+    "2011-07-13 04:10:52",
+    "2011-07-19 01:56:13",
+    "2011-08-22 07:07:06",
+    "2011-08-31 05:33:32",
+    "2011-09-11 04:09:23",
+    "2011-09-15 02:32:55",
+    "2011-09-18 05:14:59",
+    "2011-09-28 06:44:20",
+    "2011-10-08 07:28:23",
+    "2011-10-15 01:31:45",
+    "2011-10-30 01:57:10",
+    "2011-11-11 02:28:55"
+  ],
+  "identifier-access": "http://www.archive.org/details/TheMysteryOfTheRhymingRiddle",
+  "identifier-ark": "ark:/13960/t38060k00",
+  "ppi": "72",
+  "ocr": "ABBYY FineReader 8.0",
+  "repub_state": "4",
+  "curation": "[curator]malware@archive.org[/curator][date]20140327104648[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia903701_8",
+  "coverleaf": "0",
+  "coverImage": "https://archive.org/services/img/TheMysteryOfTheRhymingRiddle",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 254
 }

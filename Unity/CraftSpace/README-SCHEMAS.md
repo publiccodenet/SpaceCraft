@@ -41,7 +41,7 @@ TypeScript schemas are converted to standard JSON Schema format:
 
 ```bash
 # In the BackSpace directory
-npm run schema:generate-all
+npm run schemas:generate-all
 ```
 
 This produces JSON Schema files like this:
@@ -386,3 +386,63 @@ When schemas change:
 3. Run the Schema Importer in Unity
 4. Test that JSON serialization/deserialization still works
 5. Update view code as needed 
+
+## ‼️ CRITICAL WARNINGS - READ BEFORE TOUCHING ANY SCHEMA CODE ‼️
+
+### FORBIDDEN PATTERNS THAT WILL CRASH IN IL2CPP/WEBGL
+
+1. **UNSAFE REFLECTION PATTERNS**
+   - ❌ `Type.GetType(string)` to resolve user-defined types at runtime - WILL CAUSE INFINITE RECURSION
+   - ❌ `Activator.CreateInstance(Type)` for user-defined types - WILL CRASH
+   - ❌ Any type resolution or instance creation from string names at runtime
+   - ❌ Abstract factories that look up types by name
+
+2. **SAFE REFLECTION PATTERNS**
+   - ✅ Static JsonConverters directly instantiated by their class name
+   - ✅ Reflection used at design/edit time only (code generation)
+   - ✅ `GetType()` to get the runtime type of an existing object
+   - ✅ `typeof()` operator which is resolved at compile time
+   - ✅ Direct property/field access via `FieldInfo`/`PropertyInfo` that were cached at startup
+
+3. **CODE GENERATION IS FOR GENERATING ACTUAL CODE, NOT LOOKUP MECHANISMS**
+   - ❌ Generating code that says `var converter = UnitySchemaConverter.GetConverter("TypeName")`
+   - ✅ Generating code that says `var converter = new ExactTypeNameConverter()`
+   - ✅ Direct instantiation of known types generated at build time
+   - ✅ Zero indirection or lookup for known types
+
+### IL2CPP COMPATIBILITY RULES
+
+1. **CODE STRIPPING WILL REMOVE UNREFERENCED TYPES**
+   - Classes only referenced via reflection will be stripped
+   - Direct references ensure code is preserved in the build
+   - JsonConverters need direct instantiation to avoid being stripped
+
+2. **STACK OVERFLOWS IN WEBGL CANNOT BE CAUGHT**
+   - Infinite recursion in type lookup will crash the entire application
+   - No error handling or recovery is possible
+
+3. **PROPER CONVERTER INSTANTIATION PATTERN**
+   ```csharp
+   // CORRECT: Code generator produces direct instantiation
+   protected override void ImportKnownProperties(JObject json)
+   {
+       if (json["id"] != null)
+       {
+           // Direct instantiation - no lookup, no reflection
+           var converter = new StringOrNullToStringConverter();
+           _id = (string)converter.ReadJson(json["id"].CreateReader(), typeof(string), null, null);
+       }
+   }
+   ```
+
+4. **WORKING WITH JSON.NET SAFELY IN IL2CPP/WEBGL**
+   - ✅ Using JsonConverters that are directly instantiated by name
+   - ✅ Using the low-level JObject/JToken/JArray API
+   - ✅ `JsonConvert.SerializeObject()` and `DeserializeObject()` for primitive types
+   - ❌ Avoid attribute-based [JsonConverter] on user-defined types
+   - ❌ Avoid dynamic type resolution via TypeNameHandling settings
+
+5. **EDITOR VS WEBGL DIFFERENCES**
+   - Just because it works in the editor doesn't mean it will work in WebGL
+   - WebGL builds run with more aggressive code stripping
+   - Testing in WebGL builds is essential

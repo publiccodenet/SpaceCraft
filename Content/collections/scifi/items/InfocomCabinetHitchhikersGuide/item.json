@@ -1,13 +1,10 @@
 {
   "id": "InfocomCabinetHitchhikersGuide",
+  "name": "Infocom Cabinet: Hitchhikers Guide to the Galaxy",
   "title": "Infocom Cabinet: Hitchhikers Guide to the Galaxy",
-  "creator": "Steve Meretzky and Douglas Adams",
-  "date": "2015-01-01T00:00:00Z",
-  "description": "Infocom Cabinet Hitchhikers Guide to the Galaxy A collection of digitized scans from a large cache of documents related to the game publisher Infocom, Inc. of Cambridge, MA. Assembled by Steven Meretzky of Infocom. During his time at Infocom, Steve Meretzky meticulously gathered thousands of pages of notes, journals, maps, memos, forms and other printable materials related to all aspects of Infocom, and kept them in his basement for decades. During the GET LAMP production, Jason Scott scanned in roughly 9,000 pages of these documents across a number of months, borrowing the materials from Steve and scanning them as quickly as possible, at around 600dpi. From these scans, a portion was used in the GET LAMP movie to illustrate various scenes and descriptions by interviewees. From the Wikipedia entry : The Hitchhiker's Guide to the Galaxy is an interactive fiction video game based on the comedic science fiction series of the same name. It was designed by series creator Douglas Adams and Infocom's Steve Meretzky, and was first released in 1984 for the Apple II, Macintosh, Commodore 64, CP/M, DOS, Amiga, Atari 8-bit and Atari ST. It is Infocom's fourteenth game. The game loosely mirrors a portion of the series' plot, representing most of the events in the first book. Arthur Dent wakes up one day to find his house about to be destroyed by a construction crew to make way for a new bypass. His friend Ford Prefect, who is secretly an extraterrestrial, helps to calm Arthur down and hitches them a ride on one of the ships in the approaching Vogon constructor fleet, moments before the fleet destroys the Earth to make way for a new hyperspace bypass.",
-  "mediatype": "texts",
-  "collection": [
-    "infocomcabinet",
-    "softwarehistory"
+  "description": "Infocom Cabinet Hitchhikers Guide to the Galaxy\n\nA collection of digitized scans from a large cache of documents related to the game publisher Infocom, Inc. of Cambridge, MA. Assembled by Steven Meretzky of Infocom.\n\nDuring his time at Infocom, Steve Meretzky meticulously gathered thousands of pages of notes, journals, maps, memos, forms and other printable materials related to all aspects of Infocom, and kept them in his basement for decades. During the GET LAMP production, Jason Scott scanned in roughly 9,000 pages of these documents across a number of months, borrowing the materials from Steve and scanning them as quickly as possible, at around 600dpi. From these scans, a portion was used in the GET LAMP movie to illustrate various scenes and descriptions by interviewees.\n\nFrom the <a href=\"https://en.wikipedia.org/wiki/The_Hitchhiker's_Guide_to_the_Galaxy_%28video_game%29\" rel=\"nofollow\">Wikipedia entry</a>:\n\nThe Hitchhiker's Guide to the Galaxy is an interactive fiction video game based on the comedic science fiction series of the same name. It was designed by series creator Douglas Adams and Infocom's Steve Meretzky, and was first released in 1984 for the Apple II, Macintosh, Commodore 64, CP/M, DOS, Amiga, Atari 8-bit and Atari ST. It is Infocom's fourteenth game.\n\nThe game loosely mirrors a portion of the series' plot, representing most of the events in the first book. Arthur Dent wakes up one day to find his house about to be destroyed by a construction crew to make way for a new bypass. His friend Ford Prefect, who is secretly an extraterrestrial, helps to calm Arthur down and hitches them a ride on one of the ships in the approaching Vogon constructor fleet, moments before the fleet destroys the Earth to make way for a new hyperspace bypass.",
+  "creator": [
+    "Steve Meretzky and Douglas Adams"
   ],
   "subject": [
     "guide",
@@ -31,36 +28,29 @@
     "bugblatter beast",
     "advanced tea"
   ],
-  "downloads": 11160,
-  "item_size": 2894989766,
-  "format": [
-    "Abbyy GZ",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Generic Raw Book Zip",
-    "JPEG Thumb",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "Unknown"
+  "collection": [
+    "infocomcabinet",
+    "softwarehistory"
   ],
-  "favorite_count": 49,
-  "favorite_sample": [
-    "alex_welch375",
-    "archiveuser9392bmpw",
-    "atomet",
-    "balsimpson",
-    "belatarr_1994"
-  ],
-  "download_url": "https://archive.org/download/InfocomCabinetHitchhikersGuide/Infocom_Cabinet_Hitchhikers_Guide.epub",
-  "download_url_cached": "scifi/content/InfocomCabinetHitchhikersGuide_epub.epub",
-  "download_url_timestamp": "2025-03-13T09:34:05.786Z",
-  "download_url_etag": "\"66089e13-c408b6d\"",
-  "download_url_dl_duration": 20.808,
-  "download_url_dl_mbps": 9.421089941242574
+  "publicdate": "2015-11-23 04:40:50",
+  "identifier": "InfocomCabinetHitchhikersGuide",
+  "mediatype": "texts",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
+  "uploader": "jscott@archive.org",
+  "addeddate": "2015-11-23 04:40:50",
+  "curation": "[curator]validator@archive.org[/curator][date]20151123044231[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/InfocomCabinetHitchhikersGuide",
+  "identifier-ark": "ark:/13960/t6pz90d1k",
+  "ocr": "ABBYY FineReader 11.0",
+  "repub_state": "4",
+  "date": "2015",
+  "year": "2015",
+  "backup_location": "ia905505_20",
+  "coverleaf": "0",
+  "usl_hit": "auto",
+  "coverImage": "https://archive.org/services/img/InfocomCabinetHitchhikersGuide",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 235
 }

@@ -1,14 +1,10 @@
 {
   "id": "GulliverJonesWarriorOfMars",
+  "name": "Gullivar Jones, Warrior of Mars",
   "title": "Gullivar Jones, Warrior of Mars",
-  "creator": "Marvel Comics",
-  "date": null,
   "description": "Creatures on the Loose (1970's)",
-  "mediatype": "texts",
-  "collection": [
-    "comics_inbox",
-    "comics",
-    "additional_collections"
+  "creator": [
+    "Marvel Comics"
   ],
   "subject": [
     "Comics",
@@ -21,35 +17,45 @@
     "Martians",
     "Martian SFF"
   ],
-  "downloads": 2661,
-  "item_size": 72072234,
-  "format": [
-    "Abbyy GZ",
-    "Additional Text PDF",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "Image Container PDF",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Unknown"
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
   ],
-  "favorite_count": 29,
-  "favorite_sample": [
-    "a_whale_from_hell",
-    "alexo000",
-    "blackmatt",
-    "boydsipe",
-    "chet_ubetcha"
+  "publicdate": "2011-08-08 20:02:54",
+  "identifier": "GulliverJonesWarriorOfMars",
+  "mediatype": "texts",
+  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "addeddate": "2011-08-08 18:14:52",
+  "uploader": "lyndawwcarter@hotmail.com",
+  "updater": [
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter"
   ],
-  "download_url": "https://archive.org/download/GulliverJonesWarriorOfMars/GulliverJonesWarriorOfMars1970sMarvel.pdf",
-  "download_url_cached": "scifi/content/GulliverJonesWarriorOfMars_image_container_pdf.pdf",
-  "download_url_timestamp": "2025-03-13T15:23:21.429Z",
-  "download_url_etag": "\"4e40272b-21b9e3b\"",
-  "download_url_dl_duration": 4.437,
-  "download_url_dl_mbps": 7.601111220539704
+  "updatedate": [
+    "2011-08-22 07:05:59",
+    "2011-08-31 05:31:47",
+    "2011-09-11 04:04:55",
+    "2011-09-24 04:07:48",
+    "2011-09-28 06:45:54",
+    "2011-10-15 01:33:58",
+    "2011-10-26 17:33:41"
+  ],
+  "identifier-access": "http://www.archive.org/details/GulliverJonesWarriorOfMars",
+  "identifier-ark": "ark:/13960/t6ww8b52v",
+  "ppi": "72",
+  "ocr": "ABBYY FineReader 8.0",
+  "repub_state": "4",
+  "curation": "[curator]malware@archive.org[/curator][date]20140327131634[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia903702_13",
+  "coverleaf": "0",
+  "coverImage": "https://archive.org/services/img/GulliverJonesWarriorOfMars",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 269
 }

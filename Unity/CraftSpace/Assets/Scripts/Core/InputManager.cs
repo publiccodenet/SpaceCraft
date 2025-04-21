@@ -8,7 +8,7 @@ using TMPro;
 /// Handles camera panning, zooming, physics-based movement, and item selection.
 /// Relies on an assigned CameraController to access the camera and its rig.
 /// </summary>
-public class InputManager : BridgeObject
+public class InputManager : MonoBehaviour
 {
     [Header("Camera Control References")]
     public CameraController cameraController; // Reference to the controller managing the camera
@@ -38,7 +38,6 @@ public class InputManager : BridgeObject
     [Header("UI References")]
     public ItemInfoPanel itemInfoPanel;
     public LayerMask itemLayer;
-    public CollectionDisplay collectionDisplay;
 
     [Header("UI Settings")]
     public float descriptionScale = 0.8f;
@@ -47,8 +46,7 @@ public class InputManager : BridgeObject
     public float maxSelectionDistance = 100f;
     public float selectMaxClickDistance = 0.1f; // Max movement allowed for a click to be considered a selection
     public float selectMaxClickTime = 0.3f; // Max time between press and release for a click to be considered a selection
-    public bool multiSelect = false; // Whether multiple items can be selected simultaneously
-
+    
     // State variables
     // Runtime state that changes during execution
     private bool isDragging = false;
@@ -64,7 +62,7 @@ public class InputManager : BridgeObject
     // Item tracking state - for input tracking only
     private ItemView hoveredItem; // Used to track which item the mouse is currently over
 
-    private SpaceShipBridge spaceShip; // Reference to the SpaceShipBridge
+    private SpaceCraft spaceCraft; // Reference to the SpaceCraft
 
     private void Start()
     {
@@ -89,11 +87,11 @@ public class InputManager : BridgeObject
             return;
         }
         
-        // Get the SpaceShipBridge reference
-        spaceShip = GetComponent<SpaceShipBridge>();
-        if (spaceShip == null)
+        // Get the SpaceCraft reference
+        spaceCraft = GetComponent<SpaceCraft>();
+        if (spaceCraft == null)
         {
-            Debug.LogError("InputManager: No SpaceShipBridge found on the same GameObject. Required for selection functionality.");
+            Debug.LogError("InputManager: No SpaceCraft found on the same GameObject. Required for selection functionality.");
             enabled = false;
             return;
         }
@@ -136,7 +134,7 @@ public class InputManager : BridgeObject
                 if (dragDistance < selectMaxClickDistance && dragTime < selectMaxClickTime && itemAtDragStart != null && itemAtDragStart.Model != null)
                 {
                     // This was a click on an item, not a drag - toggle its selection state
-                    spaceShip.ToggleItemSelection(itemAtDragStart.Model.Id);
+                    spaceCraft.ToggleItemSelection(itemAtDragStart.Model.Id);
                 }
                 else if (filteredVelocity.magnitude > GetScaledVelocityThreshold())
                 {
@@ -394,7 +392,7 @@ public class InputManager : BridgeObject
 
     private void UpdateHoveredItem()
     {
-        if (cameraController == null || cameraController.controlledCamera == null || spaceShip == null)
+        if (cameraController == null || cameraController.controlledCamera == null || spaceCraft == null)
             return;
         
         Ray ray = cameraController.controlledCamera.ScreenPointToRay(Input.mousePosition);
@@ -413,13 +411,13 @@ public class InputManager : BridgeObject
                     // End hover for previous item
                     if (hoveredItem != null && hoveredItem.Model != null)
                     {
-                        spaceShip.RemoveHighlightedItem(hoveredItem.Model.Id);
+                        spaceCraft.RemoveHighlightedItem(hoveredItem.Model.Id);
                     }
                     
                     hoveredItem = itemView;
                     
                     // Start hover for new item
-                    spaceShip.AddHighlightedItem(hoveredItem.Model.Id);
+                    spaceCraft.AddHighlightedItem(hoveredItem.Model.Id);
                 }
             }
             else
@@ -437,7 +435,7 @@ public class InputManager : BridgeObject
     {
         if (hoveredItem != null && hoveredItem.Model != null)
         {
-            spaceShip.RemoveHighlightedItem(hoveredItem.Model.Id);
+            spaceCraft.RemoveHighlightedItem(hoveredItem.Model.Id);
             hoveredItem = null;
         }
     }

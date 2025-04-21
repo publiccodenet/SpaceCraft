@@ -1,54 +1,42 @@
 {
   "id": "gideon-the-ninth_202301",
+  "name": "Gideon The Ninth",
   "title": "Gideon The Ninth",
-  "creator": "Tamsyn Muir",
-  "date": null,
-  "description": "Brought up by unfriendly, ossifying nuns, ancient retainers, and countless skeletons, Gideon is ready to abandon a life of servitude and an afterlife as a reanimated corpse. She packs up her sword, her shoes, and her dirty magazines, and prepares to launch her daring escape. But her childhood nemesis won’t set her free without a service.",
-  "mediatype": "texts",
+  "description": "<span style=\"color:rgb(15,17,17);font-family:'Amazon Ember', Arial, sans-serif;font-size:14px;background-color:rgb(255,255,255);\">Brought up by unfriendly, ossifying nuns, ancient retainers, and countless skeletons, Gideon is ready to abandon a life of servitude and an afterlife as a reanimated corpse. She packs up her sword, her shoes, and her dirty magazines, and prepares to launch her daring escape. But her childhood nemesis won’t set her free without a service.</span><div><span style=\"color:rgb(15,17,17);font-family:'Amazon Ember', Arial, sans-serif;font-size:14px;background-color:rgb(255,255,255);\"><br /></span></div>",
+  "creator": [
+    "Tamsyn Muir"
+  ],
+  "subject": [
+    "lesbian; space; science fiction; tamsyn muir; the locked tomb",
+    "book",
+    "tamsyn muir",
+    "space"
+  ],
   "collection": [
     "folkscanomy_fiction",
     "folkscanomy",
     "additional_collections"
   ],
-  "subject": [
-    "lesbian",
-    "space",
-    "science fiction",
-    "tamsyn muir",
-    "the locked tomb",
-    "book"
-  ],
-  "downloads": 11271,
-  "item_size": 300212908,
-  "format": [
-    "Archive BitTorrent",
-    "Daisy",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "chOCR",
-    "hOCR"
-  ],
-  "favorite_count": 110,
-  "favorite_sample": [
-    "_ine_o_apos_mahony",
-    "ac1974_8535",
-    "alan_greavett",
-    "alice_rees",
-    "allison_ueberhoff"
-  ],
-  "download_url": "https://archive.org/download/gideon-the-ninth_202301/gideon-the-ninth.epub",
-  "download_url_cached": "scifi/content/gideon-the-ninth_202301_epub.epub",
-  "download_url_timestamp": "2025-03-13T09:33:27.452Z",
-  "download_url_etag": "\"654ba40c-1345f7\"",
-  "download_url_dl_duration": 0.723,
-  "download_url_dl_mbps": 1.6660874974843047
+  "publicdate": "2023-01-19 01:59:09",
+  "identifier": "gideon-the-ninth_202301",
+  "mediatype": "texts",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.7.0",
+  "uploader": "mekhatra@icloud.com",
+  "addeddate": "2023-01-19 01:59:09",
+  "curation": "[curator]validator@archive.org[/curator][date]20230119020539[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/gideon-the-ninth_202301",
+  "identifier-ark": "ark:/13960/s2bsbz5gdvh",
+  "ppi": "300",
+  "ocr": "tesseract 5.3.0-1-gd3a4",
+  "ocr_parameters": "-l eng",
+  "ocr_module_version": "0.0.18",
+  "ocr_detected_script": "Latin",
+  "ocr_detected_script_conf": "0.9893",
+  "ocr_detected_lang": "en",
+  "ocr_detected_lang_conf": "1.0000",
+  "coverImage": "https://archive.org/services/img/gideon-the-ninth_202301",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 233
 }

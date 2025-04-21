@@ -1,16 +1,12 @@
 {
   "id": "onthetrailofthes21092gut",
+  "name": "On the Trail of the Space Pirates",
   "title": "On the Trail of the Space Pirates",
+  "description": "Book from Project Gutenberg: On the Trail of the Space Pirates Library of Congress Classification: PZ",
   "creator": [
     "Rockwell, Carey",
     "Glanzman, Louis [Illustrator]",
     "Ley, Willy, 1906-1969 [Contributor]"
-  ],
-  "date": null,
-  "description": "Book from Project Gutenberg: On the Trail of the Space Pirates Library of Congress Classification: PZ",
-  "mediatype": "texts",
-  "collection": [
-    "gutenberg"
   ],
   "subject": [
     "Astronauts -- Juvenile fiction",
@@ -19,30 +15,27 @@
     "Pirates -- Juvenile fiction",
     "Science fiction"
   ],
-  "downloads": 4223,
-  "item_size": 9309224,
-  "format": [
-    "Archive BitTorrent",
-    "EPUB",
-    "Item Tile",
-    "JPEG",
-    "JPEG Thumb",
-    "MOBI",
-    "Metadata",
-    "PalmOS Plucker",
-    "Text",
-    "Unknown",
-    "ZIP"
+  "collection": [
+    "gutenberg"
   ],
-  "favorite_count": 2,
-  "favorite_sample": [
-    "powerslave214",
-    "scout_paget"
-  ],
-  "download_url": "https://archive.org/download/onthetrailofthes21092gut/pg21092-images.epub",
-  "download_url_cached": "scifi/content/onthetrailofthes21092gut_epub.epub",
-  "download_url_timestamp": "2025-03-13T11:26:04.357Z",
-  "download_url_etag": "\"4e10561b-1be681\"",
-  "download_url_dl_duration": 0.844,
-  "download_url_dl_mbps": 2.0660845589298775
+  "publicdate": "2011-07-03 11:43:44",
+  "identifier": "onthetrailofthes21092gut",
+  "call_number": "gutenberg etext# 21092",
+  "contributor": "Project Gutenberg",
+  "language": "eng",
+  "licenseurl": "http://www.gnu.org/licenses/gpl.html",
+  "mediatype": "texts",
+  "rights": "Public domain in the USA.",
+  "source": "http://www.gutenberg.org/ebooks/21092",
+  "uploader": "ximm@archive.org",
+  "addeddate": "2011-07-03 11:43:44",
+  "filesxml": "Tue Jul 3 18:43:47 UTC 2012",
+  "identifier-access": "http://archive.org/details/onthetrailofthes21092gut",
+  "identifier-ark": "ark:/13960/t6058qq28",
+  "repub_state": "4",
+  "backup_location": "ia903701_8",
+  "coverImage": "https://archive.org/services/img/onthetrailofthes21092gut",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 271
 }

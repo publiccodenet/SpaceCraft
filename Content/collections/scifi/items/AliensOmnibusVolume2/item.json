@@ -1,14 +1,10 @@
 {
   "id": "AliensOmnibusVolume2",
+  "name": "Aliens Omnibus - Volume 2",
   "title": "Aliens Omnibus - Volume 2",
-  "creator": "Dark Horse Comics",
-  "date": "2007-12-12T00:00:00Z",
-  "description": "Many humans have died horribly at the claws of the Alien. The surface of Earth has been devastated to cleanse the beasts from our world. But the commercial value of this scourge has never been in doubt, especially when the special properties of the Alien Queen's royal jelly are discovered. Will Mankind once again risk its very survival as a species in order to sleep with the Alien? Dark Horse Comics' critically acclaimed  Aliens  series set the bar for how the universe of a popular film could be expanded through graphic fiction.  Aliens Omnibus  Volume 2 collects more of these exciting series in a value-priced, quality-format omnibus, featuring over four hundred story pages in full color. Includes the complete story arcs of  Genocide ,  Harvest , and the never-before-collected, epic-length  Colonial Marines .",
-  "mediatype": "texts",
-  "collection": [
-    "comics_inbox",
-    "comics",
-    "additional_collections"
+  "description": "<span style=\"color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">Many humans have died horribly at the claws of the Alien. The surface of Earth has been devastated to cleanse the beasts from our world. But the commercial value of this scourge has never been in doubt, especially when the special properties of the Alien Queen's royal jelly are discovered. Will Mankind once again risk its very survival as a species in order to sleep with the Alien?</span><br style=\"margin:0px;padding:0px;color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\" /><br style=\"margin:0px;padding:0px;color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\" /><span style=\"color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">Dark Horse Comics' critically acclaimed </span><i style=\"margin:0px;padding:0px;color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">Aliens</i><span style=\"color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\"> series set the bar for how the universe of a popular film could be expanded through graphic fiction. </span><i style=\"margin:0px;padding:0px;color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">Aliens Omnibus</i><span style=\"color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\"> Volume 2 collects more of these exciting series in a value-priced, quality-format omnibus, featuring over four hundred story pages in full color. Includes the complete story arcs of </span><i style=\"margin:0px;padding:0px;color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">Genocide</i><span style=\"color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">, </span><i style=\"margin:0px;padding:0px;color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">Harvest</i><span style=\"color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">, and the never-before-collected, epic-length </span><i style=\"margin:0px;padding:0px;color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">Colonial Marines</i><span style=\"color:rgb(68,68,68);font-family:'Neue Helvetica W01', Helvetica, Arial, sans-serif;font-size:15px;background-color:rgb(255,255,255);\">.</span>",
+  "creator": [
+    "Dark Horse Comics"
   ],
   "subject": [
     "Space warfare",
@@ -18,21 +14,31 @@
     "Life on other planets",
     "Survival-horror comic books, strips, etc"
   ],
-  "downloads": 6343,
-  "item_size": 131512,
-  "format": [
-    "Archive BitTorrent",
-    "Item Tile",
-    "JPEG",
-    "JPEG Thumb",
-    "Metadata"
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
   ],
-  "favorite_count": 52,
-  "favorite_sample": [
-    "acox1579",
-    "arbo_tm",
-    "atelier_1868",
-    "avgwhiteshark",
-    "bat1962js"
-  ]
+  "publicdate": "2018-01-30 09:02:53",
+  "identifier": "AliensOmnibusVolume2",
+  "mediatype": "texts",
+  "language": "English",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
+  "uploader": "jcdenton@countermail.com",
+  "addeddate": "2018-01-30 09:02:53",
+  "curation": "[curator]validator@archive.org[/curator][date]20180130090327[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/AliensOmnibusVolume2",
+  "identifier-ark": "ark:/13960/t8nd2dr13",
+  "ppi": "533",
+  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
+  "date": "2007-12-12",
+  "year": "2007",
+  "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/ve/",
+  "publisher": "Dark Horse Comics",
+  "coverage": "Comics",
+  "backup_location": "ia906607_17",
+  "coverImage": "https://archive.org/services/img/AliensOmnibusVolume2",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 270
 }

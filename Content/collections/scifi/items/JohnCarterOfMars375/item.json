@@ -1,14 +1,10 @@
 {
   "id": "JohnCarterOfMars375",
+  "name": "John Carter of Mars #375 (1952)",
   "title": "John Carter of Mars #375 (1952)",
-  "creator": "Dell Comics",
-  "date": null,
   "description": "Dell Four Color Comic #375 (1952, Dell)",
-  "mediatype": "texts",
-  "collection": [
-    "comics_inbox",
-    "comics",
-    "additional_collections"
+  "creator": [
+    "Dell Comics"
   ],
   "subject": [
     "Comics",
@@ -20,36 +16,37 @@
     "Martians",
     "Martian SFF"
   ],
-  "downloads": 3401,
-  "item_size": 35089136,
-  "format": [
-    "Abbyy GZ",
-    "Additional Text PDF",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Image Container PDF",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Unknown"
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
   ],
-  "favorite_count": 32,
-  "favorite_sample": [
-    "bat1962js",
-    "creaturefan",
-    "daemiaendotexe",
-    "davidszo",
-    "doccovert"
+  "publicdate": "2011-10-21 05:53:22",
+  "identifier": "JohnCarterOfMars375",
+  "mediatype": "texts",
+  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "addeddate": "2011-10-21 05:35:11",
+  "uploader": "lyndawwcarter@hotmail.com",
+  "updater": [
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter"
   ],
-  "download_url": "https://archive.org/download/JohnCarterOfMars375/JohnCarterOfMarsdell3751952.epub",
-  "download_url_cached": "scifi/content/JohnCarterOfMars375_epub.epub",
-  "download_url_timestamp": "2025-03-13T13:19:39.104Z",
-  "download_url_etag": "\"65e5b72b-681920\"",
-  "download_url_dl_duration": 1.1,
-  "download_url_dl_mbps": 5.914667302911932
+  "updatedate": [
+    "2011-10-21 19:39:58",
+    "2011-10-26 17:32:08",
+    "2011-11-11 02:28:01"
+  ],
+  "identifier-access": "http://www.archive.org/details/JohnCarterOfMars375",
+  "identifier-ark": "ark:/13960/t02z2769r",
+  "ppi": "72",
+  "ocr": "ABBYY FineReader 8.0",
+  "repub_state": "4",
+  "curation": "[curator]malware@archive.org[/curator][date]20140327105534[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia903704_17",
+  "coverleaf": "0",
+  "coverImage": "https://archive.org/services/img/JohnCarterOfMars375",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 254
 }

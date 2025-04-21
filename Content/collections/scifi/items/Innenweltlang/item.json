@@ -1,14 +1,10 @@
 {
   "id": "Innenweltlang",
+  "name": "Johannes Lang - Die Hohlwelttheorie",
   "title": "Johannes Lang - Die Hohlwelttheorie",
-  "creator": "Johannes Lang",
-  "date": null,
-  "description": "Das seit Kriegsende in Vergessenheit geratene Werk des Physikers Johannes Lang, der sagte, dass wir im Inneren einer Hohlkugel (Innenwelt, Hohlwelt) leben und nicht auf der Außenflaeche der Erdkugel. Was auf den ersten Blick wie komplette Spinnerei klingt, macht beim Lesen des Buches mehr als nachdenklich, denn die Thesen Langs haben Hand und Fuss! Ist nicht nur die Mondlandung eine Luege der US-Propaganda, sondern das gesamte Bild, das wir vom Weltraum und unserem Sonnensystem haben? Führen uns die westlichen Massenmedien und die Schulastronomie vor allem seit den 50er Jahren hinter`s Licht mit \"ihrem\" Bild vom Weltall? \"Die Hohlwelttheorie\" ist lesenswerter, als man auf den ersten Blick vermuten koennte!",
-  "mediatype": "texts",
-  "collection": [
-    "offcenter",
-    "deemphasize",
-    "loggedin"
+  "description": "Das seit Kriegsende in Vergessenheit geratene Werk des Physikers Johannes Lang, der sagte, dass wir im Inneren einer Hohlkugel (Innenwelt, Hohlwelt) leben und nicht auf der Außenflaeche der Erdkugel. Was auf den ersten Blick wie komplette Spinnerei klingt, macht beim Lesen des Buches mehr als nachdenklich, denn die Thesen Langs haben Hand und Fuss!<br />Ist nicht nur die Mondlandung eine Luege der US-Propaganda, sondern das gesamte Bild, das wir vom Weltraum und unserem Sonnensystem haben? Führen uns die westlichen Massenmedien und die Schulastronomie vor allem seit den 50er Jahren hinter`s Licht mit \"ihrem\" Bild vom Weltall? \"Die Hohlwelttheorie\" ist lesenswerter, als man auf den ersten Blick vermuten koennte!<br />",
+  "creator": [
+    "Johannes Lang"
   ],
   "subject": [
     "Space",
@@ -30,27 +26,28 @@
     "Weltkugel",
     "Sonne"
   ],
-  "downloads": 5297,
-  "item_size": 257656565,
-  "format": [
-    "Abbyy GZ",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
+  "collection": [
+    "offcenter",
+    "deemphasize",
+    "loggedin"
   ],
-  "favorite_count": 15,
-  "favorite_sample": [
-    "_one_rabbithole",
-    "actonrose",
-    "adept777",
-    "buho29",
-    "cassidyk"
-  ]
+  "publicdate": "2014-03-14 11:42:01",
+  "identifier": "Innenweltlang",
+  "mediatype": "texts",
+  "language": "ger",
+  "scanner": "Internet Archive HTML5 Uploader 1.5.2",
+  "uploader": "anjaweber781@gmx.de",
+  "addeddate": "2014-03-14 11:42:01",
+  "identifier-access": "http://archive.org/details/Innenweltlang",
+  "identifier-ark": "ark:/13960/t0sr1g72s",
+  "ppi": "300",
+  "ocr": "ABBYY FineReader 9.0",
+  "repub_state": "4",
+  "curation": "[curator]validator@archive.org[/curator][date]20140512221816[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia905805_16",
+  "access-restricted-item": "true",
+  "coverImage": "https://archive.org/services/img/Innenweltlang",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 255
 }

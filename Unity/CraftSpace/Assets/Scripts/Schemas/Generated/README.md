@@ -20,7 +20,7 @@ This directory contains C# classes automatically generated from JSON schemas. **
 From BackSpace TypeScript types to Unity StreamingAssets:
 ```bash
 # In the BackSpace directory:
-npm run schema:generate-all
+npm run schemas:generate-all
 ```
 This will:
 1. Generate JSON schemas from TypeScript types using Zod

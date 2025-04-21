@@ -1,42 +1,32 @@
 {
   "id": "LarryNivenAndJerryPournelleTheMoteInGodsEye",
+  "name": "Larry Niven And Jerry Pournelle The Mote In Gods Eye",
   "title": "Larry Niven And Jerry Pournelle The Mote In Gods Eye",
-  "date": null,
   "description": "The Mote In Gods Eye - Larry Niven And Jerry Pournelle",
-  "mediatype": "texts",
+  "creator": [],
+  "subject": [
+    "Science Fiction"
+  ],
   "collection": [
     "folkscanomy_fiction",
     "folkscanomy",
     "additional_collections"
   ],
-  "subject": "Science Fiction",
-  "downloads": 2685,
-  "item_size": 496417185,
-  "format": [
-    "Abbyy GZ",
-    "Archive BitTorrent",
-    "Daisy",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
-  ],
-  "favorite_count": 27,
-  "favorite_sample": [
-    "allenp8",
-    "artursz",
-    "badwater98",
-    "breanna_zolinski",
-    "capt_cook1929"
-  ],
-  "download_url": "https://archive.org/download/LarryNivenAndJerryPournelleTheMoteInGodsEye/Larry%20Niven%20and%20Jerry%20Pournelle%20-%20The%20Mote%20in%20Gods%20Eye.epub",
-  "download_url_cached": "scifi/content/LarryNivenAndJerryPournelleTheMoteInGodsEye_epub.epub",
-  "download_url_timestamp": "2025-03-13T15:17:25.089Z",
-  "download_url_etag": "\"654dae26-ec31857\"",
-  "download_url_dl_duration": 420.339,
-  "download_url_dl_mbps": 0.561911795823527
+  "publicdate": "2018-10-25 19:13:58",
+  "identifier": "LarryNivenAndJerryPournelleTheMoteInGodsEye",
+  "mediatype": "texts",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
+  "uploader": "ilscuro@hotmail.com",
+  "addeddate": "2018-10-25 19:13:58",
+  "curation": "[curator]validator@archive.org[/curator][date]20181025191948[/date][comment]checked for malware[/comment]",
+  "language": "English",
+  "identifier-access": "http://archive.org/details/LarryNivenAndJerryPournelleTheMoteInGodsEye",
+  "identifier-ark": "ark:/13960/t2x423783",
+  "ppi": "300",
+  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
+  "backup_location": "ia906803_16",
+  "coverImage": "https://archive.org/services/img/LarryNivenAndJerryPournelleTheMoteInGodsEye",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 233
 }

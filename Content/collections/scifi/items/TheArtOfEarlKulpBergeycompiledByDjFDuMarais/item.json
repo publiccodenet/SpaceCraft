@@ -1,14 +1,9 @@
 {
   "id": "TheArtOfEarlKulpBergeycompiledByDjFDuMarais",
+  "name": "The Art Of Earle Kulp Bergey (compiled by DjF du Marais)",
   "title": "The Art Of Earle Kulp Bergey (compiled by DjF du Marais)",
-  "date": "2010-01-01T00:00:00Z",
   "description": "The Art Of Earle Kulp Bergey.",
-  "mediatype": "texts",
-  "collection": [
-    "pulp_fiction_misc",
-    "pulpmagazinearchive",
-    "additional_collections"
-  ],
+  "creator": [],
   "subject": [
     "Pulps",
     "Pulp Magazines",
@@ -23,33 +18,27 @@
     "Art",
     "Artists"
   ],
-  "downloads": 4260,
-  "item_size": 35822505,
-  "format": [
-    "Abbyy GZ",
-    "Archive BitTorrent",
-    "Comic Book RAR",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
+  "collection": [
+    "pulp_fiction_misc",
+    "pulpmagazinearchive",
+    "additional_collections"
   ],
-  "favorite_count": 74,
-  "favorite_sample": [
-    "2022_",
-    "699nhq",
-    "a_new_word",
-    "abracadabrakid",
-    "archiveuser2179rspa"
-  ],
-  "download_url": "https://archive.org/download/TheArtOfEarlKulpBergeycompiledByDjFDuMarais/The%20Art%20Of%20Earl%20Kulp%20Bergey%20(compiled%20by%20DjF%20du%20Marais).epub",
-  "download_url_cached": "scifi/content/TheArtOfEarlKulpBergeycompiledByDjFDuMarais_epub.epub",
-  "download_url_timestamp": "2025-03-13T11:25:12.562Z",
-  "download_url_etag": "\"6568bc7f-c27212\"",
-  "download_url_dl_duration": 189.465,
-  "download_url_dl_mbps": 0.06414297731711764
+  "publicdate": "2019-03-24 23:29:06",
+  "identifier": "TheArtOfEarlKulpBergeycompiledByDjFDuMarais",
+  "mediatype": "texts",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
+  "uploader": "cootiebug1952@gmail.com",
+  "addeddate": "2019-03-24 23:29:06",
+  "curation": "[curator]validator@archive.org[/curator][date]20190324233511[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/TheArtOfEarlKulpBergeycompiledByDjFDuMarais",
+  "identifier-ark": "ark:/13960/t0104qq6m",
+  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
+  "date": "2010",
+  "year": "2010",
+  "backup_location": "ia906809_34",
+  "coverImage": "https://archive.org/services/img/TheArtOfEarlKulpBergeycompiledByDjFDuMarais",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 255
 }

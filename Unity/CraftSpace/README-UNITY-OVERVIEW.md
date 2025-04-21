@@ -75,7 +75,7 @@ Unity/CraftSpace/
 
 ## Related Documentation
 
-- [Unity Messaging](./README-UNITY-MESSAGING.md) - Communication between JavaScript and Unity
+- [Unity Bridge](./README-UNITY-BRIDGE.md) - Communication between JavaScript and Unity
 - [Unity Visualization](./README-UNITY-VISUALIZATION.md) - Content visualization approaches
 - [Unity Input](./README-UNITY-INPUT.md) - Input handling systems
 - [Unity Performance](./README-UNITY-PERFORMANCE.md) - Performance optimization 

@@ -187,14 +187,6 @@ This allows full configuration of materials from JavaScript or server.
 - **Newtonsoft.Json**: Requires IL2CPP settings adjustments for WebGL
 - **DOTween**: Performs well in WebGL with appropriate pooling
 
-## Manual Asset Integrations
-
-Some assets require manual installation:
-
-1. **RuntimeGizmos**: Download and import from [GitHub repository](https://github.com/example/runtime-gizmos)
-2. **Custom WebGL Templates**: Copy from `ExternalAssets/WebGLTemplates` to project
-3. **Schema Bridge**: Install components from `Tools/Schema` directory
-
 ## Dependency Management
 
 Best practices for managing dependencies:

@@ -1,13 +1,10 @@
 {
   "id": "jodorowsky-dune",
+  "name": "Jodorowsky Dune Bible Book Sample",
   "title": "Jodorowsky Dune Bible Book Sample",
-  "creator": "Alexandro Jodorowsky",
-  "date": "1973-01-01T00:00:00Z",
-  "description": "Some scans of pages from the legendary bible book of Alexandro Jodorowsky's \"Dune\" project, with storyboards by Jean \"Moebius\" Giraud and conceptual art by HR Giger and Chris Foss. This is NOT a scan of the complete book, but only a sample of 46 images disponibilized online by the book's owner. You can contact the owner at the site dunebook . wixsite . com / dune",
-  "mediatype": "texts",
-  "collection": [
-    "opensource",
-    "community"
+  "description": "<div>Some scans of pages from the legendary bible book of Alexandro Jodorowsky's \"Dune\" project, with storyboards by Jean \"Moebius\" Giraud and conceptual art by HR Giger and Chris Foss.</div><div><br /></div><div>This is NOT a scan of the complete book, but only a sample of 46 images disponibilized online by the book's owner. You can contact the owner at the site dunebook . wixsite . com / dune<br /><br /><br /></div>",
+  "creator": [
+    "Alexandro Jodorowsky"
   ],
   "subject": [
     "Dune",
@@ -28,22 +25,23 @@
     "project",
     "bible book"
   ],
-  "downloads": 20939,
-  "item_size": 139679810,
-  "format": [
-    "Archive BitTorrent",
-    "Item Tile",
-    "JPEG",
-    "JPEG Thumb",
-    "Metadata",
-    "ZIP"
+  "collection": [
+    "opensource",
+    "community"
   ],
-  "favorite_count": 92,
-  "favorite_sample": [
-    "abuzzingfly",
-    "adam11",
-    "aesire",
-    "ajdeho",
-    "altgaming"
-  ]
+  "publicdate": "2021-04-12 03:02:07",
+  "identifier": "jodorowsky-dune",
+  "mediatype": "texts",
+  "date": "1973",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
+  "uploader": "famalheiros@gmail.com",
+  "addeddate": "2021-04-12 03:02:07",
+  "curation": "[curator]validator@archive.org[/curator][date]20210412030242[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/jodorowsky-dune",
+  "identifier-ark": "ark:/13960/t0qs5ck5q",
+  "year": "1973",
+  "coverImage": "https://archive.org/services/img/jodorowsky-dune",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 125
 }

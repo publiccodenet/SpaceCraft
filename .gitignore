@@ -238,6 +238,9 @@ yarn.lock
 # TypeScript
 *.tsbuildinfo
 
+# Temp stuff
+temp/
+
 # Test coverage
 coverage/
 

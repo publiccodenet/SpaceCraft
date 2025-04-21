@@ -1,13 +1,10 @@
 {
   "id": "FrankensteinOrTheModernPromeusMaryWollstonecraftShelley",
+  "name": "Frankenstein; or, the Modern Prometheus - Mary Wollstonecraft Shelley",
   "title": "Frankenstein; or, the Modern Prometheus - Mary Wollstonecraft Shelley",
-  "creator": "Mary Wollstonecraft Shelley",
-  "date": "1831-01-01T00:00:00Z",
-  "description": "Frankenstein; or, the Modern Prometheus Mary Wollstonecraft Shelley Project Gutenberg 84",
-  "mediatype": "texts",
-  "collection": [
-    "opensource",
-    "community"
+  "description": "Frankenstein; or, the Modern Prometheus <br /><br />\nMary Wollstonecraft Shelley<br /><br />\nProject Gutenberg 84",
+  "creator": [
+    "Mary Wollstonecraft Shelley"
   ],
   "subject": [
     "Science Fiction",
@@ -18,28 +15,27 @@
     "Frankenstein",
     "Frankenstein's monster"
   ],
-  "downloads": 7900,
-  "item_size": 1008785,
-  "format": [
-    "Archive BitTorrent",
-    "EPUB",
-    "Item Tile",
-    "JPEG",
-    "JPEG Thumb",
-    "Metadata"
+  "collection": [
+    "opensource",
+    "community"
   ],
-  "favorite_count": 6,
-  "favorite_sample": [
-    "basquette",
-    "lab_seven",
-    "littlerollycat",
-    "lostokie",
-    "miredsounds"
-  ],
-  "download_url": "https://archive.org/download/FrankensteinOrTheModernPromeusMaryWollstonecraftShelley/Frankenstein%3B%20Or%2C%20The%20Modern%20Promeus%20-%20Mary%20Wollstonecraft%20Shelley.epub",
-  "download_url_cached": "scifi/content/FrankensteinOrTheModernPromeusMaryWollstonecraftShelley_epub.epub",
-  "download_url_timestamp": "2025-03-13T10:03:45.762Z",
-  "download_url_etag": "\"59fe0967-8a86f\"",
-  "download_url_dl_duration": 0.571,
-  "download_url_dl_mbps": 0.9476733499984609
+  "publicdate": "2017-11-04 18:39:23",
+  "identifier": "FrankensteinOrTheModernPromeusMaryWollstonecraftShelley",
+  "mediatype": "texts",
+  "date": "1831",
+  "language": "eng",
+  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
+  "uploader": "migranero@gmail.com",
+  "addeddate": "2017-11-04 18:39:23",
+  "curation": "[curator]validator@archive.org[/curator][date]20171104183949[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/FrankensteinOrTheModernPromeusMaryWollstonecraftShelley",
+  "identifier-ark": "ark:/13960/t64520x7n",
+  "repub_state": "4",
+  "year": "1831",
+  "backup_location": "ia906509_24",
+  "coverImage": "https://archive.org/services/img/FrankensteinOrTheModernPromeusMaryWollstonecraftShelley",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 269
 }

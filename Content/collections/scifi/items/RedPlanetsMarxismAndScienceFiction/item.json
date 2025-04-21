@@ -1,49 +1,39 @@
 {
   "id": "RedPlanetsMarxismAndScienceFiction",
+  "name": "Red Planets: Marxism And Science Fiction",
   "title": "Red Planets: Marxism And Science Fiction",
-  "creator": "Mark Bould, China Mieville",
-  "date": "2009-01-01T00:00:00Z",
-  "description": "Science fiction and socialism have always had a close relationship. Many science fiction novelists and filmmakers have used the genre to examine explicit or implicit Marxist concerns. Red Planets is an accessible and lively account, which makes an ideal introduction to anyone interested in the politics of science fiction. The volume covers a rich variety of examples from Weimar cinema to mainstream Hollywood films, and novelists from Jules Verne, H. G. Wells, Philip K. Dick, and Thomas Disch to Ursula K. Le Guin, Kim Stanley Robinson, Ken MacLeod, and Charles Stross. Contributors include Matthew Beaumont, William J. Burling, Carl Freedman, Darren Jorgensen, Rob Latham, Iris Luppa, Andrew Milner, John Rieder, Steven Shaviro, Sherryl Vint, and Phillip Wegner.",
-  "mediatype": "texts",
-  "collection": [
-    "folkscanomy_politics",
-    "folkscanomy",
-    "additional_collections"
+  "description": "<span style=\"color:rgb(24,24,24);font-family:Georgia, serif;font-size:14px;line-height:19.3199996948242px;background-color:rgb(255,255,255);\">Science fiction and socialism have always had a close relationship. Many science fiction novelists and filmmakers have used the genre to examine explicit or implicit Marxist concerns. Red Planets is an accessible and lively account, which makes an ideal introduction to anyone interested in the politics of science fiction. The volume covers a rich variety of examples from Weimar cinema to mainstream Hollywood films, and novelists from Jules Verne, H. G. Wells, Philip K. Dick, and Thomas Disch to Ursula K. Le Guin, Kim Stanley Robinson, Ken MacLeod, and Charles Stross. Contributors include Matthew Beaumont, William J. Burling, Carl Freedman, Darren Jorgensen, Rob Latham, Iris Luppa, Andrew Milner, John Rieder, Steven Shaviro, Sherryl Vint, and Phillip Wegner.</span>",
+  "creator": [
+    "Mark Bould, China Mieville"
   ],
   "subject": [
     "Science Fiction",
     "Marxism",
     "Literary Criticism"
   ],
-  "downloads": 9558,
-  "item_size": 148173680,
-  "format": [
-    "Abbyy GZ",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "Daisy",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
+  "collection": [
+    "folkscanomy_politics",
+    "folkscanomy",
+    "additional_collections"
   ],
-  "favorite_count": 52,
-  "favorite_sample": [
-    "a_worthington",
-    "anisoara_monica_mirt",
-    "b_ara_t_rmac_",
-    "c_n_rao",
-    "cameron_spivy"
-  ],
-  "download_url": "https://archive.org/download/RedPlanetsMarxismAndScienceFiction/124810089-Red-Planets-Marxism-and-Science-Fiction.epub",
-  "download_url_cached": "scifi/content/RedPlanetsMarxismAndScienceFiction_epub.epub",
-  "download_url_timestamp": "2025-03-13T09:47:41.364Z",
-  "download_url_etag": "\"654fc043-e3833\"",
-  "download_url_dl_duration": 0.893,
-  "download_url_dl_mbps": 0.995207740638451
+  "publicdate": "2014-10-28 20:09:18",
+  "identifier": "RedPlanetsMarxismAndScienceFiction",
+  "mediatype": "texts",
+  "date": "2009",
+  "language": "eng",
+  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.0",
+  "uploader": "srehab7@gmail.com",
+  "addeddate": "2014-10-28 20:09:18",
+  "curation": "[curator]validator@archive.org[/curator][date]20141028201453[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/RedPlanetsMarxismAndScienceFiction",
+  "identifier-ark": "ark:/13960/t5r817q1x",
+  "ppi": "300",
+  "ocr": "ABBYY FineReader 9.0",
+  "repub_state": "4",
+  "backup_location": "ia905906_2",
+  "coverImage": "https://archive.org/services/img/RedPlanetsMarxismAndScienceFiction",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 298
 }

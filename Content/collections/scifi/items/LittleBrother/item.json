@@ -1,13 +1,10 @@
 {
   "id": "LittleBrother",
+  "name": "Little Brother von Cory Doctorow (ebook-deutsch)",
   "title": "Little Brother von Cory Doctorow (ebook-deutsch)",
-  "creator": "Cory Doctorow",
-  "date": null,
-  "description": "Science Fiction Novelle von Cory Doctorow in der deutschen Uebersetzung von Christian Woehrl. Diverse eBook-Formate (epub, prc, pdb, mobi). Webseite des Autors: http://craphound.com/littlebrother Webseite des Uebersetzers: http://cwoehrl.de/?q=node/425",
-  "mediatype": "texts",
-  "collection": [
-    "opensource",
-    "community"
+  "description": "Science Fiction Novelle von Cory Doctorow in der deutschen Uebersetzung von Christian Woehrl. Diverse eBook-Formate (epub, prc, pdb, mobi).\n\nWebseite des Autors: http://craphound.com/littlebrother\nWebseite des Uebersetzers: http://cwoehrl.de/?q=node/425",
+  "creator": [
+    "Cory Doctorow"
   ],
   "subject": [
     "Little Brother",
@@ -22,30 +19,46 @@
     "pdb",
     "prc"
   ],
-  "downloads": 19226,
-  "item_size": 4211176,
-  "format": [
-    "Archive BitTorrent",
-    "EPUB",
-    "HTML",
-    "Item Tile",
-    "JPEG",
-    "MOBI",
-    "Metadata",
-    "Sony Reader Format",
-    "Text",
-    "Unknown"
+  "collection": [
+    "opensource",
+    "community"
   ],
-  "favorite_count": 3,
-  "favorite_sample": [
-    "cyberpunkmonkey",
-    "king_of_com3dy",
-    "web2write"
+  "publicdate": "2009-04-11 09:38:15",
+  "identifier": "LittleBrother",
+  "mediatype": "texts",
+  "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/de/",
+  "addeddate": "2009-04-11 09:37:37",
+  "uploader": "rollmops@mail.ru",
+  "updater": [
+    "Rollmops im Kanzlerbunker",
+    "Rollmops im Kanzlerbunker",
+    "Rollmops im Kanzlerbunker",
+    "Rollmops im Kanzlerbunker",
+    "Rollmops im Kanzlerbunker"
   ],
-  "download_url": "https://archive.org/download/LittleBrother/LittleBrother.epub",
-  "download_url_cached": "scifi/content/LittleBrother_epub.epub",
-  "download_url_timestamp": "2025-03-13T08:40:51.018Z",
-  "download_url_etag": "\"49e06452-49d15\"",
-  "download_url_dl_duration": 0.449,
-  "download_url_dl_mbps": 0.6422051342664689
+  "updatedate": [
+    "2009-04-11 09:46:00",
+    "2009-04-11 09:49:43",
+    "2009-04-11 09:52:57",
+    "2009-04-11 12:00:49",
+    "2009-04-11 12:01:15"
+  ],
+  "contributor": "Christian Woehrl",
+  "publisher": "Cory Doctorow",
+  "language": "German",
+  "coverage": "USA, San Francisco",
+  "identifier-access": "http://www.archive.org/details/LittleBrother",
+  "identifier-ark": "ark:/13960/t6vx0qn0q",
+  "repub_state": "4",
+  "filesxml": [
+    "Wed Sep 2 1:25:14 UTC 2009",
+    "Wed Sep 2 5:36:42 UTC 2009",
+    "Mon Dec 6 0:42:07 UTC 2010"
+  ],
+  "curation": "[curator]malware@archive.org[/curator][date]20140311011740[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia903602_35",
+  "coverImage": "https://archive.org/services/img/LittleBrother",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 190
 }

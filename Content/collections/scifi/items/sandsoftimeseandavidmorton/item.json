@@ -1,13 +1,10 @@
 {
   "id": "sandsoftimeseandavidmorton",
+  "name": "Sands Of Time",
   "title": "Sands Of Time",
-  "creator": "Sean David Morton",
-  "date": "2011-01-01T00:00:00Z",
   "description": "The amazing TRUE STORY of 40 years in the life of Dr. Ted Humphrey who became involved w/ AREA 51, Dulce, THE DULCE WARS, THE Montauk Project, BLACK OPS, The Shadow Govt. and became head of an all powerful Above Top Secret organization engaged in a desperate race to save our world from total desolation",
-  "mediatype": "texts",
-  "collection": [
-    "opensource",
-    "community"
+  "creator": [
+    "Sean David Morton"
   ],
   "subject": [
     "Action & Adventure",
@@ -16,33 +13,25 @@
     "Science Fiction & Fantasy",
     "Time Travel"
   ],
-  "downloads": 3625,
-  "item_size": 1180983203,
-  "format": [
-    "Abbyy GZ",
-    "Archive BitTorrent",
-    "Daisy",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
+  "collection": [
+    "opensource",
+    "community"
   ],
-  "favorite_count": 28,
-  "favorite_sample": [
-    "arsu",
-    "awakening37",
-    "candacemorin9",
-    "crknife",
-    "dannycea"
-  ],
-  "download_url": "https://archive.org/download/sandsoftimeseandavidmorton/Sands%20of%20Time%20-%20Sean%20David%20Morton.epub",
-  "download_url_cached": "scifi/content/sandsoftimeseandavidmorton_epub.epub",
-  "download_url_timestamp": "2025-03-13T12:35:39.230Z",
-  "download_url_etag": "\"65601d3c-1eb40853\"",
-  "download_url_dl_duration": 724.684,
-  "download_url_dl_mbps": 0.6778844741707672
+  "publicdate": "2020-04-08 14:44:21",
+  "identifier": "sandsoftimeseandavidmorton",
+  "mediatype": "texts",
+  "date": "2011",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
+  "uploader": "russrunge@yahoo.com",
+  "addeddate": "2020-04-08 14:44:21",
+  "curation": "[curator]validator@archive.org[/curator][date]20200408144445[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/sandsoftimeseandavidmorton",
+  "identifier-ark": "ark:/13960/t1vf5h34p",
+  "ppi": "567",
+  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
+  "coverImage": "https://archive.org/services/img/sandsoftimeseandavidmorton",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 235
 }

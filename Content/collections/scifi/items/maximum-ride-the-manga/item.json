@@ -1,15 +1,10 @@
 {
   "id": "maximum-ride-the-manga",
+  "name": "Maximum Ride: The Manga",
   "title": "Maximum Ride: The Manga",
-  "creator": "James Patterson and NaRae Lee",
-  "date": "2009-01-01T00:00:00Z",
-  "description": "Fourteen-year-old Maximum Ride knows what it's like to soar above the world. She and all the members of her 'flock' are just like ordinary kids, except they have wings and can fly! When the mysterious lab known as the 'School' turns up and kidnaps the Flock's youngest member, Max and the Flock organize a rescue. I heard Volume 10 is going to be released in 2022... We'll see.",
-  "mediatype": "texts",
-  "collection": [
-    "manga_unsorted",
-    "manga_library",
-    "comics",
-    "additional_collections"
+  "description": "Fourteen-year-old Maximum Ride knows what it's like to soar above the world. She and all the members of her 'flock' are just like ordinary kids, except they have wings and can fly! When the mysterious lab known as the 'School' turns up and kidnaps the Flock's youngest member, Max and the Flock organize a rescue.<div><br /></div><div>I heard Volume 10 is going to be released in 2022... We'll see.</div>",
+  "creator": [
+    "James Patterson and NaRae Lee"
   ],
   "subject": [
     "Manga",
@@ -20,38 +15,35 @@
     "Mutants",
     "Heroine"
   ],
-  "downloads": 5274,
-  "item_size": 3186506041,
-  "format": [
-    "Additional Text PDF",
-    "Archive BitTorrent",
-    "Comic Book ZIP",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Image Container PDF",
-    "Item Tile",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "manga_unsorted",
+    "manga_library",
+    "comics",
+    "additional_collections"
   ],
-  "favorite_count": 104,
-  "favorite_sample": [
-    "4wakish",
-    "aisha_venegas_hernandez",
-    "alexiabowerman",
-    "andrews_jackson",
-    "applestrawberry"
-  ],
-  "download_url": "https://archive.org/download/maximum-ride-the-manga/Maximum%20Ride%20-%20The%20Manga%20v01%20(2009)%20(Digital)%20(Mr.%20Kimiko).epub",
-  "download_url_cached": "scifi/content/maximum-ride-the-manga_epub.epub",
-  "download_url_timestamp": "2025-03-13T10:38:54.175Z",
-  "download_url_etag": "\"65822850-20442\"",
-  "download_url_dl_duration": 0.289,
-  "download_url_dl_mbps": 0.43612285468817585
+  "publicdate": "2022-03-29 18:42:02",
+  "identifier": "maximum-ride-the-manga",
+  "mediatype": "texts",
+  "date": "2009",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
+  "uploader": "jasonsu0221@gmail.com",
+  "addeddate": "2022-03-29 18:42:02",
+  "curation": "[curator]validator@archive.org[/curator][date]20220329184252[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/maximum-ride-the-manga",
+  "identifier-ark": "ark:/13960/s2xbxsc1njr",
+  "ocr": "tesseract 5.0.0-1-g862e",
+  "ocr_parameters": "-l eng",
+  "ocr_module_version": "0.0.15",
+  "ocr_detected_script": "Cyrillic",
+  "ocr_detected_script_conf": "0.9515",
+  "ocr_detected_lang": "en",
+  "ocr_detected_lang_conf": "1.0000",
+  "page_number_confidence": "96.30",
+  "pdf_module_version": "0.0.18",
+  "year": "2009",
+  "coverImage": "https://archive.org/services/img/maximum-ride-the-manga",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 258
 }

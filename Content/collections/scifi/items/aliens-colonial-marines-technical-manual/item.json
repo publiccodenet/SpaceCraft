@@ -1,15 +1,9 @@
 {
   "id": "aliens-colonial-marines-technical-manual",
+  "name": "Aliens Colonial Marines Technical Manual",
   "title": "Aliens Colonial Marines Technical Manual",
-  "date": null,
-  "description": "Guidebook for the marines from the Alien universe.",
-  "mediatype": "texts",
-  "collection": [
-    "strategyguides",
-    "folkscanomy_games",
-    "folkscanomy",
-    "additional_collections"
-  ],
+  "description": "Guidebook for the marines from the Alien universe. <br />",
+  "creator": [],
   "subject": [
     "Ridley Scott",
     "Alien",
@@ -19,34 +13,32 @@
     "marines",
     "military science fiction"
   ],
-  "downloads": 16508,
-  "item_size": 97804617,
-  "format": [
-    "Abbyy GZ",
-    "Comic Book ZIP",
-    "Daisy",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
+  "collection": [
+    "strategyguides",
+    "folkscanomy_games",
+    "folkscanomy",
+    "additional_collections"
   ],
-  "favorite_count": 64,
-  "favorite_sample": [
-    "4_rt5e_7edi",
-    "alex_clemente",
-    "alex_monge",
-    "arthurlapin",
-    "asclepius1963"
+  "publicdate": "2020-06-02 04:43:55",
+  "identifier": "aliens-colonial-marines-technical-manual",
+  "mediatype": "texts",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
+  "uploader": "harizotoh7@gmail.com",
+  "addeddate": "2020-06-02 04:43:55",
+  "curation": "[curator]kaplan@archive.org[/curator][date]20201206000107[/date][state]un-dark[/state]",
+  "language": "English",
+  "identifier-access": "http://archive.org/details/aliens-colonial-marines-technical-manual",
+  "identifier-ark": "ark:/13960/t1dk47q6c",
+  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
+  "coverleaf": "0",
+  "noarchivetorrent": "true",
+  "collection_added": [
+    "folkscanomy_games",
+    "folkscanomy",
+    "additional_collections"
   ],
-  "download_url": "https://archive.org/download/aliens-colonial-marines-technical-manual/Aliens%20-%20Colonial%20Marines%20Technical%20Manual.epub",
-  "download_url_cached": "scifi/content/aliens-colonial-marines-technical-manual_epub.epub",
-  "download_url_timestamp": "2025-03-13T08:41:57.523Z",
-  "download_url_etag": "\"655a2066-1e1820e\"",
-  "download_url_dl_duration": 3.672,
-  "download_url_dl_mbps": 8.19560229648432
+  "coverImage": "https://archive.org/services/img/aliens-colonial-marines-technical-manual",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 236
 }

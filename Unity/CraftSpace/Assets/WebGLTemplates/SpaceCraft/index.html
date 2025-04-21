@@ -114,14 +114,14 @@
       // handlers to send events into Unity
       function handlePos(payload) {
         console.debug('handlePos', payload);
-        bridge.updateObject(window.spaceShip, {
+        bridge.updateObject(window.spaceCraft, {
           "component:InputManager/method:PushCameraPosition": [-payload.x, payload.y],
         });
       }
 
       function handleZoom(zoom) {
         console.debug('handleZoom', zoom);
-        bridge.updateObject(window.spaceShip, {
+        bridge.updateObject(window.spaceCraft, {
           "component:InputManager/method:PushCameraZoom": [zoom],
         });
       }
@@ -249,7 +249,25 @@
               // TODO: Pass actual configuration if needed
               window.bridge.start("WebGL", window.bridge.configuration || "{}"); 
 
-              window.spaceShip = bridge.createObject({"prefab": "Prefabs/SpaceShip"});
+              // asynchronously load "StreamingAssets/Content/index-deep.json" and initialize SpaceCraft
+              (async function initSpaceCraft() {
+                try {
+                  // Properly fetch and parse the JSON
+                  let collectionsResponse = await fetch("StreamingAssets/Content/index-deep.json");
+                  let collections = await collectionsResponse.json();
+                  window.collections = collections;
+                  console.log("[IndexHTML] Collections loaded:", collections);
+                  
+                  // Create the SpaceCraft object with the parsed collections data
+                  window.spaceCraft = bridge.createObject({
+                    "prefab": "Prefabs/SpaceCraft",
+                    "update": {
+                      "collections": collections,
+                    }});
+                } catch (error) {
+                  console.error("Failed to initialize SpaceCraft:", error);
+                }
+              })();
               
           } else {
               console.error("[IndexHTML] Unity instance ready, but window.bridge is not defined! Bridge initialization failed earlier.");

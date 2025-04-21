@@ -1,6 +1,8 @@
 {
   "id": "lucianstruehisto45858gut",
+  "name": "Lucian's True History",
   "title": "Lucian's True History",
+  "description": "Book from Project Gutenberg: Lucian's True History",
   "creator": [
     "Charles Whibley",
     "Francis Hickes",
@@ -9,46 +11,33 @@
     "William Strang",
     "Aubrey Beardsley"
   ],
-  "date": null,
-  "description": "Book from Project Gutenberg: Lucian's True History",
-  "mediatype": "texts",
-  "collection": [
-    "gutenberg"
-  ],
   "subject": [
     "Precursors of Science Fiction",
     "PA",
     "Voyages, Imaginary -- Early works to 1800",
     "Satire, Greek -- Translations into English"
   ],
-  "downloads": 2590,
-  "item_size": 12605364,
-  "format": [
-    "Archive BitTorrent",
-    "EPUB",
-    "HTML",
-    "Item Tile",
-    "JPEG",
-    "Log",
-    "MOBI",
-    "Metadata",
-    "PNG",
-    "Text",
-    "Unknown",
-    "ZIP"
+  "collection": [
+    "gutenberg"
   ],
-  "favorite_count": 11,
-  "favorite_sample": [
-    "aheavydeath",
-    "bouncetiger",
-    "crmsc",
-    "cserilaz",
-    "jgallain34"
-  ],
-  "download_url": "https://archive.org/download/lucianstruehisto45858gut/pg45858-images.epub",
-  "download_url_cached": "scifi/content/lucianstruehisto45858gut_epub.epub",
-  "download_url_timestamp": "2025-03-13T15:33:36.213Z",
-  "download_url_etag": "\"5b642de7-1d88a0\"",
-  "download_url_dl_duration": 0.898,
-  "download_url_dl_mbps": 2.055518611236776
+  "publicdate": "2018-08-03 10:26:21",
+  "identifier": "lucianstruehisto45858gut",
+  "call_number": "gutenberg etext# 45858",
+  "contributor": "Project Gutenberg",
+  "copyright-region": "US",
+  "external-identifier": "urn:gutenberg:45858",
+  "language": "en",
+  "mediatype": "texts",
+  "possible-copyright-status": "NOT_IN_COPYRIGHT",
+  "publisher": "Project Gutenberg",
+  "rights": "Public domain in the USA.",
+  "scanner": "Internet Archive Python library 1.7.0.dev2",
+  "source": "https://www.gutenberg.org/ebooks/45858",
+  "uploader": "arkiver@archive.org",
+  "addeddate": "2018-08-03 10:26:21",
+  "backup_location": "ia906800_8",
+  "coverImage": "https://archive.org/services/img/lucianstruehisto45858gut",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 250
 }

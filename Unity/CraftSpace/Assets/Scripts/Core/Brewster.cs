@@ -20,19 +20,10 @@ public class Brewster : MonoBehaviour
 
     [Header("Content Settings")]
     public string baseResourcePath = "Content";
-    public bool loadOnStart = true;
     
     // Collections and items - final loaded objects
     private Dictionary<string, Collection> _collections = new Dictionary<string, Collection>();
     private Dictionary<string, Item> _items = new Dictionary<string, Item>();
-    
-    // Tracking for collection loading phases
-    private List<string> _collectionIdsPending = new List<string>();
-    private HashSet<string> _collectionIdsLoading = new HashSet<string>();
-    
-    // Tracking for item loading phases
-    private HashSet<string> _itemIdsPending = new HashSet<string>();
-    private HashSet<string> _itemIdsLoading = new HashSet<string>();
     
     // Add a texture cache
     private Dictionary<string, Texture2D> _textureCache = new Dictionary<string, Texture2D>();
@@ -48,19 +39,12 @@ public class Brewster : MonoBehaviour
         
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        if (loadOnStart)
-            StartCoroutine(LoadContentSequence());
     }
     
     /*override*/ public void OnDestroy()
     {
         _collections.Clear();
         _items.Clear();
-        _collectionIdsPending.Clear();
-        _collectionIdsLoading.Clear();
-        _itemIdsPending.Clear();
-        _itemIdsLoading.Clear();
         
         // Clean up textures
         foreach (var texture in _textureCache.Values)
@@ -77,383 +61,190 @@ public class Brewster : MonoBehaviour
     }
 
     /// <summary>
-    /// Main sequence that loads all content in the correct order
+    /// Clears all collections and items to prepare for new content
     /// </summary>
-    private IEnumerator LoadContentSequence()
+    public void ClearContent()
     {
-        Debug.Log("Brewster: Starting content loading sequence");
+        foreach (var collection in _collections.Values)
+        {
+            if (collection != null)
+            {
+                ScriptableObject.Destroy(collection);
+            }
+        }
+        
+        foreach (var item in _items.Values)
+        {
+            if (item != null)
+            {
+                ScriptableObject.Destroy(item);
+            }
+        }
         
         _collections.Clear();
         _items.Clear();
-        _collectionIdsPending.Clear();
-        _collectionIdsLoading.Clear();
-        _itemIdsPending.Clear();
-        _itemIdsLoading.Clear();
-        
-        // Clean up textures
-        foreach (var texture in _textureCache.Values)
-        {
-            if (texture != null)
-            {
-                Destroy(texture);
-            }
-        }
-        _textureCache.Clear();
-        _texturesLoading.Clear();
-        
-        // PHASE 1: Load collection index
-        Debug.Log("Brewster: PHASE 1 - Loading collection index");
-        yield return LoadCollectionIndex();
-        
-        if (_collectionIdsPending.Count == 0)
-        {
-            Debug.LogError("Brewster: Failed to load collection index");
-            yield break;
-        }
-        
-        // PHASE 2: Load ALL collections
-        Debug.Log("Brewster: PHASE 2 - Loading all collections");
-        yield return LoadAllCollections();
-        
-        // PHASE 3: Load ALL item indexes
-        Debug.Log("Brewster: PHASE 3 - Loading all item indexes");
-        yield return LoadAllItemIndexes();
-        
-        // PHASE 4: Load ALL items
-        Debug.Log("Brewster: PHASE 4 - Loading all items");
-        yield return LoadAllItems();
-        
-        // COMPLETE: All content is loaded
-        Debug.Log($"Brewster: Content loading complete. Loaded {_collections.Count} collections and {_items.Count} items.");
-        
-        // Notify listeners that all content is loaded
-        OnAllContentLoaded?.Invoke();
     }
     
     /// <summary>
-    /// Phase 1: Load collection index
+    /// Loads collections and items from a JObject containing the full content data
     /// </summary>
-    private IEnumerator LoadCollectionIndex()
+    public void LoadContentFromJson(JObject contentJson)
     {
-        string indexPath = Path.Combine(Application.streamingAssetsPath, baseResourcePath, "collections-index.json");
-        
-        JToken indexToken = null;
-        yield return LoadJson(indexPath, token => indexToken = token);
-        
-        if (indexToken != null)
-            ProcessCollectionIndex(indexToken);
-    }
-    
-    /// <summary>
-    /// Phase 2: Load all collections
-    /// </summary>
-    private IEnumerator LoadAllCollections()
-    {
-        List<Coroutine> loadingRoutines = new List<Coroutine>();
-        
-        foreach (string collectionId in _collectionIdsPending)
+        if (contentJson == null)
         {
-            loadingRoutines.Add(StartCoroutine(LoadCollection(collectionId)));
+            Debug.LogError("Brewster: Received null contentJson");
+            return;
         }
-        
-        // Wait for all collections to finish loading
-        foreach (var routine in loadingRoutines)
-        {
-            yield return routine;
-        }
-    }
-    
-    /// <summary>
-    /// Load a single collection
-    /// </summary>
-    private IEnumerator LoadCollection(string collectionId)
-    {
-        // Skip if already loaded
-        if (_collections.ContainsKey(collectionId))
-            yield break;
-        
-        // Skip if already being loaded by another coroutine
-        if (_collectionIdsLoading.Contains(collectionId))
-            yield break;
-        
-        // Mark collection as being loaded
-        _collectionIdsLoading.Add(collectionId);
+            
+        Debug.Log("Brewster: Starting to load content from JSON");
+        //Debug.Log($"Brewster: Content JSON structure: {contentJson}");
+            
+        // Clear existing content first
+        ClearContent();
         
         try
         {
-            string collectionPath = Path.Combine(Application.streamingAssetsPath, baseResourcePath, "collections", collectionId, "collection.json");
-            
-            JToken collectionToken = null;
-            yield return LoadJson(collectionPath, token => collectionToken = token);
-            
-            if (collectionToken == null || !(collectionToken is JObject collectionObj)) 
-                yield break;
-            
-            // Create and initialize collection directly
-            Collection collection = ScriptableObject.CreateInstance<Collection>();
-            collection.ImportFromJToken(collectionObj);
-            
-            if (string.IsNullOrEmpty(collection.Id))
+            // Debug the structure of the incoming JSON
+            foreach (var prop in contentJson.Properties())
             {
-                Debug.LogError($"Brewster: Collection loaded from {collectionPath} has no ID");
-                ScriptableObject.Destroy(collection);
-                yield break;
+                Debug.Log($"Brewster: Found top-level property '{prop.Name}' of type {prop.Value.Type}");
             }
             
-            _collections[collectionId] = collection;
-        }
-        finally
-        {
-            // Remove from loading set regardless of success or failure
-            _collectionIdsLoading.Remove(collectionId);
-        }
-    }
-    
-    /// <summary>
-    /// Phase 3: Load all item indexes
-    /// </summary>
-    private IEnumerator LoadAllItemIndexes()
-    {
-        List<Coroutine> loadingRoutines = new List<Coroutine>();
-        
-        foreach (string collectionId in _collections.Keys)
-        {
-            loadingRoutines.Add(StartCoroutine(LoadItemIndex(collectionId)));
-        }
-        
-        // Wait for all item indexes to finish loading
-        foreach (var routine in loadingRoutines)
-        {
-            yield return routine;
-        }
-    }
-    
-    /// <summary>
-    /// Load item index for a single collection
-    /// </summary>
-    private IEnumerator LoadItemIndex(string collectionId)
-    {
-        // Add log at the very start
-        // Debug.Log($"Brewster: Entering LoadItemIndex for collection ID: {collectionId}"); // REMOVED
-
-        // Check if collection exists (should always exist at this phase)
-        if (!_collections.TryGetValue(collectionId, out Collection collection))
-        {
-            Debug.LogError($"Brewster: Collection '{collectionId}' not found in collections dictionary");
-            yield break;
-        }
-        
-        string itemsIndexPath = Path.Combine(Application.streamingAssetsPath, baseResourcePath, "collections", collectionId, "items-index.json");
-        
-        // Log the path we are attempting to load
-        // Debug.Log($"Brewster: Attempting to load item index for collection '{collectionId}' from: {itemsIndexPath}"); // REMOVED
-        
-        JToken itemsIndexToken = null;
-        yield return LoadJson(itemsIndexPath, token => itemsIndexToken = token);
-        
-        if (itemsIndexToken == null || itemsIndexToken.Type != JTokenType.Array) 
-            yield break;
-        
-        // Process items index - extract string IDs from the array
-        List<string> itemIds = new List<string>();
-        
-        foreach (var idToken in itemsIndexToken)
-        {
-            if (idToken.Type == JTokenType.String)
+            // Process collections
+            JToken collectionsToken = contentJson["collections"];
+            if (collectionsToken != null && collectionsToken is JObject collectionsObj)
             {
-                string id = (string)idToken;
-                if (!string.IsNullOrEmpty(id))
+                Debug.Log($"Brewster: Found collections object with {collectionsObj.Count} properties");
+                
+                foreach (var collectionProp in collectionsObj.Properties())
                 {
-                    itemIds.Add(id);
-                    // Add to pending items set - only load each unique item once
-                    _itemIdsPending.Add(id);
-                }
-            }
-        }
-        
-        // Log the count of item IDs parsed from the index
-        // Debug.Log($"Brewster: Parsed {itemIds.Count} item IDs from index for collection '{collectionId}'."); // REMOVED
-
-        // Set the item IDs on the collection - this is our source of truth
-        // about which items belong to which collection
-        collection.ItemIds = itemIds;
-    }
-    
-    /// <summary>
-    /// Phase 4: Load all items
-    /// </summary>
-    private IEnumerator LoadAllItems()
-    {
-        if (_itemIdsPending.Count == 0) yield break;
-        
-        // Load items collection-by-collection to maintain proper context
-        foreach (var collectionEntry in _collections)
-        {
-            string collectionId = collectionEntry.Key;
-            Collection collection = collectionEntry.Value;
-            
-            // Get the item IDs for this collection.
-            // Expect ItemIds to be a List<string> as set by LoadItemIndex.
-            // Explicitly create a new List<string> to resolve potential type mismatch (CS0266)
-            List<string> collectionItemIds = new List<string>(collection.ItemIds ?? Enumerable.Empty<string>());
-
-            // Bold check: If ItemIds is null (which shouldn't happen after LoadItemIndex),
-            // log it and skip this collection. Don't guess or create an empty list.
-            if (collectionItemIds == null)
-            {
-                Debug.LogWarning($"Brewster: Collection '{collectionId}' has null ItemIds. Skipping item loading for this collection.");
-                continue;
-            }
-
-            if (collectionItemIds.Count == 0)
-                continue; // Skip if no items anyway
-                
-            // Filter to only pending items that haven't been loaded yet
-            List<string> itemsToLoad = collectionItemIds
-                .Where(id => _itemIdsPending.Contains(id))
-                .ToList();
-                
-            // Process in batches
-            int batchSize = 10;
-            int itemsRemaining = itemsToLoad.Count;
-            int batchIndex = 0;
-            
-            while (itemsRemaining > 0)
-            {
-                List<Coroutine> batchRoutines = new List<Coroutine>();
-                int itemsInBatch = Math.Min(batchSize, itemsRemaining);
-                
-                for (int i = 0; i < itemsInBatch; i++)
-                {
-                    string itemId = itemsToLoad[batchIndex + i];
+                    string collectionId = collectionProp.Name;
+                    JObject collectionData = collectionProp.Value as JObject;
                     
-                    // Remove from pending as we process it
-                    _itemIdsPending.Remove(itemId);
+                    Debug.Log($"Brewster: Processing collection '{collectionId}'");
+                    //Debug.Log($"Brewster: Collection data for '{collectionId}': {collectionData}");
                     
-                    // Load the item with proper collection context
-                    batchRoutines.Add(StartCoroutine(LoadItem(collectionId, itemId)));
+                    if (collectionData != null)
+                    {
+                        Collection collection = ScriptableObject.CreateInstance<Collection>();
+                        
+                        // Log before import
+                        Debug.Log($"Brewster: Importing collection '{collectionId}' with {collectionData.Count} properties");
+                        
+                        // Get the nested collection metadata object
+                        JObject metadataObj = collectionData["collection"] as JObject;
+                        if (metadataObj != null)
+                        {
+                            // Import from the nested collection object
+                            collection.ImportFromJToken(metadataObj);
+                            
+                            // Check for itemsIndex in the collection
+                            JArray itemsIndexArray = collectionData["itemsIndex"] as JArray;
+                            if (itemsIndexArray != null)
+                            {
+                                Debug.Log($"Brewster: Collection '{collectionId}' has itemsIndex property of type {itemsIndexArray.Type}");
+                                
+                                try
+                                {
+                                    var itemIds = itemsIndexArray.Values<string>().ToList();
+                                    Debug.Log($"Brewster: Found {itemIds.Count} item IDs in collection '{collectionId}' itemsIndex: {string.Join(", ", itemIds)}");
+                                    
+                                    // Set the item IDs on the collection
+                                    collection.ItemIds = itemIds;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.LogError($"Brewster: Error extracting item IDs from itemsIndex for collection '{collectionId}': {ex.Message}");
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"Brewster: Collection '{collectionId}' has no itemsIndex property");
+                            }
+                            
+                            if (!string.IsNullOrEmpty(collection.Id))
+                            {
+                                _collections[collectionId] = collection;
+                                Debug.Log($"Brewster: Successfully added collection '{collectionId}' with ID '{collection.Id}'");
+                            }
+                            else
+                            {
+                                Debug.LogError($"Brewster: Collection with ID {collectionId} has no ID property. collection: {collection}");
+                                ScriptableObject.Destroy(collection);
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogError($"Brewster: Collection '{collectionId}' has no nested 'collection' metadata object");
+                            ScriptableObject.Destroy(collection);
+                        }
+                    }
                 }
+            }
+            else
+            {
+                Debug.LogWarning("Brewster: No 'collections' object found in content JSON or it's not an object");
+                Debug.Log($"Brewster: collections token: {collectionsToken}");
+            }
+            
+            // Process items
+            JToken itemsToken = contentJson["items"];
+            if (itemsToken != null && itemsToken is JObject itemsObj)
+            {
+                Debug.Log($"Brewster: Found items object with {itemsObj.Count} properties");
+                Debug.Log($"Brewster: Items object: {itemsObj}");
                 
-                // Wait for the batch to complete
-                foreach (var routine in batchRoutines)
+                foreach (var itemProp in itemsObj.Properties())
                 {
-                    yield return routine;
+                    string itemId = itemProp.Name;
+                    JObject itemData = itemProp.Value as JObject;
+                    
+                    Debug.Log($"Brewster: Processing item '{itemId}'");
+                    
+                    if (itemData != null)
+                    {
+                        Item item = ScriptableObject.CreateInstance<Item>();
+                        
+                        // Log before import
+                        Debug.Log($"Brewster: Importing item '{itemId}' with {itemData.Count} properties");
+                        
+                        item.ImportFromJToken(itemData);
+                        
+                        if (!string.IsNullOrEmpty(item.Id))
+                        {
+                            _items[itemId] = item;
+                            Debug.Log($"Brewster: Successfully added item '{itemId}' with ID '{item.Id}'");
+                        }
+                        else
+                        {
+                            Debug.LogError($"Brewster: Item with ID {itemId} has no ID property");
+                            ScriptableObject.Destroy(item);
+                        }
+                    }
                 }
-                
-                // Update counters
-                batchIndex += itemsInBatch;
-                itemsRemaining -= itemsInBatch;
-                
-                // Small delay between batches to avoid hiccups
-                yield return new WaitForEndOfFrame();
             }
+            else
+            {
+                Debug.LogWarning("Brewster: No 'items' object found in content JSON or it's not an object");
+                Debug.Log($"Brewster: items token: {itemsToken}");
+            }
+            
+            // Log collection item assignments
+            foreach (var collection in _collections.Values)
+            {
+                Debug.Log($"Brewster: Collection '{collection.Id}' has {(collection.ItemIds?.Count ?? 0)} items: {(collection.ItemIds != null ? string.Join(", ", collection.ItemIds) : "none")}");
+            }
+            
+            // Notify that content is loaded
+            Debug.Log($"Brewster: Content loading complete. Loaded {_collections.Count} collections and {_items.Count} items from provided JSON.");
+            
+            // Fire the event to notify all listeners
+            OnAllContentLoaded?.Invoke();
         }
-    }
-    
-    /// <summary>
-    /// Load a single item
-    /// </summary>
-    private IEnumerator LoadItem(string collectionId, string itemId)
-    {
-        // Skip if already loaded
-        if (_items.ContainsKey(itemId))
-            yield break;
-        
-        // Skip if already being loaded by another coroutine
-        if (_itemIdsLoading.Contains(itemId))
-            yield break;
-        
-        // Mark item as being loaded
-        _itemIdsLoading.Add(itemId);
-        
-        try
+        catch (Exception ex)
         {
-            string itemPath = Path.Combine(Application.streamingAssetsPath, baseResourcePath, "collections", collectionId, "items", itemId, "item.json");
-            
-            JToken itemToken = null;
-            yield return LoadJson(itemPath, token => itemToken = token);
-            
-            if (itemToken == null || !(itemToken is JObject itemObj))
-                yield break;
-            
-            // Create and initialize item directly
-            Item item = ScriptableObject.CreateInstance<Item>();
-            item.ImportFromJToken(itemObj);
-            
-            if (string.IsNullOrEmpty(item.Id))
-            {
-                Debug.LogError($"Brewster: Item loaded from {itemPath} has no ID");
-                ScriptableObject.Destroy(item);
-                yield break;
-            }
-            
-            // Store the item in our registry
-            _items[itemId] = item;
-        }
-        finally
-        {
-            // Remove from loading set regardless of success or failure
-            _itemIdsLoading.Remove(itemId);
-        }
-    }
-    
-    /// <summary>
-    /// Loads JSON from any URI
-    /// </summary>
-    private IEnumerator LoadJson(string uri, Action<JToken> callback)
-    {
-        // Convert file path to correct format for local files
-        string fullUri = uri.StartsWith("http") ? uri : "file://" + uri;
-        
-        using (UnityWebRequest www = UnityWebRequest.Get(fullUri))
-        {
-            yield return www.SendWebRequest();
-            
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError($"Failed to load JSON from {uri}, Error: {www.error}");
-                callback?.Invoke(null);
-                yield break;
-            }
-            
-            // Parse JSON exactly once at the boundary
-            string jsonContent = www.downloadHandler.text;
-            if (string.IsNullOrEmpty(jsonContent))
-            {
-                callback?.Invoke(null);
-                yield break;
-            }
-            
-            try
-            {
-                JToken token = JToken.Parse(jsonContent);
-                callback?.Invoke(token);
-            }
-            catch (Exception e)
-            {
-                // Log the URI and the specific error message
-                Debug.LogError($"Error parsing JSON from {uri}: {e.GetType().Name} - {e.Message}");
-                // Log the raw content that failed to parse (limit length)
-                string snippet = jsonContent.Length > 500 ? jsonContent.Substring(0, 500) + "..." : jsonContent;
-                Debug.LogError($"JSON content snippet:\n{snippet}"); 
-                callback?.Invoke(null);
-            }
-        }
-    }
-    
-    /// <summary>
-    /// Process collection index token
-    /// </summary>
-    private void ProcessCollectionIndex(JToken token)
-    {
-        if (token == null || token.Type != JTokenType.Array) return;
-        
-        foreach (JToken idToken in token)
-        {
-            string id = (idToken.Type == JTokenType.String) ? (string)idToken : null;
-            
-            if (!string.IsNullOrEmpty(id) && !_collectionIdsPending.Contains(id))
-                _collectionIdsPending.Add(id);
+            Debug.LogError($"Brewster: Error loading content from JSON: {ex.Message}");
+            Debug.LogException(ex);
         }
     }
 
@@ -466,6 +257,14 @@ public class Brewster : MonoBehaviour
         
         _collections.TryGetValue(collectionId, out Collection collection);
         return collection;
+    }
+
+    /// <summary>
+    /// Gets all collections from the cache.
+    /// </summary>
+    public Dictionary<string, Collection> GetAllCollections()
+    {
+        return new Dictionary<string, Collection>(_collections);
     }
 
     /// <summary>

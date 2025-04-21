@@ -312,10 +312,10 @@ public class Bridge : MonoBehaviour {
         }
 
         string json = "[" + evListString + "]";
-        Debug.Log("Bridge: DistributeUnityEvents: json:\n" + json);
+        //Debug.Log("Bridge: DistributeUnityEvents: json:\n" + json);
 
         JArray evList = JArray.Parse(json);
-        Debug.Log("Bridge: DistributeUnityEvents: evList: " + evList);
+        //Debug.Log("Bridge: DistributeUnityEvents: evList: " + evList);
 
         Debug.Log("Bridge: DistributeUnityEvents: evList.Count: " + evList.Count + " json.Length: " + json.Length);
 
@@ -334,7 +334,7 @@ public class Bridge : MonoBehaviour {
             return;
         }
 
-        Debug.Log("Bridge: DistributeUnityEvent: eventName: " + eventName + " ev: " + ev);
+        Debug.Log("Bridge: DistributeUnityEvent: eventName: " + eventName);
 
         switch (eventName) {
 
@@ -398,7 +398,7 @@ public class Bridge : MonoBehaviour {
         JObject interests = data.GetObject("interests");
         JArray postEvents = data.GetArray("postEvents");
 
-        Debug.Log("Bridge: HandleCreate: id: " + id + " prefab: " + prefab + " component: " + component + " preEvents: " + preEvents + " parent: " + parent + " worldPositionStay: " + worldPositionStays + " update: " + update + " interests: " + interests + " postEvents: " + postEvents);
+        Debug.Log("Bridge: HandleCreate: id: " + id + " prefab: " + prefab); // + " component: " + component + " preEvents: " + preEvents + " parent: " + parent + " worldPositionStay: " + worldPositionStays + " update: " + update + " interests: " + interests + " postEvents: " + postEvents);
 
         GameObject instance = null;
         if (string.IsNullOrEmpty(prefab)) {

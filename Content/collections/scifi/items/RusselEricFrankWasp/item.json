@@ -1,43 +1,31 @@
 {
   "id": "RusselEricFrankWasp",
+  "name": "Russel Eric Frank Wasp",
   "title": "Russel Eric Frank Wasp",
-  "date": null,
-  "description": "Wasp is a 1957 science fiction novel by English author Eric Frank Russell. Wasp is generally considered Russell's best novel. The title of Wasp comes from the idea that the main character's actions and central purpose mimic that particular insect; just as something as small as a wasp can terrorize a much larger creature in control of a car to the point of causing a crash and killing the occupants, so the defeat of an enemy may be wrought via psychological and guerrilla warfare by a small, but deadly, protagonist in their midst.",
-  "mediatype": "texts",
+  "description": "<p><sup><font size=\"3\">Wasp is a 1957 science fiction novel by English author Eric Frank Russell. Wasp is generally considered Russell's best novel. The title of Wasp comes from the idea that the main character's actions and central purpose mimic that particular insect; just as something as small as a wasp can terrorize a much larger creature in control of a car to the point of causing a crash and killing the occupants, so the defeat of an enemy may be wrought via psychological and guerrilla warfare by a small, but deadly, protagonist in their midst.</font></sup></p>",
+  "creator": [],
+  "subject": [
+    "Science Fiction"
+  ],
   "collection": [
     "opensource",
     "community"
   ],
-  "subject": "Science Fiction",
-  "downloads": 6340,
-  "item_size": 75485614,
-  "format": [
-    "Abbyy GZ",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "Daisy",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
-  ],
-  "favorite_count": 15,
-  "favorite_sample": [
-    "3secondruletaco",
-    "brutefish",
-    "fk_yyc_",
-    "halbebek",
-    "johnp27"
-  ],
-  "download_url": "https://archive.org/download/RusselEricFrankWasp/Russel%20Eric%20Frank%20-%20Wasp.epub",
-  "download_url_cached": "scifi/content/RusselEricFrankWasp_epub.epub",
-  "download_url_timestamp": "2025-03-13T10:12:11.403Z",
-  "download_url_etag": "\"6551469a-a0a19\"",
-  "download_url_dl_duration": 0.54,
-  "download_url_dl_mbps": 1.161972681681315
+  "publicdate": "2014-02-15 16:48:49",
+  "identifier": "RusselEricFrankWasp",
+  "mediatype": "texts",
+  "scanner": "Internet Archive HTML5 Uploader 1.5.1",
+  "uploader": "annette.appreciation.association@gmail.com",
+  "addeddate": "2014-02-15 16:48:49",
+  "identifier-access": "http://archive.org/details/RusselEricFrankWasp",
+  "identifier-ark": "ark:/13960/t8qc2kr4w",
+  "ppi": "300",
+  "ocr": "ABBYY FineReader 9.0",
+  "repub_state": "4",
+  "curation": "[curator]malware@archive.org[/curator][date]20140311102951[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia905804_12",
+  "coverImage": "https://archive.org/services/img/RusselEricFrankWasp",
+  "favoriteCount": 0,
+  "coverImageWidth": 180,
+  "coverImageHeight": 268
 }
