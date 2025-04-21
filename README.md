@@ -12,17 +12,12 @@ The platform uses multi-resolution processing to render thousands of items simul
 
 Spacecraft implements a multi-tier architecture that processes Internet Archive collections through specialized pipelines:
 
-```
-┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
-│  Internet       │      │  BackSpace      │      │  CraftSpace     │
-│  Archive API    │ ──►  │  SvelteKit App  │ ──►  │  Unity WebGL    │
-└─────────────────┘      └─────────────────┘      └─────────────────┘
-        │                        │                        │
-        ▼                        ▼                        ▼
-┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
-│  Raw Content    │      │  Processed Data │      │  Visualization  │
-│  & Metadata     │      │  & Atlases      │      │  & Interaction  │
-└─────────────────┘      └─────────────────┘      └─────────────────┘
+```mermaid
+flowchart LR
+    IA[Internet Archive API] --> BS[BackSpace SvelteKit App] --> CS[CraftSpace Unity WebGL]
+    IA --> |produces| RAW[Raw Content & Metadata]
+    BS --> |produces| PROC[Processed Data & Atlases]
+    CS --> |produces| VIS[Visualization & Interaction]
 ```
 
 ### Core Components

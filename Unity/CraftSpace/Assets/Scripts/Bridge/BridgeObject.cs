@@ -68,6 +68,7 @@ public class BridgeObject : MonoBehaviour {
     public virtual void HandleEvent(JObject ev)
     {
         //Debug.Log("BridgeObject: HandleEvent: this: " + this + " ev: " + ev, this);
+        Debug.Log($"Bridge: HandleEvent: {GetType().Name}#{id} - {ev}");
 
         string eventName = (string)ev["event"];
         //Debug.Log("BridgeObject: HandleEvent: eventName: " + eventName, this);
@@ -78,7 +79,7 @@ public class BridgeObject : MonoBehaviour {
         }
 
         JToken data = ev["data"];
-        //Debug.Log("BridgeObject: HandleEvent: eventName: " + eventName, this);
+        Debug.Log($"Bridge: HandleEvent {eventName} data: {data}");
 
         switch (eventName) {
 
@@ -95,6 +96,7 @@ public class BridgeObject : MonoBehaviour {
 
             case "Update": {
                 JObject update = (JObject)data;
+                Debug.Log($"Bridge: Update event with data: {update}");
                 LoadUpdate(update);
                 break;
             }
@@ -301,6 +303,8 @@ public class BridgeObject : MonoBehaviour {
     public void SendEventName(string eventName, JObject data = null)
     {
         //Debug.Log("BridgeObject: SendEventName: eventName: " + eventName + " data: " + data + " interests: " + interests);
+        // Log the event and data as separate objects, not converted to string
+        Debug.Log($"Bridge: SendEvent: {eventName} - data: {data}");
 
         if (bridge == null) {
             Debug.LogError("BridgeObject: SendEventName: bridge is null!");
@@ -320,13 +324,13 @@ public class BridgeObject : MonoBehaviour {
                 if (!disabled) {
 
                     foundInterest = true;
-                    //Debug.Log("BridgeObject: SendEventName: foundInterest: eventName: " + eventName + " interest: " + interest, this);
+                    Debug.Log($"Bridge: Found interest: {eventName} - {interest}");
 
                     JObject update = interest["update"] as JObject;
                     if (update != null) {
 
                         //Debug.Log("BridgeObject: SendEventName: event interest update: " + update);
-
+                        Debug.Log($"Bridge: Interest update: {eventName} - {update}");
                         LoadUpdate(update);
                     }
 
@@ -334,14 +338,14 @@ public class BridgeObject : MonoBehaviour {
                     if (events != null) {
 
                         //Debug.Log("BridgeObject: SendEventName: event interest events: " + events);
-
+                        Debug.Log($"Bridge: Interest events: {eventName} - {events}");
                         HandleEvents(events);
                     }
 
                     doNotSend = interest.GetBoolean("doNotSend");
 
                     if (doNotSend) {
-                        //Debug.Log("BridgeObject: SendEventName: doNotSend: interest: " + interest);
+                        Debug.Log($"Bridge: Not sending event due to doNotSend: {eventName}");
                     }
 
                     if (!doNotSend) {
@@ -350,22 +354,18 @@ public class BridgeObject : MonoBehaviour {
                         if (query != null) {
 
                             //Debug.Log("BridgeObject: SendEventName: event interest query: " + query);
+                            Debug.Log($"Bridge: Interest query: {eventName} - {query}");
 
                             if (data == null) {
                                 data = new JObject();
                             }
 
                             bridge.AddQueryData(this, query, data);
-                            //Debug.Log("BridgeObject: SendEventName: event interest query data: " + dagta);
-
+                            Debug.Log($"Bridge: Updated data with query: {eventName} - {data}");
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         // Always send Created and Destroyed events.
@@ -384,11 +384,10 @@ public class BridgeObject : MonoBehaviour {
             }
 
             //Debug.Log("BridgeObject: SendEventName: ev: " + ev, this);
+            Debug.Log($"Bridge: Sending event: {eventName} - {ev}");
 
             bridge.SendEvent(ev);
         }
-
-
     }
 
 

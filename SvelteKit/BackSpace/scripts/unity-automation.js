@@ -104,10 +104,10 @@ if (!command) {
         await runUnityCommand('-batchmode -projectPath . -executeMethod Build.BuildProd -quit -logFile -', unityEnv);
         break;
       case 'build-webgl-dev':
-        await runUnityCommand('-batchmode -projectPath . -executeMethod Build.BuildWebGL_Dev -quit -logFile -', unityEnv);
+        await runUnityCommand('-batchmode -projectPath . -executeMethod Build.WebGL_Dev -quit -logFile -', unityEnv);
         break;
       case 'build-webgl-prod':
-        await runUnityCommand('-batchmode -projectPath . -executeMethod Build.BuildWebGL_Prod -quit -logFile -', unityEnv);
+        await runUnityCommand('-batchmode -projectPath . -executeMethod Build.WebGL_Prod -quit -logFile -', unityEnv);
         break;
       case 'unbuild-webgl':
         await unbuildWebGL(unityEnv);

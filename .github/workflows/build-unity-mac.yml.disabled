@@ -52,10 +52,10 @@ jobs:
         working-directory: SvelteKit/BackSpace
         run: |
           # Export schemas from TypeScript to JSON
-          npm run schema:export
+          npm run schemas:export
           
           # Copy to Unity
-          npm run schema:copy-to-unity
+          npm run schemas:copy-to-unity
           
           # Regenerate C# classes from JSON schemas
           export UNITY_PRECONFIGURED=true

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// Handles click detection for items and forwards to SpaceShipBridge
+/// Handles click detection for items and forwards to SpaceCraft
 /// </summary>
 [RequireComponent(typeof(ItemView))]
 public class ItemSelectionHandler : MonoBehaviour, IPointerClickHandler
@@ -10,20 +10,20 @@ public class ItemSelectionHandler : MonoBehaviour, IPointerClickHandler
     [SerializeField] private bool _triggerOnClick = true;
     
     private ItemView _itemView;
-    private SpaceShipBridge _spaceShip;
+    private SpaceCraft _spaceCraft;
     
     private void Awake()
     {
         _itemView = GetComponent<ItemView>();
-        _spaceShip = SpaceShipBridge.spaceShip;
+        _spaceCraft = SpaceCraft.spaceCraft;
     }
     
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (_triggerOnClick && _itemView != null && _itemView.Model != null && _spaceShip != null)
+        if (_triggerOnClick && _itemView != null && _itemView.Model != null && _spaceCraft != null)
         {
-            // Simply pass the click to SpaceShipBridge to handle
-            _spaceShip.ToggleItemSelection(_itemView.Model.Id);
+            // Simply pass the click to SpaceCraft to handle
+            _spaceCraft.ToggleItemSelection(_itemView.Model.Id);
         }
     }
 } 

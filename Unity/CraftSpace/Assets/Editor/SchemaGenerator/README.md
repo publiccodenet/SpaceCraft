@@ -75,7 +75,7 @@ FILE PATH: Unity/CraftSpace/Assets/Editor/SchemaGenerator/README.md
     ```
     **Note for Zod Schema Consumers:** Tools consuming the raw Zod types directly (e.g., within the SvelteKit app) should be aware that only the *first line* of the description is the intended human-readable description. The subsequent line containing JSON is metadata for the export pipeline.
 
-2.  **Export Schemas:** Run `npm run schema:export` in the `SvelteKit/BackSpace` directory.
+2.  **Export Schemas:** Run `npm run schemas:export` in the `SvelteKit/BackSpace` directory.
 
 3.  **Parse Description and Inject Metadata:** The `schema-export.js` script:
     *   Uses `zod-to-json-schema` to get the initial JSON schema (including the multi-line descriptions).
@@ -195,7 +195,7 @@ We use a minimal subset of JSON.NET features that work well in WebGL. The `Schem
 ## Usage
 
 1.  Define/update Zod schemas in `SvelteKit/BackSpace/src/lib/schemas` using `.meta()` for annotations.
-2.  Run `npm run schema:export` in `SvelteKit/BackSpace` directory.
+2.  Run `npm run schemsa:export` in `SvelteKit/BackSpace` directory.
 3.  Ensure exported `*.json` files are present in `Unity/CraftSpace/Assets/StreamingAssets/Content/schemas`.
 4.  Open the Unity generator window: `CraftSpace > Schema Generator`.
 5.  Click "Import All Schemas".

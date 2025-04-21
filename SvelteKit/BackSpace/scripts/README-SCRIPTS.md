@@ -7,11 +7,11 @@ This document provides an overview of our approach to command-line scripts in th
 Our CLI scripts follow these core principles:
 
 1. **JavaScript First**: Scripts are written in JavaScript but executed with tsx
-2. **Consistent Naming**: Singular-noun-first convention (e.g., `schema-export.js`, not `export-schema.js`)
+2. **Consistent Naming**: Singular-noun-first convention (e.g., `schemas-export.js`, not `export-schemas.js`)
 3. **Direct Imports**: Scripts import TypeScript code directly using tsx
 4. **Explicit Paths**: Constants define all project paths centrally
 5. **Standalone Operation**: Each script can run independently
-6. **Consistent Commands**: npm script names match file names (e.g., `npm run schema:export` runs `schema-export.js`)
+6. **Consistent Commands**: npm script names match file names (e.g., `npm run schemas:export` runs `schemas-export.js`)
 
 ## Script Architecture
 
@@ -23,7 +23,7 @@ SvelteKit/BackSpace/
 │   ├── base-command.js         # Base class for all CLI commands
 │   ├── collection-*.js         # Collection management scripts
 │   ├── item-*.js               # Item management scripts
-│   ├── schema-*.js             # Schema management scripts
+│   ├── schemas-*.js            # Schema management scripts
 │   ├── content-*.js            # Content system scripts
 │   └── unity-*.js              # Unity integration scripts
 └── src/
@@ -44,7 +44,7 @@ We use a "bigendian" naming style, meaning:
 - Corresponding npm scripts use colon syntax: `npm run item:fetch`
 
 Examples:
-- 🔑 `schema-export.js` → `npm run schema:export`
+- 🔑 `schemas-export.js` → `npm run schemas:export`
 - 🔑 `item-fetch.js` → `npm run item:fetch`
 - 🔑 `collection-list.js` → `npm run collection:list`
 
@@ -53,8 +53,8 @@ Examples:
 Our scripts are organized into functional categories:
 
 1. **Schema Management**
-   - `schema-export.js`: Export Zod schemas to JSON Schema format
-   - `schema-copy.js`: Copy schema files to Unity project
+   - `schemas-export.js`: Export Zod schemas to JSON Schema format
+   - `schemas-copy.js`: Copy schema files to Unity project
 
 2. **Collection Management**
    - `collection-create.js`: Create new collections
@@ -93,7 +93,7 @@ Examples:
 npm run collection:list -- --verbose
 
 # Export schemas and output as JSON
-npm run schema:export -- --json
+npm run schemas:export -- --json
 
 # Create item with force overwrite
 npm run item:create -- --force
@@ -153,7 +153,7 @@ Scripts import these constants to ensure path consistency:
 // In any script
 import { PATHS } from '../src/lib/constants/index.ts';
 
-const schemaDir = PATHS.CRAFTSPACE_SCHEMAS_DIR;
+const schemasDir = PATHS.CRAFTSPACE_SCHEMAS_DIR;
 ```
 
 ## Running Scripts
@@ -162,9 +162,9 @@ Scripts are run via npm:
 
 ```
 # Schema management
-npm run schema:export       # Export schemas to JSON format
-npm run schema:copy         # Copy schemas to Unity
-npm run schema:update-all   # Run export and copy in sequence
+npm run schemas:export       # Export schemas to JSON format
+npm run schemas:copy         # Copy schemas to Unity
+npm run schemas:update-all   # Run export and copy in sequence
 
 # Collection management
 npm run collection:list     # List all collections
@@ -178,9 +178,9 @@ npm run item:create         # Create a new item manually
 ### npm Script Naming Convention
 
 npm script names follow this pattern:
-- `noun:verb` format (e.g., `schema:export`)
+- `noun:verb` format (e.g., `schemas:export`)
 - Singular nouns, not plural (e.g., `item:fetch`, not `items:fetch`)
-- Commands match file names consistently (e.g., `schema:export` → `schema-export.js`)
+- Commands match file names consistently (e.g., `schemas:export` → `schemas-export.js`)
 
 ## BaseCommand Framework
 
@@ -216,7 +216,7 @@ When debugging scripts:
 
 1. Run with Node directly for better error messages:
    ```bash
-   node scripts/schema-export.js
+   node scripts/schemas-export.js
    ```
 
 2. Add console logs for debugging:
@@ -243,17 +243,17 @@ When adding new scripts:
 
 The schema pipeline is a key workflow:
 
-1. `schema-export.js` converts Zod schemas to JSON Schema
-2. `schema-copy.js` copies schemas to Unity
+1. `schemas-export.js` converts Zod schemas to JSON Schema
+2. `schemas-copy.js` copies schemas to Unity
 3. Unity's SchemaImporter converts schemas to C# classes
 
 ```
-Zod Schema (TS) → JSON Schema → C# Classes
+Zod Schemas (TS) → JSON Schemas → C# Classes
 ```
 
 ### JSON Schema Format for Unity
 
-When exporting Zod schemas to JSON Schema, we apply specific formatting to ensure proper C# class generation:
+When exporting Zod schemas to JSON Schemas, we apply specific formatting to ensure proper C# class generation:
 
 ```javascript
 const jsonSchema = zodToJsonSchema(schema, {
@@ -280,18 +280,18 @@ This formatting ensures:
 
 We provide several tools for debugging the schema pipeline:
 
-1. **Schema Debug Script**: `npm run schema:debug` checks for schema correctness
+1. **Schema Debug Script**: `npm run schemas:debug` checks for schema correctness
 2. **Unity Import Tester**: `SchemaImportTest.cs` validates schema import in Unity
-3. **Environment Debug Flag**: `DEBUG=true npm run schema:export` for detailed output
+3. **Environment Debug Flag**: `DEBUG=true npm run schemas:export` for detailed output
 
 When a schema isn't generating proper C# classes, you can:
 
 ```bash
 # Check the schema structure and validation
-npm run schema:debug
+npm run schemas:debug
 
 # Export with debugging enabled
-DEBUG=true npm run schema:export
+DEBUG=true npm run schemas:export
 
 # In Unity, run the Schema Import Test from the CraftSpace menu
 ```
@@ -305,7 +305,7 @@ When working with the schema pipeline, watch for these issues:
 3. **Union Types**: Zod unions can be tricky to represent in JSON Schema and C#
 4. **Required Fields**: Make sure required fields are properly marked
 
-The npm script `schema:update-all` runs the complete pipeline.
+The npm script `schemas:update-all` runs the complete pipeline.
 
 ## Script Implementation Approach
 

@@ -172,7 +172,7 @@ public class SchemaGenerator : EditorWindow
         sb.AppendLine("//     1. NEVER modify this generated file directly");
         sb.AppendLine("//     2. ALWAYS modify the schema generator: Unity/CraftSpace/Assets/Editor/SchemaGenerator/SchemaGenerator.cs");
         sb.AppendLine("//     3. Update schema definitions in SvelteKit/BackSpace/src/lib/schemas/");
-        sb.AppendLine("//     4. Run npm run schema:export in SvelteKit/BackSpace directory");
+        sb.AppendLine("//     4. Run  npm run schemas:export in SvelteKit/BackSpace directory");
         sb.AppendLine("//     5. Regenerate using CraftSpace > Schema Generator in Unity");
         sb.AppendLine("//");
         sb.AppendLine("//     Any changes made directly to this file WILL BE LOST when regenerated.");
@@ -289,57 +289,77 @@ public class SchemaGenerator : EditorWindow
                 bool isExtraFields = rawPropertyName == "extraFields";
                 if (isExtraFields) continue;
                 
-                // Basic direct conversion for now
-                sb.AppendLine($"        // Processing property '{jsonPropertyName}'");
-                sb.AppendLine($"        if (json[\"{jsonPropertyName}\"] != null)");
-                sb.AppendLine($"        {{");
-                sb.AppendLine($"            try");
-                sb.AppendLine($"            {{");
+                // Check for converter in metadata
+                string converterMeta = propertySchema["x_meta"]?["UnitySchemaConverter"]?.Value<string>();
                 
-                // Direct conversion based on type
-                if (propertyType == "string")
+                // Check if this property has a converter specified in metadata
+                if (!string.IsNullOrEmpty(converterMeta))
                 {
-                    sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].ToString();");
+                    sb.AppendLine($"        // Use converter: {converterMeta}");
+                    sb.AppendLine($"        if (json[\"{jsonPropertyName}\"] != null)");
+                    sb.AppendLine($"        {{");
+                    sb.AppendLine($"            try");
+                    sb.AppendLine($"            {{");
+                    // Direct instantiation of converter class instead of going through UnitySchemaConverter
+                    sb.AppendLine($"                var converter = new {converterMeta}();");
+                    sb.AppendLine($"                {fieldName} = ({propertyType})converter.ReadJson(json[\"{jsonPropertyName}\"].CreateReader(), typeof({propertyType}), null, null);");
+                    sb.AppendLine($"            }}");
+                    sb.AppendLine($"            catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' with {converterMeta}: {{ex.Message}}\"); }}");
+                    sb.AppendLine($"        }}");
                 }
-                else if (propertyType == "int" || propertyType == "long")
-                {
-                    sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].Value<{propertyType}>();");
+                else {
+                    // Basic direct conversion for now
+                    sb.AppendLine($"        // Processing property '{jsonPropertyName}'");
+                    sb.AppendLine($"        if (json[\"{jsonPropertyName}\"] != null)");
+                    sb.AppendLine($"        {{");
+                    sb.AppendLine($"            try");
+                    sb.AppendLine($"            {{");
+                    
+                    // Direct conversion based on type
+                    if (propertyType == "string")
+                    {
+                        sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].ToString();");
+                    }
+                    else if (propertyType == "int" || propertyType == "long")
+                    {
+                        sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].Value<{propertyType}>();");
+                    }
+                    else if (propertyType == "float" || propertyType == "double")
+                    {
+                        sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].Value<{propertyType}>();");
+                    }
+                    else if (propertyType == "bool")
+                    {
+                        sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].Value<bool>();");
+                    }
+                    else if (propertyType == "DateTime")
+                    {
+                        sb.AppendLine($"                {fieldName} = DateTime.Parse(json[\"{jsonPropertyName}\"].ToString());");
+                    }
+                    else if (propertyType == "string[]")
+                    {
+                        sb.AppendLine($"                // Convert to string array");
+                        sb.AppendLine($"                var token = json[\"{jsonPropertyName}\"];");
+                        sb.AppendLine($"                if (token.Type == JTokenType.Array)");
+                        sb.AppendLine($"                {{");
+                        sb.AppendLine($"                    var array = token.ToObject<string[]>();");
+                        sb.AppendLine($"                    if (array != null) {fieldName} = array;");
+                        sb.AppendLine($"                }}");
+                        sb.AppendLine($"                else if (token.Type == JTokenType.String)");
+                        sb.AppendLine($"                {{");
+                        sb.AppendLine($"                    {fieldName} = new string[]{{ token.ToString() }};");
+                        sb.AppendLine($"                }}");
+                    }
+                    else
+                    {
+                        // Complex objects handled generically
+                        sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].ToObject<{propertyType}>();");
+                    }
+                    
+                    sb.AppendLine($"            }}");
+                    sb.AppendLine($"            catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' directly: {{ex.Message}}\"); }}");
+                    sb.AppendLine($"        }}");
                 }
-                else if (propertyType == "float" || propertyType == "double")
-                {
-                    sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].Value<{propertyType}>();");
-                }
-                else if (propertyType == "bool")
-                {
-                    sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].Value<bool>();");
-                }
-                else if (propertyType == "DateTime")
-                {
-                    sb.AppendLine($"                {fieldName} = DateTime.Parse(json[\"{jsonPropertyName}\"].ToString());");
-                }
-                else if (propertyType == "string[]")
-                {
-                    sb.AppendLine($"                // Convert to string array");
-                    sb.AppendLine($"                var token = json[\"{jsonPropertyName}\"];");
-                    sb.AppendLine($"                if (token.Type == JTokenType.Array)");
-                    sb.AppendLine($"                {{");
-                    sb.AppendLine($"                    var array = token.ToObject<string[]>();");
-                    sb.AppendLine($"                    if (array != null) {fieldName} = array;");
-                    sb.AppendLine($"                }}");
-                    sb.AppendLine($"                else if (token.Type == JTokenType.String)");
-                    sb.AppendLine($"                {{");
-                    sb.AppendLine($"                    {fieldName} = new string[]{{ token.ToString() }};");
-                    sb.AppendLine($"                }}");
-                }
-                else
-                {
-                    // Complex objects handled generically
-                    sb.AppendLine($"                {fieldName} = json[\"{jsonPropertyName}\"].ToObject<{propertyType}>();");
-                }
-                
-                sb.AppendLine($"            }}");
-                sb.AppendLine($"            catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' directly: {{ex.Message}}\"); }}");
-                sb.AppendLine($"        }}");
                 
                 sb.AppendLine(); // Add blank line for readability
             }
@@ -368,60 +388,94 @@ public class SchemaGenerator : EditorWindow
                 var jsonPropertyName = rawPropertyName;
                 var propertyType = GetCSharpType(propertySchema);
                 
-                // Check for namespaced converter
-                string converterName = null;
-                var xMeta = propertySchema["x_meta"] as JObject;
-                if (xMeta != null && xMeta["UnitySchemaConverter"] is JObject converterObj)
-                {
-                    converterName = converterObj["name"]?.ToString();
-                }
-                
-                sb.AppendLine($"        // Processing property '{jsonPropertyName}'");
-                sb.AppendLine($"        if ({fieldName} != null)");
-                sb.AppendLine($"        {{");
+                // Check for converter in metadata
+                string converterMeta = propertySchema["x_meta"]?["UnitySchemaConverter"]?.Value<string>();
                 
                 // Use direct converter call if specified
-                if (!string.IsNullOrEmpty(converterName))
+                if (!string.IsNullOrEmpty(converterMeta))
                 {
-                    sb.AppendLine($"            // Use {converterName}");
-                    sb.AppendLine($"            try {{ json[\"{jsonPropertyName}\"] = {converterName}.WriteJson({fieldName}); }} catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' with {converterName}: {{ex.Message}}\"); }}");
+                    sb.AppendLine($"        // Use converter: {converterMeta}");
+                    
+                    // Check if we're dealing with a value type that can't be null
+                    if (propertyType == "int" || propertyType == "float" || propertyType == "double" || propertyType == "bool")
+                    {
+                        // For value types, don't use null check
+                        sb.AppendLine($"        try");
+                        sb.AppendLine($"        {{");
+                        sb.AppendLine($"            var tempWriter = new JTokenWriter();");
+                        sb.AppendLine($"            var converter = new {converterMeta}();");
+                        sb.AppendLine($"            converter.WriteJson(tempWriter, {fieldName}, null);");
+                        sb.AppendLine($"            json[\"{jsonPropertyName}\"] = tempWriter.Token;");
+                        sb.AppendLine($"        }}");
+                        sb.AppendLine($"        catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' with {converterMeta}: {{ex.Message}}\"); }}");
+                    }
+                    else
+                    {
+                        // Only use null check for reference types
+                        sb.AppendLine($"        if ({fieldName} != null)");
+                        sb.AppendLine($"        {{");
+                        sb.AppendLine($"            try");
+                        sb.AppendLine($"            {{");
+                        sb.AppendLine($"                var tempWriter = new JTokenWriter();");
+                        sb.AppendLine($"                var converter = new {converterMeta}();");
+                        sb.AppendLine($"                converter.WriteJson(tempWriter, {fieldName}, null);");
+                        sb.AppendLine($"                json[\"{jsonPropertyName}\"] = tempWriter.Token;");
+                        sb.AppendLine($"            }}");
+                        sb.AppendLine($"            catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' with {converterMeta}: {{ex.Message}}\"); }}");
+                        sb.AppendLine($"        }}");
+                    }
                 }
                 else
                 {
                     // For properties without converters, handle conversion manually
-                    sb.AppendLine($"            try");
-                    sb.AppendLine($"            {{");
-                    switch (propertyType)
+                    sb.AppendLine($"        // Processing property '{jsonPropertyName}'");
+                    
+                    // Check if we're dealing with a value type that can't be null
+                    if (propertyType == "int" || propertyType == "float" || propertyType == "double" || propertyType == "bool")
                     {
-                        case "string":
-                        case "int":
-                        case "float":
-                        case "bool":
-                        case "JObject":
-                            sb.AppendLine($"                json[\"{jsonPropertyName}\"] = JToken.FromObject({fieldName}); // Basic types can use FromObject safely");
-                            break;
-                        default:
-                            // For complex types like List<T>, manually build JArray
-                            if (propertyType.StartsWith("List<"))
-                            {
-                                sb.AppendLine($"                var jArray = new JArray();");
-                                sb.AppendLine($"                foreach (var item in {fieldName})");
-                                sb.AppendLine($"                {{");
-                                sb.AppendLine($"                    jArray.Add(JToken.FromObject(item)); // Use FromObject for list elements");
-                                sb.AppendLine($"                }}");
-                                sb.AppendLine($"                json[\"{jsonPropertyName}\"] = jArray;");
-                            }
-                            else
-                            {
-                                sb.AppendLine($"                // Custom type serialization would go here for {propertyType}, possibly using JToken.FromObject if safe or manual construction.");
-                                sb.AppendLine($"                // json[\"{jsonPropertyName}\"] = JToken.FromObject({fieldName});");
-                            }
-                            break;
+                        // For value types, don't use null check
+                        sb.AppendLine($"        try");
+                        sb.AppendLine($"        {{");
+                        sb.AppendLine($"            json[\"{jsonPropertyName}\"] = JToken.FromObject({fieldName}); // Basic value type");
+                        sb.AppendLine($"        }}");
+                        sb.AppendLine($"        catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' directly: {{ex.Message}}\"); }}");
                     }
-                    sb.AppendLine($"            }}");
-                    sb.AppendLine($"            catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' directly: {{ex.Message}}\"); }}");
+                    else
+                    {
+                        // Only use null check for reference types
+                        sb.AppendLine($"        if ({fieldName} != null)");
+                        sb.AppendLine($"        {{");
+                        sb.AppendLine($"            try");
+                        sb.AppendLine($"            {{");
+                        switch (propertyType)
+                        {
+                            case "string":
+                            case "JObject":
+                                sb.AppendLine($"                json[\"{jsonPropertyName}\"] = JToken.FromObject({fieldName}); // Basic types can use FromObject safely");
+                                break;
+                            default:
+                                // For complex types like List<T>, manually build JArray
+                                if (propertyType.StartsWith("List<"))
+                                {
+                                    sb.AppendLine($"                var jArray = new JArray();");
+                                    sb.AppendLine($"                foreach (var item in {fieldName})");
+                                    sb.AppendLine($"                {{");
+                                    sb.AppendLine($"                    jArray.Add(JToken.FromObject(item)); // Use FromObject for list elements");
+                                    sb.AppendLine($"                }}");
+                                    sb.AppendLine($"                json[\"{jsonPropertyName}\"] = jArray;");
+                                }
+                                else
+                                {
+                                    sb.AppendLine($"                // Custom type serialization would go here for {propertyType}, possibly using JToken.FromObject if safe or manual construction.");
+                                    sb.AppendLine($"                // json[\"{jsonPropertyName}\"] = JToken.FromObject({fieldName});");
+                                }
+                                break;
+                        }
+                        sb.AppendLine($"            }}");
+                        sb.AppendLine($"            catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' directly: {{ex.Message}}\"); }}");
+                        sb.AppendLine($"        }}"); // End of null check
+                    }
                 }
-                sb.AppendLine($"        }}"); // End of null check
                 sb.AppendLine(); // Add blank line for readability
             }
             

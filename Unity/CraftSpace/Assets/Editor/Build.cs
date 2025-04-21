@@ -3,8 +3,8 @@
 // <namespace>CraftSpace.Editor</namespace>
 // <assembly>Assembly-CSharp-Editor</assembly>
 //
-// Build automation script. This is NOT related to schema generation.
-// It is a separate build tool that happens to be in the Editor folder.
+// WebGL Build automation script for Unity.
+// All build functionality is accessible through the CraftSpace menu.
 //
 // Full absolute path: /Users/a2deh/GroundUp/SpaceCraft/CraftSpace/Unity/CraftSpace/Assets/Editor/Build.cs
 //------------------------------------------------------------------------------
@@ -17,39 +17,9 @@ using UnityEditor.Build.Reporting;
 
 public static class Build
 {
-    [MenuItem("Build/Development Build")]
-    public static void BuildDev()
-    {
-        Debug.Log("Starting Development Build...");
-        BuildPlayerOptions options = new BuildPlayerOptions
-        {
-            scenes = GetBuildScenes(),
-            locationPathName = Path.Combine("Builds", "Development", GetBuildName()),
-            target = GetBuildTarget(),
-            options = BuildOptions.Development | BuildOptions.AllowDebugging
-        };
-
-        PerformBuild(options);
-    }
-
-    [MenuItem("Build/Production Build")]
-    public static void BuildProd()
-    {
-        Debug.Log("Starting Production Build...");
-        BuildPlayerOptions options = new BuildPlayerOptions
-        {
-            scenes = GetBuildScenes(),
-            locationPathName = Path.Combine("Builds", "Production", GetBuildName()),
-            target = GetBuildTarget(),
-            options = BuildOptions.None
-        };
-
-        PerformBuild(options);
-    }
-
-    // --- NEW WebGL Builds ---
-    [MenuItem("Build/WebGL Development Build")]
-    public static void BuildWebGL_Dev()
+    // --- CraftSpace Menu Build Items ---
+    [MenuItem("CraftSpace/WebGL Development Build")]
+    public static void WebGL_Dev()
     {
         Debug.Log("Starting WebGL Development Build...");
 
@@ -75,19 +45,22 @@ public static class Build
         }
         // --- End Force --- 
         
+        string buildPath = Path.Combine("Builds", "SpaceCraft");
+        
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetBuildScenes(),
-            locationPathName = Path.Combine("Builds", "SpaceCraft"), // Correct relative path
+            locationPathName = buildPath,
             target = BuildTarget.WebGL,
             options = BuildOptions.Development // Add development flag if needed
         };
 
+        Debug.Log($"Building to: {options.locationPathName}");
         PerformBuild(options);
     }
 
-    [MenuItem("Build/WebGL Production Build")]
-    public static void BuildWebGL_Prod()
+    [MenuItem("CraftSpace/WebGL Production Build")]
+    public static void WebGL_Prod()
     {
         Debug.Log("Starting WebGL Production Build...");
 
@@ -111,43 +84,28 @@ public static class Build
             Debug.Log($"[Build] Current WebGL template is '{PlayerSettings.WebGL.template}'. Forcing to '{templateName}'.");
             PlayerSettings.WebGL.template = templateName;
         }
-         // --- End Force --- 
+        // --- End Force --- 
+        
+        string buildPath = Path.Combine("Builds", "SpaceCraft");
         
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = GetBuildScenes(),
-            locationPathName = Path.Combine("Builds", "SpaceCraft"), // Correct relative path
+            locationPathName = buildPath,
             target = BuildTarget.WebGL,
             options = BuildOptions.None
         };
 
+        Debug.Log($"Building to: {options.locationPathName}");
         PerformBuild(options);
     }
-    
-    // CraftSpace Menu Items
-    [MenuItem("CraftSpace/Build WebGL (Development)")]
-    public static void CraftSpaceWebGL_Dev()
-    {
-        BuildWebGL_Dev();
-    }
-    
-    [MenuItem("CraftSpace/Build WebGL (Production)")]
-    public static void CraftSpaceWebGL_Prod()
-    {
-        BuildWebGL_Prod();
-    }
-    // --- END WebGL Builds ---
+    // --- END CraftSpace Menu Build Items ---
 
     private static void PerformBuild(BuildPlayerOptions options)
     {
         // Ensure build directory exists
-        Directory.CreateDirectory(Path.GetDirectoryName(options.locationPathName));
-
-        // Log build settings
-        Debug.Log($"Building to: {options.locationPathName}");
-        Debug.Log($"Scenes: {string.Join(", ", options.scenes)}");
-        Debug.Log($"Target: {options.target}");
-        Debug.Log($"Options: {options.options}");
+        string buildDir = Path.GetDirectoryName(options.locationPathName);
+        Directory.CreateDirectory(buildDir);
 
         // Perform the build
         BuildReport report = BuildPipeline.BuildPlayer(options);
@@ -157,6 +115,7 @@ public static class Build
         if (summary.result == BuildResult.Succeeded)
         {
             Debug.Log($"Build succeeded! Size: {summary.totalSize / 1024 / 1024}MB, Time: {summary.totalTime.TotalSeconds:F2}s");
+            
             // If running in batch mode, exit with success code
             if (IsCommandLineBuild())
             {
@@ -183,54 +142,6 @@ public static class Build
             scenes[i] = EditorBuildSettings.scenes[i].path;
         }
         return scenes;
-    }
-
-    private static BuildTarget GetBuildTarget()
-    {
-        // Determine build target based on platform
-        switch (Application.platform)
-        {
-            case RuntimePlatform.OSXEditor:
-                return BuildTarget.StandaloneOSX;
-            case RuntimePlatform.WindowsEditor:
-                return BuildTarget.StandaloneWindows64;
-            case RuntimePlatform.LinuxEditor:
-                return BuildTarget.StandaloneLinux64;
-            default:
-                return BuildTarget.StandaloneWindows64; // Default to Windows
-        }
-    }
-
-    private static string GetBuildName()
-    {
-        string appName = PlayerSettings.productName.Replace(" ", "");
-        string buildTarget = GetBuildTarget().ToString();
-        string version = PlayerSettings.bundleVersion;
-        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-
-        // Create a name like "CraftSpace_Windows_v1.0_20230805_123456.exe"
-        string extension = "";
-        switch (GetBuildTarget())
-        {
-            case BuildTarget.StandaloneWindows:
-            case BuildTarget.StandaloneWindows64:
-                extension = ".exe";
-                break;
-            case BuildTarget.StandaloneOSX:
-                extension = ".app";
-                break;
-            case BuildTarget.Android:
-                extension = ".apk";
-                break;
-            case BuildTarget.WebGL:
-                extension = "";
-                break;
-            default:
-                extension = "";
-                break;
-        }
-
-        return $"{appName}_{buildTarget}_v{version}_{timestamp}{extension}";
     }
 
     private static bool IsCommandLineBuild()
