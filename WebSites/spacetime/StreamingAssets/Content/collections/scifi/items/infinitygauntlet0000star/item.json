@@ -1,22 +1,8 @@
 {
   "id": "infinitygauntlet0000star",
   "title": "Infinity Gauntlet",
+  "description": "256 pages : 26 cm\nThe few superheroes remaining after Thanos destroys half the universe with the Infinity Gauntlet stand with the cosmic forces of space and time, love and hate, and order and chaos in an effort to save what is left of the Earth, but it will take a nearly-forgotten hero from another era to strip Thanos of power\nRated T+\n\"Contains material originally published in magazine form as Infinity Gauntlet #1-6\"--Title page verso",
   "creator": "Starlin, Jim, author",
-  "date": "2015-01-01T00:00:00Z",
-  "description": [
-    "256 pages : 26 cm",
-    "The few superheroes remaining after Thanos destroys half the universe with the Infinity Gauntlet stand with the cosmic forces of space and time, love and hate, and order and chaos in an effort to save what is left of the Earth, but it will take a nearly-forgotten hero from another era to strip Thanos of power",
-    "Rated T+",
-    "\"Contains material originally published in magazine form as Infinity Gauntlet #1-6\"--Title page verso"
-  ],
-  "mediatype": "texts",
-  "collection": [
-    "internetarchivebooks",
-    "printdisabled",
-    "americanuniversity-ol",
-    "tulsacc-ol",
-    "wilsoncollege-ol"
-  ],
   "subject": [
     "Thanos (Fictitious character from Marvel Comics Group) -- Comic books, strips, etc",
     "Thanos (Fictitious character from Marvel Comics Group)",
@@ -29,41 +15,13 @@
     "New Warriors (Fictitious characters)",
     "X-Men (Fictitious characters)"
   ],
-  "downloads": 2834,
-  "item_size": 1294314620,
-  "format": [
-    "ACS Encrypted PDF",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item Tile",
-    "JPEG Thumb",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "Log",
-    "MARC",
-    "MARC Binary",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "PNG",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "Title Page Detection Log",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled"
   ],
-  "favorite_count": 45,
-  "favorite_sample": [
-    "a_apos_isha_eugene",
-    "aeonfluxion",
-    "afroza_saif",
-    "airu444",
-    "ak66991"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/infinitygauntlet0000star",
+  "coverWidth": 180,
+  "coverHeight": 290,
+  "favoriteCount": 0
 }

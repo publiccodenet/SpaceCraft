@@ -1,28 +1,8 @@
 {
   "id": "twilight00step",
   "title": "Twilight : the graphic novel",
-  "creator": [
-    "Kim, Young",
-    "Meyer, Stephenie, 1973-"
-  ],
-  "date": "2010-01-01T00:00:00Z",
   "description": "When seventeen-year-old Bella leaves Phoenix to live with her father in Forks, Washington, she meets an exquisitely handsome boy at school for whom she feels an overwhelming attraction and who she comes to realize is not wholly human",
-  "mediatype": "texts",
-  "collection": [
-    "internetarchivebooks",
-    "delawarecountydistrictlibrary",
-    "americana",
-    "printdisabled",
-    "cnusd-ol",
-    "delawarecountydistrictlibrary-ol",
-    "denverpubliclibrary-ol",
-    "drakeuniversity-ol",
-    "hamiltonpubliclibrary-ol",
-    "library_of_atlantis",
-    "miltonpubliclibrary-ol",
-    "spokanepubliclibrary-ol",
-    "stmaryscountylibrary"
-  ],
+  "creator": "Kim, Young\nMeyer, Stephenie, 1973-",
   "subject": [
     "Children's Books -- Literature -- Science Fiction, Fantasy, Mystery & Horror -- Comics & Graphic Novels",
     "Children's Books -- Literature -- Science Fiction, Fantasy, Mystery & Horror -- Spine-Chilling Horror",
@@ -35,44 +15,15 @@
     "High schools",
     "Schools"
   ],
-  "downloads": 4581,
-  "item_size": 713599396,
-  "format": [
-    "ACS Encrypted PDF",
-    "Abbyy GZ",
-    "Animated GIF",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item Tile",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "MARC",
-    "MARC Binary",
-    "MARC Source",
-    "Metadata",
-    "Metadata Log",
-    "OCLC xISBN JSON",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "WARC CDX Index",
-    "Web ARChive GZ",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "internetarchivebooks",
+    "delawarecountydistrictlibrary",
+    "americana",
+    "printdisabled"
   ],
-  "favorite_count": 38,
-  "favorite_sample": [
-    "accidental_artist",
-    "agent-lisa",
-    "alenabrocks",
-    "aleshamj",
-    "ali052"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/twilight00step",
+  "coverWidth": 180,
+  "coverHeight": 295,
+  "favoriteCount": 0
 }

@@ -1,18 +1,8 @@
 {
   "id": "neverfade0000brac_g1l9",
-  "title": "Never fade",
+  "title": "Never fade ",
+  "description": "507 pages ; 22 cm\n\"In the second installment of The Darkest Minds trilogy, Ruby joins forces with the revolutionary Children's League to find critical information about the epidemic that has torn both her life and America apart\"--\nAccelerated Reader Grades 5-8 5.9",
   "creator": "Bracken, Alexandra, author",
-  "date": "2013-01-01T00:00:00Z",
-  "description": [
-    "507 pages ; 22 cm",
-    "\"In the second installment of The Darkest Minds trilogy, Ruby joins forces with the revolutionary Children's League to find critical information about the epidemic that has torn both her life and America apart\"--",
-    "Accelerated Reader Grades 5-8 5.9"
-  ],
-  "mediatype": "texts",
-  "collection": [
-    "internetarchivebooks",
-    "printdisabled"
-  ],
   "subject": [
     "Psychic ability -- Juvenile fiction",
     "Epidemics -- Juvenile fiction",
@@ -23,44 +13,13 @@
     "Epidemics",
     "Psychic ability"
   ],
-  "downloads": 4411,
-  "item_size": 1441231198,
-  "format": [
-    "ACS Encrypted PDF",
-    "AVIF Thumbnails ZIP",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item Tile",
-    "JPEG Thumb",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "Log",
-    "MARC",
-    "MARC Binary",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "PNG",
-    "Page Numbers JSON",
-    "RePublisher Final Processing Log",
-    "RePublisher Initial Processing Log",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "Title Page Detection Log",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled"
   ],
-  "favorite_count": 32,
-  "favorite_sample": [
-    "12358132",
-    "agbuya_realyn",
-    "bookworm293",
-    "bozotheclown950",
-    "chaseo7156349"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/neverfade0000brac_g1l9",
+  "coverWidth": 180,
+  "coverHeight": 276,
+  "favoriteCount": 0
 }

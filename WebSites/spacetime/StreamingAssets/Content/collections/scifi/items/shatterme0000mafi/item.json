@@ -1,24 +1,8 @@
 {
   "id": "shatterme0000mafi",
   "title": "Shatter me",
+  "description": "338 pages ; 22 cm\nOstracized or incarcerated her whole life, seventeen-year-old Juliette is freed on the condition that she use her horrific abilities in support of The Reestablishment, a postapocalyptic dictatorship, but Adam, the only person ever to show her affection, offers hope of a better future\nAccelerated Reader UG 4.3\nReading Counts High School 4.7\nArab American Book Awards Honorable Mention, 2013",
   "creator": "Mafi, Tahereh",
-  "date": "2011-01-01T00:00:00Z",
-  "description": [
-    "338 pages ; 22 cm",
-    "Ostracized or incarcerated her whole life, seventeen-year-old Juliette is freed on the condition that she use her horrific abilities in support of The Reestablishment, a postapocalyptic dictatorship, but Adam, the only person ever to show her affection, offers hope of a better future",
-    "Accelerated Reader UG 4.3",
-    "Reading Counts High School 4.7",
-    "Arab American Book Awards Honorable Mention, 2013"
-  ],
-  "mediatype": "texts",
-  "collection": [
-    "internetarchivebooks",
-    "printdisabled",
-    "cnusd-ol",
-    "hamiltonpubliclibrary-ol",
-    "tulsacc-ol",
-    "universityofoklahoma-ol"
-  ],
   "subject": [
     "Science fiction",
     "Ability -- Juvenile fiction",
@@ -34,41 +18,13 @@
     "Soldiers",
     "Dictators -- Fiction"
   ],
-  "downloads": 23811,
-  "item_size": 1035255524,
-  "format": [
-    "ACS Encrypted PDF",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item Tile",
-    "JPEG Thumb",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "Log",
-    "MARC",
-    "MARC Binary",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "PNG",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "Title Page Detection Log",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled"
   ],
-  "favorite_count": 368,
-  "favorite_sample": [
-    "5436543274",
-    "_---arrow---_",
-    "_kasama_kisagari",
-    "_rem_k_z_l_z",
-    "a_a287"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/shatterme0000mafi",
+  "coverWidth": 180,
+  "coverHeight": 282,
+  "favoriteCount": 0
 }

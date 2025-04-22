@@ -94,7 +94,7 @@ public class SpaceCraft : BridgeObject
         // Display all collections after loading is complete
         collectionsView?.DisplayAllCollections();
         
-        SendEvent("CollectionsLoaded");
+        SendEventName("CollectionsLoaded");
     }
     
     private void Update()
@@ -102,28 +102,16 @@ public class SpaceCraft : BridgeObject
         // Send events only when changes have occurred - reduce bridge traffic
         if (selectedItemsChanged)
         {
-            SendEvent("SelectedItemsChanged", new { selectedItemIds });
+            Debug.Log("SpaceCraft: SelectedItemsChanged: selectedItemIds: " + selectedItemIds);
+            SendEventName("SelectedItemsChanged");
             // CollectionsView will reset this flag after processing
         }
         
         if (highlightedItemsChanged)
         {
-            SendEvent("HighlightedItemsChanged", new { highlightedItemIds });
+            Debug.Log("SpaceCraft: HighlightedItemsChanged: highlightedItemIds: " + highlightedItemIds);
+            SendEventName("HighlightedItemsChanged");
             // CollectionsView will reset this flag after processing
-        }
-    }
-    
-    // Helper method to format event data and send it through the bridge
-    private void SendEvent(string eventName, object data = null)
-    {
-        if (data == null)
-        {
-            SendEventName(eventName);
-        }
-        else
-        {
-            JObject jData = JObject.FromObject(data);
-            SendEventName(eventName, jData);
         }
     }
     
@@ -774,7 +762,7 @@ public class SpaceCraft : BridgeObject
         SetMultiSelectMode(enable);
         
         // Send back the current state
-        SendEvent("MultiSelectChanged", new { multiSelectEnabled });
+        SendEventName("MultiSelectChanged");
     }
 
     // Add a single item to highlighted state

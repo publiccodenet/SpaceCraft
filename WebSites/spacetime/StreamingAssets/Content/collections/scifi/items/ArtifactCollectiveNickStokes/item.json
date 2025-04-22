@@ -1,14 +1,8 @@
 {
   "id": "ArtifactCollectiveNickStokes",
   "title": "Artifact Collective: an attempt to consciousness",
+  "description": "<div>ARTIFACT COLLECTIVE is an attempt to create consciousness in a book. You\n begin. You are trapped in the dark under a great weight. You cannot \nmove. His, her, their, our, your, and my consciousnesses take shape \nthrough speculation into your condition. Are you buried alive? Why? Are \nyou alive? Are you accelerating through space in a you-shaped windowless\n vessel? What is your shape? Are you a flicker of light on the horizon \nof a black hole? Where is she? Has he lost all he loved? Speculation via\n thought becomes reality. Including historical, scientific, and found \nmaterials and images, ARTIFACT COLLECTIVE is a fictional and \nnon-fictional exploration of quantum theory, cosmology, possible \nfutures, intellectual property, interwoven presents, the commons, the \nindividual and collective mind, and the self. ARTIFACT COLLECTIVE is a \ncorpus. It is an artifact.</div><div><br /></div><div>ARTIFACT COLLECTIVE is published under a Creative Commons Attribution Share Alike 4.0 License (CC BY-SA 4.0) by Nick Stokes.</div><div><br /></div><div>Also by Nick Stokes:</div><div><a href=\"https://archive.org/details/affair-stokes\" rel=\"ugc nofollow\">Affair</a></div><div><a href=\"https://archive.org/details/you-choose-stokes\" rel=\"ugc nofollow\">You Choose</a>, an (anti)-choose-your-own-adventure</div><div><a href=\"https://archive.org/details/the-end-a-story-of-the-undead-nick-stokes\" rel=\"ugc nofollow\">The End</a>: a story of the undead</div><div><a href=\"https://archive.org/details/logos-or-good-morning-nick-stokes/LogosPrintInternetArchive/\" rel=\"ugc nofollow\">Logos</a>: or Good Morning</div><div><a href=\"https://archive.org/details/the-possible-an-experiment-beginning-nick-stokes/ThePossibleIndependent\" rel=\"ugc nofollow\">The Possible: an experiment beginning</a></div><div><br /></div><div><a href=\"http://www.nickstokes.net\" rel=\"ugc nofollow\">http://www.nickstokes.net</a></div><div>IG: @you_now_are</div><div><br /></div><div>Print editions available at online retailers.</div><div><a href=\"http://amazon.com/author/nickstokes\" rel=\"ugc nofollow\">http://amazon.com/author/nickstokes</a></div><div><br /></div><div><a class=\"stealth download-pill\" href=\"https://archive.org/download/ArtifactCollectiveNickStokes/ArtifactCollectiveInternetArchive.pdf\" rel=\"ugc nofollow\">ArtifactCollectiveInternetArchive.pdf</a> is the print replica pdf, which preserves the original layout and typography of the printed book. <br /></div><div><br /></div><div>ArtifactCollective-NickStokes-InternetArchive.epub is the official epub.</div><div><br /></div><div>Artifact Collective-NickStokes-InternetArchive.mobi is the official version for Kindle.<br /></div>",
   "creator": "Nick Stokes",
-  "date": "2019-04-02T00:00:00Z",
-  "description": "ARTIFACT COLLECTIVE is an attempt to create consciousness in a book. You begin. You are trapped in the dark under a great weight. You cannot move. His, her, their, our, your, and my consciousnesses take shape through speculation into your condition. Are you buried alive? Why? Are you alive? Are you accelerating through space in a you-shaped windowless vessel? What is your shape? Are you a flicker of light on the horizon of a black hole? Where is she? Has he lost all he loved? Speculation via thought becomes reality. Including historical, scientific, and found materials and images, ARTIFACT COLLECTIVE is a fictional and non-fictional exploration of quantum theory, cosmology, possible futures, intellectual property, interwoven presents, the commons, the individual and collective mind, and the self. ARTIFACT COLLECTIVE is a corpus. It is an artifact. ARTIFACT COLLECTIVE is published under a Creative Commons Attribution Share Alike 4.0 License (CC BY-SA 4.0) by Nick Stokes. Also by Nick Stokes: Affair You Choose , an (anti)-choose-your-own-adventure The End : a story of the undead Logos : or Good Morning The Possible: an experiment beginning http://www.nickstokes.net IG: @you_now_are Print editions available at online retailers. http://amazon.com/author/nickstokes ArtifactCollectiveInternetArchive.pdf is the print replica pdf, which preserves the original layout and typography of the printed book. ArtifactCollective-NickStokes-InternetArchive.epub is the official epub. Artifact Collective-NickStokes-InternetArchive.mobi is the official version for Kindle.",
-  "mediatype": "texts",
-  "collection": [
-    "opensource",
-    "community"
-  ],
   "subject": [
     "metaphysics",
     "science fiction",
@@ -24,35 +18,13 @@
     "futures",
     "postmodern"
   ],
-  "downloads": 2591,
-  "item_size": 633635808,
-  "format": [
-    "Abbyy GZ",
-    "Archive BitTorrent",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "JPEG Thumb",
-    "MOBI",
-    "Metadata",
-    "PNG",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
+  "collection": [
+    "opensource",
+    "community"
   ],
-  "favorite_count": 8,
-  "favorite_sample": [
-    "aristo25",
-    "dudder",
-    "marie_la_nomade",
-    "misskellyrick",
-    "mlovew"
-  ],
-  "download_url": "https://archive.org/download/ArtifactCollectiveNickStokes/ArtifactCollective-Nick%20Stokes-InternetArchive.epub",
-  "download_url_cached": "scifi/content/ArtifactCollectiveNickStokes_epub.epub",
-  "download_url_timestamp": "2025-03-13T15:33:33.505Z",
-  "download_url_etag": "\"5cee92ff-7a442a\"",
-  "download_url_dl_duration": 6.586,
-  "download_url_dl_mbps": 1.160285699486986
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/ArtifactCollectiveNickStokes",
+  "coverWidth": 180,
+  "coverHeight": 233,
+  "favoriteCount": 0
 }

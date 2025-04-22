@@ -1,29 +1,8 @@
 {
   "id": "huntersofdune00bria",
   "title": "Hunters of Dune",
-  "creator": [
-    "Herbert, Brian",
-    "Anderson, Kevin J., 1962-",
-    "Herbert, Frank"
-  ],
-  "date": "2006-01-01T00:00:00Z",
-  "description": [
-    "\"A Tom Doherty Associates book.\"",
-    "\"A Sci Fi essential book\"--Dustjacket"
-  ],
-  "mediatype": "texts",
-  "collection": [
-    "internetarchivebooks",
-    "delawarecountydistrictlibrary",
-    "americana",
-    "printdisabled",
-    "cnusd-ol",
-    "delawarecountydistrictlibrary-ol",
-    "library_of_atlantis",
-    "miltonpubliclibrary-ol",
-    "rochester-ol",
-    "stmaryscountylibrary"
-  ],
+  "description": "\"A Tom Doherty Associates book.\"\n\"A Sci Fi essential book\"--Dustjacket",
+  "creator": "Herbert, Brian\nAnderson, Kevin J., 1962-\nHerbert, Frank",
   "subject": [
     "Science Fiction - Adventure",
     "Robots",
@@ -37,42 +16,15 @@
     "Movie-TV Tie-In - General",
     "Life on other planets"
   ],
-  "downloads": 2563,
-  "item_size": 731873203,
-  "format": [
-    "ACS Encrypted PDF",
-    "Abbyy GZ",
-    "Animated GIF",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item Tile",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "MARC",
-    "MARC Binary",
-    "MARC Source",
-    "Metadata",
-    "Metadata Log",
-    "OCLC xISBN JSON",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "internetarchivebooks",
+    "delawarecountydistrictlibrary",
+    "americana",
+    "printdisabled"
   ],
-  "favorite_count": 25,
-  "favorite_sample": [
-    "ajshell1",
-    "bircan_kaya",
-    "bohemondus",
-    "cahajiy",
-    "daviddiazbb"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/huntersofdune00bria",
+  "coverWidth": 180,
+  "coverHeight": 281,
+  "favoriteCount": 0
 }

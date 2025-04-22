@@ -1,17 +1,8 @@
 {
   "id": "onthetrailofthes21092gut",
   "title": "On the Trail of the Space Pirates",
-  "creator": [
-    "Rockwell, Carey",
-    "Glanzman, Louis [Illustrator]",
-    "Ley, Willy, 1906-1969 [Contributor]"
-  ],
-  "date": null,
   "description": "Book from Project Gutenberg: On the Trail of the Space Pirates Library of Congress Classification: PZ",
-  "mediatype": "texts",
-  "collection": [
-    "gutenberg"
-  ],
+  "creator": "Rockwell, Carey\nGlanzman, Louis [Illustrator]\nLey, Willy, 1906-1969 [Contributor]",
   "subject": [
     "Astronauts -- Juvenile fiction",
     "Corbett, Tom (Fictitious character) -- Juvenile fiction",
@@ -19,30 +10,12 @@
     "Pirates -- Juvenile fiction",
     "Science fiction"
   ],
-  "downloads": 4223,
-  "item_size": 9309224,
-  "format": [
-    "Archive BitTorrent",
-    "EPUB",
-    "Item Tile",
-    "JPEG",
-    "JPEG Thumb",
-    "MOBI",
-    "Metadata",
-    "PalmOS Plucker",
-    "Text",
-    "Unknown",
-    "ZIP"
+  "collection": [
+    "gutenberg"
   ],
-  "favorite_count": 2,
-  "favorite_sample": [
-    "powerslave214",
-    "scout_paget"
-  ],
-  "download_url": "https://archive.org/download/onthetrailofthes21092gut/pg21092-images.epub",
-  "download_url_cached": "scifi/content/onthetrailofthes21092gut_epub.epub",
-  "download_url_timestamp": "2025-03-13T11:26:04.357Z",
-  "download_url_etag": "\"4e10561b-1be681\"",
-  "download_url_dl_duration": 0.844,
-  "download_url_dl_mbps": 2.0660845589298775
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/onthetrailofthes21092gut",
+  "coverWidth": 180,
+  "coverHeight": 271,
+  "favoriteCount": 0
 }

@@ -1,20 +1,8 @@
 {
   "id": "igniteme0000mafi_p3f3",
   "title": "Ignite me",
+  "description": "408 pages ; 22 cm\nWith Omega Point destroyed, Juliette doesn't know if the rebels, her friends, or even Adam are alive. But that won't keep her from trying to take down The Reestablishment once and for all. Now she must rely on Warner, the handsome commander of Sector 45. The one person she never thought she could trust. The same person who saved her life. He promises to help Juliette master her powers and save their dying world ... but that's not all he wants with her\nAccelerated Reader AR 4.1\nAccelerated Reader Grades 9-12 4.1",
   "creator": "Mafi, Tahereh, author",
-  "date": "2014-01-01T00:00:00Z",
-  "description": [
-    "408 pages ; 22 cm",
-    "With Omega Point destroyed, Juliette doesn't know if the rebels, her friends, or even Adam are alive. But that won't keep her from trying to take down The Reestablishment once and for all. Now she must rely on Warner, the handsome commander of Sector 45. The one person she never thought she could trust. The same person who saved her life. He promises to help Juliette master her powers and save their dying world ... but that's not all he wants with her",
-    "Accelerated Reader AR 4.1",
-    "Accelerated Reader Grades 9-12 4.1"
-  ],
-  "mediatype": "texts",
-  "collection": [
-    "internetarchivebooks",
-    "printdisabled",
-    "cnusd-ol"
-  ],
   "subject": [
     "Dictatorship -- Juvenile fiction",
     "Government, Resistance to -- Juvenile fiction",
@@ -31,41 +19,13 @@
     "Science fiction",
     "Love stories"
   ],
-  "downloads": 17418,
-  "item_size": 962417795,
-  "format": [
-    "ACS Encrypted PDF",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item Tile",
-    "JPEG Thumb",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "Log",
-    "MARC",
-    "MARC Binary",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "PNG",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "Title Page Detection Log",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled"
   ],
-  "favorite_count": 159,
-  "favorite_sample": [
-    "1nova1d",
-    "8a3",
-    "aafiii_memon",
-    "aarushi_yadav",
-    "abigailjv"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/igniteme0000mafi_p3f3",
+  "coverWidth": 180,
+  "coverHeight": 288,
+  "favoriteCount": 0
 }

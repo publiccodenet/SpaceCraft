@@ -1,15 +1,8 @@
 {
   "id": "WeByYevgenyZamyatinv1972",
   "title": "We: a 1972 science-fiction story by Yevgeny Zamyatin",
-  "creator": "Herbert Booker",
-  "date": "2017-01-08T00:00:00Z",
   "description": "Zamyatin Yevgeny wrote a science-fiction novel with the simple titles of \"We,\" in Russia in 1972. Russian authors have produced really fine stories, especially in science-fiction! ",
-  "mediatype": "texts",
-  "collection": [
-    "folkscanomy_fiction",
-    "folkscanomy",
-    "additional_collections"
-  ],
+  "creator": "Herbert Booker",
   "subject": [
     "Zamyatin Yevgeny",
     "Science-Fiction",
@@ -21,35 +14,14 @@
     "CCCP",
     "Herbert Booker"
   ],
-  "downloads": 7564,
-  "item_size": 180992170,
-  "format": [
-    "Abbyy GZ",
-    "Additional Text PDF",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "Daisy",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Image Container PDF",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP"
+  "collection": [
+    "folkscanomy_fiction",
+    "folkscanomy",
+    "additional_collections"
   ],
-  "favorite_count": 66,
-  "favorite_sample": [
-    "101silmarilities",
-    "4ngryth3l1brarian",
-    "acw78",
-    "alemoins",
-    "aly887"
-  ],
-  "download_url": "https://archive.org/download/WeByYevgenyZamyatinv1972/We%20by%20Yevgeny%20Zamyatinv%2C1972.epub",
-  "download_url_cached": "scifi/content/WeByYevgenyZamyatinv1972_epub.epub",
-  "download_url_timestamp": "2025-03-13T10:05:13.611Z",
-  "download_url_etag": "\"6562276b-f549a\"",
-  "download_url_dl_duration": 0.752,
-  "download_url_dl_mbps": 1.2741418595009661
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/WeByYevgenyZamyatinv1972",
+  "coverWidth": 180,
+  "coverHeight": 303,
+  "favoriteCount": 0
 }
