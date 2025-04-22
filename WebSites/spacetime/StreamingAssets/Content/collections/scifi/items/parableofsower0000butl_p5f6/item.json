@@ -1,23 +1,8 @@
 {
   "id": "parableofsower0000butl_p5f6",
-  "title": "Parable of the sower",
+  "title": "Parable of the sower ",
+  "description": "345 pages ; 21 cm\nIn 2025 California, an eighteen-year-old African American woman, suffering from a hereditary trait that causes her to feel others' pain as well as her own, flees northward from her small community and its desperate savages\nYoung Adult\nSequel: Parable of the talents\n\"Aspect.\"\nAccelerated Reader AR UG 4.6\nReading Counts RC High School 7.1\nAccelerated Reader UG 4.6",
   "creator": "Butler, Octavia E",
-  "date": "2000-01-01T00:00:00Z",
-  "description": [
-    "345 pages ; 21 cm",
-    "In 2025 California, an eighteen-year-old African American woman, suffering from a hereditary trait that causes her to feel others' pain as well as her own, flees northward from her small community and its desperate savages",
-    "Young Adult",
-    "Sequel: Parable of the talents",
-    "\"Aspect.\"",
-    "Accelerated Reader AR UG 4.6",
-    "Reading Counts RC High School 7.1",
-    "Accelerated Reader UG 4.6"
-  ],
-  "mediatype": "texts",
-  "collection": [
-    "internetarchivebooks",
-    "printdisabled"
-  ],
   "subject": [
     "African Americans -- Fiction",
     "Twenty-first century -- Fiction",
@@ -27,44 +12,13 @@
     "California, Southern -- Fiction",
     "Southern California"
   ],
-  "downloads": 13620,
-  "item_size": 1146550786,
-  "format": [
-    "ACS Encrypted PDF",
-    "AVIF Thumbnails ZIP",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item Tile",
-    "JPEG Thumb",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "Log",
-    "MARC",
-    "MARC Binary",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "PNG",
-    "Page Numbers JSON",
-    "RePublisher Final Processing Log",
-    "RePublisher Initial Processing Log",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "Title Page Detection Log",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled"
   ],
-  "favorite_count": 162,
-  "favorite_sample": [
-    "1mali1",
-    "2klbs_z_tonsofswayz_",
-    "6poetic",
-    "713c_d",
-    "_panda_o_"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/parableofsower0000butl_p5f6",
+  "coverWidth": 180,
+  "coverHeight": 286,
+  "favoriteCount": 0
 }

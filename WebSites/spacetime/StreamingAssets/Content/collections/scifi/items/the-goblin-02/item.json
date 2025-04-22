@@ -1,14 +1,8 @@
 {
   "id": "the-goblin-02",
   "title": "The Goblin (Warren Publishing) Issue #2",
-  "date": "1982-01-01T00:00:00Z",
   "description": "",
-  "mediatype": "texts",
-  "collection": [
-    "goblin-warren",
-    "pulpmagazinearchive",
-    "additional_collections"
-  ],
+  "creator": "",
   "subject": [
     "encounters",
     "color",
@@ -31,35 +25,14 @@
     "third kind",
     "rudy nebres"
   ],
-  "downloads": 3580,
-  "item_size": 122242247,
-  "format": [
-    "Abbyy GZ",
-    "Animated GIF",
-    "Archive BitTorrent",
-    "DjVu",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Generic Raw Book Zip",
-    "Item Tile",
-    "Metadata",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF"
+  "collection": [
+    "goblin-warren",
+    "pulpmagazinearchive",
+    "additional_collections"
   ],
-  "favorite_count": 22,
-  "favorite_sample": [
-    "battlinjack",
-    "chronos-x",
-    "creaturefan",
-    "eric_rahn",
-    "focazio1976"
-  ],
-  "download_url": "https://archive.org/download/the-goblin-02/goblin-002.epub",
-  "download_url_cached": "scifi/content/the-goblin-02_epub.epub",
-  "download_url_timestamp": "2025-03-13T12:45:52.892Z",
-  "download_url_etag": "\"66dcd3a5-1bd3536\"",
-  "download_url_dl_duration": 4.581,
-  "download_url_dl_mbps": 6.074108481016827
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/the-goblin-02",
+  "coverWidth": 180,
+  "coverHeight": 242,
+  "favoriteCount": 0
 }

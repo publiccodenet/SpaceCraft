@@ -1,52 +1,21 @@
 {
   "id": "perry-rhodan",
   "title": "Perry Rhodan : 150 Volumes : Space Fiction serial",
-  "date": "1961-01-01T00:00:00Z",
-  "description": "Perry Rhodan : Peacelord of the Universe The classic German science fiction series from 1961, first published in English by Ace Books in 1969. Presented here are the first 150 volumes in the saga, originally published as a monthly magazine serial. Designated as Space Fiction rather than Science Fiction, it tells of Man's rise under the leadership of ex-astronaut Perry Rhodan to a position as the supreme power in the Galaxy. Each volume presents the contents of one complete issue from the original magazines. Due to its origins as a pulp magazine serial, each story is of magazine-length: what we would usually think of as novella length: rather than being of full novel-length. However, given that this is a continuing serial of virtually infinite length, with hundreds of issues already published in English, and thouands published in German, that does not seem any real drawback! Perry Rhodan, the American commander of the first manned Moon–mission, returns to Earth, landing in the Gobi Desert where he establishes a base with the aid of the super–technology in the Arkonide research vessel he discovered on the Moon . Beneath an impenetrable energy shield—which defies all attacks by the terrestrial Superpowers–he is invulnerable. And he has brought back with him the Arkonides, an alien race from the center of the Galaxy. With their aid, and their advanced technology, he hopes to bring about the unification of mankind. Meanwhile, he begins to expand the power of his new Command into the Galaxy.",
-  "mediatype": "texts",
-  "collection": [
-    "comics_inbox",
-    "comics",
-    "additional_collections"
-  ],
+  "description": "<div><br /></div>\n<div><b>Perry Rhodan</b>: <i>Peacelord of the Universe</i></div>\n<div><br /></div>\n<div>The classic German science fiction series from 1961, first published in English by Ace Books in 1969.</div>\n<div><br /></div>\n<div>Presented here are the first 150 volumes in the saga, originally published as a monthly magazine serial. Designated as <i>Space Fiction</i> rather than Science Fiction, it tells of Man's rise under the leadership of ex-astronaut Perry Rhodan to a position as the supreme power in the Galaxy.</div>\n<div><br /></div>\n<div>Each volume presents the contents of one complete issue from the original magazines.</div>\n<div><br /></div>\n<div>Due to its origins as a pulp magazine serial, each story is of magazine-length: what we would usually think of as <i>novella</i> length: rather than being of full novel-length. However, given that this is a continuing serial of virtually <i>infinite</i> length, with hundreds of issues already published in English, and thouands published in German, that does not seem any real drawback!</div>\n\n<div><br /></div>\n<div><br /></div>\n\n<div>\n<p style=\"color:rgb(0,0,0);font-family:'Times New Roman';font-size:1.2em;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;text-indent:0px;text-transform:none;white-space:normal;word-spacing:0px;margin:0pt 0pt 2pt;text-align:justify;\"><span style=\"font-family:'Times New Roman';font-style:italic;\">Perry Rhodan, the American commander of the first manned Moon–mission, returns to Earth, landing in the Gobi Desert where he establishes a base with the aid of the super–technology in the Arkonide research vessel he discovered on the Moon</span>.<br /><br /></p>\n<p style=\"color:rgb(0,0,0);font-family:'Times New Roman';font-size:1.2em;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;text-indent:0px;text-transform:none;white-space:normal;word-spacing:0px;margin:0pt 0pt 2pt;text-align:justify;\"><span style=\"font-family:'Times New Roman';font-style:italic;\">Beneath an impenetrable energy shield—which defies all attacks by the terrestrial Superpowers–he is invulnerable. And he has brought back with him the Arkonides, an alien race from the center of the Galaxy. With their aid, and their advanced technology, he hopes to bring about the unification of mankind. Meanwhile, he begins to expand the power of his new Command into the Galaxy.</span></p>\n</div>\n\n<p><br /></p><p><br /></p>\n<p><br /></p><p><br /></p>\n<p><br /></p><p><br /></p>",
+  "creator": "",
   "subject": [
     "Comic Books and Graphic Novels",
     "Science Fiction",
     "Perry Rhodan"
   ],
-  "downloads": 12827,
-  "item_size": 7224153733,
-  "format": [
-    "Archive BitTorrent",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "JPEG",
-    "JPEG Thumb",
-    "Metadata",
-    "Microsoft Reader",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
   ],
-  "favorite_count": 51,
-  "favorite_sample": [
-    "_sks",
-    "albert_d",
-    "alexha",
-    "anita_morgan",
-    "bibulousrana"
-  ],
-  "download_url": "https://archive.org/download/perry-rhodan/Perry%20Rhodan%20001%20-%20Enterprise%20Stardust%20-%20K.%20H.%20Scheer.epub",
-  "download_url_cached": "scifi/content/perry-rhodan_epub.epub",
-  "download_url_timestamp": "2025-03-13T09:27:12.642Z",
-  "download_url_etag": "\"65a0a9be-523b7\"",
-  "download_url_dl_duration": 0.514,
-  "download_url_dl_mbps": 0.6249405530640123
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/perry-rhodan",
+  "coverWidth": 180,
+  "coverHeight": 270,
+  "favoriteCount": 0
 }

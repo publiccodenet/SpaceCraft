@@ -1,20 +1,8 @@
 {
   "id": "invitationtogame00moni",
   "title": "Invitation to the game",
+  "description": "\"Half Moon Books.\"\nUnemployed after high school in the highly robotic society of 2154, Lisse and seven friends resign themselves to a boring existence in their \"Designated Area\" until the government invites them to play The Game",
   "creator": "Hughes, Monica",
-  "date": "1993-01-01T00:00:00Z",
-  "description": [
-    "\"Half Moon Books.\"",
-    "Unemployed after high school in the highly robotic society of 2154, Lisse and seven friends resign themselves to a boring existence in their \"Designated Area\" until the government invites them to play The Game"
-  ],
-  "mediatype": "texts",
-  "collection": [
-    "inlibrary",
-    "printdisabled",
-    "cnusd-ol",
-    "openlibrary-d-ol",
-    "universityofoklahoma-ol"
-  ],
   "subject": [
     "Science Fiction, Fantasy, & Magic",
     "Fiction",
@@ -27,46 +15,13 @@
     "Unemployment",
     "Science fiction"
   ],
-  "downloads": 3011,
-  "item_size": 316915937,
-  "format": [
-    "ACS Encrypted PDF",
-    "Abbyy GZ",
-    "Animated GIF",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item CDX Index",
-    "Item CDX Meta-Index",
-    "Item Tile",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "MARC",
-    "MARC Binary",
-    "MARC Source",
-    "Metadata",
-    "Metadata Log",
-    "OCLC xISBN JSON",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "WARC CDX Index",
-    "Web ARChive GZ",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "inlibrary",
+    "printdisabled"
   ],
-  "favorite_count": 41,
-  "favorite_sample": [
-    "aford42",
-    "afranklin78",
-    "alduncan81",
-    "alextiming",
-    "andythestreet"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/invitationtogame00moni",
+  "coverWidth": 180,
+  "coverHeight": 270,
+  "favoriteCount": 0
 }

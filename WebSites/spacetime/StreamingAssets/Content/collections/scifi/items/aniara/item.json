@@ -1,15 +1,8 @@
 {
   "id": "aniara",
   "title": "Aniara",
+  "description": "Nobel Prize winner Harry Martinson's 1956 epic poem, translated into English from the original Swedish by <span style=\"float:none;\">Stephen Klass and </span><span style=\"float:none;\"><span style=\"float:none;\">Leif Sjöberg, <i>Aniara</i> tells the story of a doomed spaceship fleeing a ravaged earth.<br /></span></span>",
   "creator": "Harry Martinson",
-  "date": "1956-01-01T00:00:00Z",
-  "description": "Nobel Prize winner Harry Martinson's 1956 epic poem, translated into English from the original Swedish by Stephen Klass and Leif Sjöberg, Aniara tells the story of a doomed spaceship fleeing a ravaged earth.",
-  "mediatype": "texts",
-  "collection": [
-    "folkscanomy_miscellaneous",
-    "folkscanomy",
-    "additional_collections"
-  ],
   "subject": [
     "aniara",
     "nobel",
@@ -18,36 +11,14 @@
     "orphan works",
     "translation"
   ],
-  "downloads": 4232,
-  "item_size": 63276618,
-  "format": [
-    "Archive BitTorrent",
-    "DjVuTXT",
-    "Djvu XML",
-    "EPUB",
-    "Item Tile",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "folkscanomy_miscellaneous",
+    "folkscanomy",
+    "additional_collections"
   ],
-  "favorite_count": 24,
-  "favorite_sample": [
-    "ahmed_albawab",
-    "artursz",
-    "avidreader863",
-    "gwendolyn_heynssens",
-    "honeysucklepie"
-  ],
-  "download_url": "https://archive.org/download/aniara/aniara.epub",
-  "download_url_cached": "scifi/content/aniara_epub.epub",
-  "download_url_timestamp": "2025-03-13T11:26:02.138Z",
-  "download_url_etag": "\"633aff3c-7b8ef\"",
-  "download_url_dl_duration": 0.568,
-  "download_url_dl_mbps": 0.8497355689465161
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/aniara",
+  "coverWidth": 180,
+  "coverHeight": 233,
+  "favoriteCount": 0
 }

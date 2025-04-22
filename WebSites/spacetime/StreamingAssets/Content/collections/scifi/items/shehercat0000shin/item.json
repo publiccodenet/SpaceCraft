@@ -1,17 +1,8 @@
 {
   "id": "shehercat0000shin",
-  "title": "She and her cat",
+  "title": "She and her cat ",
+  "description": "1 volume (unpaged) : 18 cm\n\"This is the story of Miyu, a woman who lives alone with her cat, Chobi. As Miyu navigates the world of adulthood, she discovers both the freedom and loneliness that come with living independently, and Chobi learns of the outside world through her actions. Time drifts slowly for Miyu and her cat, but the harsh realities of the world soon catch up\"--Provided by publisher",
   "creator": "Shinkai, Makoto, author",
-  "date": "2017-01-01T00:00:00Z",
-  "description": [
-    "1 volume (unpaged) : 18 cm",
-    "\"This is the story of Miyu, a woman who lives alone with her cat, Chobi. As Miyu navigates the world of adulthood, she discovers both the freedom and loneliness that come with living independently, and Chobi learns of the outside world through her actions. Time drifts slowly for Miyu and her cat, but the harsh realities of the world soon catch up\"--Provided by publisher"
-  ],
-  "mediatype": "texts",
-  "collection": [
-    "internetarchivebooks",
-    "printdisabled"
-  ],
   "subject": [
     "Single women -- Comic books, strips, etc",
     "Pet owners -- Comic books, strips, etc",
@@ -29,44 +20,13 @@
     "Single women",
     "Japan"
   ],
-  "downloads": 3901,
-  "item_size": 923231238,
-  "format": [
-    "ACS Encrypted PDF",
-    "AVIF Thumbnails ZIP",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item Tile",
-    "JPEG Thumb",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "Log",
-    "MARC",
-    "MARC Binary",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "PNG",
-    "Page Numbers JSON",
-    "RePublisher Final Processing Log",
-    "RePublisher Initial Processing Log",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "Title Page Detection Log",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled"
   ],
-  "favorite_count": 20,
-  "favorite_sample": [
-    "a_b966",
-    "abey_girl",
-    "ak512",
-    "alicerun7",
-    "avril259"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/shehercat0000shin",
+  "coverWidth": 180,
+  "coverHeight": 256,
+  "favoriteCount": 0
 }

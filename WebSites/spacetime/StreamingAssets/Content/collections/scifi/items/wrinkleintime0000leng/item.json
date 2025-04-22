@@ -1,18 +1,8 @@
 {
   "id": "wrinkleintime0000leng",
   "title": "A wrinkle in time",
+  "description": "216 pages : 20 cm\nCharles Wallace Murray goes searching for his father through a 'wrinkle in time'. Sequels - A wind in the door and A swiftly tilting planet; Literature Circles Year 7.__",
   "creator": "L'Engle, Madeleine",
-  "date": "1995-01-01T00:00:00Z",
-  "description": [
-    "216 pages : 20 cm",
-    "Charles Wallace Murray goes searching for his father through a 'wrinkle in time'. Sequels - A wind in the door and A swiftly tilting planet; Literature Circles Year 7.__"
-  ],
-  "mediatype": "texts",
-  "collection": [
-    "internetarchivebooks",
-    "printdisabled",
-    "openlibrary-d-ol"
-  ],
   "subject": [
     "Space and time -- Juvenile fiction",
     "Good and evil -- Juvenile fiction",
@@ -26,43 +16,13 @@
     "Space and time",
     "Time travel"
   ],
-  "downloads": 4814,
-  "item_size": 518577089,
-  "format": [
-    "ACS Encrypted EPUB",
-    "ACS Encrypted PDF",
-    "Abbyy GZ",
-    "Cloth Cover Detection Log",
-    "DjVuTXT",
-    "Djvu XML",
-    "Dublin Core",
-    "Item Tile",
-    "JPEG Thumb",
-    "JSON",
-    "LCP Encrypted EPUB",
-    "LCP Encrypted PDF",
-    "Log",
-    "MARC",
-    "MARC Binary",
-    "Metadata",
-    "OCR Page Index",
-    "OCR Search Text",
-    "PNG",
-    "Page Numbers JSON",
-    "Scandata",
-    "Single Page Original JP2 Tar",
-    "Single Page Processed JP2 ZIP",
-    "Text PDF",
-    "Title Page Detection Log",
-    "chOCR",
-    "hOCR"
+  "collection": [
+    "internetarchivebooks",
+    "printdisabled"
   ],
-  "favorite_count": 62,
-  "favorite_sample": [
-    "ahorner4",
-    "aliceturnout",
-    "andy_pasaye",
-    "anne_goodsell",
-    "azabac123"
-  ]
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/wrinkleintime0000leng",
+  "coverWidth": 180,
+  "coverHeight": 280,
+  "favoriteCount": 0
 }

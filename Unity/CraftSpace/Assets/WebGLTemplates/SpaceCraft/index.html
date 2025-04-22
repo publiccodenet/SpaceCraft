@@ -101,10 +101,10 @@
       const navigatorChannel = client.channel("navigators")
 
       let subscribed = false;
-      function sendEvent(event, payload) {
+      function sendEvent(channel, event, payload) {
         if (! subscribed) return;
         console.log('sendEvent', name, payload)
-        navigatorChannel.send({
+        channel.send({
           type: 'broadcast',
           event,
           payload,
@@ -263,12 +263,37 @@
                     "prefab": "Prefabs/SpaceCraft",
                     "update": {
                       "collections": collections,
-                    }});
+                    },
+                    "interests": {
+                      "CollectionsLoaded": {
+                        "query": {},
+                        "handler": function(obj, results) {
+                            console.log("CollectionsLoaded", results);
+                        }
+                      },
+                      "HighlightedItemsChanged": {
+                        "query": {
+                            "highlightedItemIds": "highlightedItemIds"
+                        },
+                        "handler": function(obj, results) {
+                            console.log("HighlightedItemsChanged", results);
+                        }
+                      },
+                      "SelectedItemsChanged": {
+                        "query": {
+                            "selectedItemIds": "selectedItemIds"
+                        },
+                        "handler": function(obj, results) {
+                            console.log("SelectedItemsChanged", results);
+                        }
+                      }
+                    }
+                  });
                 } catch (error) {
                   console.error("Failed to initialize SpaceCraft:", error);
                 }
               })();
-              
+
           } else {
               console.error("[IndexHTML] Unity instance ready, but window.bridge is not defined! Bridge initialization failed earlier.");
           }
