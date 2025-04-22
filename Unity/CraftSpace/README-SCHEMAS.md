@@ -16,283 +16,27 @@ This pipeline provides several key benefits:
 - **Automatic Generation**: Reduces manual code and errors
 - **Cross-Platform Consistency**: Same structures across all platforms
 - **Schema Evolution**: Handles backward compatibility
+- **Simplified Runtime**: Direct property assignment without converters in Unity
 
 ## Schema Generation Process
 
 ### 1. TypeScript Schema Definition (BackSpace)
 
-Schemas are defined using Zod in the BackSpace TypeScript codebase:
-
-```typescript
-// SvelteKit/BackSpace/src/lib/schemas/Item.ts
-export const ItemSchema = z.object({
-  id: z.string().min(1).describe("Unique identifier for the item"),
-  title: z.string().describe("Primary display title for the item"),
-  description: z.string().optional().describe("Optional description of the item"),
-  creator: z.string().or(z.array(z.string())).optional()
-    .describe("Creator(s) of this item"),
-  // Additional properties...
-});
-```
+Schemas are defined using Zod in the BackSpace TypeScript codebase in the `SvelteKit/BackSpace/src/lib/schemas/` directory.
 
 ### 2. JSON Schema Generation
 
-TypeScript schemas are converted to standard JSON Schema format:
-
-```bash
-# In the BackSpace directory
-npm run schemas:generate-all
-```
-
-This produces JSON Schema files like this:
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Unique identifier for the item"
-    },
-    "title": {
-      "type": "string",
-      "description": "Primary display title for the item"
-    },
-    // Additional properties...
-  },
-  "required": ["id", "title"]
-}
-```
-
-These files are saved to `Unity/CraftSpace/Assets/StreamingAssets/Content/schemas/`.
+TypeScript schemas are converted to standard JSON Schema format using `npm run schemas:generate-all` and saved to `Unity/CraftSpace/Assets/StreamingAssets/Content/schemas/`.
 
 ### 3. C# Class Generation
 
-From Unity, run the Schema Importer (Window > Tools > Import JSON Schema) to generate C# classes:
-
-```csharp
-// Generated code in Scripts/Schemas/Generated/ItemSchema.cs
-public abstract class ItemSchema : SchemaGeneratedObject
-{
-    [SerializeField] private string _id = string.Empty;
-    public override string Id { get { return _id; } set { _id = value; } }
-    
-    [SerializeField] private string _title = string.Empty;
-    public string Title { get { return _title; } set { _title = value; } }
-    
-    // Additional properties and methods...
-    
-    protected override void ImportKnownProperties(JObject json)
-    {
-        if (json["id"] != null) _id = (string)json["id"];
-        if (json["title"] != null) _title = (string)json["title"];
-        // Import other properties...
-    }
-    
-    protected override JObject ExportKnownProperties()
-    {
-        JObject json = new JObject();
-        json["id"] = _id;
-        json["title"] = _title;
-        // Export other properties...
-        return json;
-    }
-    
-    protected override bool HasDefinedProperty(string name)
-    {
-        return name == "id" || name == "title" /* Other properties */ ;
-    }
-}
-```
+C# classes are generated from the JSON Schema files using the Schema Importer in Unity (CraftSpace > Import All Schemas).
 
 ### 4. Unity Extension Classes
 
-We extend the generated classes with Unity-specific functionality:
+The generated classes are extended with Unity-specific functionality through inheritance (Item extends ItemSchema, etc).
 
-```csharp
-// In Scripts/Schemas/Item.cs
-[Serializable]
-public class Item : ItemSchema
-{
-    // Runtime-only state (not serialized)
-    [NonSerialized] public Texture2D cover;
-    
-    // Additional Unity-specific methods and properties
-    public void NotifyViewsOfUpdate()
-    {
-        NotifyViewsOfType<IModelView<Item>>(view => view.HandleModelUpdated());
-    }
-}
-```
-
-## SchemaGeneratedObject Base Class
-
-The `SchemaGeneratedObject` class provides core functionality for all schema objects:
-
-### 1. JSON Serialization
-
-```csharp
-// Serialize to JSON with optional formatting
-public virtual string ExportToJson(bool prettyPrint = true)
-{
-    JObject json = new JObject();
-    
-    // Add all defined properties
-    var knownProps = ExportKnownProperties();
-    foreach (var prop in knownProps)
-    {
-        json[prop.Key] = prop.Value;
-    }
-    
-    // Add all extra fields
-    foreach (var prop in extraFields)
-    {
-        json[prop.Key] = prop.Value;
-    }
-    
-    return json.ToString(prettyPrint ? Formatting.Indented : Formatting.None);
-}
-```
-
-### 2. Extra Fields Mechanism
-
-The `extraFields` property preserves undefined properties during serialization/deserialization:
-
-```csharp
-[SerializeField] protected JObject extraFields = new JObject();
-
-// Preserve unknown fields during import
-protected virtual void ImportExtraFields(JObject json)
-{
-    extraFields = new JObject();
-    
-    foreach (var prop in json)
-    {
-        if (!HasDefinedProperty(prop.Key))
-        {
-            extraFields[prop.Key] = prop.Value;
-        }
-    }
-}
-```
-
-### 3. Model-View Communication
-
-The base class implements view registration and notification:
-
-```csharp
-[NonSerialized] private HashSet<object> registeredViews = new HashSet<object>();
-
-// Register a view to receive updates
-public virtual void RegisterView(object view)
-{
-    if (view != null && !registeredViews.Contains(view))
-    {
-        registeredViews.Add(view);
-    }
-}
-
-// Unregister a view
-public virtual void UnregisterView(object view)
-{
-    if (view != null)
-    {
-        registeredViews.Remove(view);
-    }
-}
-
-// Get views of a specific type
-protected IEnumerable<TView> GetViewsOfType<TView>()
-{
-    foreach (var view in registeredViews)
-    {
-        if (view is TView typedView)
-        {
-            yield return typedView;
-        }
-    }
-}
-
-// Notify views of a specific type
-protected void NotifyViewsOfType<TView>(Action<TView> notificationAction)
-{
-    foreach (var view in GetViewsOfType<TView>())
-    {
-        notificationAction(view);
-    }
-}
-```
-
-## View System
-
-The view system uses a generic interface to maintain type safety:
-
-```csharp
-// Generic view interface
-public interface IModelView<T> where T : class
-{
-    // Get the current model
-    T Model { get; }
-    
-    // Called when the model has been updated
-    void HandleModelUpdated();
-}
-```
-
-Models notify their views when data changes:
-
-```csharp
-// In Collection.cs
-public void NotifyViewsOfUpdate()
-{
-    NotifyViewsOfType<IModelView<Collection>>(view => view.HandleModelUpdated());
-}
-
-// In Item.cs
-public void NotifyViewsOfUpdate()
-{
-    NotifyViewsOfType<IModelView<Item>>(view => view.HandleModelUpdated());
-}
-```
-
-Views register with models:
-
-```csharp
-// In CollectionView.cs
-public void SetModel(Collection value)
-{
-    if (model == value) return;
-    
-    if (model != null)
-        model.UnregisterView(this);
-        
-    model = value;
-    
-    if (model != null)
-        model.RegisterView(this);
-        
-    UpdateView();
-}
-
-// In ItemView.cs
-public void SetModel(Item newModel)
-{
-    if (model == newModel) return;
-    
-    if (model != null)
-        model.UnregisterView(this);
-        
-    model = newModel;
-    
-    if (model != null)
-        model.RegisterView(this);
-        
-    UpdateView();
-}
-```
-
-## Schema Types and Converters
+## Schema Types
 
 ### Key Models
 
@@ -304,35 +48,34 @@ public void SetModel(Item newModel)
    - **Properties**: id, title, description, creator, date, etc.
    - **Relationships**: Belongs to collection
 
-### Type Converters
+### Note on Content Pipeline
 
-Special converters handle various data formats:
+The schema system defines data structures, but actual data normalization happens separately:
 
-1. **StringOrNullToStringConverter**: Converts null to empty string
-2. **StringOrArrayOrNullToStringConverter**: Handles fields that can be string or string[]
-3. **ArrayOrNullToStringArrayConverter**: Ensures array format for list fields
+1. The Content Pipeline's IMPORTER normalizes fields from Internet Archive to be monomorphic (consistent types)
+2. The IMPORTER doesn't strip unneeded fields - it preserves all data
+3. The Unity EXPORTER strips unneeded fields when preparing data for Unity
+4. The schema system in Unity now uses direct property assignment without converters
 
-```csharp
-// Example converter
-public class StringOrNullToStringConverter : JsonConverter
-{
-    public override bool CanConvert(Type objectType) => objectType == typeof(string);
+## SchemaGeneratedObject Base Class
 
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-    {
-        if (reader.TokenType == JsonToken.Null)
-            return "";
+The `SchemaGeneratedObject` class provides core functionality for all schema objects:
 
-        var token = JToken.ReadFrom(reader);
-        return token.ToString();
-    }
+### 1. JSON Serialization
 
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-    {
-        writer.WriteValue(value?.ToString() ?? "");
-    }
-}
-```
+The base class provides methods for serializing objects to JSON and back.
+
+### 2. Extra Fields Mechanism
+
+The `extraFields` property preserves undefined properties during serialization/deserialization.
+
+### 3. Model-View Communication
+
+The base class implements view registration and notification through a simple observer pattern.
+
+## View System
+
+The view system uses a generic interface to maintain type safety, with models notifying their views when data changes.
 
 ## Directory Structure
 
@@ -398,7 +141,7 @@ When schemas change:
    - ❌ Abstract factories that look up types by name
 
 2. **SAFE REFLECTION PATTERNS**
-   - ✅ Static JsonConverters directly instantiated by their class name
+   - ✅ Direct, simplified property assignment without converters
    - ✅ Reflection used at design/edit time only (code generation)
    - ✅ `GetType()` to get the runtime type of an existing object
    - ✅ `typeof()` operator which is resolved at compile time
@@ -406,43 +149,48 @@ When schemas change:
 
 3. **CODE GENERATION IS FOR GENERATING ACTUAL CODE, NOT LOOKUP MECHANISMS**
    - ❌ Generating code that says `var converter = UnitySchemaConverter.GetConverter("TypeName")`
-   - ✅ Generating code that says `var converter = new ExactTypeNameConverter()`
-   - ✅ Direct instantiation of known types generated at build time
-   - ✅ Zero indirection or lookup for known types
+   - ❌ Generating code that says `var converter = new ExactTypeNameConverter()`
+   - ✅ Generating code with direct property assignment: `_id = json["id"].ToString()`
+   - ✅ Zero indirection, lookup, or converter usage for known types
 
 ### IL2CPP COMPATIBILITY RULES
 
 1. **CODE STRIPPING WILL REMOVE UNREFERENCED TYPES**
    - Classes only referenced via reflection will be stripped
    - Direct references ensure code is preserved in the build
-   - JsonConverters need direct instantiation to avoid being stripped
+   - Avoid reflection-based lookups entirely
 
 2. **STACK OVERFLOWS IN WEBGL CANNOT BE CAUGHT**
    - Infinite recursion in type lookup will crash the entire application
    - No error handling or recovery is possible
 
-3. **PROPER CONVERTER INSTANTIATION PATTERN**
+3. **SIMPLIFIED PROPERTY HANDLING PATTERN**
    ```csharp
-   // CORRECT: Code generator produces direct instantiation
+   // CORRECT: Code generator produces direct assignment
    protected override void ImportKnownProperties(JObject json)
    {
        if (json["id"] != null)
        {
-           // Direct instantiation - no lookup, no reflection
-           var converter = new StringOrNullToStringConverter();
-           _id = (string)converter.ReadJson(json["id"].CreateReader(), typeof(string), null, null);
+           // Direct assignment - no converters, no reflection
+           _id = json["id"].ToString();
        }
    }
    ```
 
 4. **WORKING WITH JSON.NET SAFELY IN IL2CPP/WEBGL**
-   - ✅ Using JsonConverters that are directly instantiated by name
-   - ✅ Using the low-level JObject/JToken/JArray API
+   - ✅ Using the low-level JObject/JToken/JArray API with direct assignment
+   - ✅ Using `JToken.FromObject()` for exporting properties
    - ✅ `JsonConvert.SerializeObject()` and `DeserializeObject()` for primitive types
    - ❌ Avoid attribute-based [JsonConverter] on user-defined types
    - ❌ Avoid dynamic type resolution via TypeNameHandling settings
+   - ❌ Avoid JsonConverter instances instantiated from string names
 
 5. **EDITOR VS WEBGL DIFFERENCES**
    - Just because it works in the editor doesn't mean it will work in WebGL
    - WebGL builds run with more aggressive code stripping
    - Testing in WebGL builds is essential
+
+6. **SIMPLIFIED DATA HANDLING**
+   - The schema system now uses direct property assignment without converters
+   - This greatly simplifies the Unity runtime and reduces IL2CPP compatibility issues
+   - All type checking and validations should be done in the data import phase

@@ -3,9 +3,7 @@
   "name": "Rossum's Universal Robots",
   "title": "Rossum's Universal Robots",
   "description": "La fameuse pièce de théatre...",
-  "creator": [
-    "Karel Čapek"
-  ],
+  "creator": "Karel Čapek",
   "subject": [
     "Karel Čapek",
     "robot",

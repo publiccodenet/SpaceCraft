@@ -3,9 +3,7 @@
   "name": "Aniara",
   "title": "Aniara",
   "description": "Nobel Prize winner Harry Martinson's 1956 epic poem, translated into English from the original Swedish by <span style=\"float:none;\">Stephen Klass and </span><span style=\"float:none;\"><span style=\"float:none;\">Leif Sjöberg, <i>Aniara</i> tells the story of a doomed spaceship fleeing a ravaged earth.<br /></span></span>",
-  "creator": [
-    "Harry Martinson"
-  ],
+  "creator": "Harry Martinson",
   "subject": [
     "aniara",
     "nobel",

@@ -1,0 +1,30 @@
+{
+  "id": "TheArtworkOfAllenAndersoncompiledByDjFDuMarais",
+  "title": "The Artwork Of Allen Anderson (compiled by DjF du Marais)",
+  "description": "The Artwork Of Allen Anderson.",
+  "creator": "",
+  "subject": [
+    "Pulps",
+    "Pulp Magazines",
+    "Pulp Art",
+    "Pulp Covers",
+    "Pulp Illustrations",
+    "Science Fiction",
+    "Fantasy",
+    "Science Fiction Art",
+    "Fantasy Art",
+    "Allen Anderson",
+    "Art",
+    "Artists"
+  ],
+  "collection": [
+    "pulp_fiction_misc",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/TheArtworkOfAllenAndersoncompiledByDjFDuMarais",
+  "coverWidth": 180,
+  "coverHeight": 255,
+  "favoriteCount": 0
+}

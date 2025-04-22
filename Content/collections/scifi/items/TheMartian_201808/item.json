@@ -3,9 +3,7 @@
   "name": "The Martian",
   "title": "The Martian",
   "description": "The Martian book",
-  "creator": [
-    "Andy Weir"
-  ],
+  "creator": "Andy Weir",
   "subject": [
     "space",
     "mars",

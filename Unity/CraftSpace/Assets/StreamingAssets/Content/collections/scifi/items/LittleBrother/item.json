@@ -1,0 +1,28 @@
+{
+  "id": "LittleBrother",
+  "title": "Little Brother von Cory Doctorow (ebook-deutsch)",
+  "description": "Science Fiction Novelle von Cory Doctorow in der deutschen Uebersetzung von Christian Woehrl. Diverse eBook-Formate (epub, prc, pdb, mobi).\n\nWebseite des Autors: http://craphound.com/littlebrother\nWebseite des Uebersetzers: http://cwoehrl.de/?q=node/425",
+  "creator": "Cory Doctorow",
+  "subject": [
+    "Little Brother",
+    "Cory Doctorow",
+    "deutsch",
+    "german",
+    "Christian Woehrl",
+    "Science Fiction",
+    "ebook",
+    "mobi",
+    "epub",
+    "pdb",
+    "prc"
+  ],
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/LittleBrother",
+  "coverWidth": 180,
+  "coverHeight": 190,
+  "favoriteCount": 0
+}

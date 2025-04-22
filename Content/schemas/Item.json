@@ -47,7 +47,7 @@
       ],
       "description": "Creator/author of the item.",
       "x_meta": {
-        "UnitySchemaConverter": "StringOrNullToStringConverter"
+        "UnitySchemaConverter": "StringArrayOrStringOrNullToStringConverter"
       }
     },
     "subject": {
@@ -99,17 +99,17 @@
       }
     },
     "coverWidth": {
-      "type": "number",
+      "type": "integer",
       "description": "Width of the cover image in pixels.",
       "x_meta": {
-        "UnitySchemaConverter": "StringOrNumberOrNullToNumberConverter"
+        "UnitySchemaConverter": "StringOrNumberOrNullToIntegerConverter"
       }
     },
     "coverHeight": {
-      "type": "number",
+      "type": "integer",
       "description": "Height of the cover image in pixels.",
       "x_meta": {
-        "UnitySchemaConverter": "StringOrNumberOrNullToNumberConverter"
+        "UnitySchemaConverter": "StringOrNumberOrNullToIntegerConverter"
       }
     }
   },

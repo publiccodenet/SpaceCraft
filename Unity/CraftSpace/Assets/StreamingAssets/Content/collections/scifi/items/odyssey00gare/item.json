@@ -1,0 +1,30 @@
+{
+  "id": "odyssey00gare",
+  "title": "The odyssey",
+  "description": "Retells, in graphic novel format, Homer's epic tale of Odysseus, the ancient Greek hero who encounters witches and other obstacles on his journey home after fighting in the Trojan War",
+  "creator": "Hinds, Gareth, 1971-\nHomer. Odyssey",
+  "subject": [
+    "Children's Books -- Literature -- Classics by Age",
+    "Children's Books -- Literature -- Science Fiction, Fantasy, Mystery & Horror -- Comics & Graphic Novels",
+    "Comics & Graphic Novels -- Comic Strips",
+    "Comics & Graphic Novels -- Graphic Novels",
+    "Teens -- Literature & Fiction -- Classics",
+    "Homer",
+    "Odysseus (Greek mythology)",
+    "Graphic novels",
+    "Mythology, Greek",
+    "Adventure and adventurers",
+    "Heroes"
+  ],
+  "collection": [
+    "internetarchivebooks",
+    "delawarecountydistrictlibrary",
+    "americana",
+    "printdisabled"
+  ],
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/odyssey00gare",
+  "coverWidth": 180,
+  "coverHeight": 322,
+  "favoriteCount": 0
+}

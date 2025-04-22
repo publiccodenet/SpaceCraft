@@ -76,8 +76,8 @@ public class CollectionSchema : SchemaGeneratedObject
     /// Schema Path: subject
     /// UnitySchemaConverter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
     /// </summary>
-    [SerializeField] private string _subject = string.Empty;
-    public string Subject { get { return _subject; } set { _subject = value; } }
+    [SerializeField] private string[] _subject = null;
+    public string[] Subject { get { return _subject; } set { _subject = value; } }
 
     /// <summary>
     /// Type of media (always "collection" for collections).
@@ -111,9 +111,13 @@ public class CollectionSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _id = (string)converter.ReadJson(json["id"].CreateReader(), typeof(string), null, null);
+                var reader = json["id"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _id = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'id' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: id is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -122,9 +126,13 @@ public class CollectionSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _title = (string)converter.ReadJson(json["title"].CreateReader(), typeof(string), null, null);
+                var reader = json["title"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _title = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'title' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: title is null" );
         }
 
         // Use converter: StringArrayOrStringOrNullToStringConverter
@@ -133,9 +141,13 @@ public class CollectionSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringArrayOrStringOrNullToStringConverter();
-                _description = (string)converter.ReadJson(json["description"].CreateReader(), typeof(string), null, null);
+                var reader = json["description"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _description = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'description' with StringArrayOrStringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: description is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -144,9 +156,13 @@ public class CollectionSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _creator = (string)converter.ReadJson(json["creator"].CreateReader(), typeof(string), null, null);
+                var reader = json["creator"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _creator = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'creator' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: creator is null" );
         }
 
         // Use converter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
@@ -155,9 +171,13 @@ public class CollectionSchema : SchemaGeneratedObject
             try
             {
                 var converter = new SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter();
-                _subject = (string)converter.ReadJson(json["subject"].CreateReader(), typeof(string), null, null);
+                var reader = json["subject"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _subject = (string[])converter.ReadJson(reader, typeof(string[]), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'subject' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: subject is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -166,9 +186,13 @@ public class CollectionSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _mediatype = (string)converter.ReadJson(json["mediatype"].CreateReader(), typeof(string), null, null);
+                var reader = json["mediatype"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _mediatype = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'mediatype' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: mediatype is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -177,9 +201,13 @@ public class CollectionSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _coverImage = (string)converter.ReadJson(json["coverImage"].CreateReader(), typeof(string), null, null);
+                var reader = json["coverImage"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _coverImage = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: coverImage is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -188,9 +216,13 @@ public class CollectionSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _query = (string)converter.ReadJson(json["query"].CreateReader(), typeof(string), null, null);
+                var reader = json["query"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _query = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'query' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: query is null" );
         }
 
     }
@@ -210,7 +242,6 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'id' with StringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: StringOrNullToStringConverter
         if (_title != null)
         {
@@ -223,7 +254,6 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'title' with StringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: StringArrayOrStringOrNullToStringConverter
         if (_description != null)
         {
@@ -236,7 +266,6 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'description' with StringArrayOrStringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: StringOrNullToStringConverter
         if (_creator != null)
         {
@@ -249,7 +278,6 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'creator' with StringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
         if (_subject != null)
         {
@@ -262,7 +290,6 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'subject' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
         }
-
         // Use converter: StringOrNullToStringConverter
         if (_mediatype != null)
         {
@@ -275,7 +302,6 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'mediatype' with StringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: StringOrNullToStringConverter
         if (_coverImage != null)
         {
@@ -288,7 +314,6 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' with StringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: StringOrNullToStringConverter
         if (_query != null)
         {

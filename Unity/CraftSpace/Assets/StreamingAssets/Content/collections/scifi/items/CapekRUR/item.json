@@ -1,0 +1,21 @@
+{
+  "id": "CapekRUR",
+  "title": "Rossum's Universal Robots",
+  "description": "La fameuse pièce de théatre...",
+  "creator": "Karel Čapek",
+  "subject": [
+    "Karel Čapek",
+    "robot",
+    "science-fiction",
+    "automatisation"
+  ],
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/CapekRUR",
+  "coverWidth": 180,
+  "coverHeight": 255,
+  "favoriteCount": 0
+}

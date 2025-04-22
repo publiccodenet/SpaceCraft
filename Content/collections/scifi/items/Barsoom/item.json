@@ -3,9 +3,7 @@
   "name": "Barsoom!",
   "title": "Barsoom!",
   "description": "Article about author Edgar Rice Burroughs, published in September 1982 issue of Heavy Metal magazine. Illustrated by Clyde Caldwell.",
-  "creator": [
-    "Richard A. Lupoff"
-  ],
+  "creator": "Richard A. Lupoff",
   "subject": [
     "Science Fiction",
     "Sci-Fi",

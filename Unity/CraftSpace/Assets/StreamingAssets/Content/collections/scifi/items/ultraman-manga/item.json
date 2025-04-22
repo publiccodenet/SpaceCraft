@@ -1,0 +1,27 @@
+{
+  "id": "ultraman-manga",
+  "title": "ULTRAMAN [Manga]",
+  "description": "<div><div>Several years have passed since the events of Ultraman (the 1966 TV Show), with the legendary \"Giant of Light\" now a memory, as it is believed he returned home after fighting the many giant aliens that invaded the Earth. Shin Hayata's son Shinjiro seems to possess a strange ability, and it is this ability, along with his father's revelation that he was Ultraman, that leads Shinjiro to battle the new aliens invading the Earth as the new Ultraman.</div></div>",
+  "creator": "Tsuburaya",
+  "subject": [
+    "Manga",
+    "Action",
+    "Adventure",
+    "Aliens",
+    "Sci-Fi",
+    "Science Fiction",
+    "Kyodai",
+    "Kaiju"
+  ],
+  "collection": [
+    "manga_unsorted",
+    "manga_library",
+    "comics",
+    "additional_collections"
+  ],
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/ultraman-manga",
+  "coverWidth": 180,
+  "coverHeight": 258,
+  "favoriteCount": 0
+}

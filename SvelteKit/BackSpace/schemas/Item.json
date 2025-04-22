@@ -39,6 +39,14 @@
       "type": "string",
       "description": "Path to cover image"
     },
+    "coverWidth": {
+      "type": "integer",
+      "description": "Width of the cover image in pixels.\n{\"UnitySchemaConverter\":\"StringOrNumberOrNullToIntegerConverter\"}"
+    },
+    "coverHeight": {
+      "type": "integer",
+      "description": "Height of the cover image in pixels.\n{\"UnitySchemaConverter\":\"StringOrNumberOrNullToIntegerConverter\"}"
+    },
     "creator": {
       "anyOf": [
         {

@@ -1,0 +1,23 @@
+{
+  "id": "DumbMartian",
+  "title": "Dumb Martian",
+  "description": "Novelette published in Galaxy Science Fiction (July 1952).\nBlurb: \"When Duncan took Lellie for company he knew it might help preserve his sanity. But what got him wasn't the upkeep -- it was the cost!\"",
+  "creator": "John Wyndham",
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/DumbMartian",
+  "coverWidth": 180,
+  "coverHeight": 249,
+  "favoriteCount": 0
+}

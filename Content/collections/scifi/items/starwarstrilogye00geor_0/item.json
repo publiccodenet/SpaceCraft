@@ -3,11 +3,7 @@
   "name": "The Star Wars trilogy",
   "title": "The Star Wars trilogy",
   "description": "\"A Del Rey book.\"\nStar wars / by George Lucas -- The Empire strikes back / by Donald F. Glut ; based on a story by George Lucas -- Return of the Jedi / by James Kahn ; based on a story by George Lucas ; screenplay by Lawrence Kasdan and George Lucas\nA twenty-fifth anniversary edition brings together the original, complete \"Star Wars\" novels in a single volume that includes \"Star Wars: a New Hope,\" \"The Empire Strikes Back,\" and \"Return of the Jedi.\"",
-  "creator": [
-    "Lucas, George, 1944- Star wars",
-    "Glut, Donald F. Empire strikes back",
-    "Kahn, James. Return of the Jedi"
-  ],
+  "creator": "Lucas, George, 1944- Star wars\nGlut, Donald F. Empire strikes back\nKahn, James. Return of the Jedi",
   "subject": [
     "Fiction",
     "Fiction - Science Fiction",

@@ -1,0 +1,24 @@
+{
+  "id": "AllWeMarsmen",
+  "title": "All We Marsmen",
+  "description": "Science Fiction serial novel published in the August, October and December 1963 issues of Worlds of Tomorrow magazine.",
+  "creator": "Philip K. Dick",
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "collection": [
+    "pulp_misc_sf",
+    "pulpmagazinearchive",
+    "additional_collections"
+  ],
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/AllWeMarsmen",
+  "coverWidth": 180,
+  "coverHeight": 230,
+  "favoriteCount": 0
+}

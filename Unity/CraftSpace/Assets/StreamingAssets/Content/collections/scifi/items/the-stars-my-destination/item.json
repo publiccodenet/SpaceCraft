@@ -1,0 +1,21 @@
+{
+  "id": "the-stars-my-destination",
+  "title": "The Stars My Destination",
+  "description": "U.S.A 1992",
+  "creator": "AA.VV",
+  "subject": [
+    "Alfred Bester",
+    "Science Fiction",
+    "Comics"
+  ],
+  "collection": [
+    "comics_inbox",
+    "comics",
+    "additional_collections"
+  ],
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/the-stars-my-destination",
+  "coverWidth": 180,
+  "coverHeight": 236,
+  "favoriteCount": 0
+}

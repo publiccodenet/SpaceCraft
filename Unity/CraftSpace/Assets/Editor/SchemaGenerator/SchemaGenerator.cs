@@ -38,31 +38,20 @@ namespace CraftSpace.Editor
 /// - No namespaces or extra assemblies needed for generated types
 /// </summary>
 #if UNITY_EDITOR
-public class SchemaGenerator : EditorWindow
+public class SchemaGenerator
 {
     // Constants
     private static readonly string SCHEMA_DIR = Path.Combine(Application.streamingAssetsPath, "Content/schemas");
     private static readonly string OUTPUT_DIR = "Assets/Scripts/Schemas/Generated";
-    
-    // UI state
-    private Vector2 _scrollPos;
 
-    [MenuItem("CraftSpace/Schema Generator")]
-    public static void ShowWindow()
-    {
-        var window = GetWindow<SchemaGenerator>("Schema Generator");
-        window.minSize = new Vector2(400, 200);
-        window.Show();
-    }
-
-    // Ensures this menu item runs the direct generation logic without opening the window.
+    // Ensures this menu item runs the direct generation logic.
     [MenuItem("CraftSpace/Import All Schemas")] 
     public static void ImportAllSchemasMenuItem()
     {
         Debug.Log("=== Regenerating Schemas (Menu Triggered) ===");
         try
         {
-            // Run import directly without getting window instance
+            // Run import directly
             ImportAllSchemas();
             Debug.Log("=== Schema Regeneration Complete (Menu Triggered) ===");
             if (Application.isBatchMode) EditorApplication.Exit(0); // Exit successfully in batch mode
@@ -72,21 +61,6 @@ public class SchemaGenerator : EditorWindow
             Debug.LogError($"!!! Schema Regeneration Failed (Menu Triggered): {e.Message}\n{e.StackTrace}");
             if (Application.isBatchMode) EditorApplication.Exit(1); // Exit with error code in batch mode
         }
-    }
-
-    private void OnGUI()
-    {
-        EditorGUILayout.Space();
-        EditorGUILayout.LabelField("JSON Schema Generator", EditorStyles.boldLabel);
-        EditorGUILayout.Space();
-
-        if (GUILayout.Button("Import All Schemas"))
-        {
-            ImportAllSchemas();
-        }
-
-        EditorGUILayout.Space();
-        EditorGUILayout.HelpBox("This tool automatically generates C# classes from JSON schema files.\n\nYou can also use the menu item 'CraftSpace > Import All Schemas' to import without opening this window.", MessageType.Info);
     }
 
     private static void ImportAllSchemas()
@@ -302,9 +276,13 @@ public class SchemaGenerator : EditorWindow
                     sb.AppendLine($"            {{");
                     // Direct instantiation of converter class instead of going through UnitySchemaConverter
                     sb.AppendLine($"                var converter = new {converterMeta}();");
-                    sb.AppendLine($"                {fieldName} = ({propertyType})converter.ReadJson(json[\"{jsonPropertyName}\"].CreateReader(), typeof({propertyType}), null, null);");
+                    sb.AppendLine($"                var reader = json[\"{jsonPropertyName}\"].CreateReader();");
+                    sb.AppendLine($"                reader.Read(); // Move to the first token - important for WebGL compatibility");
+                    sb.AppendLine($"                {fieldName} = ({propertyType})converter.ReadJson(reader, typeof({propertyType}), null, null);");
                     sb.AppendLine($"            }}");
                     sb.AppendLine($"            catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' with {converterMeta}: {{ex.Message}}\"); }}");
+                    sb.AppendLine($"        }} else {{");
+                    sb.AppendLine($"            Debug.Log($\"ItemSchema: {jsonPropertyName} is null\" );");
                     sb.AppendLine($"        }}");
                 }
                 else {
@@ -476,41 +454,41 @@ public class SchemaGenerator : EditorWindow
                         sb.AppendLine($"        }}"); // End of null check
                     }
                 }
-                sb.AppendLine(); // Add blank line for readability
             }
-            
-            sb.AppendLine("        return json;");
-            sb.AppendLine("    }");
-            sb.AppendLine();
-
-            // Generate HasDefinedProperty method
-            sb.AppendLine("    protected override bool HasDefinedProperty(string name)");
-            sb.AppendLine("    {");
-            sb.AppendLine("        switch (name)");
-            sb.AppendLine("        {");
-            
-            foreach (var prop in properties)
-            {
-                var rawPropertyName = prop.Key;
-                
-                // Skip extraFields since it's not in the schema
-                bool isExtraFields = rawPropertyName == "extraFields";
-                if (isExtraFields) continue;
-                
-                // Keep original casing from schema for the switch statement
-                var jsonPropertyName = rawPropertyName;
-                sb.AppendLine($"            case \"{jsonPropertyName}\":");
-            }
-            
-            // Add extraFields case explicitly for the base class property - use exact casing from base class
-            sb.AppendLine("            case \"extraFields\":");
-            
-            sb.AppendLine("                return true;");
-            sb.AppendLine("            default:");
-            sb.AppendLine("                return false;");
-            sb.AppendLine("        }");
-            sb.AppendLine("    }");
+            sb.AppendLine(); // Add blank line for readability
         }
+        
+        sb.AppendLine("        return json;");
+        sb.AppendLine("    }");
+        sb.AppendLine();
+
+        // Generate HasDefinedProperty method
+        sb.AppendLine("    protected override bool HasDefinedProperty(string name)");
+        sb.AppendLine("    {");
+        sb.AppendLine("        switch (name)");
+        sb.AppendLine("        {");
+        
+        foreach (var prop in properties)
+        {
+            var rawPropertyName = prop.Key;
+            
+            // Skip extraFields since it's not in the schema
+            bool isExtraFields = rawPropertyName == "extraFields";
+            if (isExtraFields) continue;
+            
+            // Keep original casing from schema for the switch statement
+            var jsonPropertyName = rawPropertyName;
+            sb.AppendLine($"            case \"{jsonPropertyName}\":");
+        }
+        
+        // Add extraFields case explicitly for the base class property - use exact casing from base class
+        sb.AppendLine("            case \"extraFields\":");
+        
+        sb.AppendLine("                return true;");
+        sb.AppendLine("            default:");
+        sb.AppendLine("                return false;");
+        sb.AppendLine("        }");
+        sb.AppendLine("    }");
 
         // End class
         sb.AppendLine("}");
@@ -529,37 +507,81 @@ public class SchemaGenerator : EditorWindow
 
     private static string GetCSharpType(JObject schema)
     {
-        var type = schema?["type"]?.ToString();
+        // First check if there's a specific converter that indicates the return type
+        string converterMeta = schema["x_meta"]?["UnitySchemaConverter"]?.Value<string>();
         
-        if (type != null)
+        // If the converter name contains "ToStringArray", it always returns string[] regardless of schema
+        if (!string.IsNullOrEmpty(converterMeta) && converterMeta.Contains("ToStringArray"))
         {
-            switch (type)
+            return "string[]";
+        }
+        
+        // Get schema type (may be a string or an array of types via anyOf/allOf/oneOf)
+        var schemaType = schema["type"]?.ToString().ToLower();
+            
+        // Handle anyOf/oneOf/allOf cases
+        if (string.IsNullOrEmpty(schemaType) && (schema["anyOf"] != null || schema["oneOf"] != null || schema["allOf"] != null))
+        {
+            // Use first option type for now, but prefer non-null types if available
+            var typeOptions = schema["anyOf"] ?? schema["oneOf"] ?? schema["allOf"] as JArray;
+            if (typeOptions != null && typeOptions.Count() > 0)
             {
-                case "string":
-                    return "string";
-                case "number":
-                    return "float";
-                case "integer":
-                    return "int";
-                case "boolean":
-                    return "bool";
-                case "array":
-                    // Handle array types
-                    var items = schema["items"] as JObject;
-                    if (items != null)
+                // Find the first type definition that's not "null"
+                foreach (var typeOption in typeOptions)
+                {
+                    var optionType = typeOption["type"]?.ToString().ToLower();
+                    if (!string.IsNullOrEmpty(optionType) && optionType != "null")
                     {
-                        return $"List<{GetCSharpType(items)}>";
+                        schemaType = optionType;
+                        schema = typeOption as JObject;
+                        break;  
                     }
-                    return "List<string>";
-                case "object":
-                    return "JObject";
-                default:
-                    return "string";
+                }
+                
+                // If all types are null, use the first one
+                if (string.IsNullOrEmpty(schemaType) && typeOptions.Count() > 0)
+                {
+                    var firstOption = typeOptions.First() as JObject;
+                    if (firstOption != null)
+                    {
+                        schemaType = firstOption["type"]?.ToString().ToLower();
+                        schema = firstOption;
+                    }
+                }
             }
         }
         
-        // Handle anyOf/oneOf type fields - use string as a safe default
-        return "string";
+        switch (schemaType)
+        {
+            case "string":
+                return "string";
+            case "integer":
+            case "number":
+                var format = schema["format"]?.ToString().ToLower();
+                if (format == "int64" || format == "long")
+                    return "long";
+                if (format == "float")
+                    return "float";
+                if (format == "double")
+                    return "double";
+                    
+                // Default number types based on schema type
+                return schemaType == "integer" ? "int" : "float";
+            case "boolean":
+                return "bool";
+            case "array":
+                var itemsSchema = schema["items"] as JObject;
+                if (itemsSchema != null)
+                {
+                    var itemType = GetCSharpType(itemsSchema);
+                    return $"{itemType}[]";
+                }
+                return "object[]"; // Default for array with no item type
+            case "object":
+                return "JObject"; // Use JObject for generic objects
+            default:
+                return "string"; // Default to string for anything else
+        }
     }
 
     private static string GetDefaultValue(string typeName)
@@ -582,16 +604,6 @@ public class SchemaGenerator : EditorWindow
                 else
                     return "null";
         }
-    }
-
-    // Existing instance method called by the button
-    private void GenerateSchemas()
-    {
-        Debug.Log("Starting schema generation...");
-        // Call the actual import function
-        ImportAllSchemas();
-        Debug.Log("Schema generation complete.");
-        AssetDatabase.Refresh(); // Refresh assets after generation
     }
 }
 #endif // UNITY_EDITOR 

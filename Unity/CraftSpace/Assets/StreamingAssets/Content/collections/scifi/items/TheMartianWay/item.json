@@ -1,0 +1,23 @@
+{
+  "id": "TheMartianWay",
+  "title": "The Martian Way",
+  "description": "Novella published in Galaxy Science Fiction (November 1952).\nBlurb: \"It was junk they hunted, but enormously valuable and urgently needed junk that cost only bravery and the cheapest fuel ... yet they were kept from collecting it by an even cheaper lie!\"",
+  "creator": "Isaac Asimov",
+  "subject": [
+    "Science Fiction",
+    "Sci-Fi",
+    "SF",
+    "Mars",
+    "Martians",
+    "Martian SFF"
+  ],
+  "collection": [
+    "opensource",
+    "community"
+  ],
+  "mediatype": "texts",
+  "coverImage": "https://archive.org/services/img/TheMartianWay",
+  "coverWidth": 180,
+  "coverHeight": 249,
+  "favoriteCount": 0
+}
