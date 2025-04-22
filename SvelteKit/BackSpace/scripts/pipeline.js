@@ -254,9 +254,9 @@ class ContentPipeline {
    * @param {Object} options Configuration options
    */
   constructor(options = {}) {
-    this.configDir = options.configDir || DEFAULT_CONFIG_DIR;
+    this.configPath = options.configPath || DEFAULT_CONFIG_DIR;
     this.contentCache = options.contentCache || DEFAULT_CONTENT_CACHE;
-    this.unityDir = options.unityDir || DEFAULT_UNITY_DIR;
+    this.unityAppPath = options.unityAppPath || DEFAULT_UNITY_DIR;
     this.verbose = options.verbose || false;
     this.force = options.force || false;
     this.clean = options.clean || false;
@@ -274,14 +274,14 @@ class ContentPipeline {
     this.api = new InternetArchive();
     
     // Create temporary directory for downloads
-    this.tempDir = path.join(os.tmpdir(), 'spacecraft-pipeline');
-    this.ensureDirectoryExists(this.tempDir);
-    this.ensureDirectoryExists(path.join(this.tempDir, 'covers'));
+    this.tempPath = path.join(os.tmpdir(), 'spacecraft-pipeline');
+    this.ensureDirectoryExists(this.tempPath);
+    this.ensureDirectoryExists(path.join(this.tempPath, 'covers'));
     
     // Ensure directories exist
-    this.ensureDirectoryExists(this.configDir);
-    this.ensureDirectoryExists(path.join(this.configDir, 'Importers'));
-    this.ensureDirectoryExists(path.join(this.configDir, 'Exporters'));
+    this.ensureDirectoryExists(this.configPath);
+    this.ensureDirectoryExists(path.join(this.configPath, 'Importers'));
+    this.ensureDirectoryExists(path.join(this.configPath, 'Exporters'));
     this.ensureDirectoryExists(this.contentCache);
   }
   
@@ -318,25 +318,25 @@ class ContentPipeline {
     }
     
     // Base configs directory
-    const baseDir = path.join(this.configDir, 'Importers');
+    const basePath = path.join(this.configPath, 'Importers');
     
     // Check if it's a directory path or includes a config name
-    if (fs.existsSync(path.join(baseDir, importerPath)) && 
-        fs.statSync(path.join(baseDir, importerPath)).isDirectory()) {
+    if (fs.existsSync(path.join(basePath, importerPath)) && 
+        fs.statSync(path.join(basePath, importerPath)).isDirectory()) {
       // It's a directory path, use default config name
-      return path.join(baseDir, importerPath, 'importer-config.json');
+      return path.join(basePath, importerPath, 'importer-config.json');
     } else {
       // It might be a path with a config variant like "ia/config-debug"
-      const configDir = path.dirname(path.join(baseDir, importerPath));
+      const configPath = path.dirname(path.join(basePath, importerPath));
       const configBaseName = path.basename(importerPath);
       
       // If configBaseName starts with "importer-config", use as is + .json
       if (configBaseName.startsWith('importer-config')) {
-        return path.join(configDir, `${configBaseName}.json`);
+        return path.join(configPath, `${configBaseName}.json`);
       }
       
       // Otherwise, it's a suffix for importer-config
-      return path.join(configDir, `importer-config${configBaseName.startsWith('-') ? '' : '-'}${configBaseName}.json`);
+      return path.join(configPath, `importer-config${configBaseName.startsWith('-') ? '' : '-'}${configBaseName}.json`);
     }
   }
   
@@ -352,25 +352,25 @@ class ContentPipeline {
     }
     
     // Base configs directory
-    const baseDir = path.join(this.configDir, 'Exporters');
+    const basePath = path.join(this.configPath, 'Exporters');
     
     // Check if it's a directory path or includes a config name
-    if (fs.existsSync(path.join(baseDir, exporterPath)) && 
-        fs.statSync(path.join(baseDir, exporterPath)).isDirectory()) {
+    if (fs.existsSync(path.join(basePath, exporterPath)) && 
+        fs.statSync(path.join(basePath, exporterPath)).isDirectory()) {
       // It's a directory path, use default config name
-      return path.join(baseDir, exporterPath, 'exporter-config.json');
+      return path.join(basePath, exporterPath, 'exporter-config.json');
     } else {
       // It might be a path with a config variant like "Unity/CraftSpace/config-debug"
-      const configDir = path.dirname(path.join(baseDir, exporterPath));
+      const configPath = path.dirname(path.join(basePath, exporterPath));
       const configBaseName = path.basename(exporterPath);
       
       // If configBaseName starts with "exporter-config", use as is + .json
       if (configBaseName.startsWith('exporter-config')) {
-        return path.join(configDir, `${configBaseName}.json`);
+        return path.join(configPath, `${configBaseName}.json`);
       }
       
       // Otherwise, it's a suffix for exporter-config
-      return path.join(configDir, `exporter-config${configBaseName.startsWith('-') ? '' : '-'}${configBaseName}.json`);
+      return path.join(configPath, `exporter-config${configBaseName.startsWith('-') ? '' : '-'}${configBaseName}.json`);
     }
   }
   
@@ -390,7 +390,7 @@ class ContentPipeline {
     const config = await fs.readJSON(configPath);
     
     // Add the importer config directory for later use
-    config._configDir = path.dirname(configPath);
+    config._configPath = path.dirname(configPath);
     
     return config;
   }
@@ -411,7 +411,7 @@ class ContentPipeline {
     const config = await fs.readJSON(configPath);
     
     // Add the exporter config directory for later use
-    config._configDir = path.dirname(configPath);
+    config._configPath = path.dirname(configPath);
     
     return config;
   }
@@ -427,7 +427,7 @@ class ContentPipeline {
   async loadWhitelist(exporterConfig) {
     // Get the configured index deep file or use default
     const indexDeepFile = exporterConfig.indexDeepFile || 'index-deep.json';
-    const indexDeepPath = path.join(exporterConfig._configDir, indexDeepFile);
+    const indexDeepPath = path.join(exporterConfig._configPath, indexDeepFile);
     
     if (!fs.existsSync(indexDeepPath)) {
       throw new Error(`Index deep file not found: ${indexDeepPath}`);
@@ -675,7 +675,7 @@ class ContentPipeline {
           try {
             const coverUrl = normalizedItem.coverImage;
             const filename = `${itemId}.jpg`;
-            const localPath = path.join(this.tempDir, 'covers', filename);
+            const localPath = path.join(this.tempPath, 'covers', filename);
             
             // Download cover image
             this.logger.info(`Downloading cover image for ${normalizedItem.id}: ${coverUrl}`, null, context);
@@ -688,12 +688,12 @@ class ContentPipeline {
             this.logger.info(`Cover image dimensions: ${normalizedItem.coverImageWidth}x${normalizedItem.coverImageHeight}`, null, context);
             
             // Save cover image to the item directory in cache
-            const itemDir = path.join(this.contentCache, collectionId, 'Items', itemId);
-            await fs.ensureDir(itemDir);
-            await fs.copyFile(localPath, path.join(itemDir, 'cover.jpg'));
+            const itemPath = path.join(this.contentCache, collectionId, 'Items', itemId);
+            await fs.ensureDir(itemPath);
+            await fs.copyFile(localPath, path.join(itemPath, 'cover.jpg'));
             
             // Save the normalized item to cache
-            await fs.writeJSON(path.join(itemDir, 'item.json'), normalizedItem, { spaces: 2 });
+            await fs.writeJSON(path.join(itemPath, 'item.json'), normalizedItem, { spaces: 2 });
           } catch (error) {
             this.logger.error(`Error processing cover image for ${normalizedItem.id}`, error, context);
             this.logger.increment('cover_image_errors', 1, context);
@@ -748,15 +748,15 @@ class ContentPipeline {
         const itemIds = collectionConfig.itemsIndex || [];
         
         // Create collection directory
-        const collectionDir = path.join(this.contentCache, collectionId);
-        await fs.ensureDir(collectionDir);
+        const collectionPath = path.join(this.contentCache, collectionId);
+        await fs.ensureDir(collectionPath);
         
         // Create collection.json if it doesn't exist or whitelist has collection data
-        const collectionFile = path.join(collectionDir, 'collection.json');
+        const collectionJsonPath = path.join(collectionPath, 'collection.json');
         
-        if (!fs.existsSync(collectionFile) || this.force || collectionConfig.collection) {
+        if (!fs.existsSync(collectionJsonPath) || this.force || collectionConfig.collection) {
           await fs.writeJSON(
-            collectionFile, 
+            collectionJsonPath, 
             collectionConfig.collection || {
               id: collectionId,
               title: collectionId.replace(/-/g, ' '),
@@ -821,17 +821,8 @@ class ContentPipeline {
    * @returns {any} Converted value
    */
   convertType(value, type) {
-    // Define converter map for backward compatibility
-    const converterMap = {
-      'StringOrNullToString': 'StringOrNullToStringConverter',
-      'NumberOrNullToNumber': 'StringOrNumberOrNullToNumberConverter',
-      'StringArrayOrStringOrNull': 'StringArrayOrStringOrNullToStringConverter',
-      'StringArrayOrStringOrNullToStringArray': 'StringArrayOrStringOrNullToStringArrayConverter',
-      'SemicolonSplitStringOrStringArrayOrNullToStringArray': 'SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter'
-    };
-    
-    // Use the map for backward compatibility, otherwise construct the name directly
-    const converterName = converterMap[type] || `${type}Converter`;
+    // Ensure type ends with "Converter" - standardize naming convention
+    const converterName = type.endsWith('Converter') ? type : `${type}Converter`;
     
     if (converters[converterName]) {
       return converters[converterName](value);
@@ -852,7 +843,7 @@ class ContentPipeline {
     // Type conversions for common fields using standardized converter names
     normalized.title = converters.StringArrayOrStringOrNullToStringConverter(normalized.title);
     normalized.description = converters.StringArrayOrStringOrNullToStringConverter(normalized.description);
-    normalized.creator = converters.StringArrayOrStringOrNullToStringArrayConverter(normalized.creator);
+    normalized.creator = converters.StringArrayOrStringOrNullToStringConverter(normalized.creator);
     normalized.subject = converters.SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter(normalized.subject);
     
     // Process collection array - extract favorite counts and filter out fav_ prefix entries
@@ -891,11 +882,11 @@ class ContentPipeline {
     const coverCachePath = path.join(this.contentCache, collectionId, 'Items', itemId, 'cover.jpg');
     
     // Define Unity item directory path
-    const unityItemDir = path.join(this.unityContentDir, 'collections', collectionId, 'items', itemId);
+    const exportItemPath = path.join(this.exportContentPath, 'collections', collectionId, 'items', itemId);
     
     try {
       // Ensure the item directory exists in Unity for cover images
-      await fs.ensureDir(unityItemDir);
+      await fs.ensureDir(exportItemPath);
       
       // Add item to the enhanced index if an item.json exists in cache
       if (fs.existsSync(itemCachePath)) {
@@ -922,12 +913,22 @@ class ContentPipeline {
           item: filteredItem
         };
         
+        // Write item.json to the export directory
+        const exportItemJsonPath = path.join(exportItemPath, 'item.json');
+        this.logger.info(`Writing item.json for ${collectionId}/${itemId} to ${exportItemJsonPath}`, null, context);
+        await fs.writeJSON(
+          exportItemJsonPath,
+          filteredItem,
+          { spaces: 2 }
+        );
+        this.logger.debug(`Wrote item.json for ${collectionId}/${itemId}`, null, context);
+        
         // Copy cover image file if it exists locally
         if (fs.existsSync(coverCachePath)) {
           // Copy cover image to Unity
           await fs.copyFile(
             coverCachePath,
-            path.join(unityItemDir, 'cover.jpg')
+            path.join(exportItemPath, 'cover.jpg')
           );
         } else {
           this.logger.debug(`No local cover image found for ${collectionId}/${itemId}`, null, context);
@@ -949,179 +950,231 @@ class ContentPipeline {
   async export(options = {}) {
     console.log(`${CLI_FORMATTING.BLUE}${EMOJI.START} Starting content export phase...${CLI_FORMATTING.RESET}`);
     
-    try {
-      // Load exporter configuration
-      const exporterPath = options.exporter || 'Unity/CraftSpace';
-      const exporterConfig = await this.loadExporterConfig(exporterPath);
+    // Load exporter configuration
+    const exporterPath = options.exporter || 'Unity/CraftSpace';
+    const exporterConfig = await this.loadExporterConfig(exporterPath);
+    
+    // Load whitelist
+    const whitelist = await this.loadWhitelist(exporterConfig);
+    
+    // Determine Unity content directory from config
+    this.exportContentPath = path.join(
+      this.unityAppPath,
+      "Assets/StreamingAssets/Content",
+    );
+    
+    // Clean Unity content directory if requested
+    if (this.clean) {
+      this.logger.info(`Cleaning Unity content directory: ${this.exportContentPath}`, null, { function: 'export' });
+      await fs.emptyDir(this.exportContentPath);
+    }
+    
+    // Ensure Unity content directory exists
+    await fs.ensureDir(this.exportContentPath);
+    
+    // Create collections-index.json in Unity
+    const exportCollectionsIndexPath = path.join(this.exportContentPath, 'collections-index.json');
+    this.logger.info(`Writing collections index to ${exportCollectionsIndexPath}`, null, { function: 'export' });
+    await fs.writeJSON(
+      exportCollectionsIndexPath,
+      whitelist.collectionsIndex,
+      { spaces: 2 }
+    );
+    
+    // Initialize enhanced index structure
+    const enhancedIndex = {
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+      collections: {},
+      collectionsIndex: whitelist.collectionsIndex
+    };
+    
+    // Process each collection in the whitelist
+    for (const collectionId of whitelist.collectionsIndex) {
+      const collectionConfig = whitelist.collections[collectionId];
+      const collectionFilter = exporterConfig.collections?.[collectionId];
       
-      // Load whitelist
-      const whitelist = await this.loadWhitelist(exporterConfig);
-      
-      // Determine Unity content directory from config
-      this.unityContentDir = path.join(
-        this.unityDir,
-        exporterConfig.outputDir || 'Assets/StreamingAssets/Content'
-      );
-      
-      // Clean Unity content directory if requested
-      if (this.clean) {
-        this.logger.info(`Cleaning Unity content directory: ${this.unityContentDir}`, null, { function: 'export' });
-        await fs.emptyDir(this.unityContentDir);
+      // Skip disabled collections
+      if (collectionFilter && collectionFilter.enabled === false) {
+        this.logger.info(`Skipping disabled collection: ${collectionId}`, null, { function: 'export', collectionId });
+        continue;
       }
       
-      // Ensure Unity content directory exists
-      await fs.ensureDir(this.unityContentDir);
+      this.logger.info(`Exporting collection: ${collectionId}`, null, { function: 'export', collectionId });
       
-      // Create collections-index.json in Unity
+      // Create collection directory in Unity for cover images
+      const exportCollectionPath = path.join(this.exportContentPath, 'collections', collectionId);
+      await fs.ensureDir(exportCollectionPath);
+      await fs.ensureDir(path.join(exportCollectionPath, 'items'));
+      
+      // Read collection.json from cache
+      const importCollectionFile = path.join(this.contentCache, collectionId, 'collection.json');
+      
+      if (!fs.existsSync(importCollectionFile)) {
+        this.logger.warn(`Collection file not found: ${importCollectionFile}`, null, { function: 'export', collectionId });
+        continue;
+      }
+
+      // Read collection data from cache
+      const collectionJson = await fs.readJSON(importCollectionFile);
+      
+      // Add to enhanced index
+      enhancedIndex.collections[collectionId] = {
+        id: collectionId,
+        collection: collectionJson,
+        itemsIndex: collectionConfig.itemsIndex || [],
+        items: {}
+      };
+      
+      // Write collection.json to the export directory
+      const exportCollectionJsonPath = path.join(exportCollectionPath, 'collection.json');
+      this.logger.info(`Writing collection.json for ${collectionId} to ${exportCollectionJsonPath}`, null, { function: 'export', collectionId });
       await fs.writeJSON(
-        path.join(this.unityContentDir, 'collections-index.json'),
-        whitelist.collectionsIndex,
+        exportCollectionJsonPath,
+        collectionJson,
         { spaces: 2 }
       );
       
-      // Initialize enhanced index structure
-      const enhancedIndex = {
-        version: '1.0',
-        exportedAt: new Date().toISOString(),
-        collections: {},
-        collectionsIndex: whitelist.collectionsIndex
-      };
+      // Write items-index.json to Unity
+      const itemsIndexPath = path.join(exportCollectionPath, 'items-index.json');
+      this.logger.info(`Writing collectionId: ${collectionId} items index to ${itemsIndexPath}`, null, { function: 'export', collectionId });
+      await fs.writeJSON(
+        itemsIndexPath,
+        collectionConfig.itemsIndex || [],
+        { spaces: 2 }
+      );
       
-      // Process each collection in the whitelist
-      for (const collectionId of whitelist.collectionsIndex) {
-        const collectionConfig = whitelist.collections[collectionId];
-        const collectionFilter = exporterConfig.collections?.[collectionId];
-        
-        // Skip disabled collections
-        if (collectionFilter && collectionFilter.enabled === false) {
-          this.logger.info(`Skipping disabled collection: ${collectionId}`, null, { function: 'export', collectionId });
+      // Process each item in the collection
+      for (const itemId of collectionConfig.itemsIndex || []) {
+        // Skip if item should be excluded based on filter
+        if (!this.shouldIncludeItem(itemId, collectionFilter)) {
+          this.logger.debug(`Skipping item ${itemId} based on filter`, null, { function: 'export', collectionId, itemId });
           continue;
         }
         
-        this.logger.info(`Exporting collection: ${collectionId}`, null, { function: 'export', collectionId });
-        
-        // Create collection directory in Unity for cover images
-        const unityCollectionDir = path.join(this.unityContentDir, 'collections', collectionId);
-        await fs.ensureDir(unityCollectionDir);
-        await fs.ensureDir(path.join(unityCollectionDir, 'items'));
-        
-        // Read collection.json from cache
-        const collectionFile = path.join(this.contentCache, collectionId, 'collection.json');
-        
-        if (fs.existsSync(collectionFile)) {
-          // Read collection data from cache
-          const collectionData = await fs.readJSON(collectionFile);
-          
-          // Add to enhanced index
-          enhancedIndex.collections[collectionId] = {
-            id: collectionId,
-            name: collectionData.title || collectionId,
-            description: collectionData.description || '',
-            collection: collectionData,
-            itemsIndex: collectionConfig.itemsIndex || [],
-            items: {}
-          };
-          
-          // Write items-index.json to Unity
-          await fs.writeJSON(
-            path.join(unityCollectionDir, 'items-index.json'),
-            collectionConfig.itemsIndex || [],
-            { spaces: 2 }
-          );
-          
-          // Process each item in the collection
-          for (const itemId of collectionConfig.itemsIndex || []) {
-            // Skip if item should be excluded based on filter
-            if (!this.shouldIncludeItem(itemId, collectionFilter)) {
-              this.logger.debug(`Skipping item ${itemId} based on filter`, null, { function: 'export', collectionId, itemId });
-              continue;
-            }
-            
-            // Export item - adds to enhancedIndex and copies cover images
-            await this.exportItem(collectionId, itemId, enhancedIndex);
-            this.logger.increment('item_exported_count', 1, { function: 'export', collectionId, itemId });
-          }
-          
-          this.logger.increment('collection_exported_count', 1, { function: 'export', collectionId });
-        } else {
-          this.logger.warn(`Collection file not found: ${collectionFile}`, null, { function: 'export', collectionId });
-        }
+        // Export item - adds to enhancedIndex and copies cover images
+        await this.exportItem(collectionId, itemId, enhancedIndex);
+        this.logger.increment('item_exported_count', 1, { function: 'export', collectionId, itemId });
       }
       
-      // Write enhanced index-deep.json to Unity - this contains all the metadata
+      this.logger.increment('collection_exported_count', 1, { function: 'export', collectionId });
+    }
+    
+    // Write enhanced index-deep.json to Unity - this contains all the metadata
+    await fs.writeJSON(
+      path.join(this.exportContentPath, 'index-deep.json'),
+      enhancedIndex,
+      { spaces: 2 }
+    );
+    
+    // Also update the cache version of index-deep.json for consistency
+    if (exporterConfig._configPath) {
       await fs.writeJSON(
-        path.join(this.unityContentDir, 'index-deep.json'),
+        path.join(exporterConfig._configPath, 'index-deep.json'),
         enhancedIndex,
         { spaces: 2 }
       );
-      
-      // Also update the cache version of index-deep.json for consistency
-      if (exporterConfig._configDir) {
-        await fs.writeJSON(
-          path.join(exporterConfig._configDir, 'index-deep.json'),
-          enhancedIndex,
-          { spaces: 2 }
-        );
-        this.logger.info(`Updated cache copy of index-deep.json in ${exporterConfig._configDir}`, null, { function: 'export' });
-      }
-      
-      // Clear and rebuild Unity StreamingAssets directories
-      const unityCollectionsDir = path.join(this.unityDir, 'Assets/StreamingAssets/Content/collections');
-      const unityStreamingAssetsDir = path.join(this.unityDir, 'Assets/StreamingAssets');
-
-      // Remove and recreate collections directory
-      this.logger.info(`Removing and recreating ${unityCollectionsDir}`, null, { function: 'export' });
-      await fs.remove(unityCollectionsDir);
-      await fs.ensureDir(unityCollectionsDir);
-
-      // Copy index-deep.json to the Unity StreamingAssets root for easier access from Unity/web
-      this.logger.info(`Copying index-deep.json to ${unityStreamingAssetsDir}`, null, { function: 'export' });
-      await fs.copyFile(
-        path.join(this.unityContentDir, 'index-deep.json'),
-        path.join(unityStreamingAssetsDir, 'index-deep.json')
-      );
-      
-      // Finalize and write receipt file if receiptFileName is configured
-      if (exporterConfig.receiptFileName) {
-        // Set end time for export phase
-        this.logger.set('perf_exportPhase_endTime', new Date().toISOString());
-        
-        // Add export metadata
-        this.logger.set('export_timestamp', new Date().toISOString());
-        this.logger.set('export_version', exporterConfig.version || '1.0');
-        this.logger.set('export_name', exporterConfig.name || 'Unknown');
-        
-        // Get the finalized receipt
-        const receipt = this.logger.finalize();
-        
-        // Write receipt to output directory
-        const receiptPath = path.join(this.unityContentDir, exporterConfig.receiptFileName);
-        await fs.writeJSON(receiptPath, receipt, { spaces: 2 });
-        this.logger.info(`Wrote receipt file to: ${receiptPath}`, null, { function: 'export' });
-      }
-      
-      this.logger.success(`Content export phase completed.`, null, { function: 'export' });
-      
-      // Get counts from the logger for the final report
-      const collectionsExported = this.logger.receipt.collection_exported_count || 0;
-      const itemsExported = this.logger.receipt.item_exported_count || 0;
-      
-      console.log('Export statistics:');
-      console.log(`Collections exported: ${collectionsExported}`);
-      console.log(`Items exported: ${itemsExported}`);
-      
-      return {
-        status: 'success',
-        receipt: this.logger.getReceipt()
-      };
-    } catch (error) {
-      this.logger.error(`Content export phase failed: ${error.message}`, error, { function: 'export' });
-      return {
-        status: 'error',
-        error: error.message,
-        receipt: this.logger.getReceipt()
-      };
+      this.logger.info(`Updated cache copy of index-deep.json in ${exporterConfig._configPath}`, null, { function: 'export' });
     }
+    
+    // Check if we need to copy content from cache to StreamingAssets
+    const exportCollectionsPath = path.join(this.unityAppPath, 'Assets/StreamingAssets/Content/collections');
+    const exportStreamingAssetsPath = path.join(this.unityAppPath, 'Assets/StreamingAssets');
+
+    // Check if collections directory is empty or has fewer collections than expected
+    const collectionIds = await fs.readdir(exportCollectionsPath).catch(() => []);
+    
+    if (collectionIds.length === 0 || collectionIds.length < whitelist.collectionsIndex.length) {
+      this.logger.info(`Collections directory is empty or incomplete. Copying from cache.`, null, { function: 'export' });
+      
+      // This iterates over all the collections in our index
+      for (const collectionId of whitelist.collectionsIndex) {
+        const sourceCachePath = path.join(this.contentCache, collectionId);
+        const exportCollectionPath = path.join(exportCollectionsPath, collectionId);
+        
+        // Ensure target directory exists
+        await fs.ensureDir(exportCollectionPath);
+        await fs.ensureDir(path.join(exportCollectionPath, 'items'));
+        
+        // Copy collection.json if it exists
+        const collectionJsonPath = path.join(sourceCachePath, 'collection.json');
+        if (fs.existsSync(collectionJsonPath)) {
+          await fs.copyFile(collectionJsonPath, path.join(exportCollectionPath, 'collection.json'));
+        }
+        
+        // Copy items
+        const sourceItemsPath = path.join(sourceCachePath, 'Items');
+        if (fs.existsSync(sourceItemsPath)) {
+          const itemIds = await fs.readdir(sourceItemsPath);
+          
+          for (const itemId of itemIds) {
+            const sourceItemPath = path.join(sourceItemsPath, itemId);
+            const targetItemPath = path.join(exportCollectionPath, 'items', itemId);
+            
+            // Skip if not a directory
+            if (!(await fs.stat(sourceItemPath)).isDirectory()) continue;
+            
+            // Create target item directory
+            await fs.ensureDir(targetItemPath);
+            
+            // Copy item.json
+            const itemJsonPath = path.join(sourceItemPath, 'item.json');
+            if (fs.existsSync(itemJsonPath)) {
+              await fs.copyFile(itemJsonPath, path.join(targetItemPath, 'item.json'));
+            }
+            
+            // Copy cover.jpg
+            const coverPath = path.join(sourceItemPath, 'cover.jpg');
+            if (fs.existsSync(coverPath)) {
+              await fs.copyFile(coverPath, path.join(targetItemPath, 'cover.jpg'));
+            }
+          }
+        }
+      }
+      
+      this.logger.info(`Content copy to StreamingAssets completed`, null, { function: 'export' });
+    }
+
+    // Copy index-deep.json to the Unity StreamingAssets root for easier access from Unity/web
+    this.logger.info(`Copying index-deep.json to ${exportStreamingAssetsPath}`, null, { function: 'export' });
+    await fs.copyFile(
+      path.join(this.exportContentPath, 'index-deep.json'),
+      path.join(exportStreamingAssetsPath, 'index-deep.json')
+    );
+    
+    // Finalize and write receipt file if receiptFileName is configured
+    if (exporterConfig.receiptFileName) {
+      // Set end time for export phase
+      this.logger.set('perf_exportPhase_endTime', new Date().toISOString());
+      
+      // Add export metadata
+      this.logger.set('export_timestamp', new Date().toISOString());
+      this.logger.set('export_version', exporterConfig.version || '1.0');
+      this.logger.set('export_name', exporterConfig.name || 'Unknown');
+      
+      // Get the finalized receipt
+      const receipt = this.logger.finalize();
+      
+      // Write receipt to output directory
+      const receiptPath = path.join(this.exportContentPath, exporterConfig.receiptFileName);
+      await fs.writeJSON(receiptPath, receipt, { spaces: 2 });
+      this.logger.info(`Wrote receipt file to: ${receiptPath}`, null, { function: 'export' });
+    }
+    
+    this.logger.success(`Content export phase completed.`, null, { function: 'export' });
+    
+    // Get counts from the logger for the final report
+    const collectionsExported = this.logger.receipt.collection_exported_count || 0;
+    const itemsExported = this.logger.receipt.item_exported_count || 0;
+    
+    console.log('Export statistics:');
+    console.log(`Collections exported: ${collectionsExported}`);
+    console.log(`Items exported: ${itemsExported}`);
+    
+    return {
+      status: 'success',
+      receipt: this.logger.getReceipt()
+    };
   }
   
   /**
@@ -1338,9 +1391,9 @@ const addCommonOptions = (cmd) => {
     .option('-v, --verbose', 'Enable verbose output')
     .option('-f, --force', 'Force operation, overwriting existing files')
     .option('-c, --clean', 'Clean target directories before operation')
-    .option('--config-dir <dir>', 'Path to configuration directory', DEFAULT_CONFIG_DIR)
+    .option('--config-path <dir>', 'Path to configuration directory', DEFAULT_CONFIG_DIR)
     .option('--content-cache <dir>', 'Path to content cache directory', DEFAULT_CONTENT_CACHE)
-    .option('--unity-dir <dir>', 'Path to Unity project directory', DEFAULT_UNITY_DIR);
+    .option('--export-path <dir>', 'Path to Unity export project directory', DEFAULT_UNITY_DIR);
 };
 
 // Run the full pipeline

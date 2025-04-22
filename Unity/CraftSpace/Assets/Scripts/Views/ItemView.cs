@@ -255,10 +255,20 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     // Apply texture to the mesh renderer
     private void ApplyTexture(Texture2D texture)
     {
+        Debug.Log($"Applying texture to {texture}");
+        
         if (texture == null || meshRenderer == null) return;
         
+        string shaderName = "Unlit/Texture";
+        var shader = Shader.Find(shaderName);
+        if (shader == null)
+        {
+            Debug.LogError($"Shader not found: {shaderName}");
+            return;
+        }
+        
         // Create material and apply texture
-        Material material = new Material(Shader.Find("Unlit/Texture"));
+        Material material = new Material(shader);
         material.mainTexture = texture;
         
         // Store as original material

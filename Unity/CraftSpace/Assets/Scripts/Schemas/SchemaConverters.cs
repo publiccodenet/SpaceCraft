@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 /// <summary>
 /// IL2CPP-safe JSON converters that normalize data into consistent formats.
@@ -39,14 +40,22 @@ public class StringOrNullToStringConverter : JsonConverter
 
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
+        //Debug.Log($"StringOrNullToStringConverter: reader {reader} tokenType {reader.TokenType} objectType {objectType} existingValue {existingValue}");
+
         if (reader.TokenType == JsonToken.Null || reader.TokenType == JsonToken.None)
+        {
+            //Debug.Log($"StringOrNullToStringConverter: reader.TokenType is {reader.TokenType} so returning empty string");
             return "";
+        }
 
         var token = JToken.ReadFrom(reader);
+        //Debug.Log($"StringOrNullToStringConverter: token is {token} value {token.Value<string>()}");
 
         if (token.Type == JTokenType.String)
             return token.Value<string>() ?? "";
-            
+
+        //Debug.Log($"StringOrNullToStringConverter: fallback to token.ToString() {token.ToString()}");
+
         // Fallback for other token types
         return token.ToString();
     }
@@ -119,6 +128,92 @@ public class StringOrNumberOrNullToNumberConverter : JsonConverter
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         writer.WriteValue(value ?? 0);
+    }
+}
+
+/// <summary>
+/// Converts string, number, or null/missing to integer (default to 0).
+/// - number → converted to int
+/// - string → parsed to int (0 if invalid)
+/// - null/undefined → 0
+/// </summary>
+public class StringOrNumberOrNullToIntegerConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType) => objectType == typeof(int);
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.Null || reader.TokenType == JsonToken.None)
+            return 0;
+
+        var token = JToken.ReadFrom(reader);
+        
+        // For string representations, try to parse
+        if (token.Type == JTokenType.String)
+        {
+            var str = token.ToString();
+            if (int.TryParse(str, out var result))
+                return result;
+            return 0;
+        }
+        
+        // For non-string (likely numeric already)
+        try
+        {
+            return token.ToObject<int>();
+        }
+        catch
+        {
+            return 0; // Default to 0 on error
+        }
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        writer.WriteValue(value ?? 0);
+    }
+}
+
+/// <summary>
+/// Converts string, number, or null/missing to float (default to 0).
+/// - number → converted to float
+/// - string → parsed to float (0 if invalid)
+/// - null/undefined → 0
+/// </summary>
+public class StringOrNumberOrNullToFloatConverter : JsonConverter
+{
+    public override bool CanConvert(Type objectType) => objectType == typeof(float);
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.Null || reader.TokenType == JsonToken.None)
+            return 0f;
+
+        var token = JToken.ReadFrom(reader);
+        
+        // For string representations, try to parse
+        if (token.Type == JTokenType.String)
+        {
+            var str = token.ToString();
+            if (float.TryParse(str, out var result))
+                return result;
+            return 0f;
+        }
+        
+        // For non-string (likely numeric already)
+        try
+        {
+            return token.ToObject<float>();
+        }
+        catch
+        {
+            return 0f; // Default to 0 on error
+        }
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        writer.WriteValue(value ?? 0f);
     }
 }
 

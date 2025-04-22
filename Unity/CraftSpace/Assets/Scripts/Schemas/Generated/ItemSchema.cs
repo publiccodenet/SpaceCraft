@@ -66,7 +66,7 @@ public class ItemSchema : SchemaGeneratedObject
     /// <summary>
     /// Creator/author of the item.
     /// Schema Path: creator
-    /// UnitySchemaConverter: StringOrNullToStringConverter
+    /// UnitySchemaConverter: StringArrayOrStringOrNullToStringConverter
     /// </summary>
     [SerializeField] private string _creator = string.Empty;
     public string Creator { get { return _creator; } set { _creator = value; } }
@@ -76,16 +76,16 @@ public class ItemSchema : SchemaGeneratedObject
     /// Schema Path: subject
     /// UnitySchemaConverter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
     /// </summary>
-    [SerializeField] private string _subject = string.Empty;
-    public string Subject { get { return _subject; } set { _subject = value; } }
+    [SerializeField] private string[] _subject = null;
+    public string[] Subject { get { return _subject; } set { _subject = value; } }
 
     /// <summary>
     /// Collections this item belongs to.
     /// Schema Path: collection
     /// UnitySchemaConverter: StringArrayOrStringOrNullToStringArrayConverter
     /// </summary>
-    [SerializeField] private string _collection = string.Empty;
-    public string Collection { get { return _collection; } set { _collection = value; } }
+    [SerializeField] private string[] _collection = null;
+    public string[] Collection { get { return _collection; } set { _collection = value; } }
 
     /// <summary>
     /// Type of media (texts, movies, audio, etc).
@@ -106,18 +106,18 @@ public class ItemSchema : SchemaGeneratedObject
     /// <summary>
     /// Width of the cover image in pixels.
     /// Schema Path: coverWidth
-    /// UnitySchemaConverter: StringOrNumberOrNullToNumberConverter
+    /// UnitySchemaConverter: StringOrNumberOrNullToIntegerConverter
     /// </summary>
-    [SerializeField] private float _coverWidth = 0f;
-    public float CoverWidth { get { return _coverWidth; } set { _coverWidth = value; } }
+    [SerializeField] private int _coverWidth = 0;
+    public int CoverWidth { get { return _coverWidth; } set { _coverWidth = value; } }
 
     /// <summary>
     /// Height of the cover image in pixels.
     /// Schema Path: coverHeight
-    /// UnitySchemaConverter: StringOrNumberOrNullToNumberConverter
+    /// UnitySchemaConverter: StringOrNumberOrNullToIntegerConverter
     /// </summary>
-    [SerializeField] private float _coverHeight = 0f;
-    public float CoverHeight { get { return _coverHeight; } set { _coverHeight = value; } }
+    [SerializeField] private int _coverHeight = 0;
+    public int CoverHeight { get { return _coverHeight; } set { _coverHeight = value; } }
 
     protected override void ImportKnownProperties(JObject json)
     {
@@ -127,9 +127,13 @@ public class ItemSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _id = (string)converter.ReadJson(json["id"].CreateReader(), typeof(string), null, null);
+                var reader = json["id"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _id = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'id' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: id is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -138,9 +142,13 @@ public class ItemSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _title = (string)converter.ReadJson(json["title"].CreateReader(), typeof(string), null, null);
+                var reader = json["title"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _title = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'title' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: title is null" );
         }
 
         // Use converter: StringArrayOrStringOrNullToStringConverter
@@ -149,20 +157,28 @@ public class ItemSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringArrayOrStringOrNullToStringConverter();
-                _description = (string)converter.ReadJson(json["description"].CreateReader(), typeof(string), null, null);
+                var reader = json["description"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _description = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'description' with StringArrayOrStringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: description is null" );
         }
 
-        // Use converter: StringOrNullToStringConverter
+        // Use converter: StringArrayOrStringOrNullToStringConverter
         if (json["creator"] != null)
         {
             try
             {
-                var converter = new StringOrNullToStringConverter();
-                _creator = (string)converter.ReadJson(json["creator"].CreateReader(), typeof(string), null, null);
+                var converter = new StringArrayOrStringOrNullToStringConverter();
+                var reader = json["creator"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _creator = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'creator' with StringOrNullToStringConverter: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'creator' with StringArrayOrStringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: creator is null" );
         }
 
         // Use converter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
@@ -171,9 +187,13 @@ public class ItemSchema : SchemaGeneratedObject
             try
             {
                 var converter = new SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter();
-                _subject = (string)converter.ReadJson(json["subject"].CreateReader(), typeof(string), null, null);
+                var reader = json["subject"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _subject = (string[])converter.ReadJson(reader, typeof(string[]), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'subject' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: subject is null" );
         }
 
         // Use converter: StringArrayOrStringOrNullToStringArrayConverter
@@ -182,9 +202,13 @@ public class ItemSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringArrayOrStringOrNullToStringArrayConverter();
-                _collection = (string)converter.ReadJson(json["collection"].CreateReader(), typeof(string), null, null);
+                var reader = json["collection"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _collection = (string[])converter.ReadJson(reader, typeof(string[]), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'collection' with StringArrayOrStringOrNullToStringArrayConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: collection is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -193,9 +217,13 @@ public class ItemSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _mediatype = (string)converter.ReadJson(json["mediatype"].CreateReader(), typeof(string), null, null);
+                var reader = json["mediatype"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _mediatype = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'mediatype' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: mediatype is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -204,31 +232,43 @@ public class ItemSchema : SchemaGeneratedObject
             try
             {
                 var converter = new StringOrNullToStringConverter();
-                _coverImage = (string)converter.ReadJson(json["coverImage"].CreateReader(), typeof(string), null, null);
+                var reader = json["coverImage"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _coverImage = (string)converter.ReadJson(reader, typeof(string), null, null);
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' with StringOrNullToStringConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: coverImage is null" );
         }
 
-        // Use converter: StringOrNumberOrNullToNumberConverter
+        // Use converter: StringOrNumberOrNullToIntegerConverter
         if (json["coverWidth"] != null)
         {
             try
             {
-                var converter = new StringOrNumberOrNullToNumberConverter();
-                _coverWidth = (float)converter.ReadJson(json["coverWidth"].CreateReader(), typeof(float), null, null);
+                var converter = new StringOrNumberOrNullToIntegerConverter();
+                var reader = json["coverWidth"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _coverWidth = (int)converter.ReadJson(reader, typeof(int), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'coverWidth' with StringOrNumberOrNullToNumberConverter: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'coverWidth' with StringOrNumberOrNullToIntegerConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: coverWidth is null" );
         }
 
-        // Use converter: StringOrNumberOrNullToNumberConverter
+        // Use converter: StringOrNumberOrNullToIntegerConverter
         if (json["coverHeight"] != null)
         {
             try
             {
-                var converter = new StringOrNumberOrNullToNumberConverter();
-                _coverHeight = (float)converter.ReadJson(json["coverHeight"].CreateReader(), typeof(float), null, null);
+                var converter = new StringOrNumberOrNullToIntegerConverter();
+                var reader = json["coverHeight"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _coverHeight = (int)converter.ReadJson(reader, typeof(int), null, null);
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'coverHeight' with StringOrNumberOrNullToNumberConverter: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'coverHeight' with StringOrNumberOrNullToIntegerConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: coverHeight is null" );
         }
 
     }
@@ -248,7 +288,6 @@ public class ItemSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'id' with StringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: StringOrNullToStringConverter
         if (_title != null)
         {
@@ -261,7 +300,6 @@ public class ItemSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'title' with StringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: StringArrayOrStringOrNullToStringConverter
         if (_description != null)
         {
@@ -274,20 +312,18 @@ public class ItemSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'description' with StringArrayOrStringOrNullToStringConverter: {ex.Message}"); }
         }
-
-        // Use converter: StringOrNullToStringConverter
+        // Use converter: StringArrayOrStringOrNullToStringConverter
         if (_creator != null)
         {
             try
             {
                 var tempWriter = new JTokenWriter();
-                var converter = new StringOrNullToStringConverter();
+                var converter = new StringArrayOrStringOrNullToStringConverter();
                 converter.WriteJson(tempWriter, _creator, null);
                 json["creator"] = tempWriter.Token;
             }
-            catch (Exception ex) { Debug.LogError($"Error converting 'creator' with StringOrNullToStringConverter: {ex.Message}"); }
+            catch (Exception ex) { Debug.LogError($"Error converting 'creator' with StringArrayOrStringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
         if (_subject != null)
         {
@@ -300,7 +336,6 @@ public class ItemSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'subject' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
         }
-
         // Use converter: StringArrayOrStringOrNullToStringArrayConverter
         if (_collection != null)
         {
@@ -313,7 +348,6 @@ public class ItemSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'collection' with StringArrayOrStringOrNullToStringArrayConverter: {ex.Message}"); }
         }
-
         // Use converter: StringOrNullToStringConverter
         if (_mediatype != null)
         {
@@ -326,7 +360,6 @@ public class ItemSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'mediatype' with StringOrNullToStringConverter: {ex.Message}"); }
         }
-
         // Use converter: StringOrNullToStringConverter
         if (_coverImage != null)
         {
@@ -339,26 +372,24 @@ public class ItemSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' with StringOrNullToStringConverter: {ex.Message}"); }
         }
-
-        // Use converter: StringOrNumberOrNullToNumberConverter
+        // Use converter: StringOrNumberOrNullToIntegerConverter
         try
         {
             var tempWriter = new JTokenWriter();
-            var converter = new StringOrNumberOrNullToNumberConverter();
+            var converter = new StringOrNumberOrNullToIntegerConverter();
             converter.WriteJson(tempWriter, _coverWidth, null);
             json["coverWidth"] = tempWriter.Token;
         }
-        catch (Exception ex) { Debug.LogError($"Error converting 'coverWidth' with StringOrNumberOrNullToNumberConverter: {ex.Message}"); }
-
-        // Use converter: StringOrNumberOrNullToNumberConverter
+        catch (Exception ex) { Debug.LogError($"Error converting 'coverWidth' with StringOrNumberOrNullToIntegerConverter: {ex.Message}"); }
+        // Use converter: StringOrNumberOrNullToIntegerConverter
         try
         {
             var tempWriter = new JTokenWriter();
-            var converter = new StringOrNumberOrNullToNumberConverter();
+            var converter = new StringOrNumberOrNullToIntegerConverter();
             converter.WriteJson(tempWriter, _coverHeight, null);
             json["coverHeight"] = tempWriter.Token;
         }
-        catch (Exception ex) { Debug.LogError($"Error converting 'coverHeight' with StringOrNumberOrNullToNumberConverter: {ex.Message}"); }
+        catch (Exception ex) { Debug.LogError($"Error converting 'coverHeight' with StringOrNumberOrNullToIntegerConverter: {ex.Message}"); }
 
         return json;
     }

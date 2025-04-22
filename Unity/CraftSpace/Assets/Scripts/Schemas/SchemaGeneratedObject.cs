@@ -108,31 +108,17 @@ public abstract class SchemaGeneratedObject : ScriptableObject
     /// </summary>
     public virtual void ImportFromJToken(JObject data)
     {
-        try
+        if (data == null)
         {
-            if (data == null)
-            {
-                Debug.LogWarning($"[{GetType().Name}] Null JObject passed to ImportFromJToken");
-                return;
-            }
-            
-            // Clear existing extra fields before import
-            extraFields = new JObject();
-            
-            try
-            {
-                ImportKnownProperties(data); // Populate derived class fields
-                ImportExtraFields(data); // Populate extra fields
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[{GetType().Name}] Error in ImportFromJToken: {ex.Message}");
-            }
+            Debug.LogWarning($"[{GetType().Name}] Null JObject passed to ImportFromJToken");
+            return;
         }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[{GetType().Name}] Error in ImportFromJToken: {ex.Message}");
-        }
+        
+        // Clear existing extra fields before import
+        extraFields = new JObject();
+        
+        ImportKnownProperties(data); // Populate derived class fields
+        ImportExtraFields(data); // Populate extra fields
     }
     
     /// <summary>

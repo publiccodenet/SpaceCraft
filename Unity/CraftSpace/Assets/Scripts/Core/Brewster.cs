@@ -102,150 +102,141 @@ public class Brewster : MonoBehaviour
         // Clear existing content first
         ClearContent();
         
-        try
+        JToken collectionsToken = contentJson["collections"];
+        if (collectionsToken == null)
         {
-            // Debug the structure of the incoming JSON
-            foreach (var prop in contentJson.Properties())
-            {
-                Debug.Log($"Brewster: Found top-level property '{prop.Name}' of type {prop.Value.Type}");
-            }
-            
-            // Process collections
-            JToken collectionsToken = contentJson["collections"];
-            if (collectionsToken != null && collectionsToken is JObject collectionsObj)
-            {
-                Debug.Log($"Brewster: Found collections object with {collectionsObj.Count} properties");
-                
-                foreach (var collectionProp in collectionsObj.Properties())
-                {
-                    string collectionId = collectionProp.Name;
-                    JObject collectionData = collectionProp.Value as JObject;
-                    
-                    Debug.Log($"Brewster: Processing collection '{collectionId}'");
-                    //Debug.Log($"Brewster: Collection data for '{collectionId}': {collectionData}");
-                    
-                    if (collectionData != null)
-                    {
-                        Collection collection = ScriptableObject.CreateInstance<Collection>();
-                        
-                        // Log before import
-                        Debug.Log($"Brewster: Importing collection '{collectionId}' with {collectionData.Count} properties");
-                        
-                        // Get the nested collection metadata object
-                        JObject metadataObj = collectionData["collection"] as JObject;
-                        if (metadataObj != null)
-                        {
-                            // Import from the nested collection object
-                            collection.ImportFromJToken(metadataObj);
-                            
-                            // Check for itemsIndex in the collection
-                            JArray itemsIndexArray = collectionData["itemsIndex"] as JArray;
-                            if (itemsIndexArray != null)
-                            {
-                                Debug.Log($"Brewster: Collection '{collectionId}' has itemsIndex property of type {itemsIndexArray.Type}");
-                                
-                                try
-                                {
-                                    var itemIds = itemsIndexArray.Values<string>().ToList();
-                                    Debug.Log($"Brewster: Found {itemIds.Count} item IDs in collection '{collectionId}' itemsIndex: {string.Join(", ", itemIds)}");
-                                    
-                                    // Set the item IDs on the collection
-                                    collection.ItemIds = itemIds;
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.LogError($"Brewster: Error extracting item IDs from itemsIndex for collection '{collectionId}': {ex.Message}");
-                                }
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"Brewster: Collection '{collectionId}' has no itemsIndex property");
-                            }
-                            
-                            if (!string.IsNullOrEmpty(collection.Id))
-                            {
-                                _collections[collectionId] = collection;
-                                Debug.Log($"Brewster: Successfully added collection '{collectionId}' with ID '{collection.Id}'");
-                            }
-                            else
-                            {
-                                Debug.LogError($"Brewster: Collection with ID {collectionId} has no ID property. collection: {collection}");
-                                ScriptableObject.Destroy(collection);
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogError($"Brewster: Collection '{collectionId}' has no nested 'collection' metadata object");
-                            ScriptableObject.Destroy(collection);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Debug.LogWarning("Brewster: No 'collections' object found in content JSON or it's not an object");
-                Debug.Log($"Brewster: collections token: {collectionsToken}");
-            }
-            
-            // Process items
-            JToken itemsToken = contentJson["items"];
-            if (itemsToken != null && itemsToken is JObject itemsObj)
-            {
-                Debug.Log($"Brewster: Found items object with {itemsObj.Count} properties");
-                Debug.Log($"Brewster: Items object: {itemsObj}");
-                
-                foreach (var itemProp in itemsObj.Properties())
-                {
-                    string itemId = itemProp.Name;
-                    JObject itemData = itemProp.Value as JObject;
-                    
-                    Debug.Log($"Brewster: Processing item '{itemId}'");
-                    
-                    if (itemData != null)
-                    {
-                        Item item = ScriptableObject.CreateInstance<Item>();
-                        
-                        // Log before import
-                        Debug.Log($"Brewster: Importing item '{itemId}' with {itemData.Count} properties");
-                        
-                        item.ImportFromJToken(itemData);
-                        
-                        if (!string.IsNullOrEmpty(item.Id))
-                        {
-                            _items[itemId] = item;
-                            Debug.Log($"Brewster: Successfully added item '{itemId}' with ID '{item.Id}'");
-                        }
-                        else
-                        {
-                            Debug.LogError($"Brewster: Item with ID {itemId} has no ID property");
-                            ScriptableObject.Destroy(item);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Debug.LogWarning("Brewster: No 'items' object found in content JSON or it's not an object");
-                Debug.Log($"Brewster: items token: {itemsToken}");
-            }
-            
-            // Log collection item assignments
-            foreach (var collection in _collections.Values)
-            {
-                Debug.Log($"Brewster: Collection '{collection.Id}' has {(collection.ItemIds?.Count ?? 0)} items: {(collection.ItemIds != null ? string.Join(", ", collection.ItemIds) : "none")}");
-            }
-            
-            // Notify that content is loaded
-            Debug.Log($"Brewster: Content loading complete. Loaded {_collections.Count} collections and {_items.Count} items from provided JSON.");
-            
-            // Fire the event to notify all listeners
-            OnAllContentLoaded?.Invoke();
+            Debug.LogError("Brewster: Collections token is null in content JSON");
+            return;
         }
-        catch (Exception ex)
+
+        JObject collectionsDir = collectionsToken as JObject;
+        if (collectionsToken == null)
         {
-            Debug.LogError($"Brewster: Error loading content from JSON: {ex.Message}");
-            Debug.LogException(ex);
+            Debug.Log($"Brewster: Brewster: Invalid 'collections' object found in content JSON. collectionsToken: {collectionsToken}");
+            return;
         }
+
+        //Debug.Log($"Brewster: Found collections dir with {collectionsDir.Count} properties");
+        
+        foreach (var collectionProp in collectionsDir.Properties())
+        {
+            string collectionId = collectionProp.Name;
+            Debug.Log($"Brewster: Processing collection '{collectionId}'");
+            //Debug.Log($"Brewster: Collection dir for '{collectionId}': {collectionDir}");
+            
+            JObject collectionDir = collectionProp.Value as JObject;
+            if (collectionDir == null)
+            {
+                Debug.LogError($"Brewster: Collection dir '{collectionId}' is null");
+                continue;
+            }
+            
+            // Get the nested collection metadata object
+            JObject collectionJson = collectionDir["collection"] as JObject;
+            if (collectionJson == null)
+            {
+                Debug.LogError($"Brewster: Collection '{collectionId}' has no nested 'collection' json object");
+                continue;
+            }
+
+            // Log before import
+            //Debug.Log($"Brewster: Importing collection dir '{collectionId}' with {collectionDir.Count} properties");
+
+            Collection collection = ScriptableObject.CreateInstance<Collection>();
+            
+            // Import from the nested collection object
+            collection.ImportFromJToken(collectionJson);
+            
+            // Collection should already have ID from ImportFromJToken,
+            // but if not, use the collection ID from the JSON key
+            if (string.IsNullOrEmpty(collection.Id))
+            {
+                Debug.Log($"Brewster: Setting explicit ID for collection '{collectionId}' as it was not found in metadata");
+                collection.Id = collectionId;
+            }
+
+            _collections[collectionId] = collection;
+            Debug.Log($"Brewster: Successfully added collection '{collectionId}' with ID '{collection.Id}'");
+
+            // Check for itemsIndex in the collection
+            JArray itemsIndex = collectionDir["itemsIndex"] as JArray;
+            if (itemsIndex == null)
+            {
+                Debug.LogWarning($"Brewster: Collection dir '{collectionId}' has no itemsIndex property");
+                continue;
+            }
+
+            //Debug.Log($"Brewster: Collection dir '{collectionId}' has itemsIndex property of type {itemsIndex.Type}");
+            
+            var itemIds = itemsIndex.Values<string>().ToList();
+            //Debug.Log($"Brewster: Found {itemIds.Count} item IDs in collection '{collectionId}' itemsIndex: {string.Join(", ", itemIds)}");
+
+            // Set the item IDs on the collection
+            collection.ItemIds = itemIds;
+            
+            JObject itemsDir = collectionDir["items"] as JObject;
+            if (itemsDir == null)
+            {
+                Debug.LogError($"Brewster: Items dir of '{collectionId}' is missing");
+                continue;
+            }
+
+            //Debug.Log($"Brewster: Processing items dir for collection '{collectionId}' with {itemsDir.Count} properties");
+
+            foreach (var itemProp in itemsDir.Properties())
+            {
+                string itemId = itemProp.Name;
+                Debug.Log($"Brewster: Processing item '{itemId}'");
+
+                if (_items.ContainsKey(itemId))
+                {
+                    Debug.LogError($"Brewster: Item '{itemId}' from collection '{collectionId}' already exists, ignoring");
+                    continue;
+                }
+
+                JObject itemDir = itemProp.Value as JObject;
+                if (itemDir == null)
+                {
+                    Debug.LogError($"Brewster: Item '{itemId}' from collection '{collectionId}' has no nested 'item' json object");
+                    continue;
+                }
+
+                // Log before import
+                //Debug.Log($"Brewster: Importing item '{itemId}' with {itemDir.Count} properties");
+                
+                // Check if the item has nested data
+                JObject itemJson = itemDir["item"] as JObject;
+                if (itemJson == null)
+                {
+                    Debug.LogError($"Brewster: Item '{itemId}' has no nested 'item' json object");
+                    continue;
+                }
+
+                //Debug.Log($"Brewster: Importing item '{itemId}' from itemJson {itemJson}");
+
+                Item item = ScriptableObject.CreateInstance<Item>();
+                
+                item.ImportFromJToken(itemJson);
+
+                // If no ID from JSON, use the key as ID
+                if (string.IsNullOrEmpty(item.Id))
+                {
+                    //Debug.Log($"Brewster: Setting explicit ID for item '{itemId}' as it was not found in metadata");
+                    item.Id = itemId;
+                }
+
+                _items[itemId] = item;
+                Debug.Log($"Brewster: Successfully added item '{itemId}' with ID '{item.Id}' title {item.Title}"); // description {item.Description} subject {item.Subject} creator {item.Creator} collection {item.Collection} mediatype {item.Mediatype} coverImage {item.CoverImage} coverWidth {item.CoverWidth} coverHeight {item.CoverHeight}");
+                
+            }
+    
+        }
+        
+        // Notify that content is loaded
+        Debug.Log($"Brewster: Content loading complete. Loaded {_collections.Count} collections and {_items.Count} items from provided JSON.");
+
+        // Fire the event to notify all listeners
+        OnAllContentLoaded?.Invoke();
     }
 
     /// <summary>

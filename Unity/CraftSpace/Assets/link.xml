@@ -1,7 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
 <linker>
     <!-- Preserve WebGL input functionality for production builds -->
     <assembly fullname="UnityEngine.WebGLModule" preserve="all"/>
     
     <!-- Add other preservation rules below if needed -->
     <!-- e.g., <assembly fullname="YourAssemblyName" preserve="all"/> -->
+    
+    <!-- Preserve the entire UnitySchemaConverter class -->
+    <assembly fullname="Assembly-CSharp">
+        <type fullname="UnitySchemaConverter" preserve="all"/>
+        
+        <!-- Preserve all converter types -->
+        <type fullname="StringOrNullToStringConverter" preserve="all"/>
+        <type fullname="StringArrayOrStringOrNullToStringConverter" preserve="all"/>
+        <type fullname="StringArrayOrStringOrNullToStringArrayConverter" preserve="all"/>
+        <type fullname="SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter" preserve="all"/>
+        <type fullname="StringOrNumberOrNullToNumberConverter" preserve="all"/>
+        
+        <!-- Preserve the base SchemaGeneratedObject -->
+        <type fullname="SchemaGeneratedObject" preserve="all"/>
+        
+        <!-- Preserve generated schema classes -->
+        <type fullname="ItemSchema" preserve="all"/>
+        <type fullname="CollectionSchema" preserve="all"/>
+    </assembly>
+    
+    <!-- Preserve Newtonsoft.Json types needed for converters -->
+    <assembly fullname="Newtonsoft.Json">
+        <type fullname="Newtonsoft.Json.JsonConverter" preserve="all"/>
+        <type fullname="Newtonsoft.Json.JsonReader" preserve="all"/>
+        <type fullname="Newtonsoft.Json.JsonWriter" preserve="all"/>
+    </assembly>
 </linker> 

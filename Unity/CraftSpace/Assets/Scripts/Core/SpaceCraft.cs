@@ -25,7 +25,6 @@ public class SpaceCraft : BridgeObject
     // Application state - exposed as public properties for Bridge JSON conversion
     [Header("Content State")]
     public JObject collections;
-    private bool _collectionsChanged = false;
     
     public List<string> selectedItemIds = new List<string>();
     public List<string> highlightedItemIds = new List<string>(); // Can contain duplicates for multiple highlights
@@ -42,6 +41,8 @@ public class SpaceCraft : BridgeObject
 
     private void Awake()
     {
+        Debug.Log("SpaceCraft Awake");
+
         // Singleton pattern - only allow one instance
         if (spaceCraft != null && spaceCraft != this)
         {
@@ -73,82 +74,27 @@ public class SpaceCraft : BridgeObject
     private void FixedUpdate()
     {
         // Check if collections have been updated
-        if ((_collectionsChanged || collections != null) && collections != null)
+        if (collections == null)
         {
-            // Log collections as an object that can be inspected in browser console
-            Debug.unityLogger.logEnabled = true;
-            Debug.Log("SpaceCraft: Loading new collections data");
-            //Debug.Log($"Collections JSON: {collections}");
-            
-            if (collections["collections"] != null)
-            {
-                Debug.Log("SpaceCraft: Collections tree structure found");
-                
-                var collectionsObj = collections["collections"] as JObject;
-                if (collectionsObj != null)
-                {
-                    Debug.Log($"Collections count: {collectionsObj.Count}");
-                    
-                    // Show the structure of the collections tree
-                    foreach (var prop in collectionsObj.Properties())
-                    {
-                        string collectionKey = prop.Name;
-                        Debug.Log($"SpaceCraft: Found collection key: {collectionKey}");
-                        
-                        // Check for items within this collection
-                        JObject collectionObj = prop.Value as JObject;
-                        if (collectionObj != null && collectionObj["items"] != null)
-                        {
-                            var itemsObject = collectionObj["items"];
-                            int itemCount = 0;
-                            
-                            if (itemsObject is JObject itemsJObj)
-                            {
-                                itemCount = itemsJObj.Count;
-                            }
-                            else if (itemsObject is JArray itemsJArray)
-                            {
-                                itemCount = itemsJArray.Count;
-                            }
-                            
-                            Debug.Log($"SpaceCraft: Collection {collectionKey} has items node with {itemCount} entries");
-                        }
-                        else
-                        {
-                            Debug.Log($"SpaceCraft: Collection {collectionKey} has no items node or items node is empty");
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Debug.LogWarning("SpaceCraft: collections property exists but has no 'collections' key");
-            }
-            
-            // Clear any existing views before loading new data
-            if (collectionsView != null)
-            {
-                collectionsView.ClearAllViews();
-            }
-            
-            // Load the collections data into Brewster
-            if (brewster != null)
-            {
-                brewster.LoadContentFromJson(collections);
-                
-                // Display all collections after loading is complete
-                if (collectionsView != null)
-                {
-                    collectionsView.DisplayAllCollections();
-                }
-            }
-            
-            // Reset the collections input port to prevent reloading
-            collections = null;
-            _collectionsChanged = false;
-            
-            SendEvent("CollectionsLoaded");
+            return;
         }
+
+        Debug.Log("SpaceCraft FixedUpdate got new collections");
+
+        // Reset the collections input port to prevent reloading
+        var newCollections = collections;
+        collections = null;
+        
+        // Clear any existing views before loading new data
+        collectionsView?.ClearAllViews();
+        
+        // Load the collections data into Brewster
+        brewster?.LoadContentFromJson(newCollections);
+            
+        // Display all collections after loading is complete
+        collectionsView?.DisplayAllCollections();
+        
+        SendEvent("CollectionsLoaded");
     }
     
     private void Update()
