@@ -1,6 +1,6 @@
-# CraftSpace Scripts
+# SpaceCraft Scripts
 
-This document provides an overview of our approach to command-line scripts in the CraftSpace project, including conventions, architecture decisions, and usage patterns.
+This document provides an overview of our approach to command-line scripts in the SpaceCraft project, including conventions, architecture decisions, and usage patterns.
 
 ## Script Philosophy
 
@@ -132,15 +132,15 @@ export const PATHS = {
   CONTENT_DIR,
   
   // Unity paths
-  CRAFTSPACE_DIR,
-  CRAFTSPACE_SCHEMAS_DIR,
-  CRAFTSPACE_RESOURCES_DIR,
-  CRAFTSPACE_SCRIPTS_DIR,
-  CRAFTSPACE_EDITOR_DIR,
-  CRAFTSPACE_CONTENT_DIR,
-  CRAFTSPACE_COLLECTIONS_DIR,
-  CRAFTSPACE_CONTENT_SCHEMAS_DIR,
-  CRAFTSPACE_GENERATED_SCHEMAS_DIR,
+  SPACECRAFT_DIR,
+  SPACECRAFT_SCHEMAS_DIR,
+  SPACECRAFT_RESOURCES_DIR,
+  SPACECRAFT_SCRIPTS_DIR,
+  SPACECRAFT_EDITOR_DIR,
+  SPACECRAFT_CONTENT_DIR,
+  SPACECRAFT_COLLECTIONS_DIR,
+  SPACECRAFT_CONTENT_SCHEMAS_DIR,
+  SPACECRAFT_GENERATED_SCHEMAS_DIR,
   BUILD_DIR,
   STATIC_DIR,
   THUMBNAILS_DIR,
@@ -153,7 +153,7 @@ Scripts import these constants to ensure path consistency:
 // In any script
 import { PATHS } from '../src/lib/constants/index.ts';
 
-const schemasDir = PATHS.CRAFTSPACE_SCHEMAS_DIR;
+const schemasDir = PATHS.SPACECRAFT_SCHEMAS_DIR;
 ```
 
 ## Running Scripts
@@ -293,7 +293,7 @@ npm run schemas:debug
 # Export with debugging enabled
 DEBUG=true npm run schemas:export
 
-# In Unity, run the Schema Import Test from the CraftSpace menu
+# In Unity, run the Schema Import Test from the SpaceCraft menu
 ```
 
 ### Common Schema Issues
@@ -361,20 +361,20 @@ Key Path Constants
 | `UNITY_DIR` | Directory containing Unity projects | `Unity` |
 | `CONTENT_DIR` | Directory containing shared content | `Content` |
 | `BACKSPACE_DIR` | BackSpace project directory | `SvelteKit/BackSpace` |
-| `CRAFTSPACE_DIR` | CraftSpace Unity project directory | `Unity/CraftSpace` |
+| `SPACECRAFT_DIR` | SpaceCraft Unity project directory | `Unity/SpaceCraft` |
 | `COLLECTIONS_DIR` | Collections data in Content directory | `Content/collections` |
 | `SCHEMAS_DIR` | Shared schemas in Content directory | `Content/schemas` |
 | `CACHE_DIR` | Cache storage in Content directory | `Content/cache` |
 | `EXPORTS_DIR` | Exports output in Content directory | `Content/exports` |
-| `CRAFTSPACE_ASSETS_DIR` | Unity Assets directory | `Unity/CraftSpace/Assets` |
-| `CRAFTSPACE_SCHEMAS_DIR` | Unity schema import directory | `Unity/CraftSpace/Assets/Schemas` |
-| `CRAFTSPACE_SCRIPTS_DIR` | Unity scripts directory | `Unity/CraftSpace/Assets/Scripts` |
-| `CRAFTSPACE_RESOURCES_DIR` | Unity resources directory | `Unity/CraftSpace/Assets/Resources` |
-| `CRAFTSPACE_EDITOR_DIR` | Unity editor scripts directory | `Unity/CraftSpace/Assets/Editor` |
-| `CRAFTSPACE_CONTENT_DIR` | Unity mirror of Content | `Unity/CraftSpace/Assets/Resources/Content` |
-| `CRAFTSPACE_COLLECTIONS_DIR` | Unity mirror of collections | `Unity/CraftSpace/Assets/Resources/Content/collections` |
-| `CRAFTSPACE_CONTENT_SCHEMAS_DIR` | Unity mirror of schemas | `Unity/CraftSpace/Assets/Resources/Content/schemas` |
-| `CRAFTSPACE_GENERATED_SCHEMAS_DIR` | Generated C# schema classes | `Unity/CraftSpace/Assets/Scripts/Models/Generated` |
-| `BUILD_DIR` | Unity build output directory | `Unity/CraftSpace/Build` |
+| `SPACECRAFT_ASSETS_DIR` | Unity Assets directory | `Unity/SpaceCraft/Assets` |
+| `SPACECRAFT_SCHEMAS_DIR` | Unity schema import directory | `Unity/SpaceCraft/Assets/Schemas` |
+| `SPACECRAFT_SCRIPTS_DIR` | Unity scripts directory | `Unity/SpaceCraft/Assets/Scripts` |
+| `SPACECRAFT_RESOURCES_DIR` | Unity resources directory | `Unity/SpaceCraft/Assets/Resources` |
+| `SPACECRAFT_EDITOR_DIR` | Unity editor scripts directory | `Unity/SpaceCraft/Assets/Editor` |
+| `SPACECRAFT_CONTENT_DIR` | Unity mirror of Content | `Unity/SpaceCraft/Assets/Resources/Content` |
+| `SPACECRAFT_COLLECTIONS_DIR` | Unity mirror of collections | `Unity/SpaceCraft/Assets/Resources/Content/collections` |
+| `SPACECRAFT_CONTENT_SCHEMAS_DIR` | Unity mirror of schemas | `Unity/SpaceCraft/Assets/Resources/Content/schemas` |
+| `SPACECRAFT_GENERATED_SCHEMAS_DIR` | Generated C# schema classes | `Unity/SpaceCraft/Assets/Scripts/Models/Generated` |
+| `BUILD_DIR` | Unity build output directory | `Unity/SpaceCraft/Build` |
 | `STATIC_DIR` | SvelteKit static assets directory | `SvelteKit/BackSpace/static` |
 | `THUMBNAILS_DIR` | Collection thumbnails directory | `SvelteKit/BackSpace/static/thumbnails` |

@@ -16,7 +16,7 @@
  * 
  * Environment Variables:
  *   UNITY_PRECONFIGURED - Set to 'true' if running on a preconfigured runner
- *   UNITY_APP - Path to the Unity project (default: '../../Unity/CraftSpace')
+ *   UNITY_APP - Path to the Unity project (default: '../../Unity/SpaceCraft')
  *   UNITY_VERSION - Version of Unity to use
  *   UNITY_PATH - Direct path to Unity executable
  */
@@ -95,7 +95,7 @@ if (!command) {
     switch (command) {
       case 'regenerate-schemas':
       case 'generate-schemas':
-        await runUnityCommand('-batchmode -projectPath . -ignoreCompilerErrors -executeMethod CraftSpace.Editor.SchemaGenerator.ImportAllSchemasMenuItem -quit -logFile -', unityEnv);
+        await runUnityCommand('-batchmode -projectPath . -ignoreCompilerErrors -executeMethod SpaceCraft.Editor.SchemaGenerator.ImportAllSchemasMenuItem -quit -logFile -', unityEnv);
         break;
       case 'build-dev':
         await runUnityCommand('-batchmode -projectPath . -executeMethod Build.BuildDev -quit -logFile -', unityEnv);
@@ -430,7 +430,7 @@ async function listUnityVersions() {
 async function serveWebGLBuild() {
     console.log(chalk.blue('Serving latest WebGL build for manual testing...'));
     // Correctly resolve the path from the script directory up 3 levels to project root, then down
-    const buildDir = path.resolve(__dirname, '../../../Unity/CraftSpace/Builds/SpaceCraft');
+    const buildDir = path.resolve(__dirname, '../../../Unity/SpaceCraft/Builds/SpaceCraft');
     
     if (!fs.existsSync(buildDir)) {
         console.error(chalk.red(`Build directory not found: ${buildDir}`));
@@ -694,7 +694,7 @@ ${chalk.italic('Options:')}
   --verbose             - Enable verbose logging (displays Unity environment discovery details)
 
 ${chalk.italic('Environment Variables:')}
-  UNITY_APP             - Path to the Unity project (default: ../../Unity/CraftSpace)
+  UNITY_APP             - Path to the Unity project (default: ../../Unity/SpaceCraft)
   UNITY_VERSION         - Version of Unity to use
   UNITY_PATH            - Direct path to Unity executable
   `);

@@ -32,7 +32,7 @@ BackSpace/
 Content/
 └── schemas/                # Central JSON schema repository 
 
-Unity/CraftSpace/Assets/
+Unity/SpaceCraft/Assets/
 ├── StreamingAssets/
 │   └── Content/
 │       └── schemas/        # Unity copy of JSON schemas

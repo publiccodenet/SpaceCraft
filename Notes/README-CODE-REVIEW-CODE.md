@@ -87,7 +87,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Role**: One-time setup script to ensure the content system directories exist.
     *   **Importance**: Medium (Essential for initial setup).
 *   **`copy-items-to-unity.js`**:
-    *   **Purpose**: Standalone Node.js script to copy specified item directories from `Content/collections/[collectionId]/items/` to `Unity/CraftSpace/Assets/Resources/Content/collections/[collectionId]/items/`. Also downloads cover images from `archive.org` and generates an `items-index.json` in the Unity target directory.
+    *   **Purpose**: Standalone Node.js script to copy specified item directories from `Content/collections/[collectionId]/items/` to `Unity/SpaceCraft/Assets/Resources/Content/collections/[collectionId]/items/`. Also downloads cover images from `archive.org` and generates an `items-index.json` in the Unity target directory.
     *   **Role**: Critical step in preparing content for the Unity client, making it accessible via the `Resources` folder and providing the necessary index for runtime loading.
     *   **Importance**: High (Core content deployment bridge).
 *   **`export-manage.js`**:
@@ -135,7 +135,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Role**: Convenience utility for developers to easily set up their shell environment for running Unity-related commands manually.
     *   **Importance**: Medium (Developer convenience).
 *   **`unity-install.js`**:
-    *   **Purpose**: CLI script using `commander` to copy a finished Unity WebGL build from a specified source directory into the SvelteKit `static/craftspace` directory.
+    *   **Purpose**: CLI script using `commander` to copy a finished Unity WebGL build from a specified source directory into the SvelteKit `static/spacecraft` directory.
     *   **Role**: Handles the deployment step of placing the Unity build where the SvelteKit app can serve it.
     *   **Importance**: High (Deployment process).
 *   **`utils.js`**:
@@ -162,7 +162,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
 
 *   **Overview**: Contains the Svelte components (`.svelte`) defining the user interface pages and the TypeScript files (`+server.ts`) defining the backend API endpoints. Organizes UI into public (`/`), admin (`/admin`), and potentially other sections.
 *   **UI (`.svelte` files)**:
-    *   `+page.svelte`: Root page, renders the main CraftSpace visualization (`$lib/components/CraftSpace.svelte` - currently missing). High importance.
+    *   `+page.svelte`: Root page, renders the main SpaceCraft visualization (`$lib/components/SpaceCraft.svelte` - currently missing). High importance.
     *   `+layout.svelte`: Root layout, handles theme, loading state, conditional header/footer. High importance.
     *   `/admin/`: Contains pages and layouts for the administration interface.
         *   `+page.svelte`: Admin dashboard. Medium importance.
@@ -175,7 +175,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   `/api/collections/[collectionId]/items/+server.ts`: `GET`, `POST` endpoints to list items (using `items-index.json` or directory scan) and create new `item.json` files. High importance.
     *   `/api/collections/[collectionId]/items/[itemId]/+server.ts`: `GET`, `PUT`, `DELETE` endpoints for individual item CRUD operations on `item.json`. High importance.
     *   `/api/openlibrary/+server.ts`: `GET` endpoint to query the Internet Archive OpenLibrary collection using `internetarchive-sdk-js`. Medium importance.
-*   **Issues Noted**: Missing `CraftSpace.svelte` component, missing type annotations in several UI components, unimplemented save handlers and utility functions, potential redundancy in collection creation UI, API endpoints need fixes for `PATHS.COLLECTIONS_DIR` usage.
+*   **Issues Noted**: Missing `SpaceCraft.svelte` component, missing type annotations in several UI components, unimplemented save handlers and utility functions, potential redundancy in collection creation UI, API endpoints need fixes for `PATHS.COLLECTIONS_DIR` usage.
 *   **Importance**: High (Core user interface and backend API).
 
 ### Area 6: `SvelteKit/BackSpace/` Config Files & Root
@@ -202,12 +202,12 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   `index.ts`: Backend initialization logic (`initializeBackSpace`) including content manager setup and graceful shutdown handling. High importance (Backend Application Lifecycle).
 *   **Importance**: High (Core application setup and entry points).
 
-### Area 8: `Unity/CraftSpace/Assets/Editor/` (Unity Editor Scripts)
+### Area 8: `Unity/SpaceCraft/Assets/Editor/` (Unity Editor Scripts)
 
 *   **Overview**: Contains C# scripts that run within the Unity Editor environment, used for build automation, custom editor windows/inspectors, and asset processing.
-*   **`CraftSpace.Editor.asmdef`**:
+*   **`SpaceCraft.Editor.asmdef`**:
     *   **Purpose**: Unity Assembly Definition file for the Editor scripts.
-    *   **Role**: Defines a separate compilation unit for the editor code. Prevents editor code (using `UnityEditor`) from being included in player builds. References `CraftSpace` assembly.
+    *   **Role**: Defines a separate compilation unit for the editor code. Prevents editor code (using `UnityEditor`) from being included in player builds. References `SpaceCraft` assembly.
     *   **Importance**: Medium (Standard Unity code organization).
 *   **`Build.cs`**:
     *   **Purpose**: Provides static methods callable from CLI/CI to perform Unity builds (WebGL, Mac, etc.) using `BuildPipeline.BuildPlayer`.
@@ -219,7 +219,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Role**: Translates platform-agnostic JSON schema into usable Unity C# code.
     *   **Importance**: High (Core Schema Pipeline).
 
-### Area 9: `Unity/CraftSpace/Assets/Plugins/` (Native Plugins)
+### Area 9: `Unity/SpaceCraft/Assets/Plugins/` (Native Plugins)
 
 *   **Overview**: Contains native code plugins or JavaScript libraries for WebGL interaction.
 *   **`WebGL/bridge.jslib`**:
@@ -228,7 +228,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Role**: Low-level communication channel enabling JS-first architecture.
     *   **Importance**: High (Core Unity-JS Bridge for WebGL).
 
-### Area 10: `Unity/CraftSpace/Assets/Scripts/` (Core Unity C# Code)
+### Area 10: `Unity/SpaceCraft/Assets/Scripts/` (Core Unity C# Code)
 
 *   **Overview**: Contains the main C# codebase for the Unity application, organized into subdirectories based on architectural layers (Bridge, Core, Schemas, Views).
 *   **`Bridge/`**:
@@ -262,7 +262,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
         *   `ItemLabel.cs`, `ItemInfoPanel.cs`: UI components specifically for displaying text information (title, metadata) related to an item, likely children of an `ItemView` prefab. Medium importance.
     *   **Importance**: High (Visual representation and user interaction layer).
 
-### Area 11: `Unity/CraftSpace/Assets/StreamingAssets/Content/schemas/` (Runtime JSON Schemas)
+### Area 11: `Unity/SpaceCraft/Assets/StreamingAssets/Content/schemas/` (Runtime JSON Schemas)
 
 *   **Overview**: Contains the source-of-truth JSON Schema files (`Collection.json`, `Item.json`) that define the structure of the core data entities used throughout the project. These files are placed in `StreamingAssets` so they can be loaded at runtime by Unity if needed (e.g., for validation or dynamic processing), but their primary role is as the input for code generation processes (`SchemaGenerator.cs` in Editor, `schema-export.js` in BackSpace).
 *   **Key Files**:
@@ -274,11 +274,11 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
 
 *   **Overview**: Contains standalone shell scripts used for automation, environment setup, and build processes, primarily related to Unity.
 *   **Key Files**:
-    *   **`Unity/CraftSpace/run-unity.sh`**:
+    *   **`Unity/SpaceCraft/run-unity.sh`**:
         *   **Purpose**: Executes the Unity Editor in batch mode to run Editor methods. Handles CLI args, logging, licensing, finds Unity executable (dynamically or via env vars).
         *   **Role**: Essential wrapper for headless Unity operations (CI/CD, automation).
         *   **Importance**: High (Core Build/Automation).
-    *   **`Unity/CraftSpace/ci-build.sh`**:
+    *   **`Unity/SpaceCraft/ci-build.sh`**:
         *   **Purpose**: Higher-level CI script. Likely calls `run-unity.sh` for specific builds (WebGL, Mac) and performs pre/post-build steps.
         *   **Role**: Orchestrates build sequences for CI.
         *   **Importance**: Medium (CI/CD Helper).

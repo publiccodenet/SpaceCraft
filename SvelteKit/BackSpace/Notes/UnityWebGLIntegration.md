@@ -21,20 +21,20 @@ Make sure the following files exist:
 - WebGL.wasm.js
 - WebGL.data
 
-## Using the CraftSpace Component
+## Using the SpaceCraft Component
 
-The CraftSpace component can be used in two main ways:
+The SpaceCraft component can be used in two main ways:
 
 ### Full Page Mode
 
 ```svelte
-<CraftSpace fullPage={true} />
+<SpaceCraft fullPage={true} />
 ```
 
 ### Embedded Mode
 
 ```svelte
-<CraftSpace 
+<SpaceCraft 
   width="800px"
   height="600px"
   fullPage={false}
@@ -58,8 +58,8 @@ The component exposes a `sendMessage` method for communicating with the Unity in
 
 ```javascript
 // Reference the component
-let craftSpaceComponent;
+let spaceCraftComponent;
 
 // Send a message to Unity
-craftSpaceComponent.sendMessage('GameObjectName', 'MethodName', 'Parameter');
+spaceCraftComponent.sendMessage('GameObjectName', 'MethodName', 'Parameter');
 ``` 

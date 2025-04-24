@@ -51,7 +51,7 @@ export async function discoverUnityEnvironment(options = { verbose: false }) {
   const PRECONFIGURED = process.env.UNITY_PRECONFIGURED === 'true';
 
   // Default paths - can be overridden by environment variables
-  const DEFAULT_UNITY_APP_PATH = '../../Unity/CraftSpace';
+  const DEFAULT_UNITY_APP_PATH = '../../Unity/SpaceCraft';
 
   // Get Unity project path (use environment variable, then constants, then default)
   const unityAppBasePath = process.env.UNITY_APP || (PATHS?.UNITY_DIR || DEFAULT_UNITY_APP_PATH);

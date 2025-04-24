@@ -51,7 +51,7 @@ Content/
 ├── Configs/
 │   └── Exporters/
 │       └── Unity/
-│           └── CraftSpace/
+│           └── SpaceCraft/
 │               ├── collections-filter.json  # Additional filtering rules
 │               └── index-deep.json          # Item whitelist (SINGLE SOURCE OF TRUTH)
 │
@@ -63,7 +63,7 @@ Content/
 │               ├── item.json     # Raw metadata with original structure
 │               └── cover.jpg     # Downloaded cover image with measured dimensions
 
-Unity/CraftSpace/Assets/StreamingAssets/Content/
+Unity/SpaceCraft/Assets/StreamingAssets/Content/
 ├── collections-index.json     # Simple list of collection IDs
 ├── index-deep.json            # Consolidated metadata for all items
 ├── collections/
@@ -120,7 +120,7 @@ Content/                  # Single Source of Truth (SSOT)
 │   ├── Item.json         # JSON Schema for items
 │   └── Collection.json   # JSON Schema for collections
 
-Unity/CraftSpace/Assets/
+Unity/SpaceCraft/Assets/
 ├── StreamingAssets/
 │   └── Content/
 │       └── schemas/       # Unity JSON Schema copies

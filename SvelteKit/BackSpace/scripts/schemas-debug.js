@@ -81,7 +81,7 @@ if (schemaFiles.length === 0) {
 // Check other schema locations
 console.log('\nChecking other schema locations:');
 const contentSchemasDir = PATHS.CONTENT_SCHEMAS_DIR;
-const unitySchemasDir = PATHS.CRAFTSPACE_CONTENT_SCHEMAS_DIR;
+const unitySchemasDir = PATHS.SPACECRAFT_CONTENT_SCHEMAS_DIR;
 
 if (!fs.existsSync(contentSchemasDir)) {
   console.log(`${EMOJI.WARNING} Content schemas directory does not exist: ${contentSchemasDir}`);

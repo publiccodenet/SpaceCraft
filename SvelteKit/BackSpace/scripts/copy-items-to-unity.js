@@ -123,7 +123,7 @@ console.log(`Processing collection ${collectionId} with ${itemIds.length} items`
 // Define paths with correct structure as specified
 const projectRoot = path.resolve(__dirname, '../../..');
 const contentBasePath = path.join(projectRoot, 'Content/collections');
-const unityBasePath = path.join(projectRoot, 'Unity/CraftSpace/Assets/Resources/Content/collections');
+const unityBasePath = path.join(projectRoot, 'Unity/SpaceCraft/Assets/Resources/Content/collections');
 
 console.log(`Content base path: ${contentBasePath}`);
 console.log(`Unity base path: ${unityBasePath}`);

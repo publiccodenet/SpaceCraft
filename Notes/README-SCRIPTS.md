@@ -1,10 +1,10 @@
-# CraftSpace Scripts
+# SpaceCraft Scripts
 
-This document provides an overview of the various scripts used throughout the CraftSpace project, with a focus on build tools, data processing, and automation.
+This document provides an overview of the various scripts used throughout the SpaceCraft project, with a focus on build tools, data processing, and automation.
 
 ## Overview
 
-CraftSpace uses a collection of scripts to manage:
+SpaceCraft uses a collection of scripts to manage:
 
 1. **Content Processing** - Downloading and transforming Internet Archive content
 2. **Build Automation** - Compiling and packaging application components

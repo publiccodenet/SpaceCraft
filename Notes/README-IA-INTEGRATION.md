@@ -1,6 +1,6 @@
 # Internet Archive Integration
 
-This directory contains scripts for integrating with the Internet Archive (IA) to download, process, and manage collections for CraftSpace.
+This directory contains scripts for integrating with the Internet Archive (IA) to download, process, and manage collections for SpaceCraft.
 
 ## Architecture
 
@@ -13,7 +13,7 @@ The Internet Archive integration consists of several core components:
 
 ## Multi-Tier Collection Architecture
 
-Collections in CraftSpace follow a multi-tier architecture:
+Collections in SpaceCraft follow a multi-tier architecture:
 
 ### 1. Raw Collections Cache
 
@@ -66,7 +66,7 @@ Deployment targets:
 SvelteKit/BackSpace/static/data/collections/
   └── {collection-prefix}/      - Filtered subset for SvelteKit
   
-Unity/CraftSpace/Assets/Resources/Collections/
+Unity/SpaceCraft/Assets/Resources/Collections/
   └── {collection-prefix}/      - Filtered subset for Unity
   
 CDN/collections/
@@ -389,7 +389,7 @@ For performance, the system maintains a `collections-cache.json` file containing
 When exporting collections to runtime systems like Unity or web browsers (which can't enumerate directories), the system dynamically generates `index.json` files:
 
 ```
-Unity/CraftSpace/Assets/Resources/Collections/
+Unity/SpaceCraft/Assets/Resources/Collections/
   └── {collection-prefix}/
       ├── collection.json       - Collection metadata 
       ├── index.json            - Generated array of item IDs for runtime use

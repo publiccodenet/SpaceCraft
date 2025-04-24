@@ -10,11 +10,11 @@ The Unity automation scripts support a powerful live coding workflow for WebGL d
 
 ```
 Source Directories:
-- /CraftSpace/Unity/CraftSpace/Assets/WebGLTemplates/SpaceCraft (HTML/JS template)
-- /CraftSpace/Unity/CraftSpace/Assets/StreamingAssets/Bridge (Bridge integration files)
+- /SpaceCraft/Unity/SpaceCraft/Assets/WebGLTemplates/SpaceCraft (HTML/JS template)
+- /SpaceCraft/Unity/SpaceCraft/Assets/StreamingAssets/Bridge (Bridge integration files)
 
 Build Directory:
-- /CraftSpace/Unity/CraftSpace/Builds/SpaceCraft
+- /SpaceCraft/Unity/SpaceCraft/Builds/SpaceCraft
 ```
 
 ### Workflow Commands

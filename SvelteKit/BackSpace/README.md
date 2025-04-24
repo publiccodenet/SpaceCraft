@@ -1,6 +1,6 @@
-# BackSpace - SvelteKit Application for CraftSpace
+# BackSpace - SvelteKit Application for SpaceCraft
 
-This directory contains the SvelteKit web application component of the CraftSpace project.
+This directory contains the SvelteKit web application component of the SpaceCraft project.
 
 ## Overview
 

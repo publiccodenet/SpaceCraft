@@ -1,4 +1,4 @@
-name: Build and Deploy CraftSpace
+name: Build and Deploy SpaceCraft
 
 on:
   push:
@@ -21,7 +21,7 @@ on:
 
 jobs:
   build:
-    name: Build CraftSpace
+    name: Build SpaceCraft
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.enable == 'true' }}
     
@@ -59,7 +59,7 @@ jobs:
           retention-days: 7
 
   deploy:
-    name: Deploy CraftSpace
+    name: Deploy SpaceCraft
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && github.event.inputs.enable == 'true'
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
       - name: Deploy to Digital Ocean
         uses: digitalocean/app_action@v1.1.5
         with:
-          app_name: craftspace-web
+          app_name: SpaceCraft-web
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           images: '[
             {

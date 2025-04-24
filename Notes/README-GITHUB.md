@@ -1,10 +1,10 @@
-# CraftSpace GitHub Integration
+# SpaceCraft GitHub Integration
 
-This document describes the GitHub-based continuous integration, continuous deployment (CI/CD), and development infrastructure for the CraftSpace project.
+This document describes the GitHub-based continuous integration, continuous deployment (CI/CD), and development infrastructure for the SpaceCraft project.
 
 ## Overview
 
-CraftSpace leverages GitHub Actions for automated building, testing, and deployment of its multi-component architecture. This infrastructure enables developers to work efficiently on different parts of the system while maintaining integration across components. The CI/CD system handles everything from Unity WebGL compilation to collection processing and deployment to various environments.
+SpaceCraft leverages GitHub Actions for automated building, testing, and deployment of its multi-component architecture. This infrastructure enables developers to work efficiently on different parts of the system while maintaining integration across components. The CI/CD system handles everything from Unity WebGL compilation to collection processing and deployment to various environments.
 
 ## .github Directory Structure
 
@@ -30,7 +30,7 @@ CraftSpace leverages GitHub Actions for automated building, testing, and deploym
 
 ### Development Philosophy
 
-The CraftSpace project is built on a philosophy of rapid iteration through specialized pipelines. Rather than treating the entire application as a monolith that must be rebuilt for every change, we've decomposed the system into independently deployable components that can be developed and iterated at different speeds.
+The SpaceCraft project is built on a philosophy of rapid iteration through specialized pipelines. Rather than treating the entire application as a monolith that must be rebuilt for every change, we've decomposed the system into independently deployable components that can be developed and iterated at different speeds.
 
 ### Pipeline Overview
 
@@ -351,8 +351,8 @@ The Docker setup is configured in the `Dockerfile`. The GitHub workflow builds a
 ```bash
 # Manual build and push
 cd SvelteKit/BackSpace
-docker build -t do-registry.digitalocean.com/craftspace/backend:latest .
-docker push do-registry.digitalocean.com/craftspace/backend:latest
+docker build -t do-registry.digitalocean.com/spacecraft/backend:latest .
+docker push do-registry.digitalocean.com/spacecraft/backend:latest
 ```
 
 ## Deployment
@@ -412,7 +412,7 @@ doctl apps create --spec .do/app.yaml
 
 ### Workflow Integration
 
-The integration between Unity and SvelteKit is handled through the `CraftSpace.svelte` component, which loads the Unity WebGL build at runtime.
+The integration between Unity and SvelteKit is handled through the `SpaceCraft.svelte` component, which loads the Unity WebGL build at runtime.
 
 ## Internet Archive Integration
 
@@ -430,7 +430,7 @@ npm run ia:process -- --collection=scifi
 
 ### Unity Build Issues
 
-- Check the Unity build log for errors: `Unity/CraftSpace/unity_build.log`
+- Check the Unity build log for errors: `Unity/SpaceCraft/unity_build.log`
 - Ensure the build method name matches in the workflow file and Unity script
 - Verify Unity version compatibility
 
