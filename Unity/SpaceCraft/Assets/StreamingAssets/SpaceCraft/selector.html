@@ -1,10 +1,9 @@
- 
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Spacecraft Navigator</title>
+    <title>Spacecraft Selector</title>
     <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,14 +32,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   </head>
   <body>
-    <div id="label" class="unselectable" style="margin:20px; opacity:.25; transition: opacity .8s;"><h4>Navigator</h4>
-    drag to move, mousewheel or pinch/zoom to scale.</div>
+    <div id="label" class="unselectable" style="margin:20px; opacity:.25; transition: opacity .8s;"><h4>Selector</h4>
+    drag to move selection, mousewheel or pinch/zoom to scale.</div>
     <div id="target" style="height: 100vh"></div>
     <script>
         // Create a single supabase client for interacting with your database
         const client = supabase.createClient('https://gwodhwyvuftyrvbymmvc.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc')
 
-        const channel = client.channel("navigators")
+        const channel = client.channel("selectors")
 
         var isMobile = navigator.userAgent.toLowerCase().match(/mobile/i),
             isTablet = navigator.userAgent.toLowerCase().match(/tablet/i),
@@ -122,7 +121,10 @@
             if (prevX === 0) relX = 0;
             let relY = ev.clientY - prevY;
             if (prevY === 0) relY = 0;
-            sendEvent('pos', { x: relX, y: relY })
+
+            const isUp = relX < 0;
+            const isRight = relY < 0;
+            sendEvent('pos', { x: relX, y: relY, isUp, isRight })
 
             prevX = ev.clientX
             prevY = ev.clientY
@@ -160,4 +162,4 @@
         el.onpointerleave = pointerupHandler;
     </script>
   </body>
-</html>
+</html> 
