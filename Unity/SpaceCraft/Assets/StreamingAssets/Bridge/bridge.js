@@ -430,6 +430,16 @@ class Bridge {
         } else {
             this.flushJSToUnityEventQueue();
         }
+
+        // Direct callback for StartedUnity event
+        if (ev.event === "StartedUnity") {
+            console.log("[Bridge] StartedUnity event detected, calling SpaceCraft directly");
+            setTimeout(function() {
+                if (window.SpaceCraft && typeof window.SpaceCraft.loadCollectionsAndCreateSpaceCraft === 'function') {
+                    window.SpaceCraft.loadCollectionsAndCreateSpaceCraft();
+                }
+            }, 0);
+        }
     }
 
 

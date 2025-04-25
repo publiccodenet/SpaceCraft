@@ -1,6 +1,6 @@
 {
-    "name": "SpaceCraft.Editor",
-    "rootNamespace": "SpaceCraft.Editor",
+    "name": "SpaceCraftEditor",
+    "rootNamespace": "SpaceCraftEditor",
     "references": [
         "Unity.TextMeshPro",
         "Unity.InputSystem",

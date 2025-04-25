@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // <file_path>Unity/SpaceCraft/Assets/Editor/Build.cs</file_path>
-// <namespace>SpaceCraft.Editor</namespace>
+// <namespace>SpaceCraftEditor</namespace>
 // <assembly>Assembly-CSharp-Editor</assembly>
 //
 // WebGL Build automation script for Unity.

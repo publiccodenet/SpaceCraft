@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // <file_path>Unity/SpaceCraft/Assets/Editor/SchemaGenerator/SchemaGenerator.cs</file_path>
-// <namespace>SpaceCraft.Editor</namespace>
+// <namespace>SpaceCraftEditor</namespace>
 // <assembly>Assembly-CSharp-Editor</assembly>
 //
 // THIS IS THE CODE GENERATOR AND SOURCE OF TRUTH FOR ALL SCHEMA CLASSES.
@@ -24,7 +24,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Linq;
 
-namespace SpaceCraft.Editor
+namespace SpaceCraftEditor
 {
 /// <summary>
 /// Simple JSON schema to C# class generator for Unity.
@@ -607,4 +607,4 @@ public class SchemaGenerator
     }
 }
 #endif // UNITY_EDITOR 
-} // Close SpaceCraft.Editor namespace 
+} // Close SpaceCraftEditor namespace 

@@ -95,7 +95,7 @@ if (!command) {
     switch (command) {
       case 'regenerate-schemas':
       case 'generate-schemas':
-        await runUnityCommand('-batchmode -projectPath . -ignoreCompilerErrors -executeMethod SpaceCraft.Editor.SchemaGenerator.ImportAllSchemasMenuItem -quit -logFile -', unityEnv);
+        await runUnityCommand('-batchmode -projectPath . -ignoreCompilerErrors -executeMethod SpaceCraftEditor.SchemaGenerator.ImportAllSchemasMenuItem -quit -logFile -', unityEnv);
         break;
       case 'build-dev':
         await runUnityCommand('-batchmode -projectPath . -executeMethod Build.BuildDev -quit -logFile -', unityEnv);

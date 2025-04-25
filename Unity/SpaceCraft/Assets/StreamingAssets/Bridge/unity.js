@@ -1435,3 +1435,84 @@ v		get
 
 
 ////////////////////////////////////////////////////////////////////////
+
+// unity.js - Unity WebGL initialization and loader helpers
+// This file provides utility functions for initializing Unity WebGL and connecting to the Bridge
+
+(function() {
+    'use strict';
+    
+    // Store Unity instance once loaded
+    let unityInstance = null;
+    
+    // Unity loader configuration builder
+    function createUnityConfig(buildUrl) {
+        return {
+            dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+            frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+            codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+            // Memory and symbols might be conditional in the template, handled by Unity
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "{{{ COMPANY_NAME }}}",
+            productName: "{{{ PRODUCT_NAME }}}",
+            productVersion: "{{{ PRODUCT_VERSION }}}"
+        };
+    }
+    
+    // Initialize Unity with progress callback
+    function initializeUnity(canvas, config, progressCallback) {
+        // Unity loader must be included in the page already
+        if (typeof createUnityInstance !== 'function') {
+            console.error("[Unity] createUnityInstance not found. Make sure the Unity loader script is included.");
+            return Promise.reject("Unity loader not found");
+        }
+        
+        return createUnityInstance(canvas, config, progressCallback)
+            .then(instance => {
+                console.log("[Unity] Unity instance created successfully");
+                unityInstance = instance;
+                window.unityInstance = instance;
+                
+                // If Bridge exists, set the Unity instance
+                if (window.bridge && typeof window.bridge.setUnityInstance === 'function') {
+                    window.bridge.setUnityInstance(instance);
+                    console.log("[Unity] Set Unity instance on Bridge");
+                }
+                
+                return instance;
+            })
+            .catch(error => {
+                console.error("[Unity] Failed to create Unity instance:", error);
+                throw error;
+            });
+    }
+    
+    // Expose Unity helper functions
+    window.UnityHelper = {
+        createConfig: createUnityConfig,
+        initialize: initializeUnity,
+        
+        // Get the Unity instance
+        getInstance: function() {
+            return unityInstance;
+        },
+        
+        // Helper to send a message to a GameObject in Unity
+        sendMessage: function(gameObject, method, parameter) {
+            if (!unityInstance) {
+                console.error("[Unity] Cannot send message - Unity not initialized");
+                return false;
+            }
+            
+            try {
+                unityInstance.SendMessage(gameObject, method, parameter);
+                return true;
+            } catch (error) {
+                console.error("[Unity] Error sending message:", error);
+                return false;
+            }
+        }
+    };
+    
+    console.log("[Unity] Unity helper initialized");
+})();

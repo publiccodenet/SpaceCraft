@@ -20,7 +20,7 @@ echo "Using Unity version: $UNITY_VERSION"
 
 # Step 1: Regenerate schemas
 echo -e "\n=== Step 1: Regenerating Schemas ==="
-./run-unity.sh -batchmode -projectPath . -executeMethod SpaceCraft.Editor.RegenerateSchemas.Regenerate -quit
+./run-unity.sh -batchmode -projectPath . -executeMethod SpaceCraftEditor.RegenerateSchemas.Regenerate -quit
 if [ $? -ne 0 ]; then
     echo "Error: Schema regeneration failed!"
     exit 1

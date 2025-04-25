@@ -1,106 +1,307 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Spacecraft in Unity</title>
-    <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SpaceCraft</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="icon" href="StreamingAssets/SpaceCraft/mark-128w128h.png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
-      body {
-        font-family: "Mulish", Helvetica;
-        padding: 0;
-        border: 0;
-        margin: 0;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-      }
-      
-      /* Ensure QR codes are above everything and clickable */
-      #qrcodes-container {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        z-index: 9999; /* Very high z-index to be above everything */
-        width: 120px;
-        max-width: 120px;
-        text-align: center;
-        pointer-events: auto; /* Explicitly enable pointer events */
-        cursor: pointer;
-      }
-      
-      /* Basic QR code styling */
-      .qrcode {
-        display: block;
-        width: 100px;
-        height: 100px;
-        margin: 5px auto;
-        opacity: 0.7;
-        transition: opacity 0.3s;
-        cursor: pointer; /* Show clickable cursor */
-      }
-      
-      .qrcode:hover {
-        opacity: 1;
-      }
-      
-      /* Labels */
-      .label {
-        color: white;
-        font-size: 12px;
-        margin: 0 auto 15px auto;
-        width: 100px;
-        text-align: center;
-        cursor: pointer; /* Show clickable cursor */
-      }
-      
-      /* Links */
-      a {
-        display: block;
-        text-decoration: none;
-        cursor: pointer; /* Show clickable cursor */
-      }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            font-family: "Mulish", Helvetica;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+        }
+        
+        #unity-container, #unity-canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+        }
+        
+        #qrcodes-container {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            width: 120px;
+            pointer-events: auto;
+            text-align: center;
+        }
+        
+        .qrcode {
+            width: 100px;
+            height: 100px;
+            margin: 5px auto;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+        
+        .qrcode:hover {
+            opacity: 1;
+        }
+        
+        .label {
+            color: white;
+            font-size: 12px;
+            margin: 0 auto 15px auto;
+            width: 100px;
+            text-align: center;
+        }
+        
+        a {
+            display: block;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        #unity-fullscreen-button {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            width: 38px;
+            height: 38px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 9999;
+        }
+        
+        /* Progress bar styles */
+        #unity-progress-bar-empty {
+            width: 141px;
+            height: 18px;
+            margin-top: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        #unity-progress-bar-full {
+            width: 0%;
+            height: 100%;
+            background-color: #fff;
+            border-radius: 5px;
+        }
     </style>
     
-    <!-- Load core Bridge scripts -->
-    <script type="text/javascript" src="StreamingAssets/Bridge/unity.js"></script>
-    <script type="text/javascript" src="StreamingAssets/Bridge/bridge.js"></script>
+    <!-- QR code configuration -->
+    <script>
+      const qrcodeDefaults = {
+        dim: 100,
+        pad: 1,
+        pal: ['#000','#fff']
+      };
+    </script>
     
-    <!-- Load SpaceCraft specific scripts -->
-    <script type="text/javascript" src="StreamingAssets/SpaceCraft/qrcode.min.js"></script>
-    <script type="text/javascript" src="StreamingAssets/SpaceCraft/spacecraft.js"></script>
+    <!-- Core Bridge scripts - load BEFORE anything else -->
+    <script src="StreamingAssets/Bridge/bridge.js"></script>
+    <script src="StreamingAssets/Bridge/unity.js"></script>
+    
+    <!-- SpaceCraft specific scripts -->
+    <script src="StreamingAssets/SpaceCraft/qrcode.min.js"></script>
+    <script src="StreamingAssets/SpaceCraft/spacecraft.js"></script>
 </head>
 
 <body>
-    <!-- Canvas must come BEFORE the QR codes in the DOM to avoid z-index issues -->
-    <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; background: #1F1F20; z-index: 1;"></canvas>
+    <!-- Main Unity container with canvas and fullscreen button -->
+    <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas"></canvas>
+        <div id="unity-fullscreen-button"></div>
+    </div>
     
     <!-- QR codes container with explicit high z-index -->
     <div id="qrcodes-container">
-      <!-- Navigator QR code - Simplified direct HTML -->
-      <a href="StreamingAssets/SpaceCraft/navigator.html" target="_blank">
-        <svg id="navigator" class="qrcode"></svg>
-        <div class="label">navigator</div>
-      </a>
-      
-      <!-- Selector QR code - Simplified direct HTML -->
-      <a href="StreamingAssets/SpaceCraft/selector.html" target="_blank">
-        <svg id="selector" class="qrcode"></svg>
-        <div class="label">selector</div>
-      </a>
+        <!-- Navigator QR code -->
+        <a href="StreamingAssets/SpaceCraft/navigator.html" target="_blank">
+            <svg id="navigator" class="qrcode"></svg>
+            <div class="label">navigator</div>
+        </a>
+        
+        <!-- Selector QR code -->
+        <a href="StreamingAssets/SpaceCraft/selector.html" target="_blank">
+            <svg id="selector" class="qrcode"></svg>
+            <div class="label">selector</div>
+        </a>
     </div>
-    
-    <script src="Build/SpaceCraft.loader.js"></script>
 
     <script>
-      // Initialize SpaceCraft when page loads
-      window.addEventListener('load', function() {
-        console.log("Calling SpaceCraft.initialize()...");
-        SpaceCraft.initialize();
-      });
-    </script>
-  </body>
+        // Ensure we have a Bridge instance
+        window.bridge = window.bridge || new Bridge();
+        console.log("[Main] Bridge instance checked");
 
+        // Unity loader configuration
+        var buildUrl = "Build";
+        var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
+        console.log("[Main] Loading Unity from:", loaderUrl);
+        
+        var config = {
+            dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+            frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+            codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "{{{ COMPANY_NAME }}}",
+            productName: "{{{ PRODUCT_NAME }}}",
+            productVersion: "{{{ PRODUCT_VERSION }}}"
+        };
+        console.log("[Main] Unity configuration prepared");
+
+        // Add memory URL to config if provided
+        if ("{{{ MEMORY_FILENAME }}}" !== "") {
+            config.memoryUrl = buildUrl + "/{{{ MEMORY_FILENAME }}}";
+            console.log("[Main] Memory URL added:", config.memoryUrl);
+        }
+        
+        // Add symbols URL to config if provided
+        if ("{{{ SYMBOLS_FILENAME }}}" !== "") {
+            config.symbolsUrl = buildUrl + "/{{{ SYMBOLS_FILENAME }}}";
+            console.log("[Main] Symbols URL added:", config.symbolsUrl);
+        }
+
+        var container = document.querySelector("#unity-container");
+        var canvas = document.querySelector("#unity-canvas");
+        var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+        console.log("[Main] DOM elements retrieved");
+
+        // Force fullscreen sizing
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        console.log("[Main] Canvas size set to 100%");
+
+        // Track progress for debugging
+        var progressTracker = {
+            lastProgress: 0,
+            logProgress: function(progress) {
+                // Only log if progress has changed significantly
+                if (progress - this.lastProgress >= 0.1 || progress >= 0.99) {
+                    console.log("[Main] Unity loading progress:", Math.round(progress * 100) + "%");
+                    this.lastProgress = progress;
+                }
+                return progress;
+            }
+        };
+
+        // Load Unity and handle progress
+        console.log("[Main] Creating Unity loader script");
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            console.log("[Main] Unity loader script loaded, creating instance");
+            createUnityInstance(canvas, config, (progress) => {
+                // Track and report progress
+                progress = progressTracker.logProgress(progress);
+                
+                // Update progress bar for debugging
+                var progressBarFull = document.getElementById("unity-progress-bar-full");
+                if (progressBarFull) {
+                    progressBarFull.style.width = 100 * progress + "%";
+                }
+            }).then((unityInstance) => {
+                console.log("[Main] Unity instance created successfully");
+                window.unityInstance = unityInstance;
+                
+                // Set up fullscreen button
+                fullscreenButton.onclick = () => {
+                    console.log("[Main] Fullscreen button clicked");
+                    unityInstance.SetFullscreen(1);
+                };
+                
+                // Initialize Bridge with Unity instance
+                if (window.bridge && typeof window.bridge.setUnityInstance === 'function') {
+                    console.log("[Main] Setting Unity instance on Bridge");
+                    window.bridge.setUnityInstance(unityInstance);
+                    
+                    // Start the bridge with the WebGL driver
+                    if (typeof window.bridge.start === 'function') {
+                        console.log("[Main] Starting Bridge with WebGL driver");
+                        window.bridge.start("WebGL", JSON.stringify({}));
+                        // NOTE: The actual call to loadCollectionsAndCreateSpaceCraft now happens
+                        // directly inside bridge.js when the StartedUnity event is sent.
+                    } else {
+                        console.warn("[Main] Bridge.start method not available");
+                    }
+                } else {
+                    // If this happens, the bridge setup in bridge.js/unity.js might be incorrect
+                    console.error("[Main] CRITICAL: Bridge object or setUnityInstance method not found after Unity instance created!");
+                }
+                
+                console.log("[Unity] Unity instance created and Bridge started sequence initiated");
+                
+            }).catch((message) => {
+                console.error("[Main] Error creating Unity instance:", message);
+            });
+        };
+        document.body.appendChild(script);
+        console.log("[Main] Unity loader script added to document");
+
+        // Initialize QR codes when page loads
+        window.addEventListener('load', function() {
+            console.log("[Main] Window load event fired");
+            
+            // Generate QR codes using the original approach
+            try {
+                // Create navigator QR code
+                const navigatorSvg = document.getElementById('navigator');
+                const navigatorQR = QRCode({
+                    ...qrcodeDefaults, 
+                    msg: window.location.origin + window.location.pathname + 'StreamingAssets/SpaceCraft/navigator.html'
+                });
+                
+                // Replace the empty SVG with the QR code
+                navigatorSvg.parentNode.replaceChild(navigatorQR, navigatorSvg);
+                navigatorQR.id = 'navigator';
+                navigatorQR.className = 'qrcode';
+                
+                // Create selector QR code
+                const selectorSvg = document.getElementById('selector');
+                const selectorQR = QRCode({
+                    ...qrcodeDefaults, 
+                    msg: window.location.origin + window.location.pathname + 'StreamingAssets/SpaceCraft/selector.html'
+                });
+                
+                // Replace the empty SVG with the QR code
+                selectorSvg.parentNode.replaceChild(selectorQR, selectorSvg);
+                selectorQR.id = 'selector';
+                selectorQR.className = 'qrcode';
+                
+                console.log("[Main] QR codes generated successfully");
+            } catch (error) {
+                console.error("[Main] Error generating QR codes:", error);
+            }
+        });
+        
+        // Debug helpers
+        function logBridgeStatus() {
+            console.log("[Debug] Bridge status:", {
+                bridgeAvailable: !!window.bridge,
+                unityAvailable: !!window.unityInstance,
+                spaceCraftAvailable: !!window.SpaceCraft
+            });
+        }
+        
+        // Log initial status after a delay
+        setTimeout(logBridgeStatus, 3000);
+    </script>
+</body>
 </html>
