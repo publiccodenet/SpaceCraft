@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Displays a collection and its items.
@@ -11,9 +12,10 @@ public class CollectionView : MonoBehaviour, IModelView<Collection>
     [Header("Model Reference")]
     [SerializeField] private Collection model;
     
-    [Header("Child Item Views")]
-    [SerializeField] private Transform itemContainer;
+    [Header("View Configuration")]
+    [SerializeField] private Transform itemContainer; // Parent for item containers
     [SerializeField] private GameObject itemViewsContainerPrefab;
+    [SerializeField] private CollectionLayoutBase layoutManager; // Reference to the layout component
     
     // List of item view containers this collection view is managing
     private List<ItemViewsContainer> itemContainers = new List<ItemViewsContainer>();
@@ -31,8 +33,21 @@ public class CollectionView : MonoBehaviour, IModelView<Collection>
     // Event for model updates
     public event Action ModelUpdated;
     
+    // Public property for grid layout (if applicable) - REMOVED, now handled by layoutManager
+    // public int gridColumnCount = 5; 
+    
     private void Awake()
     {
+        // Ensure we have a layout manager
+        if (layoutManager == null) {
+             layoutManager = GetComponent<CollectionLayoutBase>(); // Try to find it on the same GameObject
+             if (layoutManager == null) {
+                  Debug.LogWarning($"CollectionView '{name}' requires a CollectionLayoutBase component (e.g., CollectionGridLayout). Add one or assign it in the inspector.");
+                  // Optionally add a default layout here if none is found
+                  // layoutManager = gameObject.AddComponent<CollectionGridLayout>();
+             }
+        }
+
         if (model != null)
         {
             // Register with model on awake
@@ -115,11 +130,14 @@ public class CollectionView : MonoBehaviour, IModelView<Collection>
             CreateItemViewContainer(item, Vector3.zero);
         }
         
-        // Apply layout if there's a layout component
-        var layoutComponent = GetComponent<CollectionGridLayout>();
-        if (layoutComponent != null)
+        // Apply layout using the assigned layout manager
+        if (layoutManager != null)
         {
-            layoutComponent.ApplyLayout();
+            layoutManager.ApplyLayout(itemContainers, itemContainer);
+        }
+        else
+        {
+            Debug.LogError($"CollectionView '{name}' is missing a LayoutManager component. Cannot apply layout.");
         }
     }
     
@@ -174,5 +192,43 @@ public class CollectionView : MonoBehaviour, IModelView<Collection>
     public List<ItemViewsContainer> GetItemContainers()
     {
         return new List<ItemViewsContainer>(itemContainers);
+    }
+
+    /// <summary>
+    /// Gets a flat list of all ItemView components managed by this CollectionView.
+    /// </summary>
+    /// <returns>A list of ItemView components.</returns>
+    public List<ItemView> GetCurrentItemViews()
+    {
+        List<ItemView> allItemViews = new List<ItemView>();
+        foreach (var container in itemContainers)
+        {
+            // Get the first ItemView from the container's list (if any)
+            ItemView view = container?.ItemViews?.FirstOrDefault(); 
+            if (view != null)
+            {
+                allItemViews.Add(view);
+            }
+        }
+        return allItemViews;
+    }
+
+    /// <summary>
+    /// Finds the ItemView associated with the given item ID within this collection.
+    /// Assumes only one view exists per item ID within this collection.
+    /// </summary>
+    /// <param name="itemId">The ID of the item to find.</param>
+    /// <returns>The ItemView if found, otherwise null.</returns>
+    public ItemView FindItemViewById(string itemId)
+    {
+        foreach (var container in itemContainers)
+        {
+            // Check the primary view (assuming only one view per item in a collection)
+            if (container?.PrimaryItemView?.Model?.Id == itemId)
+            {
+                return container.PrimaryItemView;
+            }
+        }
+        return null; // Not found in this collection
     }
 } 

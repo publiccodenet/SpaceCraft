@@ -470,8 +470,19 @@ class Bridge {
         switch (eventName) {
 
             case "StartedUnity":
-                //console.log("Bridge: distributeEvent: StartedUnity:", ev);
-                break;
+                console.log("[Bridge] distributeEvent: StartedUnity received. Triggering SpaceCraft load.");
+                // Ensure SpaceCraft object and method exist before calling
+                if (window.SpaceCraft && typeof window.SpaceCraft.loadCollectionsAndCreateSpaceCraft === 'function') {
+                    // Use setTimeout to avoid potential issues if called during critical C# event loop
+                    setTimeout(function() {
+                         window.SpaceCraft.loadCollectionsAndCreateSpaceCraft();
+                    }, 0);
+                } else {
+                    console.error("[Bridge] SpaceCraft object or loadCollectionsAndCreateSpaceCraft method not found when StartedUnity received!");
+                }
+                // We might still want to let other handlers process this, so don't strictly break
+                // unless the default case shouldn't run.
+                // break; 
 
             case "Callback":
                 //console.log("Bridge: distributeEvent: Callback:", id, data);

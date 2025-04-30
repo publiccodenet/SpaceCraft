@@ -668,21 +668,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraController: {fileID: 5363331337815786451}
   panSpeed: 3
-  minX: -40
-  maxX: 40
-  minZ: -50
-  maxZ: 30
+  minX: -30
+  maxX: 30
+  minZ: -40
+  maxZ: 20
   invertDrag: 0
-  minZoom: 0.1
-  maxZoom: 100
-  scrollWheelZoomFactor: 0.2
+  minZoom: 0.01
+  maxZoom: 200
+  scrollWheelZoomFactor: 0.1
   keyboardZoomFactor: 5
-  navigatorZoomFactor: 1
+  navigatorZoomFactor: 0.25
   baseVelocityThreshold: 0.2
   velocitySmoothingFactor: 0.1
   frictionFactor: 0.999
   bounceFactor: 0.95
-  navigatorVelocityFactor: 0.25
+  navigatorVelocityFactor: 0.05
   itemInfoPanel: {fileID: 4087036035030045770}
   itemLayer:
     serializedVersion: 2

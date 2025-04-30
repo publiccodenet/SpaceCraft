@@ -88,21 +88,21 @@ public class Brewster : MonoBehaviour
     /// <summary>
     /// Loads collections and items from a JObject containing the full content data
     /// </summary>
-    public void LoadContentFromJson(JObject contentJson)
+    public void LoadContentFromJson(JObject content)
     {
-        if (contentJson == null)
+        if (content == null)
         {
-            Debug.LogError("Brewster: Received null contentJson");
+            Debug.LogError("Brewster: Received null content");
             return;
         }
             
         Debug.Log("Brewster: Starting to load content from JSON");
-        //Debug.Log($"Brewster: Content JSON structure: {contentJson}");
+        //Debug.Log($"Brewster: Content JSON structure: {content}");
             
         // Clear existing content first
         ClearContent();
         
-        JToken collectionsToken = contentJson["collections"];
+        JToken collectionsToken = content["collections"];
         if (collectionsToken == null)
         {
             Debug.LogError("Brewster: Collections token is null in content JSON");

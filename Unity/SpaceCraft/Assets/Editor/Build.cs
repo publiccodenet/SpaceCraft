@@ -104,8 +104,15 @@ public static class Build
     private static void PerformBuild(BuildPlayerOptions options)
     {
         // Ensure build directory exists
-        string buildDir = Path.GetDirectoryName(options.locationPathName);
+        string buildPath = Path.GetFullPath(options.locationPathName); // Get full path
+        string buildDir = Path.GetDirectoryName(buildPath);
         Directory.CreateDirectory(buildDir);
+
+        // --- PRE-BUILD STEP: Remove symlinks from build target directory --- 
+        Debug.Log($"[Build Pre-Clean] Cleaning symlinks from: {buildPath}");
+        RemoveSymlinksRecursive(buildPath);
+        Debug.Log("[Build Pre-Clean] Symlink cleaning complete.");
+        // --- END PRE-BUILD STEP ---
 
         // Perform the build
         BuildReport report = BuildPipeline.BuildPlayer(options);
@@ -129,6 +136,59 @@ public static class Build
             if (IsCommandLineBuild())
             {
                 EditorApplication.Exit(1);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Recursively finds and removes symbolic links within a directory.
+    /// </summary>
+    /// <param name="path">The directory path to scan.</param>
+    private static void RemoveSymlinksRecursive(string path)
+    {
+        if (!Directory.Exists(path)) return;
+
+        // Process files (potential symlinks) in the current directory
+        foreach (string file in Directory.GetFiles(path))
+        {
+            try
+            {
+                FileAttributes attributes = File.GetAttributes(file);
+                // Check for ReparsePoint flag, which indicates a symlink on Unix-like systems (macOS, Linux)
+                // and junction points/symlinks on Windows.
+                if ((attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+                {
+                    Debug.Log($"[Build Pre-Clean] Removing symbolic link: {file}");
+                    File.Delete(file);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[Build Pre-Clean] Error checking/removing file {file}: {ex.Message}");
+            }
+        }
+
+        // Process subdirectories recursively
+        foreach (string dir in Directory.GetDirectories(path))
+        {
+             try
+            {
+                 FileAttributes attributes = File.GetAttributes(dir);
+                 // Check if the *directory entry itself* is a symlink/junction
+                 if ((attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+                 {
+                     Debug.Log($"[Build Pre-Clean] Removing directory symbolic link/junction: {dir}");
+                     Directory.Delete(dir); // Use Directory.Delete for directory symlinks
+                 }
+                 else
+                 {
+                     // If it's a real directory, recurse into it
+                     RemoveSymlinksRecursive(dir);
+                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[Build Pre-Clean] Error processing directory {dir}: {ex.Message}");
             }
         }
     }

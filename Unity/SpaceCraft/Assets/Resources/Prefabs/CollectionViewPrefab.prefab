@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4003838307347595240}
   - component: {fileID: 3293791871657533807}
-  - component: {fileID: 4539241664711781046}
+  - component: {fileID: 2894680170193067796}
   m_Layer: 0
   m_Name: CollectionViewPrefab
   m_TagString: Untagged
@@ -49,7 +49,8 @@ MonoBehaviour:
   model: {fileID: 0}
   itemContainer: {fileID: 464012571170886491}
   itemViewsContainerPrefab: {fileID: 8545906332215059116, guid: 354510ea2cae34424a027bcd990180fc, type: 3}
---- !u!114 &4539241664711781046
+  layoutManager: {fileID: 2894680170193067796}
+--- !u!114 &2894680170193067796
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -58,19 +59,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7497744607419584431}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6fc65b3323014e13b0e9c6be3b88bc9, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d39d101d0e6b42fb84539ac7fa3f101, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellSize: 1
-  spacingHorizontal: 0.4
-  spacingVertical: 1
-  columns: 4
-  autoUpdateLayout: 1
-  centerHorizontally: 1
-  itemTransforms: []
-  collection: {fileID: 0}
-  collectionView: {fileID: 0}
-  initialized: 0
+  cellWidth: 1.8
+  cellHeight: 2.8
+  startOffsetX: 0.8
+  startOffsetY: -0.6
 --- !u!1 &8955703354072507967
 GameObject:
   m_ObjectHideFlags: 0

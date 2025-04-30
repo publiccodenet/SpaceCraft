@@ -29,6 +29,12 @@ public class ItemViewsContainer : MonoBehaviour
     public List<ItemView> ItemViews => itemViews;
     
     /// <summary>
+    /// Public accessor for the primary ItemView managed by this container.
+    /// Assumes the container typically manages one main view.
+    /// </summary>
+    public ItemView PrimaryItemView { get; private set; }
+    
+    /// <summary>
     /// The item model this container is displaying
     /// </summary>
     public Item Item
@@ -160,6 +166,7 @@ public class ItemViewsContainer : MonoBehaviour
             // Set the item model on the view
             itemView.SetModel(item);
             itemViews.Add(itemView);
+            if (PrimaryItemView == null) PrimaryItemView = itemView; // Assign the first view created as primary
         }
         else
         {

@@ -24,20 +24,80 @@ public class SpaceCraft : BridgeObject
     
     // Application state - exposed as public properties for Bridge JSON conversion
     [Header("Content State")]
-    public JObject collections;
+    public JObject content;
     
-    public List<string> selectedItemIds = new List<string>();
-    public List<string> highlightedItemIds = new List<string>(); // Can contain duplicates for multiple highlights
+    // Backing fields for state lists
+    private List<string> _selectedItemIds = new List<string>();
+    private List<string> _highlightedItemIds = new List<string>(); // Can contain duplicates for multiple highlights
+
+    // Public properties with setters to trigger visual updates
+    public List<string> SelectedItemIds
+    {
+        get => _selectedItemIds;
+        set
+        {
+            // Optimization: If a change is already pending, don't re-evaluate
+            if (selectedItemsChanged) return;
+
+            // Check if the list content is actually different before updating
+            HashSet<string> currentSet = new HashSet<string>(_selectedItemIds);
+            HashSet<string> newSet = new HashSet<string>(value ?? new List<string>()); // Handle null input
+            if (!currentSet.SetEquals(newSet))
+            {
+                 Debug.Log($"[SpaceCraft] Setter: Updating SelectedItemIds (Count: {newSet.Count})");
+                _selectedItemIds = new List<string>(newSet); // Store a copy defensively
+                selectedItemsChanged = true; // Set flag because state list changed
+                UpdateSelectionVisuals(); 
+            }
+        }
+    }
+
+    public List<string> HighlightedItemIds
+    {
+        get => _highlightedItemIds;
+        set
+        {
+            // Optimization: If a change is already pending, don't re-evaluate
+            if (highlightedItemsChanged) return;
+
+            // For highlights, order and duplicates matter, so use the helper
+            var newValue = value ?? new List<string>();
+            if (!AreEquivalentHighlightLists(_highlightedItemIds, newValue)) 
+            {
+                Debug.Log($"[SpaceCraft] Setter: Updating HighlightedItemIds (Count: {newValue.Count})");
+                _highlightedItemIds = new List<string>(newValue); // Store a copy
+                highlightedItemsChanged = true; // Set flag because state list changed
+                UpdateHighlightVisuals();
+            }
+        }
+    }
     
-    // User tracking - mapping users to the items they're highlighting
-    private Dictionary<string, List<string>> userHighlightedItems = new Dictionary<string, List<string>>();
-    
+    // Helper to compare highlight lists (order doesn't matter, count does)
+    private bool AreEquivalentHighlightLists(List<string> list1, List<string> list2)
+    {
+        if (list1.Count != list2.Count) return false;
+        var counts1 = list1.GroupBy(id => id).ToDictionary(g => g.Key, g => g.Count());
+        var counts2 = list2.GroupBy(id => id).ToDictionary(g => g.Key, g => g.Count());
+        if (counts1.Count != counts2.Count) return false;
+        foreach (var kvp in counts1)
+        {
+            if (!counts2.TryGetValue(kvp.Key, out int count2) || kvp.Value != count2)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Configuration
     public bool multiSelectEnabled = false;
     
     // Create events to notify Bridge when there are changes
     public bool selectedItemsChanged = false;
     public bool highlightedItemsChanged = false;
+
+    // RENAMED: Event name for when content is processed
+    private const string ContentLoadedEvent = "ContentLoaded";
 
     private void Awake()
     {
@@ -73,211 +133,99 @@ public class SpaceCraft : BridgeObject
     
     private void FixedUpdate()
     {
-        // Check if collections have been updated
-        if (collections == null)
+        // Check if content has been updated via the Bridge
+        if (content == null)
         {
             return;
         }
 
-        Debug.Log("SpaceCraft FixedUpdate got new collections");
+        Debug.Log("SpaceCraft FixedUpdate processing new content");
 
-        // Reset the collections input port to prevent reloading
-        var newCollections = collections;
-        collections = null;
+        // Store the new content and clear the input field immediately
+        var newContent = content;
+        content = null; // Prevent reprocessing in the next frame
         
         // Clear any existing views before loading new data
         collectionsView?.ClearAllViews();
         
-        // Load the collections data into Brewster
-        brewster?.LoadContentFromJson(newCollections);
+        // Load the content data into Brewster
+        brewster?.LoadContentFromJson(newContent);
             
-        // Display all collections after loading is complete
+        // Display all collections after loading is complete (assuming Brewster organizes it)
         collectionsView?.DisplayAllCollections();
-        
-        SendEventName("CollectionsLoaded");
-    }
-    
-    private void Update()
-    {
-        // Send events only when changes have occurred - reduce bridge traffic
-        if (selectedItemsChanged)
+
+        // --- Select the first item automatically ---
+        if (collectionsView != null) 
         {
-            Debug.Log("SpaceCraft: SelectedItemsChanged: selectedItemIds: " + selectedItemIds);
-            SendEventName("SelectedItemsChanged");
-            // CollectionsView will reset this flag after processing
-        }
-        
-        if (highlightedItemsChanged)
-        {
-            Debug.Log("SpaceCraft: HighlightedItemsChanged: highlightedItemIds: " + highlightedItemIds);
-            SendEventName("HighlightedItemsChanged");
-            // CollectionsView will reset this flag after processing
-        }
-    }
-    
-    // ================== INPUT MANAGER EVENT HANDLERS ======================
-    
-    // Handle events from InputManager
-    public void OnItemSelected(ItemView item)
-    {
-        if (item?.Model?.Id == null) return;
-        
-        // Update selection state based on multiSelectEnabled settings
-        if (!multiSelectEnabled)
-        {
-            // Single selection mode - clear existing selection
-            ClearSelectionExcept(item.Model.Id);
-        }
-        
-        // Add to our selected items list if not already there
-        if (!selectedItemIds.Contains(item.Model.Id))
-        {
-            selectedItemIds.Add(item.Model.Id);
-            selectedItemsChanged = true;
-        }
-        
-        // Update visual state
-        item.SetSelected(true);
-    }
-    
-    public void OnItemDeselected(ItemView item)
-    {
-        if (item?.Model?.Id == null) return;
-        
-        // Actually maintain the list of selected items here, not in InputManager
-        if (selectedItemIds.Contains(item.Model.Id))
-        {
-            selectedItemIds.Remove(item.Model.Id);
-            selectedItemsChanged = true;
-        }
-        
-        // Update visual state
-        item.SetSelected(false);
-    }
-    
-    public void OnItemHighlightStart(ItemView item)
-    {
-        if (item?.Model?.Id == null) return;
-        
-        // Track local user's highlight
-        TrackUserHighlight("local", item.Model.Id);
-        
-        // Add to highlighted list (allows duplicates)
-        highlightedItemIds.Add(item.Model.Id);
-        highlightedItemsChanged = true;
-        
-        // Set item's highlight count
-        item.SetHighlightCount(GetHighlightCount(item.Model.Id));
-    }
-    
-    public void OnItemHighlightEnd(ItemView item)
-    {
-        if (item?.Model?.Id == null) return;
-        
-        // Untrack local user's highlight
-        UntrackUserHighlight("local", item.Model.Id);
-        
-        // Remove ONE instance of this ID from the list
-        if (highlightedItemIds.Contains(item.Model.Id))
-        {
-            highlightedItemIds.Remove(item.Model.Id); // Removes first occurrence only
-            highlightedItemsChanged = true;
-        }
-        
-        // Update the item's visual state
-        int count = GetHighlightCount(item.Model.Id);
-        item.SetHighlightCount(count);
-    }
-    
-    // ================== SELECTION API ======================
-    
-    /// <summary>
-    /// Find an ItemView by its ID, handling null cases gracefully
-    /// </summary>
-    private ItemView FindItemSafe(string itemId)
-    {
-        if (string.IsNullOrEmpty(itemId) || inputManager == null)
-        {
-            return null;
-        }
-        
-        ItemView itemView = inputManager.FindItemViewById(itemId);
-        if (itemView == null)
-        {
-            Debug.LogWarning($"SpaceCraft: Item with ID '{itemId}' not found");
-        }
-        
-        return itemView;
-    }
-    
-    /// <summary>
-    /// Clear all selected items except for the one with the given ID
-    /// </summary>
-    private void ClearSelectionExcept(string exceptItemId)
-    {
-        if (inputManager == null) return;
-        
-        List<string> itemsToDeselect = new List<string>(selectedItemIds);
-        foreach (string itemId in itemsToDeselect)
-        {
-            if (itemId != exceptItemId)
+            string firstItemId = collectionsView.GetFirstDisplayedItemId(); // Assumes this method exists
+            if (!string.IsNullOrEmpty(firstItemId))
             {
-                // Find and deselect the item
-                ItemView itemView = FindItemSafe(itemId);
-                if (itemView != null)
-                {
-                    itemView.SetSelected(false);
-                }
+                Debug.Log($"[SpaceCraft] Automatically selecting first item: {firstItemId}");
+                // Ensure selection list is clear before selecting the first item
+                if (SelectedItemIds.Count > 0) { 
+                     SelectedItemIds.Clear(); // Use internal field to avoid immediate visual update loop
+                     selectedItemsChanged = true; // Ensure the change is flagged
+                 }
+                // Update call to pass default controller info
+                SelectItem("auto_select", "System", firstItemId);
                 
-                // Remove from our list
-                selectedItemIds.Remove(itemId);
-                selectedItemsChanged = true;
+                // Also highlight the first item
+                HighlightItem("auto_select", "System", firstItemId);
+            }
+            else
+            {
+                Debug.Log("[SpaceCraft] No first item found to select automatically.");
             }
         }
+        // -------------------------------------------
+
+        // Notify JS that the content has been loaded and processed
+        SendEventName(ContentLoadedEvent);
     }
     
     /// <summary>
     /// Select an item by ID. Will apply constraints before selecting.
     /// </summary>
-    public void SelectItem(string itemId, string userId = "default")
+    public void SelectItem(string controllerId, string controllerName, string itemId)
     {
-        ItemView itemView = FindItemSafe(itemId);
-        if (itemView == null) return;
-        
+        if (string.IsNullOrEmpty(itemId)) return;
+        // Log controller info
+        Debug.Log($"[SpaceCraft] SelectItem API called by {controllerName}({controllerId}): {itemId}");
+
+        List<string> newList;
         // Handle single selection mode
         if (!multiSelectEnabled)
         {
-            ClearSelectionExcept(itemId);
+            // If it's already the only selected item, do nothing extra
+            if (_selectedItemIds.Count == 1 && _selectedItemIds[0] == itemId) return;
+            // Create a new list containing only this item
+            newList = new List<string> { itemId };
         }
-        
-        // Add to our selected items list if not already there
-        if (!selectedItemIds.Contains(itemId))
-        {
-            selectedItemIds.Add(itemId);
-            selectedItemsChanged = true;
+        else
+        {   // Multi-select: Add if not already present
+            if (_selectedItemIds.Contains(itemId)) return; // Already selected
+            // Create a new list with the added item
+            newList = new List<string>(_selectedItemIds);
+            newList.Add(itemId);
         }
-        
-        // Update visual state directly on the item view
-        itemView.SetSelected(true);
+        // Assign the new list to the property to trigger setter logic
+        SelectedItemIds = newList;
     }
     
     /// <summary>
     /// Deselect an item by ID
     /// </summary>
-    public void DeselectItem(string itemId, string userId = "default")
+    public void DeselectItem(string controllerId, string controllerName, string itemId)
     {
-        // Remove from our list, even if the item isn't found visually
-        if (selectedItemIds.Contains(itemId))
-        {
-            selectedItemIds.Remove(itemId);
-            selectedItemsChanged = true;
-        }
+        if (string.IsNullOrEmpty(itemId) || !_selectedItemIds.Contains(itemId)) return;
+         // Log controller info
+        Debug.Log($"[SpaceCraft] DeselectItem API called by {controllerName}({controllerId}): {itemId}");
         
-        ItemView itemView = FindItemSafe(itemId);
-        if (itemView == null) return;
-        
-        // Update visual state directly
-        itemView.SetSelected(false);
+        // Create a new list without the item
+        List<string> newList = new List<string>(_selectedItemIds);
+        newList.Remove(itemId);
+        // Assign the new list to the property
+        SelectedItemIds = newList;
     }
     
     /// <summary>
@@ -285,25 +233,104 @@ public class SpaceCraft : BridgeObject
     /// </summary>
     public void DeselectAllItems()
     {
-        if (inputManager == null) return;
-        
-        // Get all selected items before clearing the list
-        List<string> itemsToDeselect = new List<string>(selectedItemIds);
-        
-        // Clear our list
-        if (selectedItemIds.Count > 0)
+        Debug.Log("[SpaceCraft] DeselectAllItems API called");
+        if (_selectedItemIds.Count > 0)
         {
-            selectedItemIds.Clear();
-            selectedItemsChanged = true;
+            // Assign an empty list to the property
+            SelectedItemIds = new List<string>();
         }
-        
-        // Update visual state for each previously selected item
-        foreach (string itemId in itemsToDeselect)
+    }
+    
+    /// <summary>
+    /// Toggles the selection of the first currently selected item.
+    /// If nothing is selected, it tries to toggle the selection of the last focused item.
+    /// If there was no last focused item, it selects the first available item.
+    /// </summary>
+    public void ToggleCurrentItemSelection(string controllerId, string controllerName, string itemId = null)
+    {
+        string logPrefix = "[SpaceCraft ToggleCurrentItemSelection]";
+        Debug.Log($"{logPrefix} Called by {controllerName}({controllerId}) with itemId: {itemId}");
+
+        string targetItemId = itemId;
+
+        if (string.IsNullOrEmpty(targetItemId))
         {
-            ItemView itemView = FindItemSafe(itemId);
-            if (itemView != null)
+            if (SelectedItemIds.Count > 0)
             {
-                itemView.SetSelected(false);
+                targetItemId = SelectedItemIds[0];
+                Debug.Log($"{logPrefix} No itemId provided. Using first selected item: {targetItemId}");
+            }
+            else if (collectionsView != null &&
+                     !string.IsNullOrEmpty(collectionsView.lastSelectedItemOrHighlightId) &&
+                     FindItemViewById(collectionsView.lastSelectedItemOrHighlightId) != null)
+            {
+                targetItemId = collectionsView.lastSelectedItemOrHighlightId;
+                Debug.Log($"{logPrefix} Using last focused item: {targetItemId}");
+            }
+            else if (collectionsView != null)
+            {
+                targetItemId = collectionsView.GetFirstDisplayedItemId();
+                Debug.Log($"{logPrefix} Using first displayed item: {targetItemId}");
+            }
+        }
+
+        if (!string.IsNullOrEmpty(targetItemId))
+        {
+            ToggleItemSelection(controllerId, controllerName, targetItemId);
+        }
+        else
+        {
+            Debug.LogWarning($"{logPrefix} No valid item found to toggle selection.");
+        }
+    }
+
+    public void ToggleCurrentItemHighlight(string controllerId, string controllerName)
+    {
+        string logPrefix = "[SpaceCraft ToggleCurrentItemHighlight]";
+        Debug.Log($"{logPrefix} Called by {controllerName}({controllerId}).");
+
+        if (HighlightedItemIds.Count > 0)
+        {
+            // If items are highlighted, toggle the first one (remove one instance)
+            string firstHighlightedId = HighlightedItemIds[0];
+            Debug.Log($"{logPrefix} Found highlighted items. Toggling first one: {firstHighlightedId}");
+            UnhighlightItem(controllerId, controllerName, firstHighlightedId);
+        }
+        else
+        {   
+            // If nothing is highlighted, try using the last focused item
+            Debug.Log($"{logPrefix} No items highlighted. Checking last focused item.");
+            string targetItemId = null;
+            if (collectionsView != null && 
+                !string.IsNullOrEmpty(collectionsView.lastSelectedItemOrHighlightId) && 
+                FindItemViewById(collectionsView.lastSelectedItemOrHighlightId) != null) // Check if item still exists
+            {
+                targetItemId = collectionsView.lastSelectedItemOrHighlightId;
+                Debug.Log($"{logPrefix} Found valid last focused item: {targetItemId}. Highlighting it.");
+                HighlightItem(controllerId, controllerName, targetItemId); // Highlight last focused
+            }
+            else
+            {   
+                // If no valid last focused item, highlight the first displayed item
+                 Debug.Log($"{logPrefix} No valid last focused item. Attempting to highlight first displayed item.");
+                if (collectionsView != null)
+                {
+                    targetItemId = collectionsView.GetFirstDisplayedItemId();
+                    if (!string.IsNullOrEmpty(targetItemId))
+                    {
+                        Debug.Log($"{logPrefix} Highlighting first displayed item: {targetItemId}");
+                        // Use SetHighlightedItems to ensure only this one is highlighted
+                        SetHighlightedItems(controllerId, controllerName, new List<string> { targetItemId }); 
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"{logPrefix} No first displayed item found to highlight.");
+                    }
+                }
+                else
+                {
+                     Debug.LogWarning($"{logPrefix} Cannot highlight first item because CollectionsView is null.");
+                }
             }
         }
     }
@@ -311,145 +338,108 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Toggle selection state of an item
     /// </summary>
-    public void ToggleItemSelection(string itemId, string userId = "default")
+    public void ToggleItemSelection(string controllerId, string controllerName, string itemId)
     {
-        if (selectedItemIds.Contains(itemId))
-        {
-            DeselectItem(itemId, userId);
+        if (string.IsNullOrEmpty(itemId)) return;
+        Debug.Log($"[SpaceCraft] ToggleItemSelection API called by {controllerName}({controllerId}): {itemId}");
+
+        List<string> newList = new List<string>(_selectedItemIds);
+        if (newList.Contains(itemId))
+        {   // Item is selected, so deselect it
+            Debug.Log($"[SpaceCraft] Toggle: Deselecting {itemId}");
+            newList.Remove(itemId);
         }
         else
-        {
-            SelectItem(itemId, userId);
+        {   // Item is not selected, so select it
+             Debug.Log($"[SpaceCraft] Toggle: Selecting {itemId}");
+           if (!multiSelectEnabled)
+            {
+                // Single select mode: clear list before adding
+                newList.Clear();
+            }
+            newList.Add(itemId);
         }
+        // Assign the potentially modified list back to the property
+        SelectedItemIds = newList;
     }
     
     /// <summary>
-    /// Set a specific set of items as selected, deselecting all others
+    /// Set a specific set of items as selected.
     /// </summary>
-    public void SetSelectedItems(List<string> itemIds, string userId = "default")
+    public void SetSelectedItems(string controllerId, string controllerName, List<string> itemIds)
     {
-        if (inputManager == null || itemIds == null) return;
+        List<string> newList = itemIds ?? new List<string>();
+         // Log controller info
+        Debug.Log($"[SpaceCraft] SetSelectedItems API called by {controllerName}({controllerId}) with {newList.Count} items.");
         
-        // In single select mode, only select the last item
-        if (!multiSelectEnabled && itemIds.Count > 1)
+        // Enforce single selection mode if active
+        if (!multiSelectEnabled && newList.Count > 1)
         {
-            // Only select the last item
-            SelectItem(itemIds[itemIds.Count - 1], userId);
-            return;
+            string lastItem = newList.LastOrDefault(); // Keep only the last one
+            newList = string.IsNullOrEmpty(lastItem) ? new List<string>() : new List<string> { lastItem };
         }
         
-        // First check if there's actually a change to avoid unnecessary updates
-        bool hasChanges = false;
-        
-        // Quick check if counts are different
-        if (selectedItemIds.Count != itemIds.Count)
-        {
-            hasChanges = true;
-        }
-        else
-        {
-            // Check if the contents are different
-            foreach (string itemId in itemIds)
-            {
-                if (!selectedItemIds.Contains(itemId))
-                {
-                    hasChanges = true;
-                    break;
-                }
-            }
-            
-            if (!hasChanges)
-            {
-                foreach (string itemId in selectedItemIds)
-                {
-                    if (!itemIds.Contains(itemId))
-                    {
-                        hasChanges = true;
-                        break;
-                    }
-                }
-            }
-        }
-        
-        if (!hasChanges) return; // No need to update if nothing changed
-        
-        // First deselect all
-        DeselectAllItems();
-        
-        // Now select the ones in the list
-        AddSelectedItems(itemIds, userId);
+        // Assign the validated list to the property
+        SelectedItemIds = newList;
     }
     
     /// <summary>
     /// Add multiple items to the selection
     /// </summary>
-    public void AddSelectedItems(List<string> itemIds, string userId = "default")
+    public void AddSelectedItems(string controllerId, string controllerName, List<string> itemIds)
     {
-        if (inputManager == null || itemIds == null) return;
-        
-        // In single select mode, only select the last item
+        if (itemIds == null || itemIds.Count == 0) return;
+         // Log controller info
+        Debug.Log($"[SpaceCraft] AddSelectedItems API called by {controllerName}({controllerId}) with {itemIds.Count} items.");
+
+        // Handle single select mode separately
         if (!multiSelectEnabled)
         {
-            if (itemIds.Count > 0)
-            {
-                SelectItem(itemIds[itemIds.Count - 1], userId);
-            }
+            // Call the primary SelectItem method
+            SelectItem(controllerId, controllerName, itemIds.LastOrDefault());
             return;
         }
         
-        bool anySelected = false;
-        
+        // Multi-select mode: add new unique items
+        List<string> newList = new List<string>(_selectedItemIds);
+        bool changed = false;
         foreach (string itemId in itemIds)
-        {
-            ItemView item = FindItemSafe(itemId);
-            if (item == null) continue;
-            
-            // Add to our list 
-            if (!selectedItemIds.Contains(itemId))
+        {   
+            if (!string.IsNullOrEmpty(itemId) && !newList.Contains(itemId))
             {
-                selectedItemIds.Add(itemId);
-                anySelected = true;
+                newList.Add(itemId);
+                changed = true;
             }
-            
-            // Update visual state
-            item.SetSelected(true);
         }
         
-        if (anySelected)
+        if (changed)
         {
-            selectedItemsChanged = true;
+            SelectedItemIds = newList; // Assign if changes were made
         }
     }
     
     /// <summary>
     /// Remove multiple items from the selection
     /// </summary>
-    public void RemoveSelectedItems(List<string> itemIds, string userId = "default")
+    public void RemoveSelectedItems(string controllerId, string controllerName, List<string> itemIds)
     {
-        if (inputManager == null || itemIds == null) return;
-        
-        bool anyDeselected = false;
-        
+        if (itemIds == null || itemIds.Count == 0 || _selectedItemIds.Count == 0) return;
+        // Log controller info
+        Debug.Log($"[SpaceCraft] RemoveSelectedItems API called by {controllerName}({controllerId}) with {itemIds.Count} items.");
+
+        List<string> newList = new List<string>(_selectedItemIds);
+        bool changed = false;
         foreach (string itemId in itemIds)
         {
-            // Remove from our list regardless of visual state
-            if (selectedItemIds.Contains(itemId))
+             if (!string.IsNullOrEmpty(itemId) && newList.Remove(itemId))
             {
-                selectedItemIds.Remove(itemId);
-                anyDeselected = true;
-            }
-            
-            // Update visual state if item exists
-            ItemView item = FindItemSafe(itemId);
-            if (item != null)
-            {
-                item.SetSelected(false);
+                changed = true;
             }
         }
         
-        if (anyDeselected)
+        if (changed)
         {
-            selectedItemsChanged = true;
+            SelectedItemIds = newList; // Assign if changes were made
         }
     }
     
@@ -459,16 +449,17 @@ public class SpaceCraft : BridgeObject
     public void SetMultiSelectMode(bool enable)
     {
         if (inputManager == null) return;
+        Debug.Log($"[SpaceCraft] SetMultiSelectMode called: {enable}");
         
         if (multiSelectEnabled != enable)
         {
             multiSelectEnabled = enable;
             
             // If turning off multi-select and we have multiple selections, keep only the first one
-            if (!enable && selectedItemIds.Count > 1)
+            if (!enable && SelectedItemIds.Count > 1)
             {
-                string keepItemId = selectedItemIds[0];
-                SetSelectedItems(new List<string> { keepItemId });
+                string keepItemId = SelectedItemIds[0];
+                SelectedItemIds = new List<string> { keepItemId }; // Directly assign new list via setter
             }
         }
     }
@@ -484,7 +475,7 @@ public class SpaceCraft : BridgeObject
             return 0;
             
         int count = 0;
-        foreach (string id in highlightedItemIds)
+        foreach (string id in HighlightedItemIds)
         {
             if (id == itemId)
             {
@@ -495,147 +486,73 @@ public class SpaceCraft : BridgeObject
     }
     
     /// <summary>
-    /// Set which items are highlighted by specific users, removing all previous highlights
+    /// Set which items are highlighted.
     /// </summary>
-    public void SetHighlightedItems(List<string> itemIds, string userId)
+    public void SetHighlightedItems(string controllerId, string controllerName, List<string> itemIds)
     {
-        if (inputManager == null || itemIds == null) return;
+        Debug.Log($"[SpaceCraft] SetHighlightedItems API called by {controllerName}({controllerId}) with {itemIds?.Count ?? 0} items.");
         
-        // Clear existing highlights for this user
-        ClearUserHighlights(userId);
-        
-        // Add new highlights
-        AddHighlightedItems(itemIds, userId);
+        // Assign the new list to the property to trigger updates if different
+        HighlightedItemIds = itemIds ?? new List<string>(); 
     }
     
     /// <summary>
-    /// Add multiple items to highlighted state for a user
+    /// Add multiple items to highlighted state
     /// </summary>
-    public void AddHighlightedItems(List<string> itemIds, string userId)
+    public void AddHighlightedItems(string controllerId, string controllerName, List<string> itemIds)
     {
-        if (inputManager == null || itemIds == null) return;
-        
-        bool anyChanged = false;
-        
-        foreach (var itemId in itemIds)
-        {
-            if (string.IsNullOrEmpty(itemId)) continue;
-            
-            // Track this highlight for the user
-            bool added = TrackUserHighlight(userId, itemId);
-            if (added) 
-            {
-                anyChanged = true;
-                
-                // Add to the highlights list (allows duplicates)
-                highlightedItemIds.Add(itemId);
-                
-                // Apply visual highlight if item exists
-                ItemView item = FindItemSafe(itemId);
-                if (item != null)
-                {
-                    item.SetHighlightCount(GetHighlightCount(itemId));
-                }
-            }
-        }
-        
-        if (anyChanged)
-        {
-            highlightedItemsChanged = true;
-        }
+        if (itemIds == null || itemIds.Count == 0) return;
+        Debug.Log($"[SpaceCraft] AddHighlightedItems API called by {controllerName}({controllerId}) with {itemIds.Count} items.");
+
+        // Create new list, add items, and assign back to property
+        List<string> newList = new List<string>(HighlightedItemIds);
+        newList.AddRange(itemIds); // Add all specified items
+        HighlightedItemIds = newList; // Assign to trigger setter logic (comparison & visual update)
     }
     
     /// <summary>
-    /// Remove multiple items from highlighted state for a user
+    /// Remove multiple items from highlighted state
     /// </summary>
-    public void RemoveHighlightedItems(List<string> itemIds, string userId)
+    public void RemoveHighlightedItems(string controllerId, string controllerName, List<string> itemIds)
     {
-        if (inputManager == null || itemIds == null) return;
-        
-        bool anyChanged = false;
-        
-        foreach (var itemId in itemIds)
+        if (itemIds == null || itemIds.Count == 0 || HighlightedItemIds.Count == 0) return;
+        Debug.Log($"[SpaceCraft] RemoveHighlightedItems API called by {controllerName}({controllerId}) with {itemIds.Count} items.");
+
+        // Create new list and remove one instance of each specified item
+        List<string> newList = new List<string>(HighlightedItemIds);
+        bool changed = false;
+        foreach (string itemId in itemIds)
         {
-            if (string.IsNullOrEmpty(itemId)) continue;
-            
-            // Untrack this highlight for the user
-            bool removed = UntrackUserHighlight(userId, itemId);
-            if (removed)
+             if (!string.IsNullOrEmpty(itemId) && newList.Remove(itemId)) // Remove first occurrence
             {
-                anyChanged = true;
-                
-                // Remove one instance of this ID from the highlighted list
-                if (highlightedItemIds.Contains(itemId))
-                {
-                    highlightedItemIds.Remove(itemId); // Removes first occurrence only
-                }
-                
-                // Update visual state if item exists
-                ItemView item = FindItemSafe(itemId);
-                if (item != null)
-                {
-                    item.SetHighlightCount(GetHighlightCount(itemId));
-                }
+                changed = true;
             }
         }
         
-        if (anyChanged)
+        if (changed)
         {
-            highlightedItemsChanged = true;
+            HighlightedItemIds = newList; // Assign if changes were made to trigger setter
         }
     }
     
     /// <summary>
     /// Highlight a specific item by ID
     /// </summary>
-    public void HighlightItem(string itemId, string userId)
+    public void HighlightItem(string controllerId, string controllerName, string itemId)
     {
         if (string.IsNullOrEmpty(itemId)) return;
-        
-        // Track this highlight for the user
-        bool added = TrackUserHighlight(userId, itemId);
-        
-        if (added)
-        {
-            // Add to highlighted list (allows duplicates)
-            highlightedItemIds.Add(itemId);
-            highlightedItemsChanged = true;
-            
-            // Apply visual highlight if item exists
-            ItemView item = FindItemSafe(itemId);
-            if (item != null)
-            {
-                item.SetHighlightCount(GetHighlightCount(itemId));
-            }
-        }
+        // Delegate to AddHighlightedItems
+        AddHighlightedItems(controllerId, controllerName, new List<string>{ itemId }); 
     }
     
     /// <summary>
     /// Remove highlight from a specific item by ID
     /// </summary>
-    public void UnhighlightItem(string itemId, string userId)
+    public void UnhighlightItem(string controllerId, string controllerName, string itemId)
     {
         if (string.IsNullOrEmpty(itemId)) return;
-        
-        // Untrack this highlight for the user
-        bool removed = UntrackUserHighlight(userId, itemId);
-        
-        if (removed)
-        {
-            // Remove one instance of this ID from the highlighted list
-            if (highlightedItemIds.Contains(itemId))
-            {
-                highlightedItemIds.Remove(itemId); // Removes first occurrence only
-                highlightedItemsChanged = true;
-            }
-            
-            // Update visual state if item exists
-            ItemView item = FindItemSafe(itemId);
-            if (item != null)
-            {
-                item.SetHighlightCount(GetHighlightCount(itemId));
-            }
-        }
+        // Delegate to RemoveHighlightedItems
+        RemoveHighlightedItems(controllerId, controllerName, new List<string>{ itemId });
     }
     
     /// <summary>
@@ -649,106 +566,6 @@ public class SpaceCraft : BridgeObject
         collectionsView.ShowCollection(collectionId);
     }
     
-    // ================== HELPER METHODS ======================
-    
-    /// <summary>
-    /// Track which items are highlighted by which users
-    /// Returns true if this is a new highlight that was added
-    /// </summary>
-    private bool TrackUserHighlight(string userId, string itemId)
-    {
-        if (!userHighlightedItems.TryGetValue(userId, out List<string> items))
-        {
-            items = new List<string>();
-            userHighlightedItems[userId] = items;
-        }
-        
-        // Add to the user's highlight list
-        items.Add(itemId);
-        return true;
-    }
-    
-    /// <summary>
-    /// Untrack a user's highlight on an item
-    /// Returns true if this item was actually removed
-    /// </summary>
-    private bool UntrackUserHighlight(string userId, string itemId)
-    {
-        if (!userHighlightedItems.TryGetValue(userId, out List<string> items))
-        {
-            return false;
-        }
-        
-        // Find first occurrence of this ID and remove it
-        int index = items.IndexOf(itemId);
-        if (index >= 0)
-        {
-            items.RemoveAt(index);
-            
-            // Remove the user entry if they're not highlighting anything
-            if (items.Count == 0)
-            {
-                userHighlightedItems.Remove(userId);
-            }
-            
-            return true;
-        }
-        
-        return false;
-    }
-    
-    /// <summary>
-    /// Check if an item is highlighted by any user
-    /// </summary>
-    private bool IsItemHighlightedByAnyUser(string itemId)
-    {
-        foreach (var userItems in userHighlightedItems.Values)
-        {
-            if (userItems.Contains(itemId))
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    /// <summary>
-    /// Clear all highlights for a specific user
-    /// </summary>
-    private void ClearUserHighlights(string userId)
-    {
-        if (!userHighlightedItems.TryGetValue(userId, out List<string> items))
-        {
-            return; // User has no highlights
-        }
-        
-        // Copy the list to avoid modification during iteration
-        List<string> itemsCopy = new List<string>(items);
-        
-        // Clear the user's highlights
-        userHighlightedItems.Remove(userId);
-        
-        // Update visual state for each item that was highlighted by this user
-        foreach (var itemId in itemsCopy)
-        {
-            // Remove one instance of this ID from the highlighted list for each
-            // time it appears in the user's list
-            if (highlightedItemIds.Contains(itemId))
-            {
-                highlightedItemIds.Remove(itemId); // Removes first occurrence only
-                highlightedItemsChanged = true;
-            }
-            
-            // Update visual state if item exists
-            ItemView item = FindItemSafe(itemId);
-            if (item != null)
-            {
-                item.SetHighlightCount(GetHighlightCount(itemId));
-            }
-        }
-    }
-
     // ================== BRIDGE API METHODS ======================
     
     /// <summary>
@@ -765,53 +582,366 @@ public class SpaceCraft : BridgeObject
         SendEventName("MultiSelectChanged");
     }
 
-    // Add a single item to highlighted state
-    public void AddHighlightedItem(string itemId, string userId = "local")
+    /// <summary>
+    /// Toggles the selection of the first highlighted item.
+    /// If no item is highlighted, it first highlights the first available item and then toggles its selection.
+    /// </summary>
+    public void ToggleHighlightedItemSelection(string controllerId, string controllerName)
     {
-        if (string.IsNullOrEmpty(itemId)) return;
-        
-        // Track this highlight for the user
-        bool added = TrackUserHighlight(userId, itemId);
-        
-        if (added)
+        string logPrefix = "[SpaceCraft ToggleHighlightedItemSelection]";
+        Debug.Log($"{logPrefix} Called by {controllerName}({controllerId}).");
+
+        string targetItemId = null;
+
+        if (HighlightedItemIds.Count > 0)
         {
-            // Add to highlighted list (allows duplicates)
-            highlightedItemIds.Add(itemId);
-            highlightedItemsChanged = true;
-            
-            // Apply visual highlight if item exists
-            ItemView item = FindItemSafe(itemId);
-            if (item != null)
-            {
-                item.SetHighlightCount(GetHighlightCount(itemId));
-            }
+            // If items are highlighted, use the first one
+            targetItemId = HighlightedItemIds[0];
+            Debug.Log($"{logPrefix} Found highlighted item. Toggling selection for: {targetItemId}");
+            ToggleItemSelection(controllerId, controllerName, targetItemId);
         }
-    }
-    
-    // Remove a single item from highlighted state
-    public void RemoveHighlightedItem(string itemId, string userId = "local")
-    {
-        if (string.IsNullOrEmpty(itemId)) return;
-        
-        // Untrack this highlight for the user
-        bool removed = UntrackUserHighlight(userId, itemId);
-        
-        if (removed)
+        else
         {
-            // Remove one instance of this ID from the highlighted list
-            if (highlightedItemIds.Contains(itemId))
-            {
-                highlightedItemIds.Remove(itemId); // Removes first occurrence only
-                highlightedItemsChanged = true;
-            }
+            // If nothing is highlighted, highlight the first item and toggle its selection
+            Debug.Log($"{logPrefix} No items highlighted. Attempting to highlight and toggle selection of first item.");
             
-            // Update visual state if item exists
-            ItemView item = FindItemSafe(itemId);
-            if (item != null)
+            if (collectionsView != null)
             {
-                item.SetHighlightCount(GetHighlightCount(itemId));
+                targetItemId = collectionsView.GetFirstDisplayedItemId();
+                if (!string.IsNullOrEmpty(targetItemId))
+                {
+                    Debug.Log($"{logPrefix} Found first item: {targetItemId}. Highlighting and toggling selection.");
+                    
+                    // First highlight the item
+                    HighlightItem(controllerId, controllerName, targetItemId);
+                    
+                    // Then toggle its selection
+                    ToggleItemSelection(controllerId, controllerName, targetItemId);
+                }
+                else
+                {
+                    Debug.LogWarning($"{logPrefix} No first item found to highlight and toggle selection.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"{logPrefix} Cannot highlight and toggle selection because CollectionsView is null.");
             }
         }
     }
 
+    /// <summary>
+    /// Find an ItemView by its ID, handling null cases gracefully
+    /// </summary>
+    private ItemView FindItemSafe(string itemId)
+    {
+        if (string.IsNullOrEmpty(itemId) || collectionsView == null)
+        {
+            return null;
+        }
+        
+        ItemView itemView = FindItemViewById(itemId); // Call local method
+        if (itemView == null)
+        {
+            Debug.LogWarning($"[SpaceCraft] FindItemSafe: Item with ID '{itemId}' not found via CollectionsView.");
+        }
+        
+        return itemView;
+    }
+    
+    /// <summary>
+    /// Finds an ItemView by its ID by delegating to CollectionsView.
+    /// </summary>
+    public ItemView FindItemViewById(string id)
+    {
+        return collectionsView?.FindItemViewById(id);
+    }
+
+    // ================== CAMERA VIBRATION ======================
+    
+    /// <summary>
+    /// Vibrates the camera with the specified pattern.
+    /// Matches the Web Vibration API parameters: either a single duration in milliseconds,
+    /// or an array of alternating vibration/pause durations.
+    /// Currently just logs the parameters, will be enhanced later to actually vibrate the camera.
+    /// </summary>
+    /// <param name="pattern">A single duration in milliseconds, or an array of alternating vibration/pause durations</param>
+    /// <returns>True if the request was received and processed</returns>
+    public bool VibrateCamera(object pattern)
+    {
+        // Log the vibration pattern details
+        if (pattern is int duration)
+        {
+            Debug.Log($"[Camera Vibration] Single duration: {duration}ms");
+        }
+        else if (pattern is int[] durations)
+        {
+            string patternString = string.Join(", ", durations);
+            Debug.Log($"[Camera Vibration] Pattern: [{patternString}]ms");
+        }
+        else if (pattern is List<int> durationsList)
+        {
+            string patternString = string.Join(", ", durationsList);
+            Debug.Log($"[Camera Vibration] Pattern: [{patternString}]ms");
+        }
+        else
+        {
+            Debug.LogWarning($"[Camera Vibration] Invalid pattern type: {pattern?.GetType().Name ?? "null"}");
+            return false;
+        }
+        
+        // TODO: Implement actual camera vibration effect
+        
+        return true;
+    }
+    
+    /// <summary>
+    /// Bridge-accessible version of VibrateCamera that accepts a JObject with the pattern.
+    /// </summary>
+    public void vibrateCamera(JObject data)
+    {
+        if (data == null) return;
+        
+        try
+        {
+            if (data.TryGetValue("duration", out JToken durationToken) && durationToken.Type == JTokenType.Integer)
+            {
+                // Single duration
+                int duration = durationToken.Value<int>();
+                VibrateCamera(duration);
+            }
+            else if (data.TryGetValue("pattern", out JToken patternToken) && patternToken.Type == JTokenType.Array)
+            {
+                // Pattern of durations
+                List<int> pattern = patternToken.ToObject<List<int>>();
+                VibrateCamera(pattern);
+            }
+            else
+            {
+                Debug.LogWarning("[Camera Vibration] Invalid vibration data format");
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[Camera Vibration] Error processing vibration request: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Move the selection in a specific direction.
+    /// </summary>
+    public void MoveSelection(string controllerId, string controllerName, string direction)
+    {
+        // Expects "north", "south", "east", "west" from controller
+        Debug.Log($"[SpaceCraft] MoveSelection called with controllerId: {controllerId}, controllerName: {controllerName}, direction: {direction}");
+        // Pass direction directly to CollectionsView, assuming it now handles these terms
+        collectionsView?.MoveSelection(controllerId, controllerName, direction); 
+    }
+
+    /// <summary>
+    /// Move the highlight in a specific direction.
+    /// </summary>
+    public void MoveHighlight(string controllerId, string controllerName, string direction)
+    {
+        // Expects "north", "south", "east", "west" from controller
+        Debug.Log($"[SpaceCraft] MoveHighlight called with controllerId: {controllerId}, controllerName: {controllerName}, direction: {direction}");
+        // Pass direction directly to CollectionsView, assuming it now handles these terms
+        collectionsView?.MoveHighlight(controllerId, controllerName, direction);
+    }
+
+    /// <summary>
+    /// Bridge method to calculate the next item ID in a given direction without moving the selection.
+    /// </summary>
+    /// <param name="data">JObject containing 'currentItemId' (string) and 'direction' (string).</param>
+    /// <returns>The ID of the next item, or null if no move is possible.</returns>
+    public string getNextItemId(JObject data)
+    {
+        if (collectionsView == null || data == null) 
+        {
+            Debug.LogError("[SpaceCraft:getNextItemId] CollectionsView is null or data is null.");
+            return null; 
+        }
+
+        string currentId = data.Value<string>("currentItemId");
+        string direction = data.Value<string>("direction"); // Expects "north", "south", "east", "west"
+
+        if (string.IsNullOrEmpty(currentId) || string.IsNullOrEmpty(direction))
+        {
+            Debug.LogWarning("[SpaceCraft:getNextItemId] Missing 'currentItemId' or 'direction' in data.");
+            return null;
+        }
+
+        // Call the calculation method on CollectionsView, passing the direction directly
+        return collectionsView.GetNextItemIdInDirection(currentId, direction);
+    }
+
+    /// <summary>
+    /// Iterates through all known ItemViews and updates their selected state based on the selectedItemIds list.
+    /// </summary>
+    public void UpdateSelectionVisuals()
+    {
+        if (inputManager == null) return;
+
+        Debug.Log($"[SpaceCraft] Updating selection visuals for {SelectedItemIds.Count} selected items.");
+        List<ItemView> allItemViews = inputManager.GetAllItemViews(); 
+        
+        foreach (ItemView view in allItemViews)
+        {
+            if (view == null || view.Model == null) continue;
+            
+            bool shouldBeSelected = SelectedItemIds.Contains(view.Model.Id);
+            if (view.IsSelected != shouldBeSelected)
+            {
+                 view.SetSelected(shouldBeSelected); 
+            }
+        }
+    }
+
+    /// <summary>
+    /// Iterates through all known ItemViews and updates their highlight count based on the HighlightedItemIds list.
+    /// </summary>
+    public void UpdateHighlightVisuals()
+    {
+        if (inputManager == null) return;
+        
+        Debug.Log($"[SpaceCraft] Updating highlight visuals for {HighlightedItemIds.Count} total highlights.");
+        List<ItemView> allItemViews = inputManager.GetAllItemViews(); 
+        
+        // Calculate counts first 
+        Dictionary<string, int> highlightCounts = new Dictionary<string, int>();
+        foreach (string id in HighlightedItemIds)
+        {
+            if (highlightCounts.ContainsKey(id)) { highlightCounts[id]++; }
+            else { highlightCounts[id] = 1; }
+        }
+
+        foreach (ItemView view in allItemViews)
+        {
+            if (view == null || view.Model == null) continue;
+            
+            int newCount = highlightCounts.ContainsKey(view.Model.Id) ? highlightCounts[view.Model.Id] : 0;
+            if (view.CurrentHighlightCount != newCount) 
+            {
+                view.SetHighlightCount(newCount);
+            }
+        }
+    }
+
+    // ================== BRIDGE API FORWARDERS TO INPUT MANAGER ======================
+
+    /// <summary>
+    /// Bridge forwarder: Receives position DELTA from Bridge and passes it to InputManager.
+    /// </summary>
+    public void PushCameraPosition(string controllerId, string controllerName, float panXDelta, float panYDelta)
+    {
+        if (inputManager != null)
+        {
+             inputManager.PushCameraPosition(controllerId, controllerName, panXDelta, panYDelta);
+        }
+        else
+        {
+            Debug.LogWarning("[SpaceCraft] PushCameraPosition called but InputManager is null.");
+        }
+    }
+
+    /// <summary>
+    /// Bridge forwarder: Receives zoom DELTA from Bridge and passes it to InputManager.
+    /// </summary>
+    public void PushCameraZoom(string controllerId, string controllerName, float zoomDelta)
+    {
+        if (inputManager != null)
+        {
+            inputManager.PushCameraZoom(controllerId, controllerName, zoomDelta);
+        }
+        else
+        {
+            Debug.LogWarning("[SpaceCraft] PushCameraZoom called but InputManager is null.");
+        }
+    }
+
+    /// <summary>
+    /// Bridge forwarder: Receives velocity PUSH as 2D deltas from Bridge and passes it to InputManager.
+    /// </summary>
+    public void PushCameraVelocity(string controllerId, string controllerName, float panXDelta, float panYDelta)
+    {
+        if (inputManager != null)
+        {
+            inputManager.PushCameraVelocity(controllerId, controllerName, panXDelta, panYDelta);
+        }
+        else
+        {
+            Debug.LogWarning("[SpaceCraft] PushCameraVelocity called but InputManager is null.");
+        }
+    }
+
+    /// <summary>
+    /// Send events only when changes have occurred - reduce bridge traffic
+    /// </summary>
+    private void SendEvents()
+    {
+        // Send events only when changes have occurred - reduce bridge traffic
+        if (selectedItemsChanged)
+        {
+            Debug.Log("SpaceCraft: SelectedItemsChanged: selectedItemIds: " + string.Join(",", SelectedItemIds));
+            SendEventName("SelectedItemsChanged");
+            selectedItemsChanged = false; // Reset flag here
+        }
+        
+        if (highlightedItemsChanged)
+        {
+            Debug.Log("SpaceCraft: HighlightedItemsChanged: highlightedItemIds: " + string.Join(",", HighlightedItemIds));
+            SendEventName("HighlightedItemsChanged");
+            highlightedItemsChanged = false; // Reset flag here
+        }
+    }
+
+    // ================== INPUT MANAGER EVENT HANDLERS ======================
+    
+    // Handle events from InputManager
+    public void OnItemSelected(ItemView item)
+    {
+        if (item?.Model?.Id == null) return;
+        SelectItem("local_input", "Local Input", item.Model.Id); // Call the main SelectItem logic
+    }
+    
+    public void OnItemDeselected(ItemView item)
+    {
+        if (item?.Model?.Id == null) return;
+        DeselectItem("local_input", "Local Input", item.Model.Id); // Call the main DeselectItem logic
+    }
+    
+    public void OnItemHighlightStart(ItemView item)
+    {
+        if (item?.Model?.Id == null) return;
+        HighlightItem("local_input", "Local Input", item.Model.Id); // Call the public API method
+    }
+    
+    public void OnItemHighlightEnd(ItemView item)
+    {
+        if (item?.Model?.Id == null) return;
+        UnhighlightItem("local_input", "Local Input", item.Model.Id); // Call the public API method
+    }
+
+    /// <summary>
+    /// Toggle highlight state of an item
+    /// </summary>
+    public void ToggleItemHighlight(string controllerId, string controllerName, string itemId)
+    {
+        if (string.IsNullOrEmpty(itemId)) return;
+        Debug.Log($"[SpaceCraft] ToggleItemHighlight API called by {controllerName}({controllerId}): {itemId}");
+
+        List<string> newList = new List<string>(HighlightedItemIds);
+        if (newList.Contains(itemId))
+        {   // Item is highlighted, so unhighlight it
+            Debug.Log($"[SpaceCraft] Toggle: Unhighlighting {itemId}");
+            newList.Remove(itemId);
+        }
+        else
+        {   // Item is not highlighted, so highlight it
+            Debug.Log($"[SpaceCraft] Toggle: Highlighting {itemId}");
+            newList.Add(itemId);
+        }
+        // Assign the potentially modified list back to the property
+        HighlightedItemIds = newList;
+    }
 }

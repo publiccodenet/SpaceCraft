@@ -8,7 +8,6 @@ using UnityEngine.Events;
 /// Displays a single Item model as a 3D object in the scene.
 /// Pure presentation component that doesn't handle any loading or serialization.
 /// </summary>
-[AddComponentMenu("Views/Item View")]
 public class ItemView : MonoBehaviour, IModelView<Item>
 {
     [Header("Model Reference")]
@@ -69,6 +68,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     // Public accessors for state
     public bool IsHighlighted => isHighlighted;
     public bool IsSelected => isSelected;
+    public int CurrentHighlightCount => highlightCount; // Public getter for the count
     
     private void Awake()
     {
