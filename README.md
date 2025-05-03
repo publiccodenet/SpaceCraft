@@ -14,17 +14,17 @@ Spacecraft implements a multi-tier architecture that processes Internet Archive 
 
 ```mermaid
 flowchart LR
-    IA[Internet Archive API] --> BS[BackSpace SvelteKit App] --> CS[CraftSpace Unity WebGL]
+    IA[Internet Archive API] --> BS[BackSpace SvelteKit App] --> SC[SpaceCraft Unity WebGL]
     IA --> |produces| RAW[Raw Content & Metadata]
     BS --> |produces| PROC[Processed Data & Atlases]
-    CS --> |produces| VIS[Visualization & Interaction]
+    SC --> |produces| VIS[Visualization & Interaction]
 ```
 
 ### Core Components
 
 1. **Collections System** (Implemented, P1, Ongoing) - Raw content and metadata from Internet Archive
 2. **BackSpace** (In Progress, P1, Ongoing) - SvelteKit application that processes collections and hosts the web interface
-3. **CraftSpace** (In Progress: P1, Ongoing) - Unity WebGL application that provides 3D visualization and interaction
+3. **SpaceCraft** (In Progress: P1, Ongoing) - Unity WebGL application that provides 3D visualization and interaction
 
 ### Core Pipeline Features
 
@@ -92,13 +92,13 @@ Future versions will support immersive exploration:
 ## Repository Structure
 
 ```
-CraftSpace/
+SpaceCraft/
 ├── Collections/            - Raw Internet Archive collections
 │   └── {collection-prefix}/   - Individual collections with items
 ├── SvelteKit/BackSpace/    - Web application and processing pipeline
 │   ├── scripts/            - Collection processing scripts
 │   └── src/                - SvelteKit web application
-└── Unity/CraftSpace/       - Unity 3D visualization client
+└── Unity/SpaceCraft/       - Unity 3D visualization client
     └── Assets/             - Unity project assets
 ```
 
@@ -148,7 +148,7 @@ Each collection maintains its original Internet Archive identifiers and metadata
 - [Internet Archive Integration](README-IA-INTEGRATION.md) - Detailed IA integration documentation
 - [Collections System](Collections/README.md) - Collection structure and management
 - [BackSpace Application](README-BACKSPACE.md) - SvelteKit application and processing pipeline
-- [CraftSpace Client](README-CRAFTSPACE.md) - Unity-based visualization client
+- [SpaceCraft Client](README-SpaceCraft.md) - Unity-based visualization client
 - [Visualization Techniques](README-VISUALIZATION.md) - Multi-resolution visualization approaches
 - [Data Architecture](README-DATA-ARCHITECTURE.md) - Caching and storage architecture
 - [Development Roadmap](README-TODO.md) - Planned enhancements and features

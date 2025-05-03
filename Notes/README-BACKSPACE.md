@@ -1,6 +1,6 @@
 # BackSpace SvelteKit Application
 
-The BackSpace application is the web platform component of CraftSpace, built with SvelteKit. It serves as both the host for the Unity WebGL client and the data processing pipeline for Internet Archive collections.
+The BackSpace application is the web platform component of SpaceCraft, built with SvelteKit. It serves as both the host for the Unity WebGL client and the data processing pipeline for Internet Archive collections.
 
 ## Overview
 
@@ -115,7 +115,7 @@ The system handles two types of collections:
 
 1. **Unity Client-Side Cache**:
    - Selected high-priority collections are bundled directly with the Unity WebGL build
-   - Stored in `Unity/CraftSpace/Assets/Resources/Collections/{prefix}`
+   - Stored in `Unity/SpaceCraft/Assets/Resources/Collections/{prefix}`
    - These collections are available immediately without network requests
    - The Unity build's `index.json` only includes these pre-bundled collections
    - Flag during download: `--include-in-unity=true`
@@ -332,7 +332,7 @@ The recommended deployment approach uses Digital Ocean App Platform for both sta
 
 The BackSpace pipeline generates texture atlases for book covers at multiple resolutions. These atlases pack multiple book covers into single texture files for efficient rendering in Unity. For details on atlas generation techniques and optimization strategies, see the [Texture Atlas System section in the Visualization documentation](./README-VISUALIZATION.md#texture-atlas-system).
 
-For Unity-specific details on texture atlases, gutters, and optimization techniques used in the CraftSpace renderer, see the [Unity Rendering Implementation section in the Visualization documentation](./README-VISUALIZATION.md#unity-rendering-implementation).
+For Unity-specific details on texture atlases, gutters, and optimization techniques used in the SpaceCraft renderer, see the [Unity Rendering Implementation section in the Visualization documentation](./README-VISUALIZATION.md#unity-rendering-implementation).
 
 ## Troubleshooting
 

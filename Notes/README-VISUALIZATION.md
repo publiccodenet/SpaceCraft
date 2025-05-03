@@ -1,6 +1,6 @@
-# CraftSpace Visualization Techniques
+# SpaceCraft Visualization Techniques
 
-This document provides a comprehensive overview of the visualization techniques implemented in the CraftSpace project for rendering Internet Archive collections efficiently and beautifully in 3D space.
+This document provides a comprehensive overview of the visualization techniques implemented in the SpaceCraft project for rendering Internet Archive collections efficiently and beautifully in 3D space.
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@ This document provides a comprehensive overview of the visualization techniques 
 
 ## Overview
 
-CraftSpace employs specialized visualization strategies to handle the unique challenges of rendering thousands of items simultaneously while maintaining visual recognition and performance. The system bridges traditional approaches to library browsing with cutting-edge computer graphics, enabling users to explore vast digital collections spatially, from bird's-eye views to detailed close inspection.
+SpaceCraft employs specialized visualization strategies to handle the unique challenges of rendering thousands of items simultaneously while maintaining visual recognition and performance. The system bridges traditional approaches to library browsing with cutting-edge computer graphics, enabling users to explore vast digital collections spatially, from bird's-eye views to detailed close inspection.
 
 The core visualization philosophy is based on:
 
@@ -28,7 +28,7 @@ The core visualization philosophy is based on:
 
 ## Multi-Resolution Representation System
 
-To efficiently visualize large collections while maintaining performance, CraftSpace implements a hierarchical multi-resolution approach:
+To efficiently visualize large collections while maintaining performance, SpaceCraft implements a hierarchical multi-resolution approach:
 
 ### Resolution Hierarchy
 
@@ -164,7 +164,7 @@ This approach maximizes space efficiency while ensuring immediate visualization 
 
 ## Texture Atlas System
 
-CraftSpace uses texture atlases to efficiently render large collections of items. Texture atlases combine multiple individual textures into a single larger texture, reducing draw calls and improving performance.
+SpaceCraft uses texture atlases to efficiently render large collections of items. Texture atlases combine multiple individual textures into a single larger texture, reducing draw calls and improving performance.
 
 ### Atlas Generation
 
@@ -252,7 +252,7 @@ The rendering system uses a tiered approach to materials:
 
 ### Level of Detail (LOD) Management
 
-CraftSpace implements sophisticated LOD systems:
+SpaceCraft implements sophisticated LOD systems:
 
 #### Distance-Based LOD
 
@@ -280,7 +280,7 @@ To prevent visual "popping" between LOD levels:
 
 ## Spatial Organization Models
 
-CraftSpace supports multiple visualization modes, each with specialized rendering techniques:
+SpaceCraft supports multiple visualization modes, each with specialized rendering techniques:
 
 ### 1. Library View
 
@@ -440,7 +440,7 @@ Strategies to handle vast collections efficiently:
 
 ### Rendering Performance Targets
 
-The CraftSpace visualization system is designed to handle:
+The SpaceCraft visualization system is designed to handle:
 
 | Collection Size | Target Frame Rate | Typical Memory Usage |
 |-----------------|-------------------|----------------------|
@@ -454,7 +454,7 @@ The CraftSpace visualization system is designed to handle:
 
 ### Software Emulation Integration
 
-CraftSpace incorporates software emulation capabilities to visualize and interact with historical software:
+SpaceCraft incorporates software emulation capabilities to visualize and interact with historical software:
 
 #### Emulation Framework
 
@@ -550,4 +550,4 @@ Planned improvements to the visualization system:
 
 ---
 
-The CraftSpace visualization techniques bridge traditional library browsing with cutting-edge computer graphics, enabling efficient and beautiful exploration of vast Internet Archive collections in a spatial context. 
+The SpaceCraft visualization techniques bridge traditional library browsing with cutting-edge computer graphics, enabling efficient and beautiful exploration of vast Internet Archive collections in a spatial context. 

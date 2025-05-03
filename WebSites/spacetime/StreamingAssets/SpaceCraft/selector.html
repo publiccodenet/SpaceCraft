@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>SpaceCraft Selector</title>
+    <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+    <meta name="controller-type" content="selector">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Mulish:400italic,400,600italic,600,700italic,700" rel="stylesheet">
+    
+    <!-- Shared Controller Styles -->
+    <link rel="stylesheet" href="controller.css">
+    <!-- Supabase library (Local Copy) -->
+    <script src="supabase.min.js"></script>
+    <!-- Shared Controller Logic -->
+    <script src="controller.js"></script>
+  </head>
+  <body>
+    <div class="container selector-container">
+        <h1 class="page-title">Selector</h1>
+        <p class="instructions"><strong>TAP or SWIPE left/right/up/down</strong></p>
+        
+        <div class="ship-name-display">
+            <div class="ship-name-label">Space Ship Name:</div>
+            <div id="ship-name" class="ship-name-value">Connecting...</div>
+        </div>
+        
+        <div id="status" class="status">Connecting...</div>
+        <div id="target"></div>
+    </div>
+
+    <div id="debug-panel">
+        <pre id="debug-content">Initializing...</pre>
+    </div>
+    
+    <div id="controls-bar">
+        <button id="rename-button">Change<br/>Name</button> 
+        <button id="vibration-toggle">Start<br/>Sound</button>
+        <button id="speech-toggle">Start<br/>Speech</button>
+        <button id="tilt-toggle">Start<br/>Tilting</button>
+    </div>
+  </body>
+</html> 

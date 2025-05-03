@@ -1,6 +1,6 @@
-# CraftSpace Development Roadmap
+# SpaceCraft Development Roadmap
 
-This document outlines the planned development tasks for the CraftSpace project, organized by component area and priority level. It serves as both a roadmap for future development and a tracking tool for ongoing work.
+This document outlines the planned development tasks for the SpaceCraft project, organized by component area and priority level. It serves as both a roadmap for future development and a tracking tool for ongoing work.
 
 ## Priority Levels
 

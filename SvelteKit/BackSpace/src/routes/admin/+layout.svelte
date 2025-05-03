@@ -7,7 +7,7 @@
   
   // Determine which tab is active
   $: activeTab = 
-    path === '/' ? 'craftspace' :
+    path === '/' ? 'spacecraft' :
     path === '/admin' ? 'dashboard' :
     path.startsWith('/admin/collections') ? 'collections' :
     'dashboard';
@@ -15,7 +15,7 @@
   // Handle tab click
   function handleTabClick(tabId) {
     switch(tabId) {
-      case 'craftspace':
+      case 'spacecraft':
         goto('/');
         break;
       case 'dashboard':
@@ -36,10 +36,10 @@
     
     <nav class="tab-navigation">
       <button 
-        class:active={activeTab === 'craftspace'} 
-        onclick={() => handleTabClick('craftspace')}
+        class:active={activeTab === 'spacecraft'} 
+        onclick={() => handleTabClick('spacecraft')}
       >
-        CraftSpace
+        SpaceCraft
       </button>
       <button 
         class:active={activeTab === 'dashboard'} 

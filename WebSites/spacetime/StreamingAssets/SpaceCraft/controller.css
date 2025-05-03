@@ -1,0 +1,187 @@
+/* ==========================================================================
+   SpaceCraft Controller Styles
+   Unified CSS for navigator and selector controllers
+   ========================================================================== */
+
+/* -----------------------------
+   1. Base & Reset Styles
+   ----------------------------- */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #111;
+    color: #eee;
+    font-family: 'Mulish', 'Roboto', sans-serif;
+    
+    /* Prevent mobile browser behaviors */
+    overscroll-behavior: none;
+    touch-action: none;
+    -webkit-text-size-adjust: 100%;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* -----------------------------
+   2. Layout Containers
+   ----------------------------- */
+.container {
+    padding: 20px 10px 60px;
+    padding-top: 60px;
+    text-align: center;
+}
+
+/* Target area for all pointer interactions */
+#target {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+/* -----------------------------
+   3. Typography & Text Elements
+   ----------------------------- */
+.page-title {
+    font-size: 32px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.instructions {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+}
+
+/* -----------------------------
+   4. UI Components
+   ----------------------------- */
+/* Ship name display */
+.ship-name-display {
+    text-align: center;
+    margin: 15px auto;
+    padding: 5px;
+}
+
+.ship-name-label {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.ship-name-value {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* Status display - hidden by default */
+.status {
+    display: none;
+    padding: 5px;
+    margin: 5px 0;
+    background-color: #333;
+}
+
+/* -----------------------------
+   5. Controls Bar
+   ----------------------------- */
+#controls-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 5px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+#controls-bar button {
+    flex: 1;
+    margin: 0 2px;
+    box-sizing: border-box;
+    padding: 10px 5px; 
+    height: 50px;
+    min-width: 60px;
+    font-size: 0.8em;
+    font-weight: bold;
+    font-family: "Mulish", Helvetica, sans-serif;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#controls-bar button:active {
+    background-color: #555;
+}
+
+/* Button order in the flex container */
+#rename-button { order: 1; }
+#vibration-toggle, #sound-toggle { order: 2; }
+#speech-toggle { order: 3; }
+#tilt-toggle { order: 4; }
+
+/* -----------------------------
+   6. Debug Panel
+   ----------------------------- */
+#debug-panel {
+    position: fixed;
+    bottom: 60px; /* Position above the controls bar */
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #0F0;
+    padding: 10px;
+    font-size: 13px;
+    font-family: "Mulish", monospace;
+    z-index: 100;
+    height: auto;
+    max-height: 30vh;
+    overflow-y: auto;
+}
+
+#debug-panel pre {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    font-family: "Mulish", monospace;
+}
+
+.debug-section {
+    font-family: monospace;
+    line-height: 1.3;
+}
+
+/* -----------------------------
+   7. Controller-Specific Styles
+   ----------------------------- */
+/* Navigator cursor style */
+.navigator-container #target {
+    cursor: move;
+}
+
+/* Selector cursor style */
+.selector-container #target {
+    cursor: pointer;
+} 

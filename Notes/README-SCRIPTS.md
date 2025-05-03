@@ -1,314 +1,380 @@
-# CraftSpace Scripts
+# SpaceCraft Scripts
 
-This document provides an overview of the various scripts used throughout the CraftSpace project, with a focus on build tools, data processing, and automation.
+This document provides an overview of our approach to command-line scripts in the SpaceCraft project, including conventions, architecture decisions, and usage patterns.
 
-## Overview
+## Script Philosophy
 
-CraftSpace uses a collection of scripts to manage:
+Our CLI scripts follow these core principles:
 
-1. **Content Processing** - Downloading and transforming Internet Archive content
-2. **Build Automation** - Compiling and packaging application components
-3. **Deployment** - Publishing content to various platforms
-4. **Development Utilities** - Tools that simplify the development workflow
+1. **JavaScript First**: Scripts are written in JavaScript but executed with tsx
+2. **Consistent Naming**: Singular-noun-first convention (e.g., `schemas-export.js`, not `export-schemas.js`)
+3. **Direct Imports**: Scripts import TypeScript code directly using tsx
+4. **Explicit Paths**: Constants define all project paths centrally
+5. **Standalone Operation**: Each script can run independently
+6. **Consistent Commands**: npm script names match file names (e.g., `npm run schemas:export` runs `schemas-export.js`)
 
-## TypeScript Build System
+## Script Architecture
 
-The project uses TypeScript for all scripting to ensure type safety and maintainability. The core build configuration is located in `SvelteKit/BackSpace/scripts/tsconfig.json`.
-
-### TypeScript Configuration
-
-The TypeScript configuration (`tsconfig.json`) is set up for modern ES modules:
-
-```json
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "outDir": "../dist/scripts",
-    "sourceMap": true,
-    "declaration": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": ["./**/*.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
-}
-```
-
-### Build Scripts System
-
-The script build process is coordinated by `build-scripts.ts`, which handles:
-
-1. Compilation of TypeScript files to JavaScript
-2. Management of dependencies
-3. Integration with the main SvelteKit build process
-
-## Core Script Categories
-
-### 1. Internet Archive Integration Scripts
-
-Located in `SvelteKit/BackSpace/scripts/`, these handle all interaction with Internet Archive:
-
-- **ia-collections-registry.js**: Manages collection registration and discovery
-- **ia-collection-downloader.js**: Downloads content from Internet Archive
-- **ia-process-collections.js**: Processes downloaded collections
-- **ia-unity-export.js**: Prepares collections for Unity integration
-
-### 2. Content Processing Scripts
-
-Scripts that transform raw content into optimized formats:
-
-- **process-epub.js**: Extracts metadata and content from EPUB files
-- **process-pdf.js**: Handles PDF content extraction and thumbnail generation
-- **generate-atlases.js**: Creates texture atlases for Unity visualization
-- **generate-icons.js**: Generates low-resolution icons for distant viewing
-
-### 3. Build and Deployment Scripts
-
-Scripts for building and deploying various components:
-
-- **build-unity.js**: Builds and prepares Unity WebGL output
-- **build-sveltekit.js**: Builds the SvelteKit application
-- **deploy-cdn.js**: Uploads processed collections to CDN
-- **deploy-app.js**: Deploys the complete application
-
-### 4. Utility Scripts
-
-Common utilities used across multiple scripts:
-
-- **download-manager.js**: Manages concurrent downloads with rate limiting
-- **file-processor.js**: Common file operations and transformations
-- **logger.js**: Consistent logging system
-- **cache-manager.js**: Handles caching of downloaded and processed content
-
-## NPM Script Commands
-
-The project defines convenience commands in `package.json` for common operations:
-
-```bash
-# Internet Archive Collection Management
-npm run ia:list                 # List all registered collections
-npm run ia:get <prefix>         # Get details for a specific collection
-npm run ia:register <...args>   # Register a new collection
-npm run ia:unregister <prefix>  # Unregister a collection
-npm run ia:scan                 # Scan collections directory
-
-# Content Processing
-npm run ia:download <...args>   # Download a collection from Internet Archive
-npm run ia:process              # Process collections incrementally
-npm run ia:process-full         # Process all collections from scratch
-npm run ia:process-unity        # Process and export to Unity
-
-# Build Commands
-npm run build:scripts           # Build TypeScript scripts
-npm run build:unity             # Build Unity WebGL project
-npm run build:all               # Build everything
-```
-
-## Script Directory Structure
-
-The scripts are organized within the `SvelteKit/BackSpace/scripts/` directory:
+### Project Structure
 
 ```
-scripts/
-├── ia/                      # Internet Archive integration scripts
-│   ├── collections-registry.ts
-│   ├── collection-downloader.ts
-│   └── process-collections.ts
-├── processing/              # Content processing scripts
-│   ├── process-epub.ts
-│   ├── process-pdf.ts
-│   └── generate-atlases.ts
-├── utils/                   # Utility functions and helpers
-│   ├── download-manager.ts
-│   ├── file-processor.ts
-│   └── logger.ts
-├── build/                   # Build automation scripts
-│   ├── build-unity.ts
-│   └── build-sveltekit.ts
-└── deploy/                  # Deployment scripts
-    ├── deploy-cdn.ts
-    └── deploy-app.ts
+SvelteKit/BackSpace/
+├── scripts/
+│   ├── base-command.js         # Base class for all CLI commands
+│   ├── collection-*.js         # Collection management scripts
+│   ├── item-*.js               # Item management scripts
+│   ├── schemas-*.js            # Schema management scripts
+│   ├── content-*.js            # Content system scripts
+│   └── unity-*.js              # Unity integration scripts
+└── src/
+    └── lib/
+        ├── constants/          # Shared constants including paths
+        ├── schemas/            # Zod schemas (TypeScript)
+        └── ...
 ```
 
-## Common Workflows
+### Naming Convention: Bigendian Style
 
-### Adding a New Collection
+We use a "bigendian" naming style, meaning:
 
-```bash
-# Register collection
-npm run ia:register scifi "Science Fiction" "subject:science fiction" --include-in-unity
+- Noun first, then verb (`item-fetch.js` not `fetch-item.js`)
+- This ensures all scripts with the same noun are grouped together in file listings
+- Always use singular nouns for consistency (`collection-list.js`, not `collections-list.js`)
+- Hyphen-separated instead of camelCase for file names
+- Corresponding npm scripts use colon syntax: `npm run item:fetch`
 
-# Download and process
-npm run ia:process -- --collection=scifi
+Examples:
+- 🔑 `schemas-export.js` → `npm run schemas:export`
+- 🔑 `item-fetch.js` → `npm run item:fetch`
+- 🔑 `collection-list.js` → `npm run collection:list`
 
-# Export to Unity
-npm run ia:process -- --collection=scifi --unity-export
+### Script Categories
+
+Our scripts are organized into functional categories:
+
+1. **Schema Management**
+   - `schemas-export.js`: Export Zod schemas to JSON Schema format
+   - `schemas-copy.js`: Copy schema files to Unity project
+
+2. **Collection Management**
+   - `collection-create.js`: Create new collections
+   - `collection-list.js`: List available collections
+   - `collection-process.js`: Process collections with Internet Archive data
+
+3. **Item Management**
+   - `item-create.js`: Create new items
+   - `item-fetch.js`: Fetch items from Internet Archive
+   - `item-manage.js`: Manage existing items
+
+4. **Unity Integration**
+   - `unity-install.js`: Install Unity WebGL build to static directory
+
+5. **System Management**
+   - `content-init.js`: Initialize content system
+   - `content-info.js`: Display content system information
+
+## Common Command Line Arguments
+
+All scripts support a consistent set of command line options:
+
+| Option | Description | Present in |
+|--------|-------------|------------|
+| `-v, --verbose` | Show verbose output | All scripts |
+| `-j, --json` | Output as JSON | All scripts |
+| `-f, --force` | Force operation (overwrite) | Create/update scripts |
+| `--path <dir>` | Custom directory path | File operations |
+| `-c, --concurrency <num>` | Number of concurrent operations | Batch processing |
+| `--download` | Download content | Content scripts |
+| `--process` | Process content | Collection/item scripts |
+
+Examples:
+```
+# List collections with verbose output
+npm run collection:list -- --verbose
+
+# Export schemas and output as JSON
+npm run schemas:export -- --json
+
+# Create item with force overwrite
+npm run item:create -- --force
 ```
 
-### Updating Existing Collections
+## Importing TypeScript from JavaScript
 
-```bash
-# Update all collections incrementally
-npm run ia:process
+Our scripts import TypeScript code directly without a build step, using Node.js with loaders.
 
-# Force refresh of specific collection
-npm run ia:process -- --collection=poetry --force-refresh
+### Why this approach?
 
-# Update Unity export
-npm run sync-unity-collections
+We evaluated several approaches:
+
+1. **TypeScript Scripts with tsx**: Initially tested but had issues with path resolution.
+2. **TypeScript with ts-node**: Had compatibility issues with ESM imports.
+3. **Pre-build TypeScript to JavaScript**: Added complexity with build steps.
+4. **JavaScript executed with tsx**: Simplest solution with highest developer experience.
+
+We chose JavaScript scripts executed with tsx because:
+- **Simplicity**: No build step needed
+- **Developer Experience**: Direct imports from source for easy debugging
+- **Consistency**: All scripts follow the same pattern
+- **Maintenance**: Easier to maintain without TypeScript overhead in scripts
+
+## Path Constants
+
+All file paths are defined in `src/lib/constants/paths.ts`:
+
 ```
-
-### Full Rebuild
-
-```bash
-# Full content pipeline
-npm run ia:process-full
-
-# Build all application components
-npm run build:all
-```
-
-## Script Development Guidelines
-
-When developing or modifying scripts:
-
-1. **Use TypeScript**: All new scripts should be written in TypeScript
-2. **ES Modules**: Use ESM syntax (`import`/`export`) rather than CommonJS
-3. **Async/Await**: Prefer async/await over callbacks or promise chains
-4. **Error Handling**: Implement proper error handling with graceful fallbacks
-5. **Logging Levels**: Use appropriate logging levels (info, warn, error, debug)
-6. **Configuration**: Accept configuration via both CLI flags and config files
-7. **Testing**: Add test coverage for critical functionality
-
-## Common Implementation Patterns
-
-### Command Processing Pattern
-
-Most CLI scripts follow this pattern:
-
-```typescript
-// Define command structure
-const commands = {
-  list: { description: "List all collections", handler: listCollections },
-  get: { description: "Get collection details", handler: getCollection },
-  // ...
-};
-
-// Process command line arguments
-const args = process.argv.slice(2);
-const command = args[0];
-
-if (commands[command]) {
-  commands[command].handler(args.slice(1));
-} else {
-  showHelp();
-}
-```
-
-### Configuration Loading Pattern
-
-Scripts typically load configuration from multiple sources:
-
-```typescript
-// Load configuration with precedence:
-// 1. Command line arguments
-// 2. Environment variables
-// 3. Configuration files
-// 4. Default values
-const config = {
-  ...defaultConfig,
-  ...loadConfigFromFile(configPath),
-  ...parseEnvironmentVars(),
-  ...parseCommandLineArgs(args)
-};
-```
-
-### Concurrent Processing Pattern
-
-For operations on multiple items:
-
-```typescript
-// Process items with concurrency control
-async function processItems(items, concurrency = 5) {
-  const queue = new Queue(concurrency);
+// src/lib/constants/paths.ts
+export const PATHS = {
+  // Root paths (only REPO_ROOT should have ROOT in the name)
+  REPO_ROOT,
+  SVELTEKIT_DIR,
+  UNITY_DIR,
+  CONTENT_DIR,
   
-  for (const item of items) {
-    await queue.add(() => processItem(item));
+  // Unity paths
+  SPACECRAFT_DIR,
+  SPACECRAFT_SCHEMAS_DIR,
+  SPACECRAFT_RESOURCES_DIR,
+  SPACECRAFT_SCRIPTS_DIR,
+  SPACECRAFT_EDITOR_DIR,
+  SPACECRAFT_CONTENT_DIR,
+  SPACECRAFT_COLLECTIONS_DIR,
+  SPACECRAFT_CONTENT_SCHEMAS_DIR,
+  SPACECRAFT_GENERATED_SCHEMAS_DIR,
+  BUILD_DIR,
+  STATIC_DIR,
+  THUMBNAILS_DIR,
+};
+```
+
+Scripts import these constants to ensure path consistency:
+
+```
+// In any script
+import { PATHS } from '../src/lib/constants/index.ts';
+
+const schemasDir = PATHS.SPACECRAFT_SCHEMAS_DIR;
+```
+
+## Running Scripts
+
+Scripts are run via npm:
+
+```
+# Schema management
+npm run schemas:export       # Export schemas to JSON format
+npm run schemas:copy         # Copy schemas to Unity
+npm run schemas:update-all   # Run export and copy in sequence
+
+# Collection management
+npm run collection:list     # List all collections
+npm run collection:create   # Create a new collection
+
+# Item management
+npm run item:fetch          # Fetch items from Internet Archive
+npm run item:create         # Create a new item manually
+```
+
+### npm Script Naming Convention
+
+npm script names follow this pattern:
+- `noun:verb` format (e.g., `schemas:export`)
+- Singular nouns, not plural (e.g., `item:fetch`, not `items:fetch`)
+- Commands match file names consistently (e.g., `schemas:export` → `schemas-export.js`)
+
+## BaseCommand Framework
+
+Most scripts extend the `BaseCommand` class which provides:
+
+```
+// Example script using BaseCommand
+import { BaseCommand } from './base-command.js';
+
+class MyCommand extends BaseCommand {
+  constructor() {
+    super('my-command', 'Description of command');
+    
+    // Set up command options
+    this.program
+      .option('-o, --option', 'Some option')
+      .action(this.execute.bind(this));
   }
   
-  await queue.onIdle();
+  async execute(options) {
+    // Command implementation
+    this.success('Command completed!');
+  }
 }
+
+// Run command
+new MyCommand().parse();
 ```
 
 ## Debugging Scripts
 
-For troubleshooting script issues:
+When debugging scripts:
 
-1. **Enable Verbose Logging**:
+1. Run with Node directly for better error messages:
    ```bash
-   npm run ia:process -- --verbose
+   node scripts/schemas-export.js
    ```
 
-2. **Run in Test Mode**:
-   ```bash
-   npm run ia:process -- --dry-run
+2. Add console logs for debugging:
+   ```javascript
+   console.log('Debug:', someVariable);
    ```
 
-3. **Examine Logs**:
-   Log files are stored in the `logs/` directory with timestamps
-
-4. **Check Environment Variables**:
-   Verify values in `.env` file or using:
+3. Check imports if you encounter module errors:
    ```bash
-   npm run env-check
+   grep -r "from '" --include="*.js" scripts/
    ```
 
-5. **Single-Step Processing**:
-   Process a single item for testing:
-   ```bash
-   npm run ia:process -- --collection=scifi --item=item123 --debug
-   ```
+## Extending Scripts
 
-## Integration with CI/CD
+When adding new scripts:
 
-These scripts integrate with GitHub Actions workflows for automated processing:
+1. Follow the naming convention: `noun-verb.js` (bigendian)
+2. Update package.json with a matching npm script: `noun:verb`
+3. Use the BaseCommand class for consistent behavior
+4. Import constants from `src/lib/constants/index`
+5. Place in the appropriate category in the scripts directory
 
-- **update-collections.yml**: Scheduled collection updates
-- **build-deploy.yml**: Build and deployment process
+## Schema Pipeline
 
-Complete reference for CI/CD is available in [../.github/README-DOT-GITHUB.md](../.github/README-DOT-GITHUB.md).
+The schema pipeline is a key workflow:
 
-## Performance Considerations
+1. `schemas-export.js` converts Zod schemas to JSON Schema
+2. `schemas-copy.js` copies schemas to Unity
+3. Unity's SchemaImporter converts schemas to C# classes
 
-When running scripts on large collections:
+```
+Zod Schemas (TS) → JSON Schemas → C# Classes
+```
 
-1. **Adjust Concurrency**: Set appropriate concurrency levels based on available resources:
-   ```bash
-   npm run ia:process -- --concurrent-items=3 --concurrent-downloads=5
-   ```
+### JSON Schema Format for Unity
 
-2. **Batch Processing**: Process collections in smaller batches:
-   ```bash
-   npm run ia:process -- --batch-size=50 --offset=100
-   ```
+When exporting Zod schemas to JSON Schemas, we apply specific formatting to ensure proper C# class generation:
 
-3. **Resource Monitoring**: Use the monitoring tools to check resource usage:
-   ```bash
-   npm run monitor:resources
-   ```
+```javascript
+const jsonSchema = zodToJsonSchema(schema, {
+  name,
+  $refStrategy: 'none',
+  definitions: true,   // Include type definitions
+  target: 'openApi3',  // Target OpenAPI 3.0 format for better compatibility
+  strictUnions: true   // Handle unions properly
+});
 
-## Planned Script Enhancements
+// Enhance schema with additional metadata for Unity
+jsonSchema.$schema = 'http://json-schema.org/draft-07/schema#';
+jsonSchema.additionalProperties = false;
+jsonSchema.description = `Schema for ${name}`;
+```
 
-Future improvements to the script system include:
+This formatting ensures:
 
-1. **Workflow Orchestration**: Better coordination between script steps
-2. **Incremental Processing**: More granular change detection
-3. **Progress Reporting**: Enhanced status updates and progress bars
-4. **Recovery Mechanisms**: Better handling of interruptions and restarts
+1. **Proper Property Types**: All properties have correct types that map to C# types
+2. **Descriptive Metadata**: Descriptions map to C# XML comments
+3. **Strict Type Handling**: Union types and optional properties are handled correctly
 
-The script system is designed to be modular and extensible, allowing for continuous improvement and adaptation to evolving requirements. 
+### Schema Debugging
+
+We provide several tools for debugging the schema pipeline:
+
+1. **Schema Debug Script**: `npm run schemas:debug` checks for schema correctness
+2. **Unity Import Tester**: `SchemaImportTest.cs` validates schema import in Unity
+3. **Environment Debug Flag**: `DEBUG=true npm run schemas:export` for detailed output
+
+When a schema isn't generating proper C# classes, you can:
+
+```bash
+# Check the schema structure and validation
+npm run schemas:debug
+
+# Export with debugging enabled
+DEBUG=true npm run schemas:export
+
+# In Unity, run the Schema Import Test from the SpaceCraft menu
+```
+
+### Common Schema Issues
+
+When working with the schema pipeline, watch for these issues:
+
+1. **Missing Properties**: Ensure all Zod schema properties are being exported
+2. **Type Conversion**: Some TypeScript types might not map cleanly to C#
+3. **Union Types**: Zod unions can be tricky to represent in JSON Schema and C#
+4. **Required Fields**: Make sure required fields are properly marked
+
+The npm script `schemas:update-all` runs the complete pipeline.
+
+## Script Implementation Approach
+
+### TypeScript in JavaScript Integration
+
+We evaluated several approaches for scripts that need to access TypeScript code:
+
+| Approach | Description | Outcome |
+|----------|-------------|---------|
+| Scripts in TypeScript | Write CLI scripts in TypeScript | Path resolution issues with `ts-node` |
+| JavaScript with direct imports | Import TypeScript directly in JavaScript | Module resolution errors |  
+| **JavaScript with tsx runner** | Write in JavaScript but execute with tsx | **✅ Working solution** |
+| Build TypeScript to JavaScript | Pre-compile TypeScript to JavaScript | Adds complexity, separate build step |
+
+The current solution:
+
+1. Write scripts in JavaScript
+2. Use explicit `.ts` extensions in import paths
+3. Execute with the `tsx` runner
+4. Use JSDoc in JavaScript for type documentation
+
+Example:
+
+```javascript
+// In JavaScript script
+import { SomeType } from '../src/lib/types.ts';
+
+/**
+ * @param {SomeType} options
+ */
+function doSomething(options) {
+  // Implementation
+}
+```
+
+### Logging & Debugging Strategy
+
+We use a multi-tier logging approach:
+
+1. **CLI Output**: Colorful terminal output with emoji indicators
+2. **JSON Mode**: All scripts support `--json` for machine-readable output
+3. **Verbose Mode**: Additional details with `--verbose`
+4. **Debug Environment Variable**: `DEBUG=true` for development diagnostics
+
+The BaseCommand class implements the standard logging patterns.
+
+Key Path Constants
+
+| Constant | Description | Path (relative to REPO_ROOT) |
+|----------|-------------|------------------------------|
+| `REPO_ROOT` | Root of the monorepo | `.` |
+| `SVELTEKIT_DIR` | Directory containing SvelteKit projects | `SvelteKit` |
+| `UNITY_DIR` | Directory containing Unity projects | `Unity` |
+| `CONTENT_DIR` | Directory containing shared content | `Content` |
+| `BACKSPACE_DIR` | BackSpace project directory | `SvelteKit/BackSpace` |
+| `SPACECRAFT_DIR` | SpaceCraft Unity project directory | `Unity/SpaceCraft` |
+| `COLLECTIONS_DIR` | Collections data in Content directory | `Content/collections` |
+| `SCHEMAS_DIR` | Shared schemas in Content directory | `Content/schemas` |
+| `CACHE_DIR` | Cache storage in Content directory | `Content/cache` |
+| `EXPORTS_DIR` | Exports output in Content directory | `Content/exports` |
+| `SPACECRAFT_ASSETS_DIR` | Unity Assets directory | `Unity/SpaceCraft/Assets` |
+| `SPACECRAFT_SCHEMAS_DIR` | Unity schema import directory | `Unity/SpaceCraft/Assets/Schemas` |
+| `SPACECRAFT_SCRIPTS_DIR` | Unity scripts directory | `Unity/SpaceCraft/Assets/Scripts` |
+| `SPACECRAFT_RESOURCES_DIR` | Unity resources directory | `Unity/SpaceCraft/Assets/Resources` |
+| `SPACECRAFT_EDITOR_DIR` | Unity editor scripts directory | `Unity/SpaceCraft/Assets/Editor` |
+| `SPACECRAFT_CONTENT_DIR` | Unity mirror of Content | `Unity/SpaceCraft/Assets/Resources/Content` |
+| `SPACECRAFT_COLLECTIONS_DIR` | Unity mirror of collections | `Unity/SpaceCraft/Assets/Resources/Content/collections` |
+| `SPACECRAFT_CONTENT_SCHEMAS_DIR` | Unity mirror of schemas | `Unity/SpaceCraft/Assets/Resources/Content/schemas` |
+| `SPACECRAFT_GENERATED_SCHEMAS_DIR` | Generated C# schema classes | `Unity/SpaceCraft/Assets/Scripts/Models/Generated` |
+| `BUILD_DIR` | Unity build output directory | `Unity/SpaceCraft/Build` |
+| `STATIC_DIR` | SvelteKit static assets directory | `SvelteKit/BackSpace/static` |
+| `THUMBNAILS_DIR` | Collection thumbnails directory | `SvelteKit/BackSpace/static/thumbnails` |

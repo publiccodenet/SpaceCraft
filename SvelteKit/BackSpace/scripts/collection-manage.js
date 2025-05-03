@@ -5,7 +5,7 @@
  * This script provides command-line access to the ContentManager functionality
  * for managing Internet Archive collections within BackSpace.
  * 
- * These collections can then be exported for use in the CraftSpace Unity client.
+ * These collections can then be exported for use in the SpaceCraft Unity client.
  * 
  * This script can be used:
  * 
@@ -267,7 +267,7 @@ program
       
       const stats = contentManager.getStats();
       
-      console.log('CraftSpace Content Statistics:');
+      console.log('SpaceCraft Content Statistics:');
       console.log(`- Total Collections: ${stats.totalCollections}`);
       console.log(`- Total Items: ${stats.totalItems}`);
       console.log(`- Average Items Per Collection: ${stats.averageItemsPerCollection.toFixed(2)}`);
