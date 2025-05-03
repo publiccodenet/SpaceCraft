@@ -3,7 +3,7 @@
  * Install Unity WebGL build into the SvelteKit static directory
  * 
  * Usage:
- * npm run install-unity -- --app craftspace --source /path/to/unity/build --clean
+ * npm run install-unity -- --app spacecraft --source /path/to/unity/build --clean
  */
 import { Command } from 'commander';
 import fs from 'fs-extra';
@@ -16,12 +16,12 @@ const program = new Command();
 program
   .name('install-unity')
   .description('Install Unity WebGL build into SvelteKit static directory')
-  .requiredOption('--app <name>', 'App name (e.g., craftspace)')
+  .requiredOption('--app <name>', 'App name (e.g., spacecraft)')
   .requiredOption('--source <path>', 'Source build directory')
   .option('--clean', 'Clean target directory before copying', false)
   .action(async (options) => {
     const sourcePath = path.resolve(options.source);
-    const targetDir = path.join(PATHS.STATIC_DIR, 'craftspace');
+    const targetDir = path.join(PATHS.STATIC_DIR, 'spacecraft');
     
     console.log(chalk.blue(`Installing Unity build for ${options.app}`));
     console.log(`Source: ${sourcePath}`);

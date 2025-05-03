@@ -37,6 +37,6 @@ jobs:
         with:
           context: ./SvelteKit/BackSpace
           push: true
-          tags: simhacker/craftspace:latest,simhacker/craftspace:${{ github.sha }}
-          cache-from: type=registry,ref=simhacker/craftspace:buildcache
-          cache-to: type=registry,ref=simhacker/craftspace:buildcache,mode=max 
+          tags: simhacker/spacecraft:latest,simhacker/spacecraft:${{ github.sha }}
+          cache-from: type=registry,ref=simhacker/spacecraft:buildcache
+          cache-to: type=registry,ref=simhacker/spacecraft:buildcache,mode=max 

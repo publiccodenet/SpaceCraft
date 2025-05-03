@@ -1,14 +1,14 @@
 <script lang="ts">
-  import CraftSpace from '$lib/components/CraftSpace.svelte';
+  import SpaceCraft from '$lib/components/SpaceCraft.svelte';
 </script>
 
 <svelte:head>
-  <title>CraftSpace</title>
+  <title>SpaceCraft</title>
   <meta name="description" content="BackSpace interactive content explorer for Internet Archive collections" />
 </svelte:head>
 
-<CraftSpace 
-  appName="craftspace"
+<SpaceCraft 
+  appName="spacecraft"
   fullPage={true}
   backgroundColor="var(--color-background)"
 />

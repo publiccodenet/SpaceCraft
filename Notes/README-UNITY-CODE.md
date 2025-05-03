@@ -1,4 +1,4 @@
-# CraftSpace Unity Code Structure
+# SpaceCraft Unity Code Structure
 
 ## Core Architecture
 
@@ -10,7 +10,7 @@
 
 ## Development Environment Setup
 
-Before starting development on the Unity portion of CraftSpace, set up your IDE with the following extensions for a more productive workflow:
+Before starting development on the Unity portion of SpaceCraft, set up your IDE with the following extensions for a more productive workflow:
 
 ### Visual Studio & Visual Studio Code
 
@@ -139,7 +139,7 @@ Unity's built-in JSON utilities (`JsonUtility`) have significant limitations tha
 - **Limited error reporting** when deserialization fails
 - **No dynamic JSON navigation** capabilities
 
-For these reasons, we use Newtonsoft.Json (JSON.net) throughout CraftSpace:
+For these reasons, we use Newtonsoft.Json (JSON.net) throughout SpaceCraft:
 
 ```csharp
 // DO NOT USE:

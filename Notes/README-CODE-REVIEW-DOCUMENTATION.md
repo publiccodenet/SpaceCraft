@@ -5,31 +5,31 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
 ## `README.md` (root)
 
 *   **Purpose**: Main project overview, executive summary, architecture overview, key innovations, repository structure, getting started.
-*   **Content Quality**: Good high-level overview. Introduces the core components (BackSpace, CraftSpace) and pipeline.
-*   **Redundancy**: Contains a high-level architecture diagram and component description also found in other documentation files (e.g., `README-BACKSPACE.md`, `README-CRAFTSPACE.md`). Some overlap with `README-PHILOSOPHY.md` regarding vision.
+*   **Content Quality**: Good high-level overview. Introduces the core components (BackSpace, SpaceCraft) and pipeline.
+*   **Redundancy**: Contains a high-level architecture diagram and component description also found in other documentation files (e.g., `README-BACKSPACE.md`, `README-SPACECRAFT.md`). Some overlap with `README-PHILOSOPHY.md` regarding vision.
 *   **Suggestions**:
     *   Keep this as the main entry point and high-level overview.
-    *   Ensure it links clearly to the more detailed component READMEs (`README-BACKSPACE.md`, `README-CRAFTSPACE.md`, `README-VISUALIZATION.md`, `README-IA-INTEGRATION.md`).
+    *   Ensure it links clearly to the more detailed component READMEs (`README-BACKSPACE.md`, `README-SPACECRAFT.md`, `README-VISUALIZATION.md`, `README-IA-INTEGRATION.md`).
     *   Potentially shorten the architecture overview here and rely more on links to detailed docs.
     *   The 'Key Innovations' section overlaps heavily with `README-VISUALIZATION.md`. Consider summarizing here and linking.
     *   'Future Directions' overlaps with `README-TODO.md`. Link to `README-TODO.md` for details.
-    *   The 'Getting Started' section is good but could link to more detailed setup guides if they exist (e.g., specific setup for BackSpace or CraftSpace development).
+    *   The 'Getting Started' section is good but could link to more detailed setup guides if they exist (e.g., specific setup for BackSpace or SpaceCraft development).
 *   **Location**: Correctly placed at the root.
 
 ## `README-SCHEMAS.md` (root)
 
 *   **Purpose**: Describes the schema system (Zod -> JSON Schema -> C#), pipeline, safety rules, key models, best practices, IA metadata handling, `extraFields`, update workflow.
 *   **Content Quality**: Very detailed and crucial for understanding the cross-platform data modeling. Explains the core pipeline well, including the nuances of WebGL compatibility and the `extraFields` mechanism.
-*   **Redundancy**: Contains significant overlap with sections in `Unity/CraftSpace/README-SCHEMAS.md`. The content appears nearly identical in structure and detail, covering the pipeline, base classes, view system, types/converters, directory structure, best practices, and schema evolution.
+*   **Redundancy**: Contains significant overlap with sections in `Unity/SpaceCraft/README-SCHEMAS.md`. The content appears nearly identical in structure and detail, covering the pipeline, base classes, view system, types/converters, directory structure, best practices, and schema evolution.
 *   **Suggestions**:
     *   **Merge**: This file should be the Single Source of Truth (SSOT) for the *overall* schema system philosophy and pipeline across all platforms (TS, JSON, C#).
-    *   The content currently duplicated in `Unity/CraftSpace/README-SCHEMAS.md` should be removed from the Unity version.
-    *   The Unity-specific README (`Unity/CraftSpace/README-SCHEMAS.md`) should focus *only* on Unity-specific implementation details *not* covered here, like the exact usage of `SchemaGeneratedObject`, the `Brewster` registry interaction, specifics of the C# generation *tool* (`SchemaGenerator.cs`), and how the *manual* C# classes (`Item.cs`, `Collection.cs`) extend the generated ones. It seems `Unity/CraftSpace/README-SCHEMAS.md` might be redundant if `README-UNITY-CODE.md` or `README-UNITY-IMPLEMENTATION.md` cover the Unity side adequately.
+    *   The content currently duplicated in `Unity/SpaceCraft/README-SCHEMAS.md` should be removed from the Unity version.
+    *   The Unity-specific README (`Unity/SpaceCraft/README-SCHEMAS.md`) should focus *only* on Unity-specific implementation details *not* covered here, like the exact usage of `SchemaGeneratedObject`, the `Brewster` registry interaction, specifics of the C# generation *tool* (`SchemaGenerator.cs`), and how the *manual* C# classes (`Item.cs`, `Collection.cs`) extend the generated ones. It seems `Unity/SpaceCraft/README-SCHEMAS.md` might be redundant if `README-UNITY-CODE.md` or `README-UNITY-IMPLEMENTATION.md` cover the Unity side adequately.
     *   Consider renaming this to `README-DATA-MODELING.md` or `README-SCHEMA-SYSTEM.md` for clarity if it becomes the main document.
     *   Ensure clear links *from* Unity documentation back to this main schema document.
 *   **Location**: Keep at the root as it describes a system spanning multiple components (BackSpace, Unity, Content).
 
-## `Unity/CraftSpace/README-UNITY-BRIDGE.md`
+## `Unity/SpaceCraft/README-UNITY-BRIDGE.md`
 
 *   **Purpose**: Explains the communication bridge between Unity and JavaScript (JS), covering architecture, setup, JSON integration (`BridgeJsonConverter`), the Interest Query System, Path Expressions, JS API, best practices, and troubleshooting.
 *   **Content Quality**: Detailed explanation of a complex but crucial system. The Interest Query System and Path Expressions sections are particularly valuable.
@@ -39,9 +39,9 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Ensure `README-UNITY-OVERVIEW.md` links here for detailed bridge information.
     *   Clarify the relationship between `BridgeJsonConverter` and the main schema serialization/deserialization (`SchemaGeneratedObject`, `Newtonsoft.Json`). Are they used together? Does the bridge converter handle types not covered by the schema system?
     *   The "Setup Guide" section seems slightly misplaced if it's just about setting up the *Bridge component* in a scene. Consider merging this setup detail into `README-UNITY-IMPLEMENTATION.md` or `README-UNITY-CODE.md` (scene setup section) and keeping this README focused on the *concepts* and *API* of the bridge.
-*   **Location**: Should remain within the `Unity/CraftSpace/` directory as it's Unity-specific.
+*   **Location**: Should remain within the `Unity/SpaceCraft/` directory as it's Unity-specific.
 
-## `Unity/CraftSpace/README-UnITY-BRIDGE-SETUP.md`
+## `Unity/SpaceCraft/README-UnITY-BRIDGE-SETUP.md`
 
 *   **Purpose**: Unknown, appears to be a stub or accidental file.
 *   **Content Quality**: Empty (contains only a space).
@@ -50,7 +50,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Delete**: This file is empty and serves no purpose. Any relevant setup information should be in `README-UNITY-BRIDGE.md` or `README-UNITY-IMPLEMENTATION.md`.
 *   **Location**: N/A (to be deleted).
 
-## `Unity/CraftSpace/README-UNITY-CINEMACHINE.md`
+## `Unity/SpaceCraft/README-UNITY-CINEMACHINE.md`
 
 *   **Purpose**: Describes the Cinemachine camera system implementation, design philosophy, camera types (Overview, Browse, Detail, Magic Carpet), device motion integration, collaborative control, effects, performance, and resolution-aware zoom/projection blending.
 *   **Content Quality**: Very detailed on the camera system's features and philosophy. The sections on resolution-aware zoom, projection blending, and motion-based zoom are particularly innovative and well-explained.
@@ -60,9 +60,9 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Ensure `README-UNITY-NAVIGATION.md` focuses on the *user control* and *mechanics* of moving through space, explaining *how* it utilizes the cameras defined here (e.g., switching between Browse and Detail cams based on context).
     *   Consolidate the collaborative camera control aspects here or in `README-UNITY-COLLABORATIVE.md`, but avoid duplicating the explanation. Perhaps this file describes the *capability* and the collaborative file describes the *specific implementation/experience*.
     *   The resolution-aware zoom and projection blending sections are excellent and seem specific to the camera system, so they belong here.
-*   **Location**: Correctly placed within `Unity/CraftSpace/`.
+*   **Location**: Correctly placed within `Unity/SpaceCraft/`.
 
-## `Unity/CraftSpace/README-UNITY-COLLABORATIVE.md`
+## `Unity/SpaceCraft/README-UNITY-COLLABORATIVE.md`
 
 *   **Purpose**: Describes collaborative features: Tandem Magic Carpet navigation, Admiration Marking ("Curination"), financial appreciation, social dynamics, technical implementation, UX, and input mechanics.
 *   **Content Quality**: Good description of unique collaborative concepts, particularly the "Curination" idea and its inspiration. Explains the social and financial aspects well.
@@ -72,9 +72,9 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Alternatively, keep this as the main "Collaboration Features" doc, but significantly trim down the navigation mechanics explanation here and link to the Cinemachine/Navigation docs for details.
     *   The "Curination" concept is unique and well-explained; keep that part.
     *   Consider if the "Financial Appreciation Mechanisms" belong here or in a higher-level design document.
-*   **Location**: Correctly placed within `Unity/CraftSpace/`.
+*   **Location**: Correctly placed within `Unity/SpaceCraft/`.
 
-## `Unity/CraftSpace/README-UNITY-COLLECTIONLAYOUT-PREFAB.md`
+## `Unity/SpaceCraft/README-UNITY-COLLECTIONLAYOUT-PREFAB.md`
 
 *   **Purpose**: Provides brief instructions on how to create the `CollectionLayoutPrefab` GameObject in Unity, including required components (`CollectionGridLayout`) and basic configuration.
 *   **Content Quality**: Very minimal, essentially a short setup note.
@@ -84,7 +84,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Delete this file after merging its content.
 *   **Location**: N/A (to be deleted/merged).
 
-## `Unity/CraftSpace/README-UNITY-IMPLEMENTATION.md`
+## `Unity/SpaceCraft/README-UNITY-IMPLEMENTATION.md`
 
 *   **Purpose**: A comprehensive guide to the Unity implementation, covering architecture (Model-View-Renderer), core components (`Brewster`, `CollectionBrowserManager`), View System (`IModelView`, `CollectionView`, `ItemViewsContainer`, `ItemView`, `ViewFactory`), Layout System (`CollectionGridLayout`), Control System (`CameraController`, `InputManager`, `CollectionDisplay`), Prefab Setup, and Scene Setup.
 *   **Content Quality**: Very detailed and appears to be a central document explaining how the Unity application is structured and put together. Covers many key classes and their roles.
@@ -100,9 +100,9 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Refactor/Link**: Instead of duplicating detailed descriptions of components like `InputManager` or `CameraController`, summarize their role *within the overall architecture* here and **link** to the dedicated READMEs (`README-UNITY-INPUT.md`, `README-UNITY-CINEMACHINE.md`, `README-UNITY-NAVIGATION.md`) for details.
     *   Similarly, summarize the View system's role and link to `README-UNITY-VISUALIZATION.md` for the deep dive on visualization techniques.
     *   Decide whether this file or `README-UNITY-CODE.md` is the main implementation guide and merge/delete the other, ensuring all essential information (architecture, core component descriptions, prefab/scene setup) is retained in one place.
-*   **Location**: Correctly placed within `Unity/CraftSpace/`.
+*   **Location**: Correctly placed within `Unity/SpaceCraft/`.
 
-## `Unity/CraftSpace/README-UNITY-INPUT.md`
+## `Unity/SpaceCraft/README-UNITY-INPUT.md`
 
 *   **Purpose**: Describes the multi-platform input system using Unity's New Input System, covering actions, gesture recognition, motion controls, accessibility, multi-user input, WebGL specifics, debugging, and controller/sensor support.
 *   **Content Quality**: Good overview of the input strategy, covering various platforms and features like gestures and motion controls.
@@ -111,9 +111,9 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Keep this file focused on the **input system implementation** (New Input System setup, action maps, gesture recognizers, device sensor integration).
     *   Ensure the `InputManager` description in `README-UNITY-IMPLEMENTATION.md` is high-level and links here for details.
     *   Coordinate with `README-UNITY-COLLABORATIVE.md` and `README-UNITY-MULTISCREEN.md` regarding multi-user input. This file should describe the *technical foundation* for handling multiple inputs, while the other files describe the *features/experiences* built upon it.
-*   **Location**: Correctly placed within `Unity/CraftSpace/`.
+*   **Location**: Correctly placed within `Unity/SpaceCraft/`.
 
-## `Unity/CraftSpace/README-UNITY-MULTISCREEN.md`
+## `Unity/SpaceCraft/README-UNITY-MULTISCREEN.md`
 
 *   **Purpose**: Describes the architecture for multi-screen installations, including configuration types, implementation approach (`ScreenOrchestrator`), display roles, content synchronization, user tracking, special interactions, network architecture, and installation guide.
 *   **Content Quality**: Describes a potentially complex feature set for installations. Provides a good overview of the concepts involved.
@@ -122,9 +122,9 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Keep this file focused on the specifics of **multi-screen coordination** (synchronization, display roles, spatial awareness between screens, handoff).
     *   Ensure multi-user aspects mentioned here (like user identification) are coordinated with `README-UNITY-COLLABORATIVE.md` and `README-UNITY-INPUT.md`. This file could describe *how* users are tracked *across screens*, while the others focus on collaborative input *within* a screen or the general input mechanism.
     *   Clarify if this is a currently implemented feature or a design document for a future capability.
-*   **Location**: Correctly placed within `Unity/CraftSpace/`.
+*   **Location**: Correctly placed within `Unity/SpaceCraft/`.
 
-## `Unity/CraftSpace/README-UNITY-NAVIGATION.md`
+## `Unity/SpaceCraft/README-UNITY-NAVIGATION.md`
 
 *   **Purpose**: Describes future enhancements and the specific "Ballistic Link Navigation" (cannon-like) system, including launch mechanics, atlas-optimized flight paths, user control during flight, visual feedback, and integration.
 *   **Content Quality**: Provides a good, focused description of a specific navigation feature ("Ballistic Link"). The atlas optimization aspect is particularly interesting.
@@ -134,22 +134,22 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Focus**: Keep this file narrowly focused on the **user control mechanics and specific navigation features** like the Ballistic Link system. It should explain *how* the user moves the camera/viewpoint.
     *   **Clarify Role**: Clearly distinguish this from `README-UNITY-CINEMACHINE.md`. Cinemachine describes the *cameras* (virtual cams, blending, effects, zoom dynamics), while this file describes the *control systems* that drive those cameras (WASD input, ballistic links, etc.).
     *   Ensure the `CameraController` description in `README-UNITY-IMPLEMENTATION.md` links here for navigation mechanic details.
-*   **Location**: Correctly placed within `Unity/CraftSpace/`.
+*   **Location**: Correctly placed within `Unity/SpaceCraft/`.
 
-## `Unity/CraftSpace/README-UNITY-OVERVIEW.md`
+## `Unity/SpaceCraft/README-UNITY-OVERVIEW.md`
 
 *   **Purpose**: Provides a high-level overview of the Unity implementation, focusing on the JS-first architecture, design philosophy (visualization-as-a-service), project structure, application flow, and links to related documentation.
 *   **Content Quality**: Good conceptual overview, explaining the architectural choice of making Unity a rendering layer controlled by JS.
-*   **Redundancy**: The architecture overview, project structure, and application flow concepts are also touched upon in `README.md` (root), `README-CRAFTSPACE.md`, `README-UNITY-IMPLEMENTATION.md`, and `README-UNITY-CODE.md`. The JS-first philosophy is central but also mentioned elsewhere.
+*   **Redundancy**: The architecture overview, project structure, and application flow concepts are also touched upon in `README.md` (root), `README-SPACECRAFT.md`, `README-UNITY-IMPLEMENTATION.md`, and `README-UNITY-CODE.md`. The JS-first philosophy is central but also mentioned elsewhere.
 *   **Suggestions**:
-    *   **Consolidate/Merge**: This file's purpose seems very similar to `README-CRAFTSPACE.md` (which also gives an overview of the Unity client). It also overlaps heavily with the architectural descriptions in `README-UNITY-IMPLEMENTATION.md` / `README-UNITY-CODE.md`.
+    *   **Consolidate/Merge**: This file's purpose seems very similar to `README-SPACECRAFT.md` (which also gives an overview of the Unity client). It also overlaps heavily with the architectural descriptions in `README-UNITY-IMPLEMENTATION.md` / `README-UNITY-CODE.md`.
     *   Consider merging the essential *philosophy* (JS-first, visualization-as-a-service) into the main Unity implementation guide (`README-UNITY-IMPLEMENTATION.md` or `README-UNITY-CODE.md`).
     *   The project structure information should definitely be in the main implementation guide.
     *   The application flow description is useful but could also live in the main implementation guide or potentially in `README-UNITY-BRIDGE.md` (as it describes the JS-Unity interaction flow).
     *   This file might be redundant if its key concepts are integrated into other, more comprehensive documents.
-*   **Location**: Currently in `Unity/CraftSpace/`, but its content might be better merged elsewhere.
+*   **Location**: Currently in `Unity/SpaceCraft/`, but its content might be better merged elsewhere.
 
-## `Unity/CraftSpace/README-UNITY-PERFORMANCE.md`
+## `Unity/SpaceCraft/README-UNITY-PERFORMANCE.md`
 
 *   **Purpose**: Focuses on Unity performance optimization, specifically for WebGL. Covers key metrics, asset optimization (textures, meshes), memory management, rendering optimizations, WebGL specifics, progressive enhancement, loading performance, and testing.
 *   **Content Quality**: Provides specific, actionable advice on optimizing Unity for WebGL. Covers important areas like texture limits, shaders, asset management, and loading.
@@ -159,22 +159,22 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Ensure that performance advice *specific* to visualization techniques (like atlas optimization, LOD strategies for rendering) resides primarily in `README-VISUALIZATION.md` (or its Unity counterpart) and links back here for general platform tuning.
     *   Similarly, performance tips specific to the camera system should stay in `README-UNITY-CINEMACHINE.md`.
     *   This serves as a good central place for WebGL-specific performance knowledge.
-*   **Location**: Correctly placed within `Unity/CraftSpace/`.
+*   **Location**: Correctly placed within `Unity/SpaceCraft/`.
 
-## `Unity/CraftSpace/README-UNITY-PACKAGES.md`
+## `Unity/SpaceCraft/README-UNITY-PACKAGES.md`
 
 *   **Purpose**: Describes Unity package dependencies, integration philosophy (schema-driven), Bridge extensions, required packages (TextMeshPro, Newtonsoft, Input System, Cinemachine, ProBuilder), JSON.NET integration, NJsonSchema usage, schema examples (Material), and compatibility notes.
 *   **Content Quality**: Good overview of the packages used and the philosophy behind integrating them using schemas. Explains the role of key dependencies.
-*   **Redundancy**: Mentions JSON.NET integration, which is also touched on in the schema documentation (`README-SCHEMAS.md` and `Unity/CraftSpace/README-SCHEMAS.md`) and potentially the bridge (`README-UNITY-BRIDGE.md`). Mentions Input System, Cinemachine, ProBuilder which have their own dedicated or related READMEs (`README-UNITY-INPUT.md`, `README-UNITY-CINEMACHINE.md`, `README-UNITY-VISUALIZATION.md`).
+*   **Redundancy**: Mentions JSON.NET integration, which is also touched on in the schema documentation (`README-SCHEMAS.md` and `Unity/SpaceCraft/README-SCHEMAS.md`) and potentially the bridge (`README-UNITY-BRIDGE.md`). Mentions Input System, Cinemachine, ProBuilder which have their own dedicated or related READMEs (`README-UNITY-INPUT.md`, `README-UNITY-CINEMACHINE.md`, `README-UNITY-VISUALIZATION.md`).
 *   **Suggestions**:
-    *   Keep this file as the central inventory of **Unity package dependencies** and their **specific integration points/rationale** within the CraftSpace project.
+    *   Keep this file as the central inventory of **Unity package dependencies** and their **specific integration points/rationale** within the SpaceCraft project.
     *   Minimize the detailed explanation of *how* packages like Cinemachine or Input System are used here; instead, link to their dedicated READMEs.
     *   Focus on the *why* these packages were chosen and *how* they fit into the schema-driven architecture.
     *   The schema examples (e.g., `MaterialSchema`) are useful illustrations of the integration philosophy and should likely stay here or be moved to the main schema documentation (`README-SCHEMAS.md`) if that becomes the SSOT for schema definitions.
     *   Clarify the relationship between Bridge and this project's bridge/schema system.
-*   **Location**: Correctly placed within `Unity/CraftSpace/`.
+*   **Location**: Correctly placed within `Unity/SpaceCraft/`.
 
-## `Unity/CraftSpace/README-UNITY-VISUALIZATION.md`
+## `Unity/SpaceCraft/README-UNITY-VISUALIZATION.md`
 
 *   **Purpose**: Describes the Unity visualization system: philosophy, dynamic content generation (ProBuilder, covers, multi-resolution hierarchy, atlasing, map-aware atlasing, region-based metadata), spatial organization models, adaptive LOD, effects, performance, and schema-driven visualization (BookViz schema, ProBuilder pipeline).
 *   **Content Quality**: Extremely detailed and technical explanation of the visualization techniques. The sections on multi-resolution hierarchy, map-aware atlasing, and the ProBuilder pipeline are particularly valuable.
@@ -189,7 +189,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Most of the current content (philosophy, multi-res hierarchy, atlas *concepts*, spatial models *concepts*) belongs in the root `README-VISUALIZATION.md`.
     *   Performance details should likely live in `README-UNITY-PERFORMANCE.md` or the root `README-VISUALIZATION.md`.
     *   **Strong Candidate for Deletion**: If the root `README-VISUALIZATION.md` is comprehensive and `README-UNITY-IMPLEMENTATION.md` covers the core Unity classes, this file might be entirely unnecessary.
-*   **Location**: Currently in `Unity/CraftSpace/`, but most of its content belongs at the root or should be merged/deleted.
+*   **Location**: Currently in `Unity/SpaceCraft/`, but most of its content belongs at the root or should be merged/deleted.
 
 ## `README-CICD.md` (root)
 
@@ -216,28 +216,28 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Dev Setup**: Consolidate common dev setup instructions (like `npm install`) in the main `README.md`. Keep BackSpace-specific dev commands (`npm run dev`, `npm run build:scripts`, `npm run pipeline-*`) here.
 *   **Location**: Keep at the root as it's a major top-level component.
 
-## `README-CRAFTSPACE.md` (root)
+## `README-SPACECRAFT.md` (root)
 
-*   **Purpose**: Describes the CraftSpace Unity client: overview, features (spatial viz, multi-res, navigation, content integration, WebGL), architecture, core components (Visualization, Navigation, UI, Data Integration), spatial models, performance, multi-device experience, use cases, emulation, dev workflow, customization, BackSpace integration (communication protocol, JS bridge), future directions.
+*   **Purpose**: Describes the SpaceCraft Unity client: overview, features (spatial viz, multi-res, navigation, content integration, WebGL), architecture, core components (Visualization, Navigation, UI, Data Integration), spatial models, performance, multi-device experience, use cases, emulation, dev workflow, customization, BackSpace integration (communication protocol, JS bridge), future directions.
 *   **Content Quality**: Good overview of the Unity client component, its features, and how it fits into the larger project.
 *   **Redundancy**: Significant overlap with other READMEs:
     *   `README.md` (root): General overview and architecture.
-    *   `Unity/CraftSpace/README-UNITY-OVERVIEW.md`: Very similar purpose and content (high-level Unity client overview).
-    *   `Unity/CraftSpace/README-UNITY-IMPLEMENTATION.md` / `README-UNITY-CODE.md`: Covers architecture, core components, dev workflow, customization.
-    *   `README-VISUALIZATION.md` / `Unity/CraftSpace/README-UNITY-VISUALIZATION.md`: Covers visualization system, multi-res, spatial models, performance.
-    *   `Unity/CraftSpace/README-UNITY-NAVIGATION.md`: Covers navigation.
-    *   `Unity/CraftSpace/README-UNITY-INPUT.md`: Covers interaction.
-    *   `Unity/CraftSpace/README-UNITY-MULTISCREEN.md` / `README-UNITY-COLLABORATIVE.md`: Covers multi-device/multi-user aspects.
-    *   `Unity/CraftSpace/README-UNITY-BRIDGE.md`: Covers BackSpace integration/JS bridge.
+    *   `Unity/SpaceCraft/README-UNITY-OVERVIEW.md`: Very similar purpose and content (high-level Unity client overview).
+    *   `Unity/SpaceCraft/README-UNITY-IMPLEMENTATION.md` / `README-UNITY-CODE.md`: Covers architecture, core components, dev workflow, customization.
+    *   `README-VISUALIZATION.md` / `Unity/SpaceCraft/README-UNITY-VISUALIZATION.md`: Covers visualization system, multi-res, spatial models, performance.
+    *   `Unity/SpaceCraft/README-UNITY-NAVIGATION.md`: Covers navigation.
+    *   `Unity/SpaceCraft/README-UNITY-INPUT.md`: Covers interaction.
+    *   `Unity/SpaceCraft/README-UNITY-MULTISCREEN.md` / `README-UNITY-COLLABORATIVE.md`: Covers multi-device/multi-user aspects.
+    *   `Unity/SpaceCraft/README-UNITY-BRIDGE.md`: Covers BackSpace integration/JS bridge.
     *   `README-TODO.md`: Covers future directions.
 *   **Suggestions**:
     *   **Consolidate/Refactor**: This file acts as a high-level aggregator for many Unity-specific topics.
-    *   Consider making this the **main entry point for Unity-related documentation** within the `Unity/CraftSpace/` directory (perhaps rename it to `Unity/CraftSpace/README.md`).
-    *   It should provide a concise overview of the CraftSpace client and its capabilities.
+    *   Consider making this the **main entry point for Unity-related documentation** within the `Unity/SpaceCraft/` directory (perhaps rename it to `Unity/SpaceCraft/README.md`).
+    *   It should provide a concise overview of the SpaceCraft client and its capabilities.
     *   **Heavily use links**: Instead of describing visualization, navigation, bridge, implementation details, etc., *link* to the dedicated READMEs for each of those topics (`README-UNITY-VISUALIZATION.md` - if kept, `README-UNITY-NAVIGATION.md`, `README-UNITY-BRIDGE.md`, `README-UNITY-IMPLEMENTATION.md`, etc.).
     *   The Development Workflow section might belong in the main Unity implementation guide.
     *   Future Directions should link to `README-TODO.md`.
-*   **Location**: Currently at root, but seems like it should be the primary README *inside* the `Unity/CraftSpace/` directory.
+*   **Location**: Currently at root, but seems like it should be the primary README *inside* the `Unity/SpaceCraft/` directory.
 
 ## `README-CURSOR.md` (root)
 
@@ -365,7 +365,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
 
 *   **Purpose**: Outlines the development roadmap, organizing planned tasks by component area (Core Infra, Web App, Unity Viz, Multi-Device, Emulation, AI, VR/XR, DevOps) and priority level (P1-P6). Includes instructions on how to use and contribute to the roadmap.
 *   **Content Quality**: Provides a clear, structured overview of planned work. Priority levels help guide focus. Seems reasonably detailed.
-*   **Redundancy**: Future plans sections in other READMEs (e.g., `README.md`, `README-DATA-ARCHITECTURE.md`, `README-CRAFTSPACE.md`, `README-UNITY-NAVIGATION.md`, `README-VISUALIZATION.md`) are redundant with this file.
+*   **Redundancy**: Future plans sections in other READMEs (e.g., `README.md`, `README-DATA-ARCHITECTURE.md`, `README-SPACECRAFT.md`, `README-UNITY-NAVIGATION.md`, `README-VISUALIZATION.md`) are redundant with this file.
 *   **Suggestions**:
     *   Keep this file as the **Single Source of Truth (SSOT) for all planned features, enhancements, and future work**.
     *   Remove "Future Directions" / "Planned Enhancements" sections from all other READMEs and ensure they link to this file instead.
@@ -373,48 +373,48 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Consider adding estimated effort levels (e.g., Small, Medium, Large) or linking tasks to specific GitHub Issues for more detailed tracking.
 *   **Location**: Correctly placed at the root.
 
-## `README-UNITY-CODE.md` (root? -> Should be `Unity/CraftSpace/`)
+## `README-UNITY-CODE.md` (root? -> Should be `Unity/SpaceCraft/`)
 
 *   **Purpose**: Describes Unity code structure: Core Architecture (`Brewster`, Managers, Factory), Dev Environment Setup (IDE extensions, Cursor, Git LFS), Required Prefabs (`CollectionView`, `ItemView`), Scene Setup, Component Relationships, Data Flow, Common Issues, and JSON Handling Best Practices (Newtonsoft vs JsonUtility).
 *   **Content Quality**: Contains practical information about setting up the dev environment and understanding the core Unity class relationships and prefabs/scene structure. The JSON handling best practices section is important.
-*   **Redundancy**: Significant overlap with `Unity/CraftSpace/README-UNITY-IMPLEMENTATION.md`, covering architecture, components, prefabs, scene setup, relationships, and data flow. Dev Environment setup might be better in a general project setup guide or the main `README.md`. JSON handling best practices relate to the schema system (`README-SCHEMAS.md`).
+*   **Redundancy**: Significant overlap with `Unity/SpaceCraft/README-UNITY-IMPLEMENTATION.md`, covering architecture, components, prefabs, scene setup, relationships, and data flow. Dev Environment setup might be better in a general project setup guide or the main `README.md`. JSON handling best practices relate to the schema system (`README-SCHEMAS.md`).
 *   **Suggestions**:
     *   **Merge/Consolidate**: This file duplicates much of `README-UNITY-IMPLEMENTATION.md`. Decide which one should be the primary Unity implementation guide and merge the content. `README-UNITY-IMPLEMENTATION.md` seems slightly more comprehensive in its current state.
     *   Merge the unique parts of this file (like detailed Dev Environment Setup, JSON Handling Best Practices) into the chosen primary implementation guide or other relevant documents (`README.md` for general setup, `README-SCHEMAS.md` for JSON practices if not Unity-specific).
     *   The prefab/scene setup details should definitely be consolidated into one place.
     *   **Delete** this file after merging.
-*   **Location**: Currently listed at root, but belongs in `Unity/CraftSpace/`. However, likely to be deleted after merging.
+*   **Location**: Currently listed at root, but belongs in `Unity/SpaceCraft/`. However, likely to be deleted after merging.
 
 ## `README-VISUALIZATION.md` (root)
 
 *   **Purpose**: Comprehensive overview of visualization techniques: philosophy, multi-resolution system (hierarchy, ultra-low res techniques, embedded icons), texture atlas system (generation, structure, levels), Unity rendering implementation (mesh, shader, material, LOD, culling, transitions), spatial organization models, visualization pipeline, performance optimization, special features (emulation, SimCity, multi-device gameplay), and future enhancements.
 *   **Content Quality**: Extremely detailed and well-explained document covering the core visualization concepts and implementation strategies. Contains unique and valuable information about the multi-resolution approach, atlasing, and spatial models.
-*   **Redundancy**: Massive overlap with `Unity/CraftSpace/README-UNITY-VISUALIZATION.md`. Mentions performance (`README-UNITY-PERFORMANCE.md`), spatial organization (`README-CRAFTSPACE.md`), emulation (`README-CRAFTSPACE.md`), future plans (`README-TODO.md`).
+*   **Redundancy**: Massive overlap with `Unity/SpaceCraft/README-UNITY-VISUALIZATION.md`. Mentions performance (`README-UNITY-PERFORMANCE.md`), spatial organization (`README-SPACECRAFT.md`), emulation (`README-SPACECRAFT.md`), future plans (`README-TODO.md`).
 *   **Suggestions**:
     *   Make this the **Single Source of Truth (SSOT) for all visualization concepts, techniques, and strategies** across the project.
-    *   **Merge/Eliminate**: Merge any unique Unity-specific implementation details from `Unity/CraftSpace/README-UNITY-VISUALIZATION.md` into this document (if appropriate) or into `README-UNITY-IMPLEMENTATION.md`, then delete the Unity version.
+    *   **Merge/Eliminate**: Merge any unique Unity-specific implementation details from `Unity/SpaceCraft/README-UNITY-VISUALIZATION.md` into this document (if appropriate) or into `README-UNITY-IMPLEMENTATION.md`, then delete the Unity version.
     *   Keep the detailed explanations of the multi-resolution system, ultra-low res techniques, atlas system concepts, spatial organization models, and special features like emulation here.
-    *   **Refactor/Link**: Summarize performance aspects and link to `README-UNITY-PERFORMANCE.md` for Unity-specific tuning. Link to `README-TODO.md` for future enhancements. Ensure `README-CRAFTSPACE.md` links here for visualization details.
+    *   **Refactor/Link**: Summarize performance aspects and link to `README-UNITY-PERFORMANCE.md` for Unity-specific tuning. Link to `README-TODO.md` for future enhancements. Ensure `README-SPACECRAFT.md` links here for visualization details.
 *   **Location**: Correctly placed at the root as it describes a core, cross-cutting concept.
 
-## `Unity/CraftSpace/Assets/Scripts/Schemas/Generated/README.md`
+## `Unity/SpaceCraft/Assets/Scripts/Schemas/Generated/README.md`
 
 *   **Purpose**: Explains the generated C# schema classes: where they come from (JSON schemas via BackSpace TS types), how to generate them (BackSpace script, Unity menu), schema features (converters, Unity Inspector integration), implementation details (`extraFields`, Model-View pattern), base class (`SchemaGeneratedObject`), source flow, requirements, namespace, usage guidelines, regeneration steps, and troubleshooting.
 *   **Content Quality**: Very important information explaining *how* the generated C# classes work and how they are created. The explanation of `extraFields` and the Model-View pattern in `SchemaGeneratedObject` is crucial.
-*   **Redundancy**: Significant overlap with `README-SCHEMAS.md` (root) and `Unity/CraftSpace/README-SCHEMAS.md`. Both describe the generation pipeline, the `extraFields` mechanism, the base class, type converters, and usage guidelines.
+*   **Redundancy**: Significant overlap with `README-SCHEMAS.md` (root) and `Unity/SpaceCraft/README-SCHEMAS.md`. Both describe the generation pipeline, the `extraFields` mechanism, the base class, type converters, and usage guidelines.
 *   **Suggestions**:
     *   **Merge/Refactor**: This file describes the *result* of the schema generation process specifically for the C# side.
     *   The pipeline overview (`JSON Schemas -> C# Classes`) belongs in the main `README-SCHEMAS.md` (root).
-    *   The detailed explanation of `SchemaGeneratedObject` (including `extraFields` and Model-View) is vital Unity implementation detail. This should be merged into the main Unity implementation guide (`README-UNITY-IMPLEMENTATION.md` or potentially `README-UNITY-CODE.md` before it's deleted). Alternatively, if `Unity/CraftSpace/README-SCHEMAS.md` is kept and refocused on Unity specifics, this content could go there.
+    *   The detailed explanation of `SchemaGeneratedObject` (including `extraFields` and Model-View) is vital Unity implementation detail. This should be merged into the main Unity implementation guide (`README-UNITY-IMPLEMENTATION.md` or potentially `README-UNITY-CODE.md` before it's deleted). Alternatively, if `Unity/SpaceCraft/README-SCHEMAS.md` is kept and refocused on Unity specifics, this content could go there.
     *   The instructions on *how* to trigger the generation (`Tools > Import JSON Schema`) should be in the main Unity implementation/setup guide.
     *   **Delete** this file after merging its essential content (especially the `SchemaGeneratedObject` details) into the appropriate Unity documentation.
 *   **Location**: Currently deep within the Unity project structure. Its content needs to be elevated.
 
-## `Unity/CraftSpace/README-SCHEMAS.md`
+## `Unity/SpaceCraft/README-SCHEMAS.md`
 
-*   **Purpose**: Describes the CraftSpace schema system, covering the pipeline overview (TS -> JSON -> Generated C# -> Extended C#), generation process examples (TS, JSON, C#), `SchemaGeneratedObject` base class (JSON serialization, `extraFields`, Model-View), View System (`IModelView`, registration), schema types/converters (Collection, Item, specific converters), directory structure, best practices, and schema evolution.
+*   **Purpose**: Describes the SpaceCraft schema system, covering the pipeline overview (TS -> JSON -> Generated C# -> Extended C#), generation process examples (TS, JSON, C#), `SchemaGeneratedObject` base class (JSON serialization, `extraFields`, Model-View), View System (`IModelView`, registration), schema types/converters (Collection, Item, specific converters), directory structure, best practices, and schema evolution.
 *   **Content Quality**: Detailed explanation, particularly strong on the C# implementation aspects like the base class and view system interaction.
-*   **Redundancy**: Massive overlap with `README-SCHEMAS.md` (root) and `Unity/CraftSpace/Assets/Scripts/Schemas/Generated/README.md`. Covers the same pipeline, base class features (`extraFields`, Model-View), converters, best practices, and evolution steps.
+*   **Redundancy**: Massive overlap with `README-SCHEMAS.md` (root) and `Unity/SpaceCraft/Assets/Scripts/Schemas/Generated/README.md`. Covers the same pipeline, base class features (`extraFields`, Model-View), converters, best practices, and evolution steps.
 *   **Suggestions**:
     *   **Merge/Refactor/Delete**: This file is largely redundant with the root `README-SCHEMAS.md` (which should be the SSOT for the overall system) and the Generated schemas README (which covers the base class details).
     *   If kept, this file should be drastically trimmed to focus *only* on Unity-specific schema aspects **not** covered elsewhere, such as:
@@ -423,7 +423,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
         *   Maybe the specific implementation of the `IModelView<T>` pattern within Unity views.
     *   However, these details might be better placed in the main Unity implementation guide (`README-UNITY-IMPLEMENTATION.md`).
     *   **Strong Candidate for Deletion**: Given the overlap, it's likely best to merge the essential unique Unity details (like the C# base class explanation from the Generated README) into `README-UNITY-IMPLEMENTATION.md` and ensure the root `README-SCHEMAS.md` covers the overall system, then delete this file.
-*   **Location**: Currently in `Unity/CraftSpace/`, but likely to be deleted/merged.
+*   **Location**: Currently in `Unity/SpaceCraft/`, but likely to be deleted/merged.
 
 ## `SvelteKit/BackSpace/README.md`
 
@@ -436,7 +436,7 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Optional: Add a note clarifying the relationship between these `npm` scripts and any corresponding scripts in the root `/scripts` directory (if applicable).
 *   **Location**: Correctly located at `SvelteKit/BackSpace/README.md`.
 
-## `Unity/CraftSpace/Assets/Editor/SchemaGenerator/README.md`
+## `Unity/SpaceCraft/Assets/Editor/SchemaGenerator/README.md`
 
 *   **Purpose**: Detailed technical documentation for the C# schema generator tool (`SchemaGenerator.cs`) itself. Covers critical warnings (no reflection, don't edit generated files), workflow, code organization, features, the Zod `.describe()` metadata hack, string converters, crucial IL2CPP/WebGL constraints (JSON.NET usage), step-by-step usage, CI/CD commands, supported types, limitations, `extraFields` handling, and TODOs.
 *   **Content Quality**: Excellent, highly technical, and critical for understanding/modifying the generation process. Clear explanation of IL2CPP constraints and the Zod metadata workaround.
@@ -446,9 +446,9 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Refactor/Link**: Other schema/Unity READMEs should link *to* this file for detailed generator/constraint/metadata-hack info, avoiding duplication.
     *   Consolidate descriptions of the *output* (e.g., `SchemaGeneratedObject` features) into other relevant READMEs (like `README-UNITY-IMPLEMENTATION.md` or the one in `Generated/`) and link *from* here *to* there.
     *   Elevate/summarize the critical JSON.NET/IL2CPP warnings to the main `README-UNITY-IMPLEMENTATION.md` as they apply broadly to Unity C# JSON handling.
-*   **Location**: Correctly located at `Unity/CraftSpace/Assets/Editor/SchemaGenerator/README.md`.
+*   **Location**: Correctly located at `Unity/SpaceCraft/Assets/Editor/SchemaGenerator/README.md`.
 
-## `Unity/CraftSpace/Assets/StreamingAssets/Content/README.md`
+## `Unity/SpaceCraft/Assets/StreamingAssets/Content/README.md`
 
 *   **Purpose**: Defines the structure, conventions, and philosophy for the `Content/` directory (the runtime content SSOT within Unity). Details the "File System First" approach (directory names as IDs), standard filenames (`item.json`, `collection.json`), ID consistency checks, example structure, the crucial need for derived `*-index.json` files (due to StreamingAssets limitations), schema subdirectory origin/metadata, and critical schema/JSON consumption rules (NO REFLECTION for IL2CPP).
 *   **Content Quality**: Excellent. Clearly explains the structure, naming conventions, and the vital `*-index.json` workaround.
@@ -458,9 +458,9 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   Consider centralizing the detailed JSON.NET/IL2CPP rules (e.g., in `README-UNITY-IMPLEMENTATION.md`) and having a summary/link here, OR keep the repetition for safety.
     *   Ensure `README-DATA-ARCHITECTURE.md` links here for specific Unity content implementation.
     *   Ensure the schema metadata section links to the `SchemaGenerator` README for full details.
-*   **Location**: Correctly located at `Unity/CraftSpace/Assets/StreamingAssets/Content/README.md`.
+*   **Location**: Correctly located at `Unity/SpaceCraft/Assets/StreamingAssets/Content/README.md`.
 
-## `Unity/CraftSpace/README-CICD.md`
+## `Unity/SpaceCraft/README-CICD.md`
 
 *   **Purpose**: Explains CI/CD setup specifically for the Unity sub-project. Covers prerequisites, local commands (schema regen, builds via UI/npm), self-hosted Mac runner setup details (installations, env vars, git, automation steps), usage of the `run-unity.sh` wrapper for headless execution, handling multiple Unity versions, log analysis (`check-unity-logs`), troubleshooting (Unity detection, permissions, licensing), and links to Unity docs.
 *   **Content Quality**: Good. Practical, step-by-step guide for Unity automation, highlighting the `run-unity.sh` wrapper.
@@ -469,4 +469,4 @@ See the main [Project Code and Documentation Review](./README-CODE-REVIEW.md) fi
     *   **Keep or Merge**: Contains essential Unity details. Either keep separate (clearly defining scope and linking to root `README-CICD.md`) OR merge unique Unity content into the root `README-CICD.md` under a dedicated section.
     *   **Clarify Root Link**: If kept separate, explicitly state its relationship to the root CI/CD doc.
     *   **Consolidate Script Info**: Ensure consistency and potentially link to script definitions (`run-unity.sh`, `check-unity-logs`).
-*   **Location**: Currently `Unity/CraftSpace/`. Appropriate if kept separate; content moves to root if merged. 
+*   **Location**: Currently `Unity/SpaceCraft/`. Appropriate if kept separate; content moves to root if merged. 

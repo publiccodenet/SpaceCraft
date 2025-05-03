@@ -42,7 +42,7 @@ jobs:
         working-directory: SvelteKit/BackSpace
         run: |
           export UNITY_PRECONFIGURED=true
-          export UNITY_APP="${GITHUB_WORKSPACE}/Unity/CraftSpace"
+          export UNITY_APP="${GITHUB_WORKSPACE}/Unity/SpaceCraft"
           source ./scripts/unity-env.sh
           echo "Using Unity version: ${UNITY_VERSION}"
           echo "Unity path: ${UNITY_PATH}"
@@ -59,7 +59,7 @@ jobs:
           
           # Regenerate C# classes from JSON schemas
           export UNITY_PRECONFIGURED=true
-          export UNITY_APP="${GITHUB_WORKSPACE}/Unity/CraftSpace"
+          export UNITY_APP="${GITHUB_WORKSPACE}/Unity/SpaceCraft"
           source ./scripts/unity-env.sh
           npm run unity:regenerate-schemas
 
@@ -67,7 +67,7 @@ jobs:
         working-directory: SvelteKit/BackSpace
         run: |
           export UNITY_PRECONFIGURED=true
-          export UNITY_APP="${GITHUB_WORKSPACE}/Unity/CraftSpace"
+          export UNITY_APP="${GITHUB_WORKSPACE}/Unity/SpaceCraft"
           source ./scripts/unity-env.sh
           
           if [ "${{ inputs.build_target }}" == "prod" ]; then
@@ -80,5 +80,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: unity-build-mac-${{ inputs.build_target }}
-          path: Unity/CraftSpace/Builds/
+          path: Unity/SpaceCraft/Builds/
           retention-days: 14 

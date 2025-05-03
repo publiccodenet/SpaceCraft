@@ -31,7 +31,7 @@ The project has extensive documentation, often with high-quality technical detai
 
 **Introduction:**
 
-> This section summarizes the review of the project's code structure, based on detailed notes captured in [`README-CODE-REVIEW-CODE.md`](./README-CODE-REVIEW-CODE.md). It covers the main components (BackSpace, CraftSpace), their interactions, the data/schema pipeline, automation, and key architectural patterns.
+> This section summarizes the review of the project's code structure, based on detailed notes captured in [`README-CODE-REVIEW-CODE.md`](./README-CODE-REVIEW-CODE.md). It covers the main components (BackSpace, SpaceCraft), their interactions, the data/schema pipeline, automation, and key architectural patterns.
 
 **Guiding Prompt for Code Structure Review:**
 
@@ -45,7 +45,7 @@ The project has extensive documentation, often with high-quality technical detai
 **Detailed Notes:** See [`README-CODE-REVIEW-CODE.md`](./README-CODE-REVIEW-CODE.md).
 
 **Summary of Findings:**
-The project is architecturally divided into two main parts: **BackSpace** (SvelteKit frontend, Node.js backend/tooling) and **CraftSpace** (Unity client).
+The project is architecturally divided into two main parts: **BackSpace** (SvelteKit frontend, Node.js backend/tooling) and **SpaceCraft** (Unity client).
 
 1.  **BackSpace (SvelteKit/Node.js):**
     *   Manages the **content pipeline**: Node.js CLI scripts (`scripts/`) handle fetching data (e.g., from Internet Archive), creating/managing collections and items, processing content, validation, and exporting/copying data for Unity.
@@ -53,7 +53,7 @@ The project is architecturally divided into two main parts: **BackSpace** (Svelt
     *   Provides a **SvelteKit web application** (`src/routes/`, `src/lib/`) for administration (managing collections/items via API endpoints) and potentially for serving the final user-facing experience, including the embedded Unity WebGL build.
     *   Includes **automation scripts** (`scripts/unity-automation.js`, `scripts/unity-env.js`) to control Unity Editor processes (builds, schema generation) from the command line.
 
-2.  **CraftSpace (Unity):**
+2.  **SpaceCraft (Unity):**
     *   Utilizes a **schema generation pipeline**: An Editor script (`Assets/Editor/SchemaGenerator/`) consumes the JSON schemas (placed in `Assets/StreamingAssets/` or `Content/schema/`) to generate C# data classes (`Assets/Scripts/Schemas/Generated/`) with appropriate attributes and a base class (`SchemaGeneratedObject.cs`) for handling serialization and extensibility (`extraFields`). Manual partial classes extend these generated types.
     *   Implements a robust **JavaScript <-> Unity Bridge** (`Assets/Scripts/Bridge/`, `Assets/Plugins/WebGL/bridge.jslib`) enabling communication and control, particularly critical for the WebGL target, facilitating a JS-first architectural approach where appropriate.
     *   Contains **core runtime systems** (`Assets/Scripts/Core/`) including application managers, input handling (Unity Input System), camera control (Cinemachine), and view instantiation (`ViewFactory`).
@@ -61,11 +61,11 @@ The project is architecturally divided into two main parts: **BackSpace** (Svelt
     *   Includes **Editor scripts** (`Assets/Editor/`) for build automation (`Build.cs`) and schema generation.
 
 3.  **Overall Flow & Automation:**
-    *   Data structures are defined once in Zod (BackSpace), propagated to JSON Schema, and then generated into C# (CraftSpace), ensuring consistency.
+    *   Data structures are defined once in Zod (BackSpace), propagated to JSON Schema, and then generated into C# (SpaceCraft), ensuring consistency.
     *   Content is managed and processed by BackSpace scripts, then prepared and transferred to Unity for runtime use.
     *   Significant automation infrastructure exists via Node.js and shell scripts (`run-unity.sh`, `ci-build.sh`) to manage the build process and Unity interactions, suitable for CI/CD integration (though current GitHub Actions workflows are partially disabled).
 
-*   **Key Strengths:** Clear separation between content management (BackSpace) and presentation (CraftSpace), strong schema-driven development ensuring data consistency, sophisticated JS-Unity bridge, extensive automation capabilities.
+*   **Key Strengths:** Clear separation between content management (BackSpace) and presentation (SpaceCraft), strong schema-driven development ensuring data consistency, sophisticated JS-Unity bridge, extensive automation capabilities.
 *   **Potential Review Areas:** Completeness of CI/CD workflows, implementation status of certain data processing scripts in BackSpace, deployment strategy for Unity content (Resources vs. Addressables vs. other).
 
 ---
@@ -127,7 +127,7 @@ The `Brewster.cs` module effectively serves as the central data core ("God Objec
 ## Overall Project Review & Recommendations
 
 **Summary:**
-The project exhibits a sophisticated architecture with a clear separation of concerns between the BackSpace content management/tooling system and the CraftSpace Unity presentation layer. Key strengths include its schema-driven approach ensuring data consistency, a powerful JavaScript-Unity bridge, and extensive automation capabilities for the content pipeline and build processes. The core content pipeline (Zod -> JSON -> C# -> Unity Runtime/Views) is well-designed and IL2CPP-compatible. However, the project currently suffers from significant documentation redundancy and requires completion of its CI/CD setup and some data processing components. Minor inconsistencies exist in areas like texture loading.
+The project exhibits a sophisticated architecture with a clear separation of concerns between the BackSpace content management/tooling system and the SpaceCraft Unity presentation layer. Key strengths include its schema-driven approach ensuring data consistency, a powerful JavaScript-Unity bridge, and extensive automation capabilities for the content pipeline and build processes. The core content pipeline (Zod -> JSON -> C# -> Unity Runtime/Views) is well-designed and IL2CPP-compatible. However, the project currently suffers from significant documentation redundancy and requires completion of its CI/CD setup and some data processing components. Minor inconsistencies exist in areas like texture loading.
 
 **Key Recommendations:**
 
@@ -158,7 +158,7 @@ The project exhibits a sophisticated architecture with a clear separation of con
 
 6.  **Code Cleanup and Enhancement:**
     *   **Action:** Address identified code quality issues.
-    *   **Details:** Add missing type annotations in SvelteKit components, implement TODOs (e.g., save handlers), resolve potential UI route redundancies in BackSpace. Ensure consistent logging practices across both BackSpace and CraftSpace.
+    *   **Details:** Add missing type annotations in SvelteKit components, implement TODOs (e.g., save handlers), resolve potential UI route redundancies in BackSpace. Ensure consistent logging practices across both BackSpace and SpaceCraft.
     *   **Impact:** Improves code readability, maintainability, and robustness.
 
 7.  **Enhance Automated Testing:**

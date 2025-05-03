@@ -360,7 +360,7 @@ class ContentPipeline {
       // It's a directory path, use default config name
       return path.join(basePath, exporterPath, 'exporter-config.json');
     } else {
-      // It might be a path with a config variant like "Unity/CraftSpace/config-debug"
+      // It might be a path with a config variant like "Unity/SpaceCraft/config-debug"
       const configPath = path.dirname(path.join(basePath, exporterPath));
       const configBaseName = path.basename(exporterPath);
       
@@ -727,7 +727,7 @@ class ContentPipeline {
       const importerConfig = await this.loadImporterConfig(importerPath);
       
       // Load exporter configuration to get whitelist
-      const exporterPath = options.exporter || 'Unity/CraftSpace';
+      const exporterPath = options.exporter || 'Unity/SpaceCraft';
       const exporterConfig = await this.loadExporterConfig(exporterPath);
       
       // Load whitelist from index-deep.json
@@ -951,7 +951,7 @@ class ContentPipeline {
     console.log(`${CLI_FORMATTING.BLUE}${EMOJI.START} Starting content export phase...${CLI_FORMATTING.RESET}`);
     
     // Load exporter configuration
-    const exporterPath = options.exporter || 'Unity/CraftSpace';
+    const exporterPath = options.exporter || 'Unity/SpaceCraft';
     const exporterConfig = await this.loadExporterConfig(exporterPath);
     
     // Load whitelist
@@ -1402,7 +1402,7 @@ addCommonOptions(
     .command('run')
     .description('Run the full content pipeline (import and export)')
     .option('--importer <path>', 'Path to importer config or directory', 'ia')
-    .option('--exporter <path>', 'Path to exporter config or directory', 'Unity/CraftSpace')
+    .option('--exporter <path>', 'Path to exporter config or directory', 'Unity/SpaceCraft')
     .option('--refine', 'Run refinement process', false)
     .option('--download-name <name>', 'Name of the downloader (for receipt)')
     .option('--download-ip <ip>', 'IP address of the downloader (for receipt)')
@@ -1433,7 +1433,7 @@ addCommonOptions(
     .command('import')
     .description('Run only the import phase')
     .option('--importer <path>', 'Path to importer config or directory', 'ia')
-    .option('--exporter <path>', 'Path to exporter config or directory', 'Unity/CraftSpace')
+    .option('--exporter <path>', 'Path to exporter config or directory', 'Unity/SpaceCraft')
     .action(async (options) => {
       const pipeline = new ContentPipeline(options);
       await pipeline.import({
@@ -1464,7 +1464,7 @@ addCommonOptions(
   program
     .command('export')
     .description('Run only the export phase')
-    .option('--exporter <path>', 'Path to exporter config or directory', 'Unity/CraftSpace')
+    .option('--exporter <path>', 'Path to exporter config or directory', 'Unity/SpaceCraft')
     .action(async (options) => {
       const pipeline = new ContentPipeline(options);
       await pipeline.export({

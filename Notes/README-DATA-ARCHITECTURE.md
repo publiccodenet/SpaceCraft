@@ -50,7 +50,7 @@ Content is distributed across multiple storage locations:
 - Managed via Git LFS for large binary files
 
 #### Unity Resources (Implemented)
-- Location: `Unity/CraftSpace/Assets/Resources/Collections/{prefix}/`
+- Location: `Unity/SpaceCraft/Assets/Resources/Collections/{prefix}/`
 - Contains pre-processed, optimized assets for Unity
 - Embedded in Unity WebGL build for immediate availability
 - Limited to high-priority collections due to build size constraints
@@ -146,4 +146,4 @@ The data architecture is supported by a sophisticated processing pipeline:
 
 This pipeline can be run incrementally (updating only changed content) or as a complete rebuild.
 
-The data architecture of CraftSpace is designed to balance immediate visual response with efficient bandwidth usage, ensuring users can explore massive digital collections with minimal waiting time while preserving the richness of Internet Archive's content. 
+The data architecture of SpaceCraft is designed to balance immediate visual response with efficient bandwidth usage, ensuring users can explore massive digital collections with minimal waiting time while preserving the richness of Internet Archive's content. 
