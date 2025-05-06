@@ -162,18 +162,18 @@ class SpaceCraftSim {
         
         // Define all QR codes to be generated
         this.qrCodeDefinitions = [
-        {
-            id: "navigator-qr",
+            {
+                id: "navigator-qr",
                 targetHtml: SpaceCraftSim.NAVIGATOR_HTML_PATH,
-            label: "Navigator",
-            position: "top-left"
-        },
-        {
-            id: "selector-qr",
+                label: "Navigator",
+                position: "top-left"
+            },
+            {
+                id: "selector-qr",
                 targetHtml: SpaceCraftSim.SELECTOR_HTML_PATH,
-            label: "Selector",
-            position: "top-right"
-        },
+                label: "Selector",
+                position: "top-right"
+            },
         ];
         
         // Initialize content promise
