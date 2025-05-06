@@ -2,6 +2,70 @@
 // (e.g., navigator.html, selector.html)
 
 /**
+ * =============================================================================
+ *                       Message and Event Documentation
+ * =============================================================================
+ * This section documents all messages exchanged between controllers and Unity
+ * via Bridge and Supabase to facilitate remote control and data synchronization.
+ *
+ * --- EVENTS SENT FROM CONTROLLERS TO UNITY (via Supabase broadcasts) ---
+ * 'pan': Sent by navigator or selector during movement
+ *    - Navigator: {controllerId, controllerType, controllerName, panXDelta, panYDelta}
+ *    - Selector: {controllerId, controllerType, controllerName, selectXDelta, selectYDelta}
+ *    - Sent during pointer movement, tilt detection
+ *
+ * 'zoom': Sent by navigator during zoom gestures
+ *    - {controllerId, controllerType, controllerName, zoomDelta}
+ *    - Sent during pinch/zoom gestures, mousewheel, trackpad gestures
+ *
+ * 'select': Sent by selector for selection actions
+ *    - {controllerId, controllerType, controllerName, action}
+ *    - action can be "tap" or directional ("north","south","east","west","up","down")
+ *    - Sent during tap, swipe, or shake gestures
+ *
+ * 'RenameRequest': Sent when controller requests a name change
+ *    - {controllerId, controllerType, controllerName, newName, direction}
+ *    - direction can be "next" or "previous"
+ *    - Triggered by rename button or gesture
+ *
+ * --- EVENTS RECEIVED FROM UNITY (via Supabase broadcasts) ---
+ * 'contentUpdate': Received when joining or when content changes
+ *    - {content: contentData}
+ *    - Contains all data about collections and items
+ * 'currentItemIdUpdated': Received when current item changes in Unity
+ *    - {currentItemId: string}
+ *    - Allows controllers to highlight/focus the currently selected item
+ *
+ * --- STATE TRACKED IN SPACECRAFT.JS ---
+ * In the main application, these states are maintained:
+ * - currentCollectionId: Tracks which collection is currently active
+ * - highlightedItemIds: Array of all currently highlighted item IDs
+ * - selectedItemIds: Array of all currently selected item IDs
+ * Controller actions can affect these states through the events mentioned above
+ *
+ * --- PRESENCE TRACKING (via Supabase) ---
+ * Controllers track presence with:
+ *    - controllerId: Unique identifier for the controller
+ *    - controllerType: "navigator" or "selector"
+ *    - controllerName: User-friendly ship name
+ *    - onlineAt: Timestamp of connection
+ *
+ * Controllers receive presence events:
+ * 'presence' { event: 'sync' }: Full state of all connected controllers
+ * 'presence' { event: 'join' }: New controller has connected
+ * 'presence' { event: 'leave' }: Controller has disconnected
+ *
+ * --- GESTURE DETECTION ---
+ * Controllers detect gestures and convert them to appropriate events:
+ * - Tap: Triggers 'select' with action='tap'
+ * - Swipe: Directional movement as 'select' with action=direction
+ * - Shake: Directional acceleration as 'select' with action=direction
+ * - Tilt: Continuous values sent as 'pan' deltas
+ * - Pinch/Zoom: Continuous values sent as 'zoom' deltas
+ * =============================================================================
+ */
+
+/**
  * Base Controller class that provides common functionality for all controller types
  */
 window.BaseController = class BaseController {

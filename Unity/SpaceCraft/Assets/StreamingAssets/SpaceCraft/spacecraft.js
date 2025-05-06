@@ -20,6 +20,64 @@
 // =============================================================================
 
 // =============================================================================
+//                         Message and Event Documentation
+// =============================================================================
+// This section documents all messages exchanged between Unity and controllers
+// via Bridge and Supabase to facilitate remote control and data synchronization.
+//
+// --- BRIDGE INTERESTS (Events from Unity that JS listens to) ---
+// "ContentLoaded": Unity signals when content is processed successfully.
+// "HighlightedItemsChanged": Unity signals when highlighted items change.
+//    - Queries for: highlightedItemIds (List<string>)
+//    - JS stores complete list in highlightedItemIds property
+// "SelectedItemsChanged": Unity signals when selected items change.
+//    - Queries for: selectedItemIds (List<string>)
+//    - JS stores complete list in selectedItemIds property
+//
+// --- STATE PROPERTIES ---
+// currentCollectionId: Tracks the active collection being viewed
+// highlightedItemIds: Array of all currently highlighted item IDs
+// selectedItemIds: Array of all currently selected item IDs
+//
+// --- BRIDGE METHODS (Called from JS to Unity) ---
+// "PushCameraPosition": [controllerId, controllerName, panXDelta, panYDelta]
+//    - Moves the camera position based on controller input
+// "PushCameraZoom": [controllerId, controllerName, zoomDelta]
+//    - Zooms the camera based on controller input
+// "ToggleHighlightedItemSelection": [controllerId, controllerName]
+//    - Toggles selection state of the currently highlighted item
+// "MoveHighlight": [controllerId, controllerName, direction]
+//    - Moves highlight in specified direction ("north","south","east","west","up","down")
+//
+// --- SUPABASE EVENTS (From controllers to Unity) ---
+// 'broadcast' { event: 'pan' }: 
+//    - From navigator: {controllerId, controllerType, panXDelta, panYDelta}
+//    - From selector: {controllerId, controllerType, selectXDelta, selectYDelta}
+//    - Selector tilt is converted to "north","south","east","west" directions
+// 'broadcast' { event: 'zoom' }:
+//    - {controllerId, controllerType, zoomDelta}
+//    - Controls camera zoom level
+// 'broadcast' { event: 'select' }:
+//    - {controllerId, controllerType, action}
+//    - action can be "tap" or directional ("north","south","east","west","up","down")
+//    - "tap" calls ToggleHighlightedItemSelection
+//    - Directions call MoveHighlight
+//
+// --- PRESENCE EVENTS (Controller connection tracking) ---
+// 'presence' { event: 'sync' }: Initial state sync of all connected controllers
+// 'presence' { event: 'join' }: New controller connects
+//    - Sends 'contentUpdate' event to the new controller with content data
+// 'presence' { event: 'leave' }: Controller disconnects
+//
+// --- EVENTS SENT TO CONTROLLERS ---
+// 'contentUpdate': {content: contentData}
+//    - Sent to newly joined controllers with content data
+// 'currentItemIdUpdated': {currentItemId: string}
+//    - Sent to all controllers when the current item (first selected item) changes
+//    - Helps controllers synchronize their UI with the main application state
+// =============================================================================
+
+// =============================================================================
 //                                  Dependencies
 // =============================================================================
 // - HTML Elements: #unity-container, #unity-canvas, #unity-fullscreen-button, #navigator (svg), #selector (svg)
@@ -69,12 +127,14 @@ window.contentPromise = fetch(DEEP_INDEX_PATH)
 // Encapsulates all SpaceCraft-specific logic and state.
 window.SpaceCraft = {
 
-    spaceCraft: null,       // Reference to the Bridge object representing SpaceCraft in Unity
-    isInitialized: false,       // Flag to track if basic init (like QR code check) is done
-    domContentLoaded: false,    // Flag to track if DOM is ready
-    loadedContent: null,        // Store the loaded content data here
-    lastHighlightedItemId: null, // Track the last highlighted item ID
-    lastSelectedItemId: null,    // Track the last selected item ID
+    spaceCraft: null, // Reference to the Bridge object representing SpaceCraft in Unity
+    isInitialized: false, // Flag to track if basic init (like QR code check) is done
+    domContentLoaded: false, // Flag to track if DOM is ready
+    loadedContent: null, // Store the loaded content data here
+    currentCollectionId: "scifi", // Track the current collection ID
+    currentItemId: null, // Track the current item ID
+    highlightedItemIds: null, // Track the highlighted item IDs
+    selectedItemIds: null, // Track the selected item IDs
     
     // --- Controller Registry ---
     // Stores information about currently connected controllers (navigators, selectors, etc.)
@@ -410,19 +470,16 @@ window.SpaceCraft = {
                         "HighlightedItemsChanged": {
                             query: { "highlightedItemIds": "HighlightedItemIds" }, // Data to request
                             handler: (obj, results) => {
-                                if (results.highlightedItemIds.length > 0) {
-                                    this.lastHighlightedItemId = results.highlightedItemIds[0];
-                                }
-                                console.log("[SpaceCraft <-> Unity] Event: HighlightedItemsChanged:", results, 'lastHighlightedItemId:', this.lastHighlightedItemId);
+                                this.highlightedItemIds = results.highlightedItemIds;
+                                console.log("[SpaceCraft <-> Unity] Event: HighlightedItemsChanged:", results, 'highlightedItemIds:', this.highlightedItemIds);
                             }
                         },
                         "SelectedItemsChanged": {
                             query: { "selectedItemIds": "SelectedItemIds" },
                             handler: (obj, results) => {
-                                if (results.selectedItemIds.length > 0) {
-                                    this.lastSelectedItemId = results.selectedItemIds[0];
-                                }
-                                console.log("[SpaceCraft <-> Unity] Event: SelectedItemsChanged:", results, 'lastSelectedItemId:', this.lastSelectedItemId);
+                                this.selectedItemIds = results.selectedItemIds;
+                                console.log("[SpaceCraft <-> Unity] Event: SelectedItemsChanged:", results, 'selectedItemIds:', this.selectedItemIds);
+                                this.updateCurrentItemId();
                             }
                         }
                         // Add other interests as needed
@@ -444,6 +501,20 @@ window.SpaceCraft = {
 
         } catch (error) {
             console.error("[SpaceCraft] Error creating SpaceCraft Bridge object:", error);
+        }
+    },
+    
+    updateCurrentItemId: function() {
+        const lastCurrentItemId = this.currentItemId;
+        if (this.selectedItemIds && this.selectedItemIds.length > 0) {
+            this.currentItemId = this.selectedItemIds[0];
+        } else {
+            this.currentItemId = null;
+        }
+        if (this.currentItemId !== lastCurrentItemId) {
+            console.log("[SpaceCraft] Current item ID updated:", this.currentItemId);
+            // Send message to all controllers about the change
+            this.sendEventToAllControllers('currentItemIdUpdated', { currentItemId: this.currentItemId });
         }
     },
 
@@ -696,6 +767,31 @@ window.SpaceCraft = {
             event: eventName,
             payload: payload // Ensure the payload sent here is structured as expected by receivers
         }).catch(err => console.error(`[SpaceCraft] Error broadcasting event '${eventName}' on 'controllers' channel (intended for controllerId '${controllerId}'):`, err));
+    },
+
+    /**
+     * Sends a Supabase broadcast event to all connected controllers.
+     * This is used for global state updates that all controllers should be aware of.
+     * @param {string} eventName - The name of the event to broadcast.
+     * @param {object} payload - The data payload for the event.
+     */
+    sendEventToAllControllers: function(eventName, payload) {
+        // Use the single controller channel
+        const targetChannel = this.controllerChannel;
+
+        if (!targetChannel) {
+            console.error(`[SpaceCraft] Cannot send event to all controllers: Controller channel not initialized.`);
+            return;
+        }
+
+        const controllerCount = Object.keys(this.controllers).length;
+        console.log(`[SpaceCraft -> Supabase] Broadcasting to all controllers (${controllerCount}): Event='${eventName}', Payload=`, payload);
+        
+        targetChannel.send({
+            type: 'broadcast',
+            event: eventName,
+            payload: payload
+        }).catch(err => console.error(`[SpaceCraft] Error broadcasting event '${eventName}' to all controllers:`, err));
     },
 
     // --- Utility / Placeholder ---
