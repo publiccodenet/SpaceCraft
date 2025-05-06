@@ -121,7 +121,6 @@ public class Brewster : MonoBehaviour
         foreach (var collectionProp in collectionsDir.Properties())
         {
             string collectionId = collectionProp.Name;
-            Debug.Log($"Brewster: Processing collection '{collectionId}'");
             //Debug.Log($"Brewster: Collection dir for '{collectionId}': {collectionDir}");
             
             JObject collectionDir = collectionProp.Value as JObject;
@@ -162,7 +161,7 @@ public class Brewster : MonoBehaviour
             JArray itemsIndex = collectionDir["itemsIndex"] as JArray;
             if (itemsIndex == null)
             {
-                Debug.LogWarning($"Brewster: Collection dir '{collectionId}' has no itemsIndex property");
+                //Debug.LogWarning($"Brewster: Collection dir '{collectionId}' has no itemsIndex property");
                 continue;
             }
 
@@ -186,7 +185,7 @@ public class Brewster : MonoBehaviour
             foreach (var itemProp in itemsDir.Properties())
             {
                 string itemId = itemProp.Name;
-                Debug.Log($"Brewster: Processing item '{itemId}'");
+                //Debug.Log($"Brewster: Processing item '{itemId}'");
 
                 if (_items.ContainsKey(itemId))
                 {
@@ -226,7 +225,7 @@ public class Brewster : MonoBehaviour
                 }
 
                 _items[itemId] = item;
-                Debug.Log($"Brewster: Successfully added item '{itemId}' with ID '{item.Id}' title {item.Title}"); // description {item.Description} subject {item.Subject} creator {item.Creator} collection {item.Collection} mediatype {item.Mediatype} coverImage {item.CoverImage} coverWidth {item.CoverWidth} coverHeight {item.CoverHeight}");
+                //Debug.Log($"Brewster: Successfully added item '{itemId}' with ID '{item.Id}' title {item.Title}"); // description {item.Description} subject {item.Subject} creator {item.Creator} collection {item.Collection} mediatype {item.Mediatype} coverImage {item.CoverImage} coverWidth {item.CoverWidth} coverHeight {item.CoverHeight}");
                 
             }
     

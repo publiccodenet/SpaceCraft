@@ -302,7 +302,7 @@ public class BridgeObject : MonoBehaviour {
 
     public void SendEventName(string eventName, JObject data = null)
     {
-        //Debug.Log("BridgeObject: SendEventName: eventName: " + eventName + " data: " + data + " interests: " + interests);
+        Debug.Log("BridgeObject: SendEventName: eventName: " + eventName + " data: " + data + " interests: " + interests);
         // Log the event and data as separate objects, not converted to string
         Debug.Log($"Bridge: SendEvent: {eventName} - data: {data}");
 
@@ -317,7 +317,7 @@ public class BridgeObject : MonoBehaviour {
         if (interests != null) {
 
             JObject interest = interests[eventName] as JObject;
-            //Debug.Log("BridgeObject: SendEventName: eventName: " + eventName + " interest: " + interest, this);
+            Debug.Log("BridgeObject: SendEventName: eventName: " + eventName + " interest: " + interest, this);
             if (interest != null) {
 
                 bool disabled = interest.GetBoolean("disabled");
@@ -329,7 +329,7 @@ public class BridgeObject : MonoBehaviour {
                     JObject update = interest["update"] as JObject;
                     if (update != null) {
 
-                        //Debug.Log("BridgeObject: SendEventName: event interest update: " + update);
+                        Debug.Log("BridgeObject: SendEventName: event interest update: " + update);
                         Debug.Log($"Bridge: Interest update: {eventName} - {update}");
                         LoadUpdate(update);
                     }
@@ -337,7 +337,7 @@ public class BridgeObject : MonoBehaviour {
                     JArray events = interest["events"] as JArray;
                     if (events != null) {
 
-                        //Debug.Log("BridgeObject: SendEventName: event interest events: " + events);
+                        Debug.Log("BridgeObject: SendEventName: event interest events: " + events);
                         Debug.Log($"Bridge: Interest events: {eventName} - {events}");
                         HandleEvents(events);
                     }
