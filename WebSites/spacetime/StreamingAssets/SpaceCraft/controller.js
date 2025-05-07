@@ -66,6 +66,9 @@
  * Base Controller class that provides common functionality for all controller types
  */
 window.BaseController = class BaseController {
+    selectedItemChanged(selectedItemJSON) {
+        // Base implementation does nothing. Subclasses like InspectorController will override.
+    }
     
     // API constants
     static SUPABASE_URL = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
@@ -1883,6 +1886,7 @@ window.BaseController = class BaseController {
         // MAX: Log new selected item JSON if its ID has changed
         if (this.simulatorState.selectedItemId !== previousSelectedItemId) {
             this.logEvent('MAX', 'New selected item json (ID changed):', this.simulatorState.selectedItem);
+            this.selectedItemChanged(this.simulatorState.selectedItem);
         }
         
         this.updateUIFromState();
@@ -2408,7 +2412,9 @@ document.addEventListener('DOMContentLoaded', function() {
         controller = new NavigatorController();
     } else if (controllerType === 'selector') {
         controller = new SelectorController();
-        } else {
+    } else if (controllerType === 'inspector') { // ADD THIS BLOCK
+        controller = new InspectorController();
+    } else {
         console.error('Invalid controller type: ' + controllerType);
         return;
     }
@@ -2421,3 +2427,29 @@ document.addEventListener('DOMContentLoaded', function() {
     window.controller = controller;
 });
 
+window.InspectorController = class InspectorController extends BaseController {
+    constructor() {
+        super('inspector'); // Client type
+        this.jsonOutputElement = null;
+    }
+
+    setupControllerSpecificUI() {
+        this.logEvent('Init', 'Setting up Inspector-specific UI');
+        this.jsonOutputElement = document.getElementById('inspector-json-output');
+        if (!this.jsonOutputElement) {
+            this.logEvent('Error', 'Inspector JSON output element not found!');
+        }
+    }
+
+    // This method will be called when the selected item data changes
+    selectedItemChanged(selectedItemJSON) {
+        this.logEvent('Inspector', 'Received new selected item JSON:', selectedItemJSON);
+        if (this.jsonOutputElement) {
+            if (selectedItemJSON) {
+                this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON, null, 2);
+            } else {
+                this.jsonOutputElement.textContent = 'No item currently selected.';
+            }
+        }
+    }
+};
