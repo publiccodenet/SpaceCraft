@@ -58,9 +58,9 @@ public class CollectionsView : MonoBehaviour
         {
             UpdateDetailPanel();
             
-            // Reset the flags after we've processed them
-            spaceCraft.selectedItemsChanged = false;
-            spaceCraft.highlightedItemsChanged = false;
+            // Flags will be reset by SpaceCraft.SendEvents() after dispatch
+            // spaceCraft.selectedItemsChanged = false; // DO NOT RESET HERE
+            // spaceCraft.highlightedItemsChanged = false; // DO NOT RESET HERE
         }
     }
     

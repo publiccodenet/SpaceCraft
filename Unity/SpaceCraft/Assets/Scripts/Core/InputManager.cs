@@ -116,7 +116,7 @@ public class InputManager : MonoBehaviour
                 if (dragDistance < selectMaxClickDistance && dragTime < selectMaxClickTime && itemAtDragStart != null && itemAtDragStart.Model != null)
                 {
                     // Pass default controller info for mouse click selection toggle
-                    spaceCraft.ToggleItemSelection("mouse_input", "Local Mouse", itemAtDragStart.Model.Id);
+                    spaceCraft.ToggleItemSelection("mouse_input", "Local Mouse", "main", itemAtDragStart.Model.Id);
                 }
                 else if (filteredVelocity.magnitude > GetScaledVelocityThreshold())
                 {
@@ -237,9 +237,9 @@ public class InputManager : MonoBehaviour
     /// <summary>
     /// Receives position DELTA from Bridge (e.g., navigator controller)
     /// and applies it to the camera controller.
-    /// Expects parameters: controllerId (string), controllerName (string), panXDelta (float), panYDelta (float)
+    /// Expects parameters: controllerId (string), controllerName (string), screenId (string), panXDelta (float), panYDelta (float)
     /// </summary>
-    public void PushCameraPosition(string controllerId, string controllerName, float panXDelta, float panYDelta)
+    public void PushCameraPosition(string controllerId, string controllerName, string screenId, float panXDelta, float panYDelta)
     {
         if (cameraController == null)
         {
@@ -270,9 +270,9 @@ public class InputManager : MonoBehaviour
     /// <summary>
     /// Receives zoom DELTA from Bridge (e.g., navigator controller)
     /// and applies it to the camera controller.
-    /// Expects parameters: controllerId (string), controllerName (string), zoomDelta (float)
+    /// Expects parameters: controllerId (string), controllerName (string), screenId (string), zoomDelta (float)
     /// </summary>
-    public void PushCameraZoom(string controllerId, string controllerName, float zoomDelta)
+    public void PushCameraZoom(string controllerId, string controllerName, string screenId, float zoomDelta)
     {
          if (cameraController == null)
         {

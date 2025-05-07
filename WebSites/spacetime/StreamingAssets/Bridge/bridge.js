@@ -485,7 +485,7 @@ class Bridge {
                 // break; 
 
             case "Callback":
-                //console.log("Bridge: distributeEvent: Callback:", id, data);
+                console.log("Bridge: distributeEvent: Callback:", id, data);
                 this.invokeCallback(id, data);
                 break;
 
@@ -499,7 +499,7 @@ class Bridge {
 
                 var interests = obj['interests'];
                 if (!interests) {
-                    //console.log("Bridge: distributeEvent: no interests for object id: " + id + " eventName: " + eventName + " data: " + data);
+                    console.log("Bridge: distributeEvent: no interests for object id: " + id + " eventName: " + eventName + " data: " + data);
                     return;
                 }
 
@@ -513,7 +513,7 @@ class Bridge {
 
                 if ((eventName == "Destroyed") &
                     (obj != null)) {
-                    //console.log("Bridge: distributeEvent: Destroy", "id", ev.id, "obj", obj);
+                    console.log("Bridge: distributeEvent: Destroy", "id", ev.id, "obj", obj);
                     delete this.objects[id];
                 }
 

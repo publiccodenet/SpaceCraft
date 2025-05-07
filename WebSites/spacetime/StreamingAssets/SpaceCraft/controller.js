@@ -2,6 +2,67 @@
 // (e.g., navigator.html, selector.html)
 
 /**
+ * =============================================================================
+ *                       Message and Event Documentation
+ * =============================================================================
+ * This section documents all messages exchanged between controllers and Unity
+ * via Supabase to facilitate remote control and data synchronization.
+ *
+ * --- EVENTS SENT FROM CONTROLLERS TO UNITY (via Supabase broadcasts) ---
+ * 'pan': Sent by navigator or selector during movement
+ *    - Navigator: {clientId, clientType, clientName, panXDelta, panYDelta, screenId, targetSimulatorId}
+ *    - Selector: {clientId, clientType, clientName, selectXDelta, selectYDelta, screenId, targetSimulatorId}
+ *    - Used for continuous movement input
+ *
+ * 'tap': Sent by selector for selection actions
+ *    - {clientId, clientType, clientName, screenId, targetSimulatorId}
+ *    - Used for discrete selection actions
+ *
+ * 'select': Sent by selector for directional selection
+ *    - {clientId, clientType, clientName, action, screenId, targetSimulatorId}
+ *    - action can be "tap" or directional ("north","south","east","west","up","down")
+ *
+ * 'zoom': Sent by navigator for zoom actions
+ *    - {clientId, clientType, clientName, zoomDelta, screenId, targetSimulatorId}
+ *    - Controls camera zoom level
+ *
+ * --- STATE SYNCHRONIZATION (via Supabase presence) ---
+ * Controllers automatically observe simulator state through presence:
+ * 
+ * --- SHARED STATE PROPERTIES (synchronized via presence) ---
+ * Simulator shares these properties in its presence state:
+ * - selectedItemIds: Array of all currently selected item IDs
+ * - highlightedItemIds: Array of all currently highlighted item IDs  
+ * - selectedItemId: First item from selectedItemIds array
+ * - highlightedItemId: First item from highlightedItemIds array
+ * - selectedItem: Metadata for current selected item (without nested tree)
+ * - highlightedItem: Metadata for highlighted item (without nested tree)
+ * - currentCollectionId: ID of the currently active collection
+ * - currentCollection: Metadata for the current collection (without items array)
+ * - currentCollectionItems: Array of item IDs in the current collection
+ * - screenIds: Array of available screen IDs
+ * - currentScreenId: Current active screen ID
+ *
+ * --- PRESENCE IDENTITY PROPERTIES ---
+ * All clients track identity with:
+ * - clientId: Unique identifier for the client
+ * - clientType: "simulator", "navigator", or "selector"
+ * - clientName: User-friendly name
+ * - startTime: Timestamp of connection
+ *
+ * --- PRESENCE EVENTS ---
+ * 'presence' { event: 'sync' }: Full state of all connected clients
+ * 'presence' { event: 'join' }: New client has connected
+ * 'presence' { event: 'leave' }: Client has disconnected
+ *
+ * --- SIMULATOR TAKEOVER ---
+ * 'simulator_takeover': Sent when a new simulator takes over
+ *    - {newSimulatorId, newSimulatorName, startTime}
+ *    - Controllers will attach to most recent simulator
+ * =============================================================================
+ */
+
+/**
  * Base Controller class that provides common functionality for all controller types
  */
 window.BaseController = class BaseController {
@@ -9,16 +70,7 @@ window.BaseController = class BaseController {
     // API constants
     static SUPABASE_URL = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
     static SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc';
-    static CONTROLLER_CHANNEL_NAME = 'controllers';
-
-    // Permission constants
-    static PERMISSION_CONNECTION = 'connection';
-    static PERMISSION_MOTION = 'motion';
-    
-    // Storage key constants
-    static CURRENT_NAME_KEY = 'shipName';
-    static NAME_HISTORY_KEY = 'nameHistory';  
-    static NAME_INDEX_KEY = 'nameIndex';
+    static CLIENT_CHANNEL_NAME = 'clients';
     
     // Shake detection constants
     static SHAKE_THRESHOLD = 15; // Acceleration threshold for shake detection WITHOUT gravity (m/s²)
@@ -29,15 +81,6 @@ window.BaseController = class BaseController {
     
     // Debug mode
     static isDebugMode = (new URLSearchParams(window.location.search)).get('debug') === 'true';
-    
-    // Sound categories
-    static SOUND_CATEGORIES = {
-        TOUCH: 'touch',      // Touch down sounds
-        RELEASE: 'release',  // Touch release sounds
-        FEEDBACK: 'feedback', // Feedback sounds (success, error)
-        UI: 'ui',            // Button clicks
-        EVENT: 'event'       // Join/leave, rename
-    };
     
     // Global volume control
     static OVERALL_VOLUME = 0.25;
@@ -150,68 +193,68 @@ window.BaseController = class BaseController {
     
     // Sound patterns - defined inline to avoid circular reference issues
     static SOUND_PATTERNS = {
-        CLICK: { frequency: 1200, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.UI },
-        SUCCESS: { frequency: 880, duration: 60, type: 'sine', fadeOut: true, category: this.SOUND_CATEGORIES.FEEDBACK },
-        ERROR: { frequency: 220, duration: 150, type: 'square', category: this.SOUND_CATEGORIES.FEEDBACK },
+        CLICK: { frequency: 1200, duration: 40, type: 'sine', category: 'ui' },
+        SUCCESS: { frequency: 880, duration: 60, type: 'sine', fadeOut: true, category: 'feedback' },
+        ERROR: { frequency: 220, duration: 150, type: 'square', category: 'feedback' },
         RENAME: [
-            { frequency: 660, duration: 50, type: 'sine', category: this.SOUND_CATEGORIES.EVENT },
-            { frequency: 880, duration: 60, type: 'sine', category: this.SOUND_CATEGORIES.EVENT }
+            { frequency: 660, duration: 50, type: 'sine', category: 'event' },
+            { frequency: 880, duration: 60, type: 'sine', category: 'event' }
         ],
-        TILT_ON: { frequency: 440, duration: 75, type: 'triangle', fadeIn: true, category: this.SOUND_CATEGORIES.FEEDBACK },
-        TILT_OFF: { frequency: 330, duration: 75, type: 'triangle', fadeOut: true, category: this.SOUND_CATEGORIES.FEEDBACK },
+        TILT_ON: { frequency: 440, duration: 75, type: 'triangle', fadeIn: true, category: 'feedback' },
+        TILT_OFF: { frequency: 330, duration: 75, type: 'triangle', fadeOut: true, category: 'feedback' },
         JOIN: [
-            { frequency: 660, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.EVENT },
-            { frequency: 880, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.EVENT }
+            { frequency: 660, duration: 40, type: 'sine', category: 'event' },
+            { frequency: 880, duration: 40, type: 'sine', category: 'event' }
         ],
         LEAVE: [
-            { frequency: 880, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.EVENT },
-            { frequency: 660, duration: 75, type: 'sine', fadeOut: true, category: this.SOUND_CATEGORIES.EVENT }
+            { frequency: 880, duration: 40, type: 'sine', category: 'event' },
+            { frequency: 660, duration: 75, type: 'sine', fadeOut: true, category: 'event' }
         ],
-        BUTTON_TILT: { frequency: 1320, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.UI },
-        BUTTON_SPEECH: { frequency: 1100, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.UI },
-        BUTTON_SOUND: { frequency: 980, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.UI },
-        BUTTON_RENAME: { frequency: 860, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.UI },
+        BUTTON_TILT: { frequency: 1320, duration: 30, type: 'sine', category: 'ui' },
+        BUTTON_SPEECH: { frequency: 1100, duration: 30, type: 'sine', category: 'ui' },
+        BUTTON_SOUND: { frequency: 980, duration: 30, type: 'sine', category: 'ui' },
+        BUTTON_RENAME: { frequency: 860, duration: 30, type: 'sine', category: 'ui' },
         
         // Generic ON/OFF button sounds
-        BUTTON_ON: { frequency: 1000, duration: 20, type: 'sine', category: this.SOUND_CATEGORIES.UI },
-        BUTTON_OFF: { frequency: 700, duration: 20, type: 'sine', category: this.SOUND_CATEGORIES.UI },
+        BUTTON_ON: { frequency: 1000, duration: 20, type: 'sine', category: 'ui' },
+        BUTTON_OFF: { frequency: 700, duration: 20, type: 'sine', category: 'ui' },
         
         // Touch interaction sounds
-        TOUCH: { frequency: 600, duration: 15, type: 'sine', category: this.SOUND_CATEGORIES.TOUCH },
-        RELEASE_TAP: { frequency: 700, duration: 15, type: 'sine', category: this.SOUND_CATEGORIES.RELEASE },
-        RELEASE_SOUTH: { frequency: 800, duration: 15, type: 'sine', category: this.SOUND_CATEGORIES.RELEASE },
-        RELEASE_EAST: { frequency: 900, duration: 15, type: 'sine', category: this.SOUND_CATEGORIES.RELEASE },
-        RELEASE_WEST: { frequency: 1000, duration: 15, type: 'sine', category: this.SOUND_CATEGORIES.RELEASE },
-        RELEASE_NORTH: { frequency: 1100, duration: 15, type: 'sine', category: this.SOUND_CATEGORIES.RELEASE },
+        TOUCH: { frequency: 600, duration: 15, type: 'sine', category: 'touch' },
+        RELEASE_TAP: { frequency: 700, duration: 15, type: 'sine', category: 'release' },
+        RELEASE_SOUTH: { frequency: 800, duration: 15, type: 'sine', category: 'release' },
+        RELEASE_EAST: { frequency: 900, duration: 15, type: 'sine', category: 'release' },
+        RELEASE_WEST: { frequency: 1000, duration: 15, type: 'sine', category: 'release' },
+        RELEASE_NORTH: { frequency: 1100, duration: 15, type: 'sine', category: 'release' },
         
         // Threshold detection sounds
-        IMPULSE_TRIGGER: { frequency: 200, duration: 5, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK },
-        SHAKE_CONFIRM: { frequency: 400, duration: 10, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK },
+        IMPULSE_TRIGGER: { frequency: 200, duration: 5, type: 'sine', category: 'feedback' },
+        SHAKE_CONFIRM: { frequency: 400, duration: 10, type: 'sine', category: 'feedback' },
         
         // Directional shake sounds
         SHAKE_NORTH: [
-            { frequency: 440, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK },
-            { frequency: 660, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK }
+            { frequency: 440, duration: 30, type: 'sine', category: 'feedback' },
+            { frequency: 660, duration: 40, type: 'sine', category: 'feedback' }
         ],
         SHAKE_SOUTH: [
-            { frequency: 660, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK },
-            { frequency: 440, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK }
+            { frequency: 660, duration: 30, type: 'sine', category: 'feedback' },
+            { frequency: 440, duration: 40, type: 'sine', category: 'feedback' }
         ],
         SHAKE_EAST: [
-            { frequency: 550, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK },
-            { frequency: 880, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK }
+            { frequency: 550, duration: 30, type: 'sine', category: 'feedback' },
+            { frequency: 880, duration: 40, type: 'sine', category: 'feedback' }
         ],
         SHAKE_WEST: [
-            { frequency: 880, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK },
-            { frequency: 550, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK }
+            { frequency: 880, duration: 30, type: 'sine', category: 'feedback' },
+            { frequency: 550, duration: 40, type: 'sine', category: 'feedback' }
         ],
         SHAKE_UP: [
-            { frequency: 880, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK },
-            { frequency: 550, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK }
+            { frequency: 880, duration: 30, type: 'sine', category: 'feedback' },
+            { frequency: 550, duration: 40, type: 'sine', category: 'feedback' }
         ],
         SHAKE_DOWN: [
-            { frequency: 550, duration: 30, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK },
-            { frequency: 880, duration: 40, type: 'sine', category: this.SOUND_CATEGORIES.FEEDBACK }
+            { frequency: 550, duration: 30, type: 'sine', category: 'feedback' },
+            { frequency: 880, duration: 40, type: 'sine', category: 'feedback' }
         ]
     };
     // Gesture detection constants
@@ -224,10 +267,17 @@ window.BaseController = class BaseController {
     static WHEEL_ZOOM_SENSITIVITY = 0.008;
     static TRACKPAD_ZOOM_SENSITIVITY = 0.016;
 
-    constructor(controllerType) {
-        this.controllerType = controllerType;
+    constructor(clientType) {
+        // Identity properties 
+        this.clientType = clientType;
+        this.clientId = this.generateClientId();
+        this.clientName = this.getOrGenerateShipName();
+        
+        // UI elements
         this.targetElement = null;
         this.shipNameElement = null;
+        
+        // Interaction state
         this.evCache = [];
         this.prevDiff = -1;
         this.prevX = 0;
@@ -235,6 +285,13 @@ window.BaseController = class BaseController {
         this.touchStartX = 0;
         this.touchStartY = 0;
         this.pointerDown = false;
+        
+        // Screen state
+        this.currentScreenId = 'main';
+        
+        // Simulator state - initialize as null, will be populated from presence
+        this.currentSimulatorId = null;
+        this.simulatorState = null;
         
         // Motion detection state
         this.lastShakeTime = 0;
@@ -254,14 +311,12 @@ window.BaseController = class BaseController {
         
         // Permission tracking
         this.permissionStates = {
-            [this.constructor.PERMISSION_CONNECTION]: 'unknown',
-            [this.constructor.PERMISSION_MOTION]: 'inactive'
+            'connection': 'unknown',
+            'motion': 'inactive'
         };
         
-        // Controller state
-        this.controllerId = this.generateControllerId();
-        this.currentName = this.getOrGenerateShipName();
-        this.controllerChannel = null;
+        // Connection state
+        this.clientChannel = null;
         this.supabaseClient = null;
         this.isSubscribed = false;
         this.tiltingActive = false;
@@ -285,14 +340,14 @@ window.BaseController = class BaseController {
         this.wheelZoomSensitivity = this.constructor.WHEEL_ZOOM_SENSITIVITY;
         this.trackpadZoomSensitivity = this.constructor.TRACKPAD_ZOOM_SENSITIVITY;
         
-        this.logEvent('Init', `Controller created: ${this.controllerType}, ID: ${this.controllerId}, Name: ${this.currentName}`);
+        this.logEvent('Init', `Client created: type=${this.clientType}, id=${this.clientId}, name=${this.clientName}`);
     }
     
     /**
-     * Generates a random controller ID
+     * Generates a random client ID
      */
-    generateControllerId() {
-        return 'controller_' + Math.random().toString(36).substring(2, 10);
+    generateClientId() {
+        return 'client_' + Math.random().toString(36).substring(2, 10);
     }
     
     /**
@@ -309,7 +364,7 @@ window.BaseController = class BaseController {
     getOrGenerateShipName() {
         // Try to load from localStorage first
         try {
-            const savedName = localStorage.getItem(this.constructor.CURRENT_NAME_KEY);
+            const savedName = localStorage.getItem('shipName');
             if (savedName) {
                 this.logEvent('Name', `Loaded saved name: ${savedName}`);
                 return savedName;
@@ -322,7 +377,7 @@ window.BaseController = class BaseController {
         const newName = this.generateRandomName();
         
         try {
-            localStorage.setItem(this.constructor.CURRENT_NAME_KEY, newName);
+            localStorage.setItem('shipName', newName);
         } catch (e) {
             this.logEvent('Storage', 'Error loading name from localStorage:', e);
         }
@@ -336,9 +391,9 @@ window.BaseController = class BaseController {
      */
     saveNameHistory(nameHistory, currentNameIndex, currentName) {
         try {
-            localStorage.setItem(this.constructor.NAME_HISTORY_KEY, JSON.stringify(nameHistory));
-            localStorage.setItem(this.constructor.NAME_INDEX_KEY, currentNameIndex.toString());
-            localStorage.setItem(this.constructor.CURRENT_NAME_KEY, currentName);
+            localStorage.setItem('nameHistory', JSON.stringify(nameHistory));
+            localStorage.setItem('nameIndex', currentNameIndex.toString());
+            localStorage.setItem('shipName', currentName);
             this.logEvent('Storage', `Saved name history: ${nameHistory.length} items, current index: ${currentNameIndex}`);
         } catch (e) {
             this.logEvent('Storage', 'Error saving name history to localStorage:', e);
@@ -346,13 +401,13 @@ window.BaseController = class BaseController {
     }
     
     /**
-     * Initializes the name history
+     * Checks for more storage keys in the constructor method
      */
     initializeNameHistory() {
         // Try to load from localStorage
         try {
-            const savedHistory = localStorage.getItem(this.constructor.NAME_HISTORY_KEY);
-            const savedIndex = localStorage.getItem(this.constructor.NAME_INDEX_KEY);
+            const savedHistory = localStorage.getItem('nameHistory');
+            const savedIndex = localStorage.getItem('nameIndex');
             
             if (savedHistory) {
                 this.nameHistory = JSON.parse(savedHistory);
@@ -364,13 +419,13 @@ window.BaseController = class BaseController {
                     this.logEvent('Name', `Loaded name history: ${this.nameHistory.length} items, current index: ${this.currentNameIndex}, current name: ${this.currentName}`);
                     
                     // Update localStorage with current name
-                    localStorage.setItem(this.constructor.CURRENT_NAME_KEY, this.currentName);
+                    localStorage.setItem('shipName', this.currentName);
                 } else {
                     // Reset index if it's invalid
                     this.currentNameIndex = this.nameHistory.length - 1;
                     if (this.currentNameIndex >= 0) {
                         this.currentName = this.nameHistory[this.currentNameIndex];
-                        localStorage.setItem(this.constructor.CURRENT_NAME_KEY, this.currentName);
+                        localStorage.setItem('shipName', this.currentName);
                     }
                 }
             }
@@ -585,7 +640,7 @@ window.BaseController = class BaseController {
                     this.playSound(BaseController.SOUND_PATTERNS.BUTTON_ON);
                 }
                 
-                // Directly call the instance's triggerRename method
+                // Call the triggerRename method
                 this.logEvent('Rename', 'Triggering rename');
                 this.triggerRename('next');
             });
@@ -685,8 +740,8 @@ window.BaseController = class BaseController {
         // Handle page unload
         window.addEventListener('beforeunload', () => {
             this.logEvent('Lifecycle', 'Page unloading');
-            if (this.channel) {
-                this.channel.untrack().catch(err => {
+            if (this.clientChannel) {
+                this.clientChannel.untrack().catch(err => {
                     this.logEvent('Error', 'Error untracking presence', err);
                 });
             }
@@ -726,9 +781,43 @@ window.BaseController = class BaseController {
      * Handle pointer move event - empty backstop for subclasses
      */
     handlePointerMove(ev) {
-        // Backstop handler - does nothing in base class
-        // Subclasses like NavigatorController will override
-        if (!this.isSubscribed) return;
+        if (!this.isSubscribed || this.evCache.length === 0) return;
+
+        const index = this.evCache.findIndex((cachedEv) => cachedEv.pointerId === ev.pointerId);
+        if (index === -1) return; 
+        this.evCache[index] = ev; 
+
+        if (this.evCache.length === 2) {
+            const ptr1 = this.evCache[0];
+            const ptr2 = this.evCache[1];
+            const curDiff = Math.abs(ptr1.clientX - ptr2.clientX); 
+
+            if (this.prevDiff > 0) { 
+                let zoomDelta = (curDiff - this.prevDiff) * this.pinchZoomSensitivity * this.userZoomSensitivity;
+                zoomDelta *= -1;
+
+                if (Math.abs(zoomDelta) > 0.001) { 
+                    this.sendUpdate('zoom', { zoomDelta: zoomDelta });
+                    this.logEvent('Input', 'Pinch zoom', { zoomDelta, curDiff, prevDiff: this.prevDiff });
+                }
+            }
+            this.prevDiff = curDiff;
+        } else if (this.evCache.length === 1) {
+            const currentPtr = this.evCache[0]; 
+            if (ev.pointerId === currentPtr.pointerId) { 
+                const dx = ev.clientX - this.prevX;
+                const dy = ev.clientY - this.prevY;
+                const finalPanXDelta = dx * this.userPanSensitivity * 0.125;
+                const finalPanYDelta = dy * this.userPanSensitivity * 0.125;
+
+                if (Math.abs(finalPanXDelta) > 0.001 || Math.abs(finalPanYDelta) > 0.001) {
+                    this.sendUpdate('pan', { panXDelta: finalPanXDelta, panYDelta: finalPanYDelta });
+                    this.logEvent('Input', 'Panning', { dx, dy, finalPanXDelta, finalPanYDelta });
+                }
+                this.prevX = ev.clientX;
+                this.prevY = ev.clientY;
+            }
+        }
         ev.preventDefault();
     }
     
@@ -876,19 +965,19 @@ window.BaseController = class BaseController {
      * Sends an update event to the host/sim
      */
     sendUpdate(eventType, payload) {
-        if (!this.channel || !this.isSubscribed) {
+        if (!this.clientChannel || !this.isSubscribed) {
             this.logEvent('Send', `Cannot send update (${eventType}), channel not ready`);
             return;
         }
         
         try {
-            this.channel.send({
+            this.clientChannel.send({
                 type: 'broadcast',
                 event: eventType,
                 payload: {
-                    controllerId: this.controllerId,
-                    controllerType: this.controllerType,
-                    controllerName: this.currentName,
+                    clientId: this.clientId,
+                    clientType: this.clientType,
+                    clientName: this.currentName,
                     ...payload
                 }
             });
@@ -898,7 +987,7 @@ window.BaseController = class BaseController {
     }
     
     /**
-     * Trigger a rename operation
+     * Trigger a rename operation (only updates name locally, no event sent to simulator)
      */
     triggerRename(direction = 'next') {
         this.logEvent('Rename', `Generating ${direction} name...`);
@@ -918,7 +1007,7 @@ window.BaseController = class BaseController {
         
         // 2. Get a new name based on direction
         const oldName = this.currentName;
-        
+            
         if (direction === 'next') {
             // Going forward in history or generating new name
             if (this.currentNameIndex < this.nameHistory.length - 1) {
@@ -951,9 +1040,9 @@ window.BaseController = class BaseController {
         }
         
         // 3. Save the name history and current index to localStorage
-        localStorage.setItem(this.constructor.CURRENT_NAME_KEY, this.currentName);
-        localStorage.setItem(this.constructor.NAME_HISTORY_KEY, JSON.stringify(this.nameHistory));
-        localStorage.setItem(this.constructor.NAME_INDEX_KEY, this.currentNameIndex.toString());
+        localStorage.setItem('shipName', this.currentName);
+        localStorage.setItem('nameHistory', JSON.stringify(this.nameHistory));
+        localStorage.setItem('nameIndex', this.currentNameIndex.toString());
         
         // Update the ship name in the UI
         this.updateShipNameUI();
@@ -970,31 +1059,24 @@ window.BaseController = class BaseController {
                 this.sayWhoIAm();
             }, 50);
         }
-        
+            
         // 5. Update presence - use track with full object rather than trying to use setState
         try {
-            if (this.channel) {
-                // Update presence data with full object including updated name (camelCase only)
-                this.channel.track({
-                    controllerId: this.controllerId,
-                    controllerType: this.controllerType,
-                    controllerName: this.currentName,
+            if (this.clientChannel) {
+                // Update presence data with full object including updated name
+                this.clientChannel.track({
+                    clientId: this.clientId,
+                    clientType: this.clientType,
+                    clientName: this.currentName,
                     onlineAt: new Date().toISOString() 
                 });
-                this.logEvent('Rename', 'Updated presence with track()');
+                this.logEvent('Rename', 'Updated presence with new name');
             }
         } catch (err) {
             this.logEvent('Rename', 'Error updating presence:', err);
         }
         
-        // 6. Send an event to the host/sim 
-        this.sendUpdate('RenameRequest', { 
-            newName: this.currentName,
-            direction: direction
-        });
-        this.logEvent('Rename', 'Sent rename request to host');
-        
-        // 7. Update debug overlay
+        // 6. Update debug overlay
         this.updateDebugOverlay();
         
         this.logEvent('Rename', `Changed from '${oldName}' to '${this.currentName}'`);
@@ -1019,8 +1101,8 @@ window.BaseController = class BaseController {
             // Build debug info
             const timestamp = new Date().toLocaleTimeString();
             // Use instance properties for state
-            const connectionState = this.permissionStates[this.constructor.PERMISSION_CONNECTION] || 'unknown';
-            const motionState = this.permissionStates[this.constructor.PERMISSION_MOTION] || 'inactive';
+            const connectionState = this.permissionStates['connection'] || 'unknown';
+            const motionState = this.permissionStates['motion'] || 'inactive';
             
             // Format acceleration values with fixed width
             function formatValue(val) {
@@ -1103,7 +1185,7 @@ window.BaseController = class BaseController {
             console.log(prefix, message);
         }
     }
-
+    
     /**
      * Speaks the provided text using the Speech Synthesis API.
      */
@@ -1217,7 +1299,7 @@ window.BaseController = class BaseController {
         
         return this.speechEnabled;
     }
-    
+
     /**
      * Initialize the audio context for sound effects
      */
@@ -1577,7 +1659,7 @@ window.BaseController = class BaseController {
             this.motionListenerActive = false;
             this.tiltingActive = false;
             
-            this.updatePermissionStatus(this.constructor.PERMISSION_MOTION, 'inactive');
+            this.updatePermissionStatus('motion', 'inactive');
             this.logEvent('Motion', 'Motion tracking stopped');
             this.updateDebugOverlay();
             return true;
@@ -1612,16 +1694,16 @@ window.BaseController = class BaseController {
                     if (permissionState === 'granted') {
                         // Permission granted, start tracking
                         this.startMotionListeners(); // Use class method
-                        this.updatePermissionStatus(this.constructor.PERMISSION_MOTION, 'granted');
+                        this.updatePermissionStatus('motion', 'granted');
                     } else {
                         // Permission denied
                         this.logEvent('Motion', 'iOS motion permission denied');
-                        this.updatePermissionStatus(this.constructor.PERMISSION_MOTION, 'denied');
+                        this.updatePermissionStatus('motion', 'denied');
                     }
                 })
                 .catch(error => {
                     this.logEvent('Motion', 'Error requesting iOS motion permission:', error);
-                    this.updatePermissionStatus(this.constructor.PERMISSION_MOTION, 'error');
+                    this.updatePermissionStatus('motion', 'error');
                 });
                 
             return true; // We started the permission flow
@@ -1629,12 +1711,12 @@ window.BaseController = class BaseController {
             this.logEvent('Motion', 'DeviceMotion API available, starting listeners');
             // For non-iOS or older iOS, just try to start listening
             this.startMotionListeners(); // Use class method
-            this.updatePermissionStatus(this.constructor.PERMISSION_MOTION, 'granted');
+            this.updatePermissionStatus('motion', 'granted');
             return true;
         } else {
             // Device motion not supported
             this.logEvent('Motion', 'DeviceMotion API not supported on this device');
-            this.updatePermissionStatus(this.constructor.PERMISSION_MOTION, 'unavailable');
+            this.updatePermissionStatus('motion', 'unavailable');
             return false;
         }
     }
@@ -1656,7 +1738,7 @@ window.BaseController = class BaseController {
             this.updateDebugOverlay();
         } catch (e) {
             this.logEvent('Motion', 'Error starting motion listeners:', e);
-            this.updatePermissionStatus(this.constructor.PERMISSION_MOTION, 'error');
+            this.updatePermissionStatus('motion', 'error');
         }
     }
     
@@ -1664,13 +1746,13 @@ window.BaseController = class BaseController {
      * Initializes the controller connection.
      */
     initializeControllerConnection() {
-        this.logEvent('Init', 'Initializing controller connection');
-        this.updatePermissionStatus(this.constructor.PERMISSION_CONNECTION, 'pending');
+        this.logEvent('Init', 'Initializing client connection');
+        this.updatePermissionStatus('connection', 'pending');
 
         // Check if necessary libraries are available
         if (typeof supabase === 'undefined' || !supabase.createClient) {
             this.logEvent('Error', 'Supabase library missing');
-            this.updatePermissionStatus(this.constructor.PERMISSION_CONNECTION, 'error');
+            this.updatePermissionStatus('connection', 'error');
             return false;
         }
 
@@ -1681,144 +1763,257 @@ window.BaseController = class BaseController {
             // Create Supabase client and channel
             this.logEvent('Init', 'Creating Supabase client and channel');
             this.supabaseClient = supabase.createClient(this.constructor.SUPABASE_URL, this.constructor.SUPABASE_ANON_KEY);
-            this.channel = this.supabaseClient.channel(this.constructor.CONTROLLER_CHANNEL_NAME, {
+            this.clientChannel = this.supabaseClient.channel(this.constructor.CLIENT_CHANNEL_NAME, {
                 config: {
                     presence: {
-                        key: this.controllerId,
+                        key: this.clientId,
                     },
                 },
             });
 
-            // --- Presence Event Listeners ---
-            this.channel
+            // --- Presence Event Handlers ---
+            this.clientChannel
                 .on('presence', { event: 'sync' }, () => {
-                    const newState = this.channel.presenceState();
-                    this.logEvent('Presence', `Sync with ${Object.keys(newState).length} peers`);
+                    const presenceState = this.clientChannel.presenceState();
+                    this.logEvent('Presence', `Sync with ${Object.keys(presenceState).length} peers`, presenceState);
+                    
+                    // Find the current simulator from presence
+                    const simulator = this.findCurrentSimulator(presenceState);
+                    if (simulator) {
+                        // Set the current simulator ID
+                        const previousSimulatorId = this.currentSimulatorId;
+                        this.currentSimulatorId = simulator.clientId;
+                        
+                        // If simulator changed, log it
+                        if (previousSimulatorId !== this.currentSimulatorId) {
+                            this.logEvent('Simulator', `Connected to simulator: ${simulator.clientName || 'Unnamed'} (${simulator.clientId})`);
+                        }
+                        
+                        // Update state from simulator
+                        this.updateSimulatorState(simulator);
+                    } else {
+                        this.logEvent('Simulator', 'No simulator found in presence');
+                        this.currentSimulatorId = null;
+                    }
+                    
+                    // Update UI elements
                     this.updateDebugOverlay();
                 })
                 .on('presence', { event: 'join' }, ({ key, newPresences }) => {
                     this.logEvent('Presence', `Join event for key: ${key}`, newPresences);
+                    
+                    // Check if the new presence is a simulator
+                    for (const presence of newPresences) {
+                        if (presence.clientType === 'simulator') {
+                            this.logEvent('Simulator', `New simulator joined: ${presence.clientName || 'Unnamed'} (${presence.clientId})`);
+                            
+                            // Trigger a full presence sync to update current simulator
+                            const presenceState = this.clientChannel.presenceState();
+                            const simulator = this.findCurrentSimulator(presenceState);
+                            
+                            if (simulator && simulator.clientId === presence.clientId) {
+                                this.logEvent('Simulator', `Setting new simulator as current: ${simulator.clientId}`);
+                                this.currentSimulatorId = simulator.clientId;
+                                this.updateSimulatorState(simulator);
+                            }
+                        }
+                    }
                 })
                 .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
                     this.logEvent('Presence', `Leave event for key: ${key}`, leftPresences);
-                })
-                .subscribe(async (status, err) => {
-                    this.logEvent('Channel', `Status: ${status}`);
-                    if (status === 'SUBSCRIBED') {
-                        const initialPresenceData = {
-                            // Use only camelCase naming
-                            controllerId: this.controllerId,
-                            controllerType: this.controllerType,
-                            controllerName: this.currentName,
-                            onlineAt: new Date().toISOString()
-                        };
-                        this.logEvent('Channel', `Attempting to track presence for ${this.controllerId}`);
-                        
-                        // Set initial state - properly using track API with key option
-                        const trackStatus = await this.channel.track(initialPresenceData);
-                        this.logEvent('Channel', `Track result: ${trackStatus}`);
-
-                        if (trackStatus === 'ok') {
-                            this.isSubscribed = true;
-                            this.updatePermissionStatus(this.constructor.PERMISSION_CONNECTION, 'granted');
-                            this.logEvent('Init', 'Connection successful');
+                    
+                    // Check if the current simulator left
+                    for (const presence of leftPresences) {
+                        if (presence.clientId === this.currentSimulatorId) {
+                            this.logEvent('Simulator', `Current simulator left: ${presence.clientId}`);
                             
-                            // Update the ship name in the UI
-                            this.updateShipNameUI();
-                            
-                            // Update debug display
-                            this.updateDebugOverlay();
-
-                            // Start motion tracking directly
-                            this.requestAndStartMotionTracking();
-                        } else {
-                            this.logEvent('Channel', `Presence tracking failed: ${trackStatus}`);
-                            this.updatePermissionStatus(this.constructor.PERMISSION_CONNECTION, 'error');
+                            // Find a new simulator if available
+                            this.currentSimulatorId = null;
                         }
-                    } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
-                        this.logEvent('Channel', `Error status: ${status}`, err);
-                        this.updatePermissionStatus(this.constructor.PERMISSION_CONNECTION, 'error');
-                        this.isSubscribed = false;
                     }
                 });
-            
-            this.logEvent('Init', 'Connection initialization complete');
+                
+            // Actually subscribe to the channel and track the client's presence
+            this.clientChannel
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        this.logEvent('Connection', 'Successfully subscribed to client channel');
+                        this.isSubscribed = true;
+                        this.updatePermissionStatus('connection', 'granted');
+                        
+                        // Track client presence
+                        this.clientChannel.track({
+                            clientId: this.clientId,
+                            clientType: this.clientType,
+                            clientName: this.currentName,
+                            screenId: this.currentScreenId
+                        });
+                    } else {
+                        this.logEvent('Connection', `Channel subscription status: ${status}`);
+                    }
+                });
+                
             return true;
+        } catch (e) {
+            this.logEvent('Error', 'Error initializing client connection:', e);
+            this.updatePermissionStatus('connection', 'error');
+            return false;
+        }
+    }
+    
+    /**
+     * Updates simulator state based on presence data
+     * @param {Object} simulator - The simulator's presence data
+     */
+    updateSimulatorState(simulator) {
+        if (!simulator || !simulator.shared) {
+            this.logEvent('State', 'Received invalid simulator presence data', simulator);
+            this.currentSimulatorId = null;
+            this.simulatorState = null;
+            this.updateUIFromState();
+            return;
+        }
 
-        } catch (error) {
-            this.logEvent('Init', 'Initialization error:', error);
-            this.updatePermissionStatus(this.constructor.PERMISSION_CONNECTION, 'error');
+        const newSharedState = simulator.shared;
+        const previousSelectedItemId = this.simulatorState ? this.simulatorState.selectedItemId : null;
+        
+        // Update the local simulatorState with all new shared data
+        this.simulatorState = { ...newSharedState };
+
+        // MAX: Log new selected item JSON if its ID has changed
+        if (this.simulatorState.selectedItemId !== previousSelectedItemId) {
+            this.logEvent('MAX', 'New selected item json (ID changed):', this.simulatorState.selectedItem);
+        }
+        
+        this.updateUIFromState();
+    }
+
+    /**
+     * Updates UI elements based on current simulator state
+     * Override in subclasses for specific UI updates
+     */
+    updateUIFromState() {
+        // Base implementation - subclasses should override
+        
+        // Update ship name display with the controller's own name
+        const shipNameElement = document.getElementById('ship-name');
+        if (shipNameElement) {
+            shipNameElement.textContent = this.clientName || 'Unknown Ship';
+        }
+
+        // Update status display
+        const statusElement = document.getElementById('status');
+        if (statusElement) {
+            if (this.currentSimulatorId && this.simulatorState) {
+                // Try to display a more informative status if possible
+                let statusText = `Connected to: ${this.simulatorState.clientName || 'Simulator'}`;
+                if (this.simulatorState.selectedItem && this.simulatorState.selectedItem.title) {
+                    statusText += ` (Selected: ${this.simulatorState.selectedItem.title})`;
+                } else if (this.simulatorState.highlightedItem && this.simulatorState.highlightedItem.title) {
+                    statusText += ` (Highlighted: ${this.simulatorState.highlightedItem.title})`;
+                }
+                statusElement.textContent = statusText;
+            } else {
+                statusElement.textContent = 'Searching for simulator...';
+            }
+        }
+        
+        // Update debug panel if enabled
+        this.updateDebugOverlay();
+        
+        this.logEvent('UI', 'Base updateUIFromState completed'); // Changed log message for clarity
+    }
+    
+    /**
+     * Finds and returns the most current simulator from presence data
+     * @param {Object} presenceState - The complete presence state
+     * @returns {Object|null} The simulator presence data or null
+     */
+    findCurrentSimulator(presenceState) {
+        if (!presenceState) return null;
+        
+        let currentSimulator = null;
+        let newestTime = 0;
+        
+        // Search through all presences
+        Object.values(presenceState).forEach(presences => {
+            presences.forEach(presence => {
+                // Check if this is a simulator
+                if (presence.clientType === 'simulator' && 
+                    presence.clientId && 
+                    presence.startTime) {
+                    
+                    // Keep track of the newest simulator by startTime
+                    if (presence.startTime > newestTime) {
+                        newestTime = presence.startTime;
+                        currentSimulator = presence;
+                    }
+                }
+            });
+        });
+
+        if (currentSimulator) {
+            this.logEvent('Simulator', `Found current simulator: ${currentSimulator.clientId} (${currentSimulator.clientName || 'unnamed'})`);
+        } else {
+            this.logEvent('Simulator', 'No simulator found in presence data');
+        }
+        
+        return currentSimulator;
+    }
+
+    /**
+     * Sends an event to the current simulator
+     * @param {string} eventType - The type of event to send
+     * @param {Object} payload - Additional payload data to include
+     */
+    sendUpdate(eventType, payload = {}) {
+        if (!this.clientChannel || !this.isSubscribed) {
+            this.logEvent('Send', `Cannot send update (${eventType}), channel not ready`, { subscribed: this.isSubscribed });
+            return false;
+        }
+        
+        if (!this.currentSimulatorId) {
+            this.logEvent('Send', `Cannot send update (${eventType}), no current simulator`, { payload });
+            return false;
+        }
+        
+        try {
+            // Prepare the full payload with client info
+            const fullPayload = {
+                clientId: this.clientId,
+                clientType: this.clientType,
+                clientName: this.clientName,
+                screenId: this.currentScreenId,
+                targetSimulatorId: this.currentSimulatorId,
+                                                ...payload
+            };
+            
+            this.logEvent('Send', `Sending ${eventType} to simulator ${this.currentSimulatorId}`, fullPayload);
+            
+            // Send the event
+            this.clientChannel.send({
+                type: 'broadcast',
+                event: eventType,
+                payload: fullPayload
+            });
+            
+            return true;
+        } catch (err) {
+            this.logEvent('Error', `Error sending ${eventType}:`, err);
             return false;
         }
     }
 
-    // END MOVED CODE TO REWRITE TO BE OOP AND USE RIGHT REFERENCES
-
     /**
-     * Updates the ship name in the UI with the current name
+     * Updates the ship name displayed in the UI
      */
     updateShipNameUI() {
-        // Update document title
-        document.title = `${this.controllerType.charAt(0).toUpperCase() + this.controllerType.slice(1)} - ${this.currentName}`;
-        
-        // Update the ship name element if it exists
         const shipNameElement = document.getElementById('ship-name');
         if (shipNameElement) {
-            shipNameElement.textContent = this.currentName;
+            shipNameElement.textContent = this.currentName || 'Unknown Ship';
             this.logEvent('UI', `Updated ship name in UI to: ${this.currentName}`);
-        }
-        
-        // Also update the status element if it exists
-        const statusElement = document.getElementById('status');
-        if (statusElement) {
-            statusElement.textContent = 'Connected';
-            statusElement.className = 'status connected';
-        }
-    }
-
-    /**
-     * Sets the global sound volume
-     * @param {number} volume - Volume level from 0 to 1
-     */
-    setVolume(volume) {
-        // Ensure volume is between 0 and 1
-        const newVolume = Math.max(0, Math.min(1, volume));
-        
-        // Update the static property
-        this.constructor.OVERALL_VOLUME = newVolume;
-        
-        this.logEvent('Sound', `Volume set to ${newVolume.toFixed(2)}`);
-        
-        // Store in localStorage for persistence
-        try {
-            localStorage.setItem('soundVolume', newVolume.toString());
-        } catch (e) {
-            this.logEvent('Storage', 'Error saving volume to localStorage:', e);
-        }
-        
-        // Play a test sound if enabled
-        if (this.soundEnabled) {
-            this.playSound(this.constructor.SOUND_PATTERNS.CLICK);
-        }
-        
-        return newVolume;
-    }
-    
-    /**
-     * Initializes and loads the saved volume setting
-     */
-    initVolume() {
-        try {
-            const savedVolume = localStorage.getItem('soundVolume');
-            if (savedVolume !== null) {
-                const volume = parseFloat(savedVolume);
-                if (!isNaN(volume)) {
-                    this.constructor.OVERALL_VOLUME = Math.max(0, Math.min(1, volume));
-                    this.logEvent('Sound', `Loaded saved volume: ${this.constructor.OVERALL_VOLUME.toFixed(2)}`);
-                }
-            }
-        } catch (e) {
-            this.logEvent('Storage', 'Error loading volume from localStorage:', e);
+        } else {
+            this.logEvent('UI', 'Could not update ship name in UI - element not found');
         }
     }
 };
@@ -1843,14 +2038,23 @@ window.NavigatorController = class NavigatorController extends BaseController {
      * Handle pointer down event - specialized for navigator
      */
     handlePointerDown(ev) {
-        super.handlePointerDown(ev);
-        
-        // Additional navigator-specific handling
+        this.logEvent('Input', 'Navigator Pointer down', { x: ev.clientX, y: ev.clientY, pointerId: ev.pointerId });
+        ev.target.setPointerCapture(ev.pointerId);
         this.evCache.push(ev);
-        if (this.evCache.length === 1) {
+
+        if (this.evCache.length === 1) { // First finger down
             this.prevX = ev.clientX;
             this.prevY = ev.clientY;
         }
+        // prevDiff is reset when a pointer goes up and cache < 2, or on new two-finger touch
+        if (this.evCache.length === 2) {
+             this.prevDiff = Math.abs(this.evCache[0].clientX - this.evCache[1].clientX);
+        }
+
+        if (this.soundEnabled) {
+            this.playSound(this.constructor.SOUND_PATTERNS.TOUCH);
+        }
+        ev.preventDefault();
     }
     
     /**
@@ -1887,33 +2091,34 @@ window.NavigatorController = class NavigatorController extends BaseController {
         }
         ev.preventDefault();
     }
-    
+
     /**
      * Handle pointer up event - specialized for navigator
      */
     handlePointerUp(ev) {
-        // Don't call super.handlePointerUp as it would trigger gesture detection
-        // which causes the "jerking" movement
-        if (!this.isSubscribed || !this.pointerDown) return;
-        
+        if (!this.isSubscribed) return;
         ev.target.releasePointerCapture(ev.pointerId);
-        this.pointerDown = false;
-        
-        // Just clean up pointer tracking without triggering gestures
-        this.removeEvent(ev);
-        if (this.evCache.length < 2) {
-            this.prevDiff = -1;
+
+        const index = this.evCache.findIndex(cachedEv => cachedEv.pointerId === ev.pointerId);
+        if (index !== -1) {
+            this.evCache.splice(index, 1); 
+            this.logEvent('Input', 'Navigator Pointer up', { pointerId: ev.pointerId, remainingPointers: this.evCache.length });
         }
-        if (this.evCache.length === 0) {
+
+        if (this.evCache.length < 2) {
+            this.prevDiff = -1; 
+        }
+        if (this.evCache.length === 1) {
+            this.prevX = this.evCache[0].clientX;
+            this.prevY = this.evCache[0].clientY;
+        } else if (this.evCache.length === 0) {
             this.prevX = 0;
             this.prevY = 0;
         }
-        
-        // Play a simple release sound
+
         if (this.soundEnabled) {
             this.playSound(this.constructor.SOUND_PATTERNS.RELEASE_TAP);
         }
-        
         ev.preventDefault();
     }
     
@@ -1946,7 +2151,7 @@ window.NavigatorController = class NavigatorController extends BaseController {
         }
         
         // Pan upward
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('pan', { panXDelta: 0, panYDelta: -5 });
         }
     }
@@ -1963,7 +2168,7 @@ window.NavigatorController = class NavigatorController extends BaseController {
         }
         
         // Pan downward
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('pan', { panXDelta: 0, panYDelta: 5 });
         }
     }
@@ -1980,7 +2185,7 @@ window.NavigatorController = class NavigatorController extends BaseController {
         }
         
         // Pan right
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('pan', { panXDelta: 5, panYDelta: 0 });
         }
     }
@@ -1997,7 +2202,7 @@ window.NavigatorController = class NavigatorController extends BaseController {
         }
         
         // Pan left
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('pan', { panXDelta: -5, panYDelta: 0 });
         }
     }
@@ -2014,7 +2219,7 @@ window.NavigatorController = class NavigatorController extends BaseController {
         }
         
         // Zoom out
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('zoom', { zoomDelta: 0.2 });
         }
     }
@@ -2031,11 +2236,15 @@ window.NavigatorController = class NavigatorController extends BaseController {
         }
         
         // Zoom in
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('zoom', { zoomDelta: -0.2 });
         }
     }
     
+    handlePointerCancel(ev) {
+        this.logEvent('Input', 'Navigator Pointer cancel', { pointerId: ev.pointerId });
+        this.handlePointerUp(ev); // Treat cancel like up for cleanup
+    }
 };
 
 /**
@@ -2066,7 +2275,7 @@ window.SelectorController = class SelectorController extends BaseController {
         }
         
         // Send tap selection event
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('select', { action: 'tap' });
         }
     }
@@ -2083,7 +2292,7 @@ window.SelectorController = class SelectorController extends BaseController {
         }
         
         // Select up
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('select', { action: 'north' });
         }
     }
@@ -2100,7 +2309,7 @@ window.SelectorController = class SelectorController extends BaseController {
         }
         
         // Select down
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('select', { action: 'south' });
         }
     }
@@ -2117,7 +2326,7 @@ window.SelectorController = class SelectorController extends BaseController {
         }
         
         // Select right
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('select', { action: 'east' });
         }
     }
@@ -2134,7 +2343,7 @@ window.SelectorController = class SelectorController extends BaseController {
         }
         
         // Select left
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('select', { action: 'west' });
         }
     }
@@ -2151,7 +2360,7 @@ window.SelectorController = class SelectorController extends BaseController {
         }
         
         // Select up layer
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('select', { action: 'up' });
         }
     }
@@ -2168,7 +2377,7 @@ window.SelectorController = class SelectorController extends BaseController {
         }
         
         // Select down layer
-        if (this.channel) {
+        if (this.clientChannel) {
             this.sendUpdate('select', { action: 'down' });
         }
     }
@@ -2199,7 +2408,7 @@ document.addEventListener('DOMContentLoaded', function() {
         controller = new NavigatorController();
     } else if (controllerType === 'selector') {
         controller = new SelectorController();
-} else {
+        } else {
         console.error('Invalid controller type: ' + controllerType);
         return;
     }
@@ -2211,3 +2420,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Make controller globally accessible
     window.controller = controller;
 });
+
