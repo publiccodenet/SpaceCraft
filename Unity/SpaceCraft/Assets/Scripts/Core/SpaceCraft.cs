@@ -47,6 +47,7 @@ public class SpaceCraft : BridgeObject
                  Debug.Log($"[SpaceCraft] Setter: Updating SelectedItemIds (Count: {newSet.Count})");
                 _selectedItemIds = new List<string>(newSet); // Store a copy defensively
                 selectedItemsChanged = true; // Set flag because state list changed
+                Debug.Log($"[SpaceCraft] Setter: SelectedItemIds updated to {string.Join(", ", _selectedItemIds)}");
                 UpdateSelectionVisuals(); 
             }
         }
@@ -67,6 +68,7 @@ public class SpaceCraft : BridgeObject
                 Debug.Log($"[SpaceCraft] Setter: Updating HighlightedItemIds (Count: {newValue.Count})");
                 _highlightedItemIds = new List<string>(newValue); // Store a copy
                 highlightedItemsChanged = true; // Set flag because state list changed
+                Debug.Log($"[SpaceCraft] Setter: HighlightedItemIds updated to {string.Join(", ", _highlightedItemIds)}");
                 UpdateHighlightVisuals();
             }
         }
@@ -165,7 +167,8 @@ public class SpaceCraft : BridgeObject
                 if (SelectedItemIds.Count > 0) { 
                      SelectedItemIds.Clear(); // Use internal field to avoid immediate visual update loop
                      selectedItemsChanged = true; // Ensure the change is flagged
-                 }
+                     Debug.Log($"[SpaceCraft] Setter: SelectedItemIds cleared to {string.Join(", ", SelectedItemIds)}");
+                }
                 // Update call to pass default controller info
                 SelectItem("auto_select", "System", firstItemId);
                 
@@ -183,14 +186,19 @@ public class SpaceCraft : BridgeObject
         SendEventName(ContentLoadedEvent);
     }
     
+    private void LateUpdate()
+    {
+        SendEvents();
+    }
+
     /// <summary>
     /// Select an item by ID. Will apply constraints before selecting.
     /// </summary>
-    public void SelectItem(string controllerId, string controllerName, string itemId)
+    public void SelectItem(string clientId, string clientName, string itemId)
     {
         if (string.IsNullOrEmpty(itemId)) return;
-        // Log controller info
-        Debug.Log($"[SpaceCraft] SelectItem API called by {controllerName}({controllerId}): {itemId}");
+        // Log client info
+        Debug.Log($"[SpaceCraft] SelectItem API called by {clientName}({clientId}): {itemId}");
 
         List<string> newList;
         // Handle single selection mode
@@ -215,11 +223,11 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Deselect an item by ID
     /// </summary>
-    public void DeselectItem(string controllerId, string controllerName, string itemId)
+    public void DeselectItem(string clientId, string clientName, string itemId)
     {
         if (string.IsNullOrEmpty(itemId) || !_selectedItemIds.Contains(itemId)) return;
-         // Log controller info
-        Debug.Log($"[SpaceCraft] DeselectItem API called by {controllerName}({controllerId}): {itemId}");
+         // Log client info
+        Debug.Log($"[SpaceCraft] DeselectItem API called by {clientName}({clientId}): {itemId}");
         
         // Create a new list without the item
         List<string> newList = new List<string>(_selectedItemIds);
@@ -246,10 +254,10 @@ public class SpaceCraft : BridgeObject
     /// If nothing is selected, it tries to toggle the selection of the last focused item.
     /// If there was no last focused item, it selects the first available item.
     /// </summary>
-    public void ToggleCurrentItemSelection(string controllerId, string controllerName, string itemId = null)
+    public void ToggleCurrentItemSelection(string clientId, string clientName, string screenId, string itemId = null)
     {
         string logPrefix = "[SpaceCraft ToggleCurrentItemSelection]";
-        Debug.Log($"{logPrefix} Called by {controllerName}({controllerId}) with itemId: {itemId}");
+        Debug.Log($"{logPrefix} Called by {clientName}({clientId}) with itemId: {itemId}");
 
         string targetItemId = itemId;
 
@@ -276,7 +284,7 @@ public class SpaceCraft : BridgeObject
 
         if (!string.IsNullOrEmpty(targetItemId))
         {
-            ToggleItemSelection(controllerId, controllerName, targetItemId);
+            ToggleItemSelection(clientId, clientName, screenId, targetItemId);
         }
         else
         {
@@ -284,64 +292,13 @@ public class SpaceCraft : BridgeObject
         }
     }
 
-    public void ToggleCurrentItemHighlight(string controllerId, string controllerName)
-    {
-        string logPrefix = "[SpaceCraft ToggleCurrentItemHighlight]";
-        Debug.Log($"{logPrefix} Called by {controllerName}({controllerId}).");
-
-        if (HighlightedItemIds.Count > 0)
-        {
-            // If items are highlighted, toggle the first one (remove one instance)
-            string firstHighlightedId = HighlightedItemIds[0];
-            Debug.Log($"{logPrefix} Found highlighted items. Toggling first one: {firstHighlightedId}");
-            UnhighlightItem(controllerId, controllerName, firstHighlightedId);
-        }
-        else
-        {   
-            // If nothing is highlighted, try using the last focused item
-            Debug.Log($"{logPrefix} No items highlighted. Checking last focused item.");
-            string targetItemId = null;
-            if (collectionsView != null && 
-                !string.IsNullOrEmpty(collectionsView.lastSelectedItemOrHighlightId) && 
-                FindItemViewById(collectionsView.lastSelectedItemOrHighlightId) != null) // Check if item still exists
-            {
-                targetItemId = collectionsView.lastSelectedItemOrHighlightId;
-                Debug.Log($"{logPrefix} Found valid last focused item: {targetItemId}. Highlighting it.");
-                HighlightItem(controllerId, controllerName, targetItemId); // Highlight last focused
-            }
-            else
-            {   
-                // If no valid last focused item, highlight the first displayed item
-                 Debug.Log($"{logPrefix} No valid last focused item. Attempting to highlight first displayed item.");
-                if (collectionsView != null)
-                {
-                    targetItemId = collectionsView.GetFirstDisplayedItemId();
-                    if (!string.IsNullOrEmpty(targetItemId))
-                    {
-                        Debug.Log($"{logPrefix} Highlighting first displayed item: {targetItemId}");
-                        // Use SetHighlightedItems to ensure only this one is highlighted
-                        SetHighlightedItems(controllerId, controllerName, new List<string> { targetItemId }); 
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"{logPrefix} No first displayed item found to highlight.");
-                    }
-                }
-                else
-                {
-                     Debug.LogWarning($"{logPrefix} Cannot highlight first item because CollectionsView is null.");
-                }
-            }
-        }
-    }
-    
     /// <summary>
     /// Toggle selection state of an item
     /// </summary>
-    public void ToggleItemSelection(string controllerId, string controllerName, string itemId)
+    public void ToggleItemSelection(string clientId, string clientName, string screenId, string itemId)
     {
         if (string.IsNullOrEmpty(itemId)) return;
-        Debug.Log($"[SpaceCraft] ToggleItemSelection API called by {controllerName}({controllerId}): {itemId}");
+        Debug.Log($"[SpaceCraft] ToggleItemSelection API called by clientId: {clientId}, clientName: {clientName}, screenId: {screenId}, itemId: {itemId}");
 
         List<string> newList = new List<string>(_selectedItemIds);
         if (newList.Contains(itemId))
@@ -366,11 +323,11 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Set a specific set of items as selected.
     /// </summary>
-    public void SetSelectedItems(string controllerId, string controllerName, List<string> itemIds)
+    public void SetSelectedItems(string clientId, string clientName, List<string> itemIds)
     {
         List<string> newList = itemIds ?? new List<string>();
-         // Log controller info
-        Debug.Log($"[SpaceCraft] SetSelectedItems API called by {controllerName}({controllerId}) with {newList.Count} items.");
+         // Log client info
+        Debug.Log($"[SpaceCraft] SetSelectedItems API called by {clientName}({clientId}) with {newList.Count} items.");
         
         // Enforce single selection mode if active
         if (!multiSelectEnabled && newList.Count > 1)
@@ -386,17 +343,17 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Add multiple items to the selection
     /// </summary>
-    public void AddSelectedItems(string controllerId, string controllerName, List<string> itemIds)
+    public void AddSelectedItems(string clientId, string clientName, List<string> itemIds)
     {
         if (itemIds == null || itemIds.Count == 0) return;
-         // Log controller info
-        Debug.Log($"[SpaceCraft] AddSelectedItems API called by {controllerName}({controllerId}) with {itemIds.Count} items.");
+         // Log client info
+        Debug.Log($"[SpaceCraft] AddSelectedItems API called by {clientName}({clientId}) with {itemIds.Count} items.");
 
         // Handle single select mode separately
         if (!multiSelectEnabled)
         {
             // Call the primary SelectItem method
-            SelectItem(controllerId, controllerName, itemIds.LastOrDefault());
+            SelectItem(clientId, clientName, itemIds.LastOrDefault());
             return;
         }
         
@@ -421,11 +378,11 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Remove multiple items from the selection
     /// </summary>
-    public void RemoveSelectedItems(string controllerId, string controllerName, List<string> itemIds)
+    public void RemoveSelectedItems(string clientId, string clientName, List<string> itemIds)
     {
         if (itemIds == null || itemIds.Count == 0 || _selectedItemIds.Count == 0) return;
-        // Log controller info
-        Debug.Log($"[SpaceCraft] RemoveSelectedItems API called by {controllerName}({controllerId}) with {itemIds.Count} items.");
+        // Log client info
+        Debug.Log($"[SpaceCraft] RemoveSelectedItems API called by {clientName}({clientId}) with {itemIds.Count} items.");
 
         List<string> newList = new List<string>(_selectedItemIds);
         bool changed = false;
@@ -488,9 +445,9 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Set which items are highlighted.
     /// </summary>
-    public void SetHighlightedItems(string controllerId, string controllerName, List<string> itemIds)
+    public void SetHighlightedItems(string clientId, string clientName, List<string> itemIds)
     {
-        Debug.Log($"[SpaceCraft] SetHighlightedItems API called by {controllerName}({controllerId}) with {itemIds?.Count ?? 0} items.");
+        Debug.Log($"[SpaceCraft] SetHighlightedItems API called by {clientName}({clientId}) with {itemIds?.Count ?? 0} items.");
         
         // Assign the new list to the property to trigger updates if different
         HighlightedItemIds = itemIds ?? new List<string>(); 
@@ -499,10 +456,10 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Add multiple items to highlighted state
     /// </summary>
-    public void AddHighlightedItems(string controllerId, string controllerName, List<string> itemIds)
+    public void AddHighlightedItems(string clientId, string clientName, List<string> itemIds)
     {
         if (itemIds == null || itemIds.Count == 0) return;
-        Debug.Log($"[SpaceCraft] AddHighlightedItems API called by {controllerName}({controllerId}) with {itemIds.Count} items.");
+        Debug.Log($"[SpaceCraft] AddHighlightedItems API called by {clientName}({clientId}) with {itemIds.Count} items.");
 
         // Create new list, add items, and assign back to property
         List<string> newList = new List<string>(HighlightedItemIds);
@@ -513,10 +470,10 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Remove multiple items from highlighted state
     /// </summary>
-    public void RemoveHighlightedItems(string controllerId, string controllerName, List<string> itemIds)
+    public void RemoveHighlightedItems(string clientId, string clientName, List<string> itemIds)
     {
         if (itemIds == null || itemIds.Count == 0 || HighlightedItemIds.Count == 0) return;
-        Debug.Log($"[SpaceCraft] RemoveHighlightedItems API called by {controllerName}({controllerId}) with {itemIds.Count} items.");
+        Debug.Log($"[SpaceCraft] RemoveHighlightedItems API called by {clientName}({clientId}) with {itemIds.Count} items.");
 
         // Create new list and remove one instance of each specified item
         List<string> newList = new List<string>(HighlightedItemIds);
@@ -538,21 +495,21 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Highlight a specific item by ID
     /// </summary>
-    public void HighlightItem(string controllerId, string controllerName, string itemId)
+    public void HighlightItem(string clientId, string clientName, string itemId)
     {
         if (string.IsNullOrEmpty(itemId)) return;
         // Delegate to AddHighlightedItems
-        AddHighlightedItems(controllerId, controllerName, new List<string>{ itemId }); 
+        AddHighlightedItems(clientId, clientName, new List<string>{ itemId }); 
     }
     
     /// <summary>
     /// Remove highlight from a specific item by ID
     /// </summary>
-    public void UnhighlightItem(string controllerId, string controllerName, string itemId)
+    public void UnhighlightItem(string clientId, string clientName, string itemId)
     {
         if (string.IsNullOrEmpty(itemId)) return;
         // Delegate to RemoveHighlightedItems
-        RemoveHighlightedItems(controllerId, controllerName, new List<string>{ itemId });
+        RemoveHighlightedItems(clientId, clientName, new List<string>{ itemId });
     }
     
     /// <summary>
@@ -586,10 +543,10 @@ public class SpaceCraft : BridgeObject
     /// Toggles the selection of the first highlighted item.
     /// If no item is highlighted, it first highlights the first available item and then toggles its selection.
     /// </summary>
-    public void ToggleHighlightedItemSelection(string controllerId, string controllerName)
+    public void ToggleHighlightedItemSelection(string clientId, string clientName, string screenId)
     {
         string logPrefix = "[SpaceCraft ToggleHighlightedItemSelection]";
-        Debug.Log($"{logPrefix} Called by {controllerName}({controllerId}).");
+        Debug.Log($"{logPrefix} Called by {clientName}({clientId}) for screen {screenId}.");
 
         string targetItemId = null;
 
@@ -598,7 +555,7 @@ public class SpaceCraft : BridgeObject
             // If items are highlighted, use the first one
             targetItemId = HighlightedItemIds[0];
             Debug.Log($"{logPrefix} Found highlighted item. Toggling selection for: {targetItemId}");
-            ToggleItemSelection(controllerId, controllerName, targetItemId);
+            ToggleItemSelection(clientId, clientName, screenId, targetItemId);
         }
         else
         {
@@ -613,10 +570,10 @@ public class SpaceCraft : BridgeObject
                     Debug.Log($"{logPrefix} Found first item: {targetItemId}. Highlighting and toggling selection.");
                     
                     // First highlight the item
-                    HighlightItem(controllerId, controllerName, targetItemId);
+                    HighlightItem(clientId, clientName, targetItemId);
                     
                     // Then toggle its selection
-                    ToggleItemSelection(controllerId, controllerName, targetItemId);
+                    ToggleItemSelection(clientId, clientName, screenId, targetItemId);
                 }
                 else
                 {
@@ -728,28 +685,6 @@ public class SpaceCraft : BridgeObject
     }
 
     /// <summary>
-    /// Move the selection in a specific direction.
-    /// </summary>
-    public void MoveSelection(string controllerId, string controllerName, string direction)
-    {
-        // Expects "north", "south", "east", "west" from controller
-        Debug.Log($"[SpaceCraft] MoveSelection called with controllerId: {controllerId}, controllerName: {controllerName}, direction: {direction}");
-        // Pass direction directly to CollectionsView, assuming it now handles these terms
-        collectionsView?.MoveSelection(controllerId, controllerName, direction); 
-    }
-
-    /// <summary>
-    /// Move the highlight in a specific direction.
-    /// </summary>
-    public void MoveHighlight(string controllerId, string controllerName, string direction)
-    {
-        // Expects "north", "south", "east", "west" from controller
-        Debug.Log($"[SpaceCraft] MoveHighlight called with controllerId: {controllerId}, controllerName: {controllerName}, direction: {direction}");
-        // Pass direction directly to CollectionsView, assuming it now handles these terms
-        collectionsView?.MoveHighlight(controllerId, controllerName, direction);
-    }
-
-    /// <summary>
     /// Bridge method to calculate the next item ID in a given direction without moving the selection.
     /// </summary>
     /// <param name="data">JObject containing 'currentItemId' (string) and 'direction' (string).</param>
@@ -832,11 +767,11 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Bridge forwarder: Receives position DELTA from Bridge and passes it to InputManager.
     /// </summary>
-    public void PushCameraPosition(string controllerId, string controllerName, float panXDelta, float panYDelta)
+    public void PushCameraPosition(string controllerId, string controllerName, string screenId, float panXDelta, float panYDelta)
     {
         if (inputManager != null)
         {
-             inputManager.PushCameraPosition(controllerId, controllerName, panXDelta, panYDelta);
+             inputManager.PushCameraPosition(controllerId, controllerName, screenId, panXDelta, panYDelta);
         }
         else
         {
@@ -847,11 +782,11 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Bridge forwarder: Receives zoom DELTA from Bridge and passes it to InputManager.
     /// </summary>
-    public void PushCameraZoom(string controllerId, string controllerName, float zoomDelta)
+    public void PushCameraZoom(string controllerId, string controllerName, string screenId, float zoomDelta)
     {
         if (inputManager != null)
         {
-            inputManager.PushCameraZoom(controllerId, controllerName, zoomDelta);
+            inputManager.PushCameraZoom(controllerId, controllerName, screenId, zoomDelta);
         }
         else
         {
@@ -885,6 +820,7 @@ public class SpaceCraft : BridgeObject
             Debug.Log("SpaceCraft: SelectedItemsChanged: selectedItemIds: " + string.Join(",", SelectedItemIds));
             SendEventName("SelectedItemsChanged");
             selectedItemsChanged = false; // Reset flag here
+            Debug.Log("SpaceCraft: SelectedItemsChanged: selectedItemIds: " + string.Join(",", SelectedItemIds));
         }
         
         if (highlightedItemsChanged)
@@ -925,10 +861,10 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Toggle highlight state of an item
     /// </summary>
-    public void ToggleItemHighlight(string controllerId, string controllerName, string itemId)
+    public void ToggleItemHighlight(string controllerId, string controllerName, string screenId, string itemId)
     {
         if (string.IsNullOrEmpty(itemId)) return;
-        Debug.Log($"[SpaceCraft] ToggleItemHighlight API called by {controllerName}({controllerId}): {itemId}");
+        Debug.Log($"[SpaceCraft] ToggleItemHighlight API called by controllerId:     {controllerId}, controllerName: {controllerName}, screenId: {screenId}, itemId: {itemId}");
 
         List<string> newList = new List<string>(HighlightedItemIds);
         if (newList.Contains(itemId))
@@ -944,4 +880,27 @@ public class SpaceCraft : BridgeObject
         // Assign the potentially modified list back to the property
         HighlightedItemIds = newList;
     }
+
+    /// <summary>
+    /// Move the selection in a specific direction.
+    /// </summary>
+    public void MoveSelection(string controllerId, string controllerName, string screenId, string direction)
+    {
+        // Expects "north", "south", "east", "west" from controller
+        Debug.Log($"[SpaceCraft] MoveSelection called with controllerId: {controllerId}, controllerName: {controllerName}, screenId: {screenId}, direction: {direction}");
+        // Pass direction directly to CollectionsView
+        collectionsView?.MoveSelection(controllerId, controllerName, direction);
+    }
+
+    /// <summary>
+    /// Move the highlight in a specific direction.
+    /// </summary>
+    public void MoveHighlight(string controllerId, string controllerName, string screenId, string direction)
+    {
+        // Expects "north", "south", "east", "west" from controller
+        Debug.Log($"[SpaceCraft] MoveHighlight called with controllerId: {controllerId}, controllerName: {controllerName}, screenId: {screenId}, direction: {direction}");
+        // Pass direction directly to CollectionsView
+        collectionsView?.MoveHighlight(controllerId, controllerName, direction);
+    }
+
 }

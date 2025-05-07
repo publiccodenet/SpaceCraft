@@ -20,6 +20,77 @@
 // =============================================================================
 
 // =============================================================================
+//                         Message and Event Documentation
+// =============================================================================
+// This section documents all messages exchanged between Unity and controllers
+// via Bridge and Supabase to facilitate remote control and data synchronization.
+//
+// --- BRIDGE INTERESTS (Events from Unity that JS listens to) ---
+// "ContentLoaded": Unity signals when content is processed successfully.
+// "HighlightedItemsChanged": Unity signals when highlighted items change.
+//    - Queries for: highlightedItemIds (List<string>)
+//    - JS stores complete list in highlightedItemIds property
+// "SelectedItemsChanged": Unity signals when selected items change.
+//    - Queries for: selectedItemIds (List<string>)
+//    - JS stores complete list in selectedItemIds property
+//
+// --- STATE PROPERTIES (synchronized via presence) ---
+// Simulator shares these properties in its presence state:
+// - selectedItemIds: Array of all currently selected item IDs
+// - highlightedItemIds: Array of all currently highlighted item IDs
+// - selectedItemId: First item from selectedItemIds array
+// - highlightedItemId: First item from highlightedItemIds array
+// - selectedItem: Metadata for current selected item (without nested tree)
+// - highlightedItem: Metadata for highlighted item (without nested tree)
+// - currentCollectionId: ID of the currently active collection
+// - currentCollection: Metadata for the current collection (without items array)
+// - currentCollectionItems: Array of item IDs in the current collection
+// - screenIds: Array of available screen IDs
+// - currentScreenId: Current active screen ID
+//
+// --- BRIDGE METHODS (Called from JS to Unity) ---
+// "PushCameraPosition": [clientId, clientName, screenId, panXDelta, panYDelta]
+//    - Moves the camera position based on client input
+// "PushCameraZoom": [clientId, clientName, screenId, zoomDelta]
+//    - Zooms the camera based on client input
+// "ToggleHighlightedItemSelection": [clientId, clientName, screenId]
+//    - Toggles selection state of the currently highlighted item
+// "MoveHighlight": [clientId, clientName, screenId, direction]
+//    - Moves highlight in specified direction ("north","south","east","west","up","down")
+//
+// --- SUPABASE EVENTS (From clients to simulator) ---
+// 'broadcast' { event: 'pan' }: 
+//    - From navigator: {clientId, clientType, clientName, panXDelta, panYDelta, screenId, targetSimulatorId}
+//    - From selector: {clientId, clientType, clientName, selectXDelta, selectYDelta, screenId, targetSimulatorId}
+//    - Used for continuous movement input
+// 'broadcast' { event: 'zoom' }:
+//    - {clientId, clientType, clientName, zoomDelta, screenId, targetSimulatorId}
+//    - Controls camera zoom level
+// 'broadcast' { event: 'select' }:
+//    - {clientId, clientType, clientName, action, screenId, targetSimulatorId}
+//    - action can be "tap" or directional ("north","south","east","west","up","down")
+//    - "tap" calls ToggleHighlightedItemSelection
+//    - Directions call MoveHighlight
+// 'broadcast' { event: 'simulator_takeover' }:
+//    - {newSimulatorId, newSimulatorName, startTime}
+//    - Signals that a new simulator has taken control
+//    - Used to manage multiple simulator instances
+//
+// --- PRESENCE EVENTS (Client connection tracking) ---
+// 'presence' { event: 'sync' }: Full state of all connected clients
+// 'presence' { event: 'join' }: New client connects
+//    - Sends 'contentUpdate' event to the new client with content data
+// 'presence' { event: 'leave' }: Client disconnects
+//
+// --- EVENTS SENT TO CLIENTS ---
+// 'contentUpdate': {content: contentData}
+//    - Sent to newly joined clients with content data
+// 'selectedItemIdUpdated': {selectedItemId: string}
+//    - Sent to all clients when the current item (first selected item) changes
+//    - Helps clients synchronize their UI with the main application state
+// =============================================================================
+
+// =============================================================================
 //                                  Dependencies
 // =============================================================================
 // - HTML Elements: #unity-container, #unity-canvas, #unity-fullscreen-button, #navigator (svg), #selector (svg)
@@ -32,91 +103,113 @@
 // - Unity Build Files: Located in the 'Build' directory (loader.js, data, framework.js, etc.)
 // =============================================================================
 
-// =============================================================================
-//                                     Constants
-// =============================================================================
+/**
+ * SpaceCraft class - encapsulates all SpaceCraft-specific logic and state.
+ * Manages the startup sequence, communication with Unity, and remote control via Supabase.
+ */
+class SpaceCraftSim {
+    /**
+     * Static constants
+     */
+    static get SUPABASE_URL() { return 'https://gwodhwyvuftyrvbymmvc.supabase.co'; }
+    static get SUPABASE_ANON_KEY() { return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc'; }
+    static get DEEP_INDEX_PATH() { return 'StreamingAssets/Content/index-deep.json'; }
+    static get NAVIGATOR_HTML_PATH() { return 'StreamingAssets/SpaceCraft/navigator.html'; }
+    static get SELECTOR_HTML_PATH() { return 'StreamingAssets/SpaceCraft/selector.html'; }
+    static get CONTROLLER_CHANNEL_NAME() { return 'controllers'; }
 
-const SUPABASE_URL = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc';
-const DEEP_INDEX_PATH = 'StreamingAssets/Content/index-deep.json';
-const NAVIGATOR_HTML_PATH = 'StreamingAssets/SpaceCraft/navigator.html';
-const SELECTOR_HTML_PATH = 'StreamingAssets/SpaceCraft/selector.html';
+    /**
+     * Constructor - initializes instance properties
+     */
+    constructor() {
+        // Generate our clientId first so it's available to other initialization methods
+        this.clientId = this.generateClientId();
+        
+        // Identity - constant properties of this client 
+        this.identity = {
+            clientId: this.clientId, // Unique ID for this simulator instance
+            clientType: "simulator", // Fixed type for simulator
+            clientName: "SpaceCraft Simulator", // Human-readable name
+            startTime: Date.now() // When this simulator instance started
+        };
 
-// -----------------------------------------------------------------------------
-// Step 2: Early JSON Fetch (Initiated as soon as this script loads)
-// -----------------------------------------------------------------------------
+        // Initialize state with default values
+        this.initializeState();
 
-// Fetch content data immediately so it's likely ready when needed later.
-console.log("[SpaceCraft] Initiating early fetch for index-deep.json");
-
-window.contentPromise = fetch(DEEP_INDEX_PATH)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .catch(error => {
-        console.error("[SpaceCraft] Early fetch for index-deep.json failed:", error);
-        // Return null so the await later can detect the failure
-        return null;
-    });
-
-// -----------------------------------------------------------------------------
-// Global SpaceCraft Object Definition
-// -----------------------------------------------------------------------------
-
-// Encapsulates all SpaceCraft-specific logic and state.
-window.SpaceCraft = {
-
-    spaceCraft: null,       // Reference to the Bridge object representing SpaceCraft in Unity
-    isInitialized: false,       // Flag to track if basic init (like QR code check) is done
-    domContentLoaded: false,    // Flag to track if DOM is ready
-    loadedContent: null,        // Store the loaded content data here
-    lastHighlightedItemId: null, // Track the last highlighted item ID
-    lastSelectedItemId: null,    // Track the last selected item ID
-    
-    // --- Controller Registry ---
-    // Stores information about currently connected controllers (navigators, selectors, etc.)
-    // Key: controllerId (from presence payload), Value: { id: string, type: string, joinedAt: string, ... }
-    controllers: {},
-    // References to Supabase channels (initialized in setupSupabase)
-    controllerChannel: null, // Single channel for all controllers
-    
-    // --- QR Code Configuration ---
-
-    // Default QR code configuration.
-    qrcodeDefaults: {
+        // Private non-shared state
+        this.spaceCraft = null; // Reference to the Bridge object representing SpaceCraft in Unity
+        this.isInitialized = false; // Flag to track if basic init (like QR code check) is done
+        this.domContentLoaded = false; // Flag to track if DOM is ready
+        this.loadedContent = null; // Store the loaded content data here (private to simulator)
+        
+        // --- Client Registry ---
+        // Stores information about currently connected clients
+        this.clients = {}; // Key: clientId, Value: client info object
+        
+        // Supabase channel reference
+        this.clientChannel = null;
+        this.presenceVersion = 0; // For tracking changes to presence state
+        
+        // Fetch timeout reference
+        this.contentFetchTimeout = null;
+        
+        // QR Code configuration
+        this.qrcodeDefaults = {
       dim: 100, // Default dimension (can be overridden in CSS)
-      pad: 1,   // Padding around QR code
+            pad: 1, // Padding around QR code
       pal: ['#000', '#fff'] // Color palette [background, foreground]
-    },
-
-    // Define all QR codes to be generated here.
-    // Each object needs: id (for SVG element), targetHtml (relative path), label (text below QR code)
-    // Added 'position' for CSS layout control
-    qrCodeDefinitions: [
-        {
-            id: "navigator-qr",
-            targetHtml: NAVIGATOR_HTML_PATH,
-            label: "Navigator",
-            position: "top-left"
-        },
-        {
-            id: "selector-qr",
-            targetHtml: SELECTOR_HTML_PATH,
-            label: "Selector",
-            position: "top-right"
-        },
-        // Add more QR code definitions here if needed, specifying position
-    ],
-
-    // --- Core Initialization and Setup ---
-
-    // Step 3 & 4: Called when the DOM is fully loaded.
-    // Checks dependencies and generates QR codes.
-    initializeDOMAndQRCodes: function() {
-
+        };
+        
+        // Define all QR codes to be generated
+        this.qrCodeDefinitions = [
+            {
+                id: "navigator-qr",
+                targetHtml: SpaceCraftSim.NAVIGATOR_HTML_PATH,
+                label: "Navigator",
+                position: "top-left"
+            },
+            {
+                id: "selector-qr",
+                targetHtml: SpaceCraftSim.SELECTOR_HTML_PATH,
+                label: "Selector",
+                position: "top-right"
+            },
+        ];
+        
+        // Initialize content promise
+        this.initContentPromise();
+    }
+    
+    /**
+     * Generates a unique client ID
+     */
+    generateClientId() {
+        return 'simulator_' + Math.random().toString(36).substring(2, 10);
+    }
+    
+    /**
+     * Initializes the content promise to fetch data early
+     */
+    initContentPromise() {
+        console.log("[SpaceCraft] Initiating early fetch for index-deep.json");
+        
+        window.contentPromise = fetch(SpaceCraftSim.DEEP_INDEX_PATH)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .catch(error => {
+                console.error("[SpaceCraft] Early fetch for index-deep.json failed:", error);
+                throw error; // Re-throw the error, don't swallow it
+            });
+    }
+    
+    /**
+     * Called when the DOM is fully loaded. Checks dependencies and generates QR codes.
+     */
+    initializeDOMAndQRCodes() {
         if (this.domContentLoaded) return; // Prevent double execution
 
         this.domContentLoaded = true;
@@ -137,11 +230,12 @@ window.SpaceCraft = {
         
         // Now that the DOM is ready, proceed to configure and load Unity
         this.configureAndLoadUnity();
-    },
+    }
     
-    // Step 4: Generate QR codes for navigator and selector based on qrCodeDefinitions.
-    generateQRCodes: function() {
-
+    /**
+     * Generate QR codes for navigator and selector based on qrCodeDefinitions.
+     */
+    generateQRCodes() {
         console.log("[SpaceCraft] Generating QR codes based on definitions...");
         
         const qrContainer = document.getElementById('qrcodes-container');
@@ -243,11 +337,12 @@ window.SpaceCraft = {
             console.error("[SpaceCraft] Error generating QR codes:", error);
              this.isInitialized = false; // Mark initialization as failed
         }
-    },
+    }
 
-    // Step 5 & 6: Configure and initiate the loading of the Unity instance.
-    configureAndLoadUnity: function() {
-
+    /**
+     * Configure and initiate the loading of the Unity instance.
+     */
+    configureAndLoadUnity() {
         console.log("[SpaceCraft] Configuring Unity...");
 
         // Ensure Bridge is available (should be loaded via script tag before this)
@@ -303,7 +398,6 @@ window.SpaceCraft = {
         
         // --- Define Unity Instance Creation Logic (runs after loader script loads) ---
         script.onload = () => {
-
             console.log("[SpaceCraft] Unity loader script loaded. Creating Unity instance...");
             
             // Check if createUnityInstance function exists (it should be defined by loaderUrl script)
@@ -319,7 +413,7 @@ window.SpaceCraft = {
                 //     progressBarFull.style.width = 100 * progress + "%";
                 // }
             }).then((unityInstance) => {
-                // Step 7: Unity Instance Creation Complete
+                // Unity Instance Creation Complete
                 console.log("[SpaceCraft] Unity instance created successfully.");
 
                 // Store Unity instance globally for access
@@ -331,7 +425,7 @@ window.SpaceCraft = {
                     unityInstance.SetFullscreen(1);
                 };
 
-                // Step 8: Initialize Bridge
+                // Initialize Bridge
                 // This tells the Bridge JS library that Unity is ready and provides the instance.
                 // The Bridge library internally handles linking with the Unity instance.
                 // Bridge C# code (BridgeTransportWebGL.Awake/Start) will eventually send "StartedUnity".
@@ -347,396 +441,687 @@ window.SpaceCraft = {
         // --- Add Loader Script to Document ---
         document.body.appendChild(script);
         console.log("[SpaceCraft] Unity loader script added to document.");
-    },
+    }
 
-    // Step 10, 11, 12: Load Content and Create the SpaceCraft Bridge Object.
-    // This function is EXPORTED and designed to be called externally by bridge.js 
-    // when the "StartedUnity" event is received from the C# side.
-    loadCollectionsAndCreateSpaceCraft: async function() {
+    /**
+     * Fetch content from the early content promise or make a new fetch
+     * @returns {Promise<Object>} Content data
+     */
+    async fetchContent() {
+        try {
+            // Use the early fetch result if available
+            if (window.contentPromise) {
+                try {
+                    const content = await window.contentPromise;
+                    if (content) {
+                        console.log("[SpaceCraft] Successfully loaded content from early fetch");
+                        return content;
+                    }
+                } catch (earlyFetchError) {
+                    console.warn("[SpaceCraft] Early fetch failed, falling back to direct fetch:", earlyFetchError);
+                }
+            }
+            
+            // Direct fetch if early fetch failed or wasn't available
+            console.log(`[SpaceCraft] Fetching content from ${SpaceCraftSim.DEEP_INDEX_PATH}`);
+            const response = await fetch(SpaceCraftSim.DEEP_INDEX_PATH);
+            
+            if (!response.ok) {
+                throw new Error(`Failed to fetch content: ${response.status} ${response.statusText}`);
+            }
+            
+            const content = await response.json();
+            console.log("[SpaceCraft] Content fetch successful, got:", 
+                Object.keys(content).join(", ")
+            );
+            
+            // Return the exact content as-is, expecting it to be correctly formatted
+            return content;
+        } catch (error) {
+            console.error("[SpaceCraft] Error in fetchContent:", error);
+            throw error; // Rethrow the error - fail fast, don't return fake data
+        }
+    }
+
+    /**
+     * Load Content and Create the SpaceCraft Bridge Object.
+     * This function is called externally by bridge.js when the "StartedUnity" event is received.
+     */
+    async loadCollectionsAndCreateSpaceCraft() {
         console.log("[SpaceCraft] 'StartedUnity' event received. Loading content and creating SpaceCraft object...");
 
         // Ensure basic initialization (DOM, QR codes) happened. It should have by now.
         if (!this.isInitialized) {
             console.warn("[SpaceCraft] loadCollectionsAndCreateSpaceCraft called before basic initialization was complete. This might indicate a timing issue.");
             // Attempt to initialize now, though it might be too late for some steps
-            this.initializeDOMAndQRCodes(); 
-            if (!this.isInitialized) {
-                console.error("[SpaceCraft] Basic initialization failed. Aborting SpaceCraft object creation.");
-                return;
-            }
-        }
-        
-        // Ensure Bridge is available
-        if (!window.bridge) {
-            console.error("[SpaceCraft] Bridge not available when trying to create SpaceCraft object.");
-            return;
+            this.initializeDOMAndQRCodes();
         }
 
-        // Step 11: Wait for the early JSON fetch to complete
-        console.log("[SpaceCraft] Waiting for contentPromise to resolve...");
-        const content = await window.contentPromise;
-
-        // Check if fetch failed
-        if (content === null) {
-            console.error("[SpaceCraft] Failed to load content from index-deep.json. Cannot create SpaceCraft object with real data.");
-            // Decide how to handle: use placeholder, show error, etc.
-            // Example: this.createSpaceCraft(this.getPlaceholderContent()); 
-            return; // Abort if content is essential
-        }
-        console.log("[SpaceCraft] Content data loaded successfully.");
-
-        // Store the loaded content for later use (e.g., presence)
-        this.loadedContent = content;
-
-        // Step 12: Create the SpaceCraft object via the Bridge
-        this.createSpaceCraft(content);
-    },
-
-    // Step 12 (continued): Creates the actual SpaceCraft object in the Bridge.
-    createSpaceCraft: function(content) {
-        console.log("[SpaceCraft] Creating SpaceCraft object in Bridge with loaded content...");
         try {
-            this.spaceCraft = window.bridge.createObject({
-                prefab: "Prefabs/SpaceCraft", // Path within Resources folder
-                obj: {
-                    id: "spacecraft", // Unique ID for this object in the Bridge
-                    // Define interests (events from Unity we want to listen to)
-                    interests: {
-                        "ContentLoaded": { // Event name from Unity
-                            handler: (obj, data) => {
-                                console.log("[SpaceCraft <-> Unity] Event: ContentLoaded", data);
-                            }
-                        },
-                        "HighlightedItemsChanged": {
-                            query: { "highlightedItemIds": "HighlightedItemIds" }, // Data to request
-                            handler: (obj, results) => {
-                                if (results.highlightedItemIds.length > 0) {
-                                    this.lastHighlightedItemId = results.highlightedItemIds[0];
-                                }
-                                console.log("[SpaceCraft <-> Unity] Event: HighlightedItemsChanged:", results, 'lastHighlightedItemId:', this.lastHighlightedItemId);
-                            }
-                        },
-                        "SelectedItemsChanged": {
-                            query: { "selectedItemIds": "SelectedItemIds" },
-                            handler: (obj, results) => {
-                                if (results.selectedItemIds.length > 0) {
-                                    this.lastSelectedItemId = results.selectedItemIds[0];
-                                }
-                                console.log("[SpaceCraft <-> Unity] Event: SelectedItemsChanged:", results, 'lastSelectedItemId:', this.lastSelectedItemId);
-                            }
-                        }
-                        // Add other interests as needed
+            // Clear any previous timeout if it exists
+            if (this.contentFetchTimeout) {
+                clearTimeout(this.contentFetchTimeout);
+                this.contentFetchTimeout = null;
+            }
+
+            // Load content
+            this.loadedContent = await this.fetchContent();
+            
+            // DIRECT OBJECT ACCESS - collections is an object, not an array
+            const defaultCollection = this.loadedContent.collections[this.state.currentCollectionId];
+            if (defaultCollection) {
+                // Store minimal collection metadata without items array
+                this.state.currentCollection = {
+                    id: defaultCollection.id,
+                    name: defaultCollection.collection.name,
+                    description: defaultCollection.collection.description
+                };
+                
+                // Store array of item IDs from the itemsIndex (single source of truth)
+                this.state.currentCollectionItems = defaultCollection.itemsIndex;
+            } else {
+                console.warn(`[SpaceCraft] Collection with ID '${this.state.currentCollectionId}' not found in content.`);
+            }
+
+            // Create the SpaceCraft object via Bridge - pass content exactly as received
+            const success = this.createSpaceCraftObject(this.loadedContent);
+            
+            // Only attempt Supabase setup if SpaceCraft was created successfully
+            if (success !== false && typeof window.supabase?.createClient === 'function') {
+                this.setupSupabase();
+                
+                if (this.clientChannel) {
+                    this.setupSupabaseChannel();
+                }
+            } else if (!success) {
+                console.warn("[SpaceCraft] Skipping Supabase setup due to SpaceCraft creation failure");
+            } else {
+                console.warn("[SpaceCraft] Supabase client not available or incompatible. No real-time functionality.");
+            }
+            
+            console.log("[SpaceCraft] Content loaded and SpaceCraft object created.");
+        } catch (error) {
+            console.error("[SpaceCraft] Error in loadCollectionsAndCreateSpaceCraft:", error);
+            throw error; // Rethrow to show the error without hiding it
+        }
+    }
+
+    /**
+     * Creates the actual SpaceCraft object in the Bridge.
+     * @param {Object} content - The content data to initialize SpaceCraft with
+     * @returns {boolean} Success or failure
+     */
+    createSpaceCraftObject(content) {
+        console.log("[SpaceCraft] Creating SpaceCraft object in Bridge with loaded content...");
+        
+        // Create the actual SpaceCraft object via Bridge with content data
+        this.spaceCraft = window.bridge.createObject({
+            prefab: "Prefabs/SpaceCraft",
+            // Register all necessary Unity event interests with proper query structure
+            interests: {
+                // Listen for when content is processed in Unity
+                "ContentLoaded": {
+                    handler: () => {
+                        console.log("[SpaceCraft] ContentLoaded event received from Unity");
                     }
                 },
-                // Initial data to send when the object is created. 
-                // This loads all the content into Unity and creates all the views.
-                update: {
-                    content: content 
+                
+                // Listen for changes to highlighted items
+                "HighlightedItemsChanged": {
+                    query: { "highlightedItemIds": "HighlightedItemIds" },
+                    handler: (obj, results) => {
+                        console.log("[SpaceCraft JS EVENT HANDLER] HighlightedItemsChanged HANDLER ENTERED"); 
+                        console.log("[SpaceCraft JS DEBUG] Raw HighlightedItemsChanged event from Unity. Results:", JSON.parse(JSON.stringify(results)));
+                        if (results && results.highlightedItemIds) {
+                            this.state.highlightedItemIds = results.highlightedItemIds;
+                            console.log("[SpaceCraft JS DEBUG] Calling updateHighlightedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
+                            this.updateHighlightedItem();
+                        } else {
+                            console.warn("[SpaceCraft JS DEBUG] HighlightedItemsChanged event: results or results.highlightedItemIds is missing.", results);
+                        }
+                    }
+                },
+                
+                // Listen for changes to selected items
+                "SelectedItemsChanged": {
+                    query: { "selectedItemIds": "SelectedItemIds" },
+                    handler: (obj, results) => {
+                        console.log("[SpaceCraft JS EVENT HANDLER] SelectedItemsChanged HANDLER ENTERED"); 
+                        console.log("[SpaceCraft JS DEBUG] Raw SelectedItemsChanged event from Unity. Results:", JSON.parse(JSON.stringify(results)));
+                        if (results && results.selectedItemIds) {
+                            this.state.selectedItemIds = results.selectedItemIds;
+                            console.log("[SpaceCraft JS DEBUG] Calling updateSelectedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
+                            this.updateSelectedItem();
+                        } else {
+                            console.warn("[SpaceCraft JS DEBUG] SelectedItemsChanged event: results or results.selectedItemIds is missing.", results);
+                        }
+                    }
                 }
-            });
-
-            // Store a global reference for convenience (optional)
-            window.spaceCraft = this.spaceCraft;
-            console.log("[SpaceCraft] SpaceCraft Bridge object created successfully:", this.spaceCraft);
-
-            // Step 13: Set up Supabase for remote control (if library is available)
-            this.setupSupabase();
-
-        } catch (error) {
-            console.error("[SpaceCraft] Error creating SpaceCraft Bridge object:", error);
-        }
-    },
-
-    // --- Supabase Integration (Remote Control) ---
+            },
+            // Initial data to send when the object is created.
+            update: { 
+                content: content
+            }
+        });
+        
+        // Store the reference globally
+        window.spaceCraft = this.spaceCraft;
+        
+        console.log("[SpaceCraft] SpaceCraft object created with content data");
+        return true;
+    }
     
-    // Step 13: Initialize Supabase client and subscriptions.
-    setupSupabase: function() {
-        if (typeof supabase === 'undefined' || !supabase.createClient) {
-            console.warn("[SpaceCraft] Supabase library not found or invalid. Skipping remote control setup.");
+    /**
+     * Initialize state object with default values
+     */
+    initializeState() {
+        // Default state for simulator
+        this.state = {
+            // Client identity
+            clientType: 'simulator',
+            clientId: this.clientId,
+            clientName: 'Spacecraft Simulator',
+            
+            // Collection/screen state
+            currentScreenId: 'main',
+            screenIds: ['main'],
+            currentCollectionId: 'scifi',  // Default collection
+            currentCollection: null,
+            currentCollectionItems: [],
+            
+            // Selection state
+            selectedItemIds: [],
+            selectedItemId: null,
+            selectedItem: null,
+            
+            // Highlight state
+            highlightedItemIds: [],
+            highlightedItemId: null,
+            highlightedItem: null,
+            
+            // Connected clients tracking
+            connectedClients: [],
+            
+            updateCounter: 0, // Add update counter
+            
+            // Last updated timestamp
+            lastUpdated: new Date().toISOString()
+        };
+    }
+    
+    /**
+     * Updates the currently selected item based on selected items
+     * Sets selectedItemId and selectedItem in the state
+     */
+    updateSelectedItem() {
+        console.log("[SpaceCraft DEBUG] updateSelectedItem called. Current selectedItemIds:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
+        if (this.state.selectedItemIds && this.state.selectedItemIds.length > 0) {
+            const newSelectedItemId = this.state.selectedItemIds[0];
+            
+            if (newSelectedItemId !== this.state.selectedItemId) {
+                let newSelectedItem = this.findItemById(newSelectedItemId); 
+                
+                this.updateState({
+                    selectedItemId: newSelectedItemId,
+                    selectedItem: newSelectedItem
+                });
+            }
+        } else {
+            if (this.state.selectedItemId !== null) {
+                this.updateState({
+                    selectedItemId: null,
+                    selectedItem: null
+                });
+            }
+        }
+    }
+    
+    /**
+     * Syncs the current state to Supabase presence
+     */
+    syncStateToPresence() {
+        if (!this.clientChannel) {
+            console.warn("[SpaceCraft] Attempted to sync presence, but clientChannel is null.");
             return;
         }
         
-        console.log("[SpaceCraft] Setting up Supabase for remote control...");
-        try {
-            const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Log exactly what is being synced, especially selectedItem
+        console.log("[SpaceCraft] Syncing state to presence. Current selectedItem:", JSON.parse(JSON.stringify(this.state.selectedItem))); 
+        
+        this.clientChannel.track({
+            ...this.identity,
+            shared: { ...this.state } 
+        }).catch(error => {
+            console.error("[SpaceCraft] Error tracking presence:", error);
+        });
+    }
 
-            // Initialize single channel
-            this.controllerChannel = client.channel("controllers");
+    /**
+     * Initialize Supabase client and channel
+     */
+    setupSupabase() {
+        console.log("[SpaceCraft] Setting up Supabase client");
+        
+        // Create a Supabase client
+        const client = window.supabase.createClient(
+            SpaceCraftSim.SUPABASE_URL, 
+            SpaceCraftSim.SUPABASE_ANON_KEY
+        );
+        
+        // Create a channel for client communication
+        this.clientChannel = client.channel('clients');
+        
+        console.log("[SpaceCraft] Supabase client and channel created");
+    }
+    
+    /**
+     * Set up Supabase channel subscription
+     */
+    setupSupabaseChannel() {
+        console.log("[SpaceCraft] Setting up Supabase channel subscription");
+        
+        // Subscribe to the channel and set up event handlers
+        this.subscribeToClientChannel(this.clientChannel);
+    }
 
-            // Subscribe to the single channel
-            this.subscribeToControllerChannel(this.controllerChannel, this.loadedContent);
-
-            console.log("[SpaceCraft] Supabase setup complete and channels subscribed.");
-
-        } catch (error) {
-            console.error("[SpaceCraft] Error setting up Supabase:", error);
-        }
-    },
-
-    subscribeToControllerChannel: function(channel, currentContent) {
-        console.log("[SpaceCraft] Subscribing to single Supabase 'controllers' channel...");
+    /**
+     * Subscribe to the client channel and set up event handlers
+     */
+    subscribeToClientChannel(channel) {
+        console.log("[SpaceCraft] Subscribing to Supabase 'clients' channel");
 
         channel
             .on('broadcast', { event: 'pan' }, (data) => { 
-                if (window.bridge && this.spaceCraft && data.payload 
-                    && typeof data.payload.controllerId === 'string'
-                    && typeof data.payload.controllerType === 'string') 
-                {
-                    const { controllerId, controllerType } = data.payload;
-                    
-                    // Dispatch based on controller type
-                    if (controllerType === 'navigator' 
-                        && typeof data.payload.panXDelta === 'number' 
-                        && typeof data.payload.panYDelta === 'number') 
-                    {
-                        const { panXDelta, panYDelta } = data.payload;
-                        const controllerName = this.controllers[controllerId]?.controllerName || '';
-                        // Send data to Unity via bridge update: controllerId, controllerName, panXDelta, panYDelta
-                        if (this.spaceCraft) { // Ensure bridge object exists
-                            bridge.updateObject(this.spaceCraft, {
-                                "method:PushCameraPosition": [controllerId, controllerName, panXDelta, panYDelta]
-                            });
-                        } else {
-                            console.warn("[SpaceCraft] Cannot send 'pan' update, spaceCraft is null.");
-                        }
-                    } else if (controllerType === 'selector'
-                               && typeof data.payload.selectXDelta === 'number' 
-                               && typeof data.payload.selectYDelta === 'number') 
-                    {
-                        const { selectXDelta, selectYDelta } = data.payload;
-                        const controllerName = this.controllers[controllerId]?.controllerName || '';
-                        
-                        // Convert tilt values to directions
-                        // Use larger threshold for tilt (0.3) compared to typical swipe thresholds
-                        const tiltThreshold = 0.3;
-                        let direction = null;
-                        
-                        // Determine the dominant direction based on which delta is larger
-                        if (Math.abs(selectXDelta) > Math.abs(selectYDelta)) {
-                            // X-axis tilt is dominant
-                            if (selectXDelta > tiltThreshold) {
-                                direction = 'east';
-                            } else if (selectXDelta < -tiltThreshold) {
-                                direction = 'west';
-                            }
-                        } else {
-                            // Y-axis tilt is dominant
-                            if (selectYDelta > tiltThreshold) {
-                                direction = 'south';  // Positive Y is down
-                            } else if (selectYDelta < -tiltThreshold) {
-                                direction = 'north';  // Negative Y is up
-                            }
-                        }
-                        
-                        // If we detected a significant tilt in a direction, send the movement command
-                        // using the SAME method as stroke gestures
-                        if (direction) {
-                            console.log(`[Supabase -> Unity] Selector tilt from ${controllerId} ('${controllerName}'): Direction=${direction}`);
-                            bridge.updateObject(this.spaceCraft, {
-                                "method:MoveHighlight": [controllerId, controllerName, direction]
-                            });
-                        }
-                    } else {
-                        console.warn(`[SpaceCraft] Received 'pan' event from ${controllerId} with invalid type or missing pan data:`, data.payload);
-                    }
-                } else {
-                     if (data.payload) {
-                        console.warn("[SpaceCraft] Received 'pan' event with missing/invalid core data (controllerId/Type):", data.payload);
-                    }
+                // Skip messages targeted at other simulators
+                if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
+                    return;
                 }
+                
+                // Navigator controllers always send pan events with panXDelta/panYDelta
+                const clientId = data.payload.clientId;
+                const clientName = data.payload.clientName || "";
+                const panXDelta = data.payload.panXDelta;
+                const panYDelta = data.payload.panYDelta;
+                const screenId = data.payload.screenId || "main";
+                
+                // Simple direct call - no type checking or processing
+                bridge.updateObject(this.spaceCraft, {
+                    "method:PushCameraPosition": [clientId, clientName, screenId, panXDelta, panYDelta]
+                });
+                
+                // Track client info for presence
+                this.updateClientInfo(clientId, data.payload.clientType, clientName);
             })
             .on('broadcast', { event: 'zoom' }, (data) => {
-                if (window.bridge && this.spaceCraft && data.payload 
-                    && typeof data.payload.controllerId === 'string'
-                    && typeof data.payload.controllerType === 'string'
-                    && typeof data.payload.zoomDelta === 'number') 
-                {
-                     const { controllerId, controllerType, zoomDelta } = data.payload;
-                     
-                     // Dispatch based on controller type
-                     if (controllerType === 'navigator') {
-                         const controllerName = this.controllers[controllerId]?.controllerName || ''; // Get name or mysterious default
-                         bridge.updateObject(this.spaceCraft, {
-                            // Pass controllerId, controllerName, zoomDelta
-                            "method:PushCameraZoom": [controllerId, controllerName, zoomDelta]
-                        });
-                     } else {
-                         console.warn(`[SpaceCraft] Received 'zoom' event from ${controllerId} with invalid type:`, data.payload);
-                     }
-                } else {
-                    if (data.payload) {
-                        console.warn("[SpaceCraft] Received 'zoom' event with missing/invalid data:", data.payload);
-                     }
+                // Skip messages targeted at other simulators
+                if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
+                    return;
                 }
+                
+                // Navigator controllers always send zoom events with zoomDelta
+                const clientId = data.payload.clientId;
+                const clientName = data.payload.clientName || "";
+                const zoomDelta = data.payload.zoomDelta;
+                const screenId = data.payload.screenId || "main";
+                
+                // Simple direct call - no type checking or processing
+                bridge.updateObject(this.spaceCraft, {
+                    "method:PushCameraZoom": [clientId, clientName, screenId, zoomDelta]
+                });
+                
+                // Track client info for presence
+                this.updateClientInfo(clientId, data.payload.clientType, clientName);
             })
             .on('broadcast', { event: 'select' }, (data) => {
-                // --- Handle Selector Events --- 
-                if (window.bridge && this.spaceCraft && data.payload 
-                    && typeof data.payload.controllerId === 'string'
-                    && typeof data.payload.controllerType === 'string'
-                    && data.payload.controllerType === 'selector' // Ensure it's from a selector
-                    && typeof data.payload.action === 'string') 
-                {
-                    const { controllerId, controllerName, action } = data.payload;
-                    console.log(`[Supabase -> Unity] Selector event from ${controllerId} ('${controllerName}'): Action=${action}`);
-
-                    if (action === 'tap') {
-                        bridge.updateObject(this.spaceCraft, {
-                            // Target the InputManager's SelectItem method
-                            "method:ToggleHighlightedItemSelection": [controllerId, controllerName]
-                        });
-                    } else if (['north', 'south', 'east', 'west', 'up', 'down'].includes(action)) {
-                        bridge.updateObject(this.spaceCraft, {
-                            // Target the InputManager's MoveHighlight method
-                            "method:MoveHighlight": [controllerId, controllerName, action]
-                        });
-                    } else {
-                        console.warn(`[SpaceCraft] Received 'select' event with unknown action: ${action}`);
-                    }
+                // Skip messages targeted at other simulators
+                if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
+                    return;
+                }
+                
+                // Selector controllers always send select events with action
+                const clientId = data.payload.clientId;
+                const clientName = data.payload.clientName || "";
+                const action = data.payload.action; // 'tap', 'north', 'south', etc.
+                const screenId = data.payload.screenId || "main";
+                
+                if (action === 'tap') {
+                    // Handle tap action
+                    bridge.updateObject(this.spaceCraft, {
+                        "method:ToggleHighlightedItemSelection": [clientId, clientName, screenId]
+                    });
+                } else if (['north', 'south', 'east', 'west', 'up', 'down'].includes(action)) {
+                    // Handle directional actions
+                    bridge.updateObject(this.spaceCraft, {
+                        "method:MoveHighlight": [clientId, clientName, screenId, action]
+                    });
+                }
+                
+                // Track client info for presence
+                this.updateClientInfo(clientId, data.payload.clientType, clientName);
+            })
+            .on('broadcast', { event: 'simulator_takeover' }, (data) => {
+                // Another simulator is trying to take over
+                if (data.payload.newSimulatorId === this.identity.clientId) {
+                    return; // Our own takeover message, ignore
+                }
+                
+                // If this simulator started later than the new one, let it take over
+                if (this.identity.startTime < data.payload.startTime) {
+                    console.log(`[SpaceCraft] Another simulator has taken over: ${data.payload.newSimulatorId}`);
+                    this.shutdown();
                 } else {
-                    if (data.payload) {
-                        console.warn("[SpaceCraft] Received 'select' event with missing/invalid data or wrong type:", data.payload);
-                    }
+                    console.log(`[SpaceCraft] Ignoring takeover from older simulator: ${data.payload.newSimulatorId}`);
+                    this.sendTakeoverEvent();
                 }
             })
             .on('presence', { event: 'sync' }, () => {
-                // Initial state sync
-                const presenceState = channel.presenceState();
-                console.log('[SpaceCraft] Controller Presence SYNC:', JSON.stringify(presenceState));
-                // Optional: Populate initial controllers from sync state
-                this.controllers = {}; // Clear previous state on sync
-                Object.values(presenceState).flat().forEach(p => {
-                    // Read properties from presence data using camelCase only
-                    const { controllerId, controllerType, controllerName, onlineAt } = p;
-                    
-                    if (controllerId && controllerType) { 
-                        this.controllers[controllerId] = { 
-                            controllerId, 
-                            controllerType, 
-                            controllerName: controllerName || '',
-                            joinedAt: onlineAt, 
-                            ...p // Include any other tracked data
-                        };
-                    }
-                });
-                console.log('[SpaceCraft] Initial controllers registered (sync):', Object.keys(this.controllers).length);
-            })
-            .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-                console.log('[SpaceCraft] Controller Presence JOIN:', key, JSON.stringify(newPresences));
-                newPresences.forEach(presence => {
-                    // Read properties from presence data using camelCase only
-                    const { controllerId, controllerType, controllerName, onlineAt } = presence;
-                    
-                    if (controllerId && controllerType) { 
-                        // Add to registry
-                        this.controllers[controllerId] = { 
-                            controllerId, 
-                            controllerType, 
-                            controllerName: controllerName || '',
-                            joinedAt: onlineAt, 
-                            ...presence // Store any other tracked data
-                        };
-                        console.log(`[SpaceCraft] Controller registered: ID=${controllerId}, Type=${controllerType}`);
+                // Get all current presences in the channel
+                const allPresences = channel.presenceState();
+                console.log("[SpaceCraft] Presence sync event. Current presences:", allPresences);
+                
+                // Process connected clients
+                for (const presenceKey in allPresences) {
+                    const presences = allPresences[presenceKey];
+                    for (const presence of presences) {
+                        // Skip our own presence
+                        if (presence.clientId === this.identity.clientId) continue;
                         
-                        // Send current content to the newly joined controller
-                        this.sendEventToControllerById(controllerId, 'contentUpdate', { content: currentContent });
+                        this.updateClientInfo(
+                            presence.clientId,
+                            presence.clientType,
+                            presence.clientName || "Unknown Client"
+                        );
                     }
-                });
+                }
             })
-            .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-                console.log('[SpaceCraft] Controller Presence LEAVE:', key, JSON.stringify(leftPresences));
-                leftPresences.forEach(presence => {
-                    // Use property from presence event to find ID (camelCase only)
-                    const { controllerId } = presence;
-                    if (controllerId && this.controllers[controllerId]) { 
-                        // Remove from registry
-                        delete this.controllers[controllerId];
-                        console.log(`[SpaceCraft] Controller unregistered: ID=${controllerId}`);
+            .on('presence', { event: 'join' }, ({ newPresences }) => {
+                console.log("[SpaceCraft] New presences joined:", newPresences);
+                
+                for (const presence of newPresences) {
+                    // Skip our own presence
+                    if (presence.clientId === this.identity.clientId) continue;
+                    
+                    // Check if this is a simulator joining
+                    if (presence.clientType === "simulator") {
+                        console.log(`[SpaceCraft] Another simulator joined: ${presence.clientId}`);
+                        // Send takeover event to establish dominance
+                        this.sendTakeoverEvent();
+                    } else {
+                        // A controller client joined
+                        this.updateClientInfo(
+                            presence.clientId,
+                            presence.clientType,
+                            presence.clientName || "Unknown Client"
+                        );
                     }
-                });
+                }
+            })
+            .on('presence', { event: 'leave' }, ({ leftPresences }) => {
+                console.log("[SpaceCraft] Presences left:", leftPresences);
+                
+                for (const presence of leftPresences) {
+                    // Remove from our client registry
+                    if (this.clients[presence.clientId]) {
+                        console.log(`[SpaceCraft] Client left: ${presence.clientId} (${presence.clientType || 'unknown type'})`);
+                        delete this.clients[presence.clientId];
+                    }
+                }
             })
             .subscribe((status) => { 
                  if (status === 'SUBSCRIBED') {
-                     console.log('[SpaceCraft] Successfully subscribed to Supabase controllers channel!');
-                 } else {
-                      console.warn('[SpaceCraft] Supabase controllers channel subscription status:', status);
-                 }
+                    console.log("[SpaceCraft] Successfully subscribed to client channel");
+                    
+                    // Track our own presence with identity and state
+                    channel.track({
+                        ...this.identity,
+                        shared: { ...this.state } // Nest state under 'shared'
+                    });
+                    
+                    // Send takeover event to establish this simulator as the active one
+                    this.sendTakeoverEvent();
+                }
             });
-    },
-
-    // --- Event Sending Functions ---
+    }
 
     /**
-     * Sends a Supabase broadcast event on the channel associated with a specific controller ID.
-     * Note: This still broadcasts to *all* subscribers on that channel.
-     *       Targeting requires client-side filtering or different Supabase features (e.g., direct messages if available/needed).
-     * @param {string} controllerId - The unique ID of the target controller.
+     * Sends a takeover event to notify other simulators and clients
+     */
+    sendTakeoverEvent() {
+        if (!this.clientChannel) {
+            console.warn("[SpaceCraft] Cannot send takeover event: Client channel not initialized.");
+            return;
+        }
+        
+        console.log(`[SpaceCraft] Sending simulator takeover notification`);
+        
+        this.clientChannel.send({
+            type: 'broadcast',
+            event: 'simulator_takeover',
+            payload: {
+                newSimulatorId: this.identity.clientId,
+                newSimulatorName: this.identity.clientName,
+                startTime: this.identity.startTime
+            }
+        }).catch(err => console.error("[SpaceCraft] Error sending takeover event:", err));
+    }
+    
+    /**
+     * Gracefully shuts down this simulator instance
+     */
+    shutdown() {
+        console.log("[SpaceCraft] Shutting down simulator due to takeover");
+        
+        // Clean up resources - no try/catch, just direct error logging
+        if (this.clientChannel) {
+            this.clientChannel.unsubscribe().catch(err => {
+                console.error("[SpaceCraft] Error unsubscribing from channel:", err);
+            });
+        }
+        
+        // Redirect to a shutdown page or reload
+        alert("Another SpaceCraft simulator has taken control. This window will now close.");
+        window.close();
+        
+        // If window doesn't close (e.g., window not opened by script), reload
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }
+
+    /**
+     * Sends a Supabase broadcast event on the channel.
+     * @param {string} clientId - The unique ID of the target client.
      * @param {string} eventName - The name of the event to broadcast.
      * @param {object} payload - The data payload for the event.
      */
-    sendEventToControllerById: function(controllerId, eventName, payload) {
-        const controllerInfo = this.controllers[controllerId];
-        if (!controllerInfo) {
-            console.warn(`[SpaceCraft] Cannot send event: Controller ID '${controllerId}' not found in registry.`);
+    sendEventToClientById(clientId, eventName, payload) {
+        const clientInfo = this.clients[clientId];
+        if (!clientInfo) {
+            console.warn(`[SpaceCraft] Cannot send event: Client ID '${clientId}' not found in registry.`);
             return;
         }
 
-        // Use the single controller channel
-        const targetChannel = this.controllerChannel;
-
-        if (!targetChannel) {
-            console.error(`[SpaceCraft] Cannot send event: Controller channel not initialized.`);
+        if (!this.clientChannel) {
+            console.warn(`[SpaceCraft] Cannot send event: Client channel not initialized.`);
             return;
         }
 
-        // Log includes the intended recipient's type and ID for clarity, though it broadcasts channel-wide
-        console.log(`[SpaceCraft -> Supabase] Broadcasting to 'controllers' channel (for ${controllerInfo.controllerType} controllerId ${controllerId}): Event='${eventName}', Payload=`, payload);
-        targetChannel.send({
+        console.log(`[SpaceCraft] Sending '${eventName}' event to client ${clientId}`);
+        
+        // Add simulator ID to payload so client knows who sent it
+        const fullPayload = {
+            ...payload,
+            sourceSimulatorId: this.identity.clientId
+        };
+        
+        this.clientChannel.send({
             type: 'broadcast',
             event: eventName,
-            payload: payload // Ensure the payload sent here is structured as expected by receivers
-        }).catch(err => console.error(`[SpaceCraft] Error broadcasting event '${eventName}' on 'controllers' channel (intended for controllerId '${controllerId}'):`, err));
-    },
+            payload: fullPayload
+        });
+    }
 
-    // --- Utility / Placeholder ---
+    /**
+     * Broadcasts an event to all connected clients.
+     * @param {string} eventName - The name of the event to broadcast.
+     * @param {object} payload - The data payload for the event.
+     */
+    sendEventToAllClients(eventName, payload) {
+        if (!this.clientChannel) {
+            console.warn(`[SpaceCraft] Cannot broadcast event: Client channel not initialized.`);
+            return;
+        }
 
-    getPlaceholderContent: function() {
+        console.log(`[SpaceCraft] Broadcasting '${eventName}' event to all clients`);
+        
+        // Add simulator ID to payload so clients know who sent it
+        const fullPayload = {
+            ...payload,
+            sourceSimulatorId: this.identity.clientId
+        };
+        
+        this.clientChannel.send({
+            type: 'broadcast',
+            event: eventName,
+            payload: fullPayload
+        });
+    }
+
+    /**
+     * Helper to find an item by ID in the loaded content
+     * @param {string} itemId - The ID of the item to find
+     * @returns {Object|null} The found item or null
+     */
+    findItemById(itemId) {
+        if (!this.loadedContent || !itemId) return null;
+        
+        // Collections is an object with collection IDs as keys
+        if (this.loadedContent.collections && typeof this.loadedContent.collections === 'object') {
+            for (const collectionId in this.loadedContent.collections) {
+                const collection = this.loadedContent.collections[collectionId];
+                // Items is an object with item IDs as keys
+                if (collection.items && collection.items[itemId]) {
+                    // Return direct reference to the item
+                    return collection.items[itemId].item;
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Get placeholder content in case real content fails to load
+     * @returns {Object} Placeholder content structure
+     */
+    getPlaceholderContent() {
         // Used if loading from JSON fails
         console.warn("[SpaceCraft] Using placeholder content data.");
         // Return placeholder structure matching index-deep.json
-        return { /* ... placeholder data ... */ }; 
-    },
+        return { collections: [] }; 
+    }
     
-    // --- Debugging ---
-    
-    logStatus: function() {
+    /**
+     * Logs the current status of the SpaceCraft instance
+     */
+    logStatus() {
         console.log("[SpaceCraft Debug] Status:", {
              DOMReady: this.domContentLoaded,
              BasicInitialized: this.isInitialized,
              BridgeAvailable: !!window.bridge,
              SpaceCraft: !!this.spaceCraft,
-             SupabaseLoaded: typeof supabase !== 'undefined'
+             SupabaseLoaded: typeof window.supabase !== 'undefined'
         });
     }
-};
 
-// -----------------------------------------------------------------------------
-// Step 3: Entry Point - Wait for DOMContentLoaded
-// -----------------------------------------------------------------------------
-// Ensures the HTML structure (canvas, buttons, svg placeholders) is ready 
+    /**
+     * Updates the client info in our registry
+     * @param {string} clientId - The unique identifier for the client
+     * @param {string} clientType - The type of client (navigator, selector, etc.)
+     * @param {string} clientName - Human-readable name of the client
+     */
+    updateClientInfo(clientId, clientType, clientName) {
+        if (!clientId) return;
+        
+        const isNew = !this.clients[clientId];
+        
+        this.clients[clientId] = {
+            id: clientId,
+            type: clientType || "unknown",
+            name: clientName || "Unnamed Client",
+            lastSeen: Date.now()
+        };
+        
+        if (isNew) {
+            console.log(`[SpaceCraft] New client registered: ${clientId} (${clientType || 'unknown type'}, ${clientName || 'Unnamed'})`);
+        }
+    }
+    
+    /**
+     * Updates the state and synchronizes it via Supabase presence
+     * @param {Object} stateChanges - Object containing state properties to update
+     */
+    updateState(stateChanges) {
+        // Increment update counter first
+        this.state.updateCounter = (this.state.updateCounter || 0) + 1;
+        
+        // Update local state with changes
+        Object.assign(this.state, stateChanges);
+        
+        // Sync the updated state
+        this.syncStateToPresence(); // This will now send the incremented counter
+        
+        console.log("[SpaceCraft] State updated (counter: " + this.state.updateCounter + "):", stateChanges);
+    }
+
+    /**
+     * Updates the highlighted item based on highlightedItemIds
+     * Sets highlightedItemId and highlightedItem in the state
+     */
+    updateHighlightedItem() {
+        console.log("[SpaceCraft DEBUG] updateHighlightedItem called. Current highlightedItemIds:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
+        if (this.state.highlightedItemIds && this.state.highlightedItemIds.length > 0) {
+            const newHighlightedItemId = this.state.highlightedItemIds[0];
+            
+            if (newHighlightedItemId !== this.state.highlightedItemId) {
+                let newHighlightedItem = this.findItemById(newHighlightedItemId); 
+                
+                this.updateState({
+                    highlightedItemId: newHighlightedItemId,
+                    highlightedItem: newHighlightedItem
+                });
+            }
+        } else {
+            if (this.state.highlightedItemId !== null) {
+                this.updateState({
+                    highlightedItemId: null,
+                    highlightedItem: null
+                });
+            }
+        }
+    }
+}
+
+// =============================================================================
+//                         Initialization Entry Point
+// =============================================================================
+
+// Create a global instance of our SpaceCraftSim class
+window.SpaceCraft = new SpaceCraftSim();
+
+// Ensure the HTML structure (canvas, buttons, svg placeholders) is ready 
 // before attempting to interact with it or generate QR codes.
 if (document.readyState === 'loading') {
     // Loading hasn't finished yet
     document.addEventListener('DOMContentLoaded', () => {
-        SpaceCraft.initializeDOMAndQRCodes();
+        window.SpaceCraft.initializeDOMAndQRCodes();
         // Optional: Log status periodically for debugging startup issues
-        // setInterval(() => SpaceCraft.logStatus(), 5000); 
+        // setInterval(() => window.SpaceCraft.logStatus(), 5000); 
     });
 } else {
     // DOMContentLoaded has already fired
-    SpaceCraft.initializeDOMAndQRCodes();
+    window.SpaceCraft.initializeDOMAndQRCodes();
     // Optional: Log status periodically for debugging startup issues
-    // setInterval(() => SpaceCraft.logStatus(), 5000);
+    // setInterval(() => window.SpaceCraft.logStatus(), 5000);
 }
 
 console.log("[SpaceCraft] spacecraft.js loaded. Waiting for DOMContentLoaded to initialize...");
@@ -748,4 +1133,4 @@ console.log("[SpaceCraft] spacecraft.js loaded. Waiting for DOMContentLoaded to 
 // `SpaceCraft.loadCollectionsAndCreateSpaceCraft` is handled within 
 // `bridge.js`. This keeps the event distribution logic centralized in the 
 // Bridge library itself. See `bridge.js`'s `distributeEvent` function (or similar).
-// ============================================================================= 
+// =============================================================================

@@ -1,31 +1,69 @@
-# Image files
+# Auto detect text files and perform LF normalization in the repository.
+# OS-native line endings will be used in the working directory.
+
+* text=auto eol=lf
+
+# Explicitly declare common text files to ensure LF normalization.
+# These might be redundant with `text=auto` but provide explicitness.
+
+*.cs text eol=lf diff=csharp
+*.js text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh text eol=lf
+
+# Declare files that should always be treated as binary (Git LFS not used for these)
+# These are typically smaller binaries or files where LFS is not desired.
+
+*.dll binary
+*.exe binary
+
+# Unity .meta files should be treated as binary to avoid corruption by line ending changes
+
+*.meta binary
+
+# Git LFS tracked files (typically large or binary assets)
+# The -text attribute tells Git not to perform line-ending conversions.
+# Unity Assets (LFS if large or binary-serialized)
+
+*.asset filter=lfs diff=lfs merge=lfs -text
+
+*.unity binary
+*.prefab binary
+
+# Images (LFS recommended for most)
+
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
 *.gif filter=lfs diff=lfs merge=lfs -text
 *.psd filter=lfs diff=lfs merge=lfs -text
+*.ico filter=lfs diff=lfs merge=lfs -text
 
-# Unity files
-*.meta binary
-*.asset filter=lfs diff=lfs merge=lfs -text
-*.unity binary
-*.prefab binary
+# Compressed files (LFS if large)
 
-# Compressed files
 *.gz filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
 *.rar filter=lfs diff=lfs merge=lfs -text
 
-# Unity WebGL build files
+# Unity WebGL build files (LFS good for .data and .wasm if large)
+
 *.data filter=lfs diff=lfs merge=lfs -text
 *.wasm filter=lfs diff=lfs merge=lfs -text
-*.framework.js filter=lfs diff=lfs merge=lfs -text
 
-# Font files
+# Font files (LFS recommended)
+
 *.ttf filter=lfs diff=lfs merge=lfs -text
 *.otf filter=lfs diff=lfs merge=lfs -text
 
-# Audio files
+# Audio files (LFS recommended)
+
 *.mp3 filter=lfs diff=lfs merge=lfs -text
 *.wav filter=lfs diff=lfs merge=lfs -text
 *.ogg filter=lfs diff=lfs merge=lfs -text
