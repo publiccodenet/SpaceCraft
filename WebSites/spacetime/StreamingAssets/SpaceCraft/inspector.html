@@ -6,7 +6,7 @@
     <title>SpaceCraft Inspector</title>
     <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
-    <meta name="controller-type" content="selector">
+    <meta name="controller-type" content="inspector">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css?family=Mulish:400italic,400,600italic,600,700italic,700" rel="stylesheet">
@@ -19,6 +19,11 @@
     <script src="controller.js"></script>
   </head>
   <body>
+    <div class="container selector-container">
+        <h1 class="page-title">Inspector</h1>
+        <div id="status" class="status">Connecting...</div>
+        <div id="target"></div>
+    </div>
     <div id="inspector-json-output"></div>
   </body>
 </html> 
