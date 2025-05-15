@@ -447,11 +447,17 @@ window.BaseController = class BaseController {
     /**
      * Initialize controller
      */
-    initialize(targetElement) {
-        this.targetElement = targetElement;
-        
-        // Set up event handlers
-        this.setupPageEventHandlers();
+    initialize(skipPageHandlers) {
+        if (! skipPageHandlers) {
+            const targetElement = document.getElementById("target");
+            if (!targetElement) {
+                console.error('Target element not found');
+                return;
+            }
+            this.targetElement = targetElement;
+            // Set up event handlers
+            this.setupPageEventHandlers();
+        }
         
         // Set up UI buttons
         this.setupButtons();
@@ -2390,13 +2396,6 @@ window.SelectorController = class SelectorController extends BaseController {
 
 // Simple initialization on DOM ready - directly instantiates the right controller
 document.addEventListener('DOMContentLoaded', function() {
-    
-    const targetElement = document.getElementById("target");
-    if (!targetElement) {
-        console.error('Target element not found');
-        return;
-    }
-    
     // Get controller type from meta tag
     const metaTag = document.querySelector('meta[name="controller-type"]');
     if (!metaTag) {
@@ -2410,18 +2409,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let controller;
     if (controllerType === 'navigator') {
         controller = new NavigatorController();
+        controller.initialize();
     } else if (controllerType === 'selector') {
         controller = new SelectorController();
+        controller.initialize();
     } else if (controllerType === 'inspector') { // ADD THIS BLOCK
         controller = new InspectorController();
+        controller.initialize(true);
     } else {
         console.error('Invalid controller type: ' + controllerType);
         return;
     }
-    
-    // Initialize it directly - this sets everything up 
-    // including event handling and motion tracking
-    controller.initialize(targetElement);
     
     // Make controller globally accessible
     window.controller = controller;
@@ -2431,11 +2429,13 @@ window.InspectorController = class InspectorController extends BaseController {
     constructor() {
         super('inspector'); // Client type
         this.jsonOutputElement = null;
+        this.iFrameElement = null;
     }
 
     setupControllerSpecificUI() {
         this.logEvent('Init', 'Setting up Inspector-specific UI');
         this.jsonOutputElement = document.getElementById('inspector-json-output');
+        this.iFrameElement = document.getElementById('inspector-iframe');
         if (!this.jsonOutputElement) {
             this.logEvent('Error', 'Inspector JSON output element not found!');
         }
@@ -2444,9 +2444,11 @@ window.InspectorController = class InspectorController extends BaseController {
     // This method will be called when the selected item data changes
     selectedItemChanged(selectedItemJSON) {
         this.logEvent('Inspector', 'Received new selected item JSON:', selectedItemJSON);
-        if (this.jsonOutputElement) {
+        if (this.iFrameElement) {
             if (selectedItemJSON) {
-                this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON, null, 2);
+                // this.jsonOutputElement.innerHTML = JSON.stringify(selectedItemJSON)
+                this.iFrameElement.src = `https://archive.org/details/${selectedItemJSON['id']}`;
+                this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON);
             } else {
                 this.jsonOutputElement.textContent = 'No item currently selected.';
             }
