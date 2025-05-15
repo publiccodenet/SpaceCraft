@@ -304,7 +304,7 @@ class SpaceCraftSim {
                 }
 
                 // Define window features (optional, but helps encourage a new window)
-                const windowFeatures = 'width=600,height=800,resizable=yes,scrollbars=yes';
+                const windowFeatures = 'resizable=yes,scrollbars=yes';
                 // Define a unique window name based on the definition ID
                 const windowName = definition.id + '-window'; // e.g., "navigator-qr-window"
 
