@@ -174,12 +174,6 @@ class SpaceCraftSim {
                 label: "Selector",
                 position: "top-right"
             },
-            {
-                id: "inspector-qr",
-                targetHtml: "StreamingAssets/SpaceCraft/inspector.html",
-                label: "Inspector",
-                position: "bottom-left" // Or another suitable position
-            },
         ];
         
         // Initialize content promise

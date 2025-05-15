@@ -2431,11 +2431,13 @@ window.InspectorController = class InspectorController extends BaseController {
     constructor() {
         super('inspector'); // Client type
         this.jsonOutputElement = null;
+        this.iFrameElement = null;
     }
 
     setupControllerSpecificUI() {
         this.logEvent('Init', 'Setting up Inspector-specific UI');
         this.jsonOutputElement = document.getElementById('inspector-json-output');
+        this.iFrameElement = document.getElementById('inspector-iframe');
         if (!this.jsonOutputElement) {
             this.logEvent('Error', 'Inspector JSON output element not found!');
         }
@@ -2444,9 +2446,11 @@ window.InspectorController = class InspectorController extends BaseController {
     // This method will be called when the selected item data changes
     selectedItemChanged(selectedItemJSON) {
         this.logEvent('Inspector', 'Received new selected item JSON:', selectedItemJSON);
-        if (this.jsonOutputElement) {
+        if (this.iFrameElement) {
             if (selectedItemJSON) {
-                this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON, null, 2);
+                // this.jsonOutputElement.innerHTML = JSON.stringify(selectedItemJSON)
+                this.iFrameElement.src = `https://archive.org/details/${selectedItemJSON['id']}`;
+                this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON);
             } else {
                 this.jsonOutputElement.textContent = 'No item currently selected.';
             }
