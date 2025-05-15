@@ -178,7 +178,7 @@ class SpaceCraftSim {
                 id: "inspector-qr",
                 targetHtml: "StreamingAssets/SpaceCraft/inspector.html",
                 label: "Inspector",
-                position: "bottom-left" // Or another suitable position
+                position: "bottom-left"
             },
         ];
         
