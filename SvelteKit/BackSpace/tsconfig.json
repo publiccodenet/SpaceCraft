@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0484359e27db4fe8398ab8126c77586188d87452eb4faa95e1783a589d9037ac
-size 588
+{
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    ".svelte-kit/ambient.d.ts",
+    ".svelte-kit/types/**/$types.d.ts",
+    "src/**/*.js",
+    "src/**/*.ts",
+    "src/**/*.svelte",
+    "scripts/**/*.ts"
+  ]
+}
