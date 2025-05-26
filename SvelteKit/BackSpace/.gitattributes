@@ -73,9 +73,3 @@ package.json text eol=lf
 package-lock.json text eol=lf
 yarn.lock text eol=lf
 pnpm-lock.yaml text eol=lf
-
-# Large text files should use LFS
-*.json filter=lfs diff=lfs merge=lfs -text size=">1M"
-*.map filter=lfs diff=lfs merge=lfs -text size=">1M"
-*.min.js filter=lfs diff=lfs merge=lfs -text size=">1M"
-bundle.js filter=lfs diff=lfs merge=lfs -text size=">1M"
