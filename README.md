@@ -181,6 +181,55 @@ SpaceCraft/
    npm run dev
    ```
 
+## Unity Development & Testing
+
+### Serving Unity Builds with HTTPS
+
+For testing Unity WebGL builds with device controllers (mobile phones/tablets), use the built-in HTTPS server:
+
+```bash
+cd SvelteKit/BackSpace
+npm run unity:serve
+```
+
+This will:
+- Automatically detect your local IP address
+- Start an HTTPS server on port 8080
+- Generate QR codes for mobile controller access
+- Open the browser with the correct base URL
+
+**Example output:**
+```
+Server will be available at: https://192.168.2.12:8080 (HTTPS)
+Browser will open at: https://192.168.2.12:8080/index.html?base_url=https%3A%2F%2F192.168.2.12%3A8080%2F
+```
+
+### Using Custom Channels
+
+To test with custom Supabase channels (useful for multiple developers or isolated testing):
+
+1. **Add channel parameter to the URL:**
+   ```
+   https://192.168.2.12:8080/index.html?channel=myroom
+   ```
+
+2. **Complete URL with both parameters:**
+   ```
+   https://192.168.2.12:8080/index.html?base_url=https%3A%2F%2F192.168.2.12%3A8080%2F&channel=myroom
+   ```
+
+3. **What happens:**
+   - The spacecraft will use channel "myroom" instead of default "clients"
+   - All generated QR codes will include `?channel=myroom`
+   - Controllers scanning QR codes automatically join the same channel
+   - Multiple teams can work simultaneously without interference
+
+### Why HTTPS and IP Address?
+
+- **HTTPS Required**: Modern browsers require HTTPS for device motion/orientation APIs
+- **IP Address**: Enables mobile devices on the same network to connect via QR codes
+- **Not Localhost**: QR codes need to work across devices on your local network
+
 ### Verify Installation
 
 ```bash
