@@ -10,15 +10,8 @@ The platform uses multi-resolution processing to render thousands of items simul
 
 ## Architecture Overview
 
-Spacecraft implements a multi-tier architecture that processes Internet Archive collections through specialized pipelines:
+Spacecraft implements a multi-tier architecture that processes Internet Archive collections through specialized pipelines.
 
-```mermaid
-flowchart LR
-    IA[Internet Archive API] --> BS[BackSpace SvelteKit App] --> SC[SpaceCraft Unity WebGL]
-    IA --> |produces| RAW[Raw Content & Metadata]
-    BS --> |produces| PROC[Processed Data & Atlases]
-    SC --> |produces| VIS[Visualization & Interaction]
-```
 
 ### Core Components
 
@@ -104,26 +97,147 @@ SpaceCraft/
 
 ## Getting Started
 
-1. **Install Dependencies**:
+### Prerequisites
+
+**Required Versions:**
+- **Node.js**: v20+ (tested with v20.19.0)
+- **npm**: v10+ (comes with Node.js)
+- **Unity**: 6000.0.36f1 (Unity 6.0)
+- **Git LFS**: Required for Unity assets
+- **Python**: 3.8+ (for simple HTTP server)
+
+### Installation (macOS)
+
+1. **Install Node.js via nvm** (recommended):
    ```bash
-   cd SvelteKit/BackSpace
+   # Install nvm
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+   
+   # Restart terminal or source profile
+   source ~/.bashrc  # bash
+   source ~/.zshrc   # zsh
+   
+   # Install and use Node.js v20
+   nvm install 20
+   nvm use 20
+   ```
+
+   **Alternative - Direct install:**
+   ```bash
+   # Via Homebrew
+   brew install node@20
+   ```
+
+2. **Install Unity 6.0**:
+   - Download Unity Hub: https://unity.com/download
+   - Install Unity 6000.0.36f1 through Unity Hub
+   - Add WebGL build support during installation
+
+3. **Install Git LFS**:
+   ```bash
+   brew install git-lfs
+   git lfs install
+   ```
+
+### Quick Start
+
+1. **Clone and Setup**:
+   ```bash
+   git clone <repository-url>
+   cd SpaceCraft/SvelteKit/BackSpace
    npm install
    ```
 
-2. **Register a Collection**:
+2. **Run Pre-built Example**:
    ```bash
-   npm run ia:register scifi "Science Fiction" "subject:science fiction" --include-in-unity
+   # Serve the existing build
+   cd ../../WebSites/spacetime
+   python3 -m http.server 8080
+   # Open http://localhost:8080
    ```
 
-3. **Process the Collection**:
+### Full Development Setup
+
+1. **Initialize Content**:
    ```bash
-   npm run ia:process
+   cd SvelteKit/BackSpace
+   npm run content:init
    ```
 
-4. **Start Development Server**:
+2. **Import Test Collection**:
+   ```bash
+   npm run ia:import -- --query "subject:poetry" --limit 50 --collection poetry
+   npm run pipeline:run -- --collection poetry
+   ```
+
+3. **Build Unity WebGL**:
+   ```bash
+   npm run unity:build:webgl:dev
+   npm run unity:install:sveltekit
+   ```
+
+4. **Start Development**:
    ```bash
    npm run dev
    ```
+
+## Unity Development & Testing
+
+### Serving Unity Builds with HTTPS
+
+For testing Unity WebGL builds with device controllers (mobile phones/tablets), use the built-in HTTPS server:
+
+```bash
+cd SvelteKit/BackSpace
+npm run unity:serve
+```
+
+This will:
+- Automatically detect your local IP address
+- Start an HTTPS server on port 8080
+- Generate QR codes for mobile controller access
+- Open the browser with the correct base URL
+
+**Example output:**
+```
+Server will be available at: https://192.168.2.12:8080 (HTTPS)
+Browser will open at: https://192.168.2.12:8080/index.html?base_url=https%3A%2F%2F192.168.2.12%3A8080%2F
+```
+
+### Using Custom Channels
+
+To test with custom Supabase channels (useful for multiple developers or isolated testing):
+
+1. **Add channel parameter to the URL:**
+   ```
+   https://192.168.2.12:8080/index.html?channel=myroom
+   ```
+
+2. **Complete URL with both parameters:**
+   ```
+   https://192.168.2.12:8080/index.html?base_url=https%3A%2F%2F192.168.2.12%3A8080%2F&channel=myroom
+   ```
+
+3. **What happens:**
+   - The spacecraft will use channel "myroom" instead of default "clients"
+   - All generated QR codes will include `?channel=myroom`
+   - Controllers scanning QR codes automatically join the same channel
+   - Multiple teams can work simultaneously without interference
+
+### Why HTTPS and IP Address?
+
+- **HTTPS Required**: Modern browsers require HTTPS for device motion/orientation APIs
+- **IP Address**: Enables mobile devices on the same network to connect via QR codes
+- **Not Localhost**: QR codes need to work across devices on your local network
+
+### Verify Installation
+
+```bash
+node --version    # Should show v20+
+npm --version     # Should show v10+
+git lfs version   # Should show git-lfs version
+python3 --version # Should show 3.8+
+```
 
 ## Collection Management
 

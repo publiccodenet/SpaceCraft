@@ -116,7 +116,17 @@ class SpaceCraftSim {
     static get DEEP_INDEX_PATH() { return 'StreamingAssets/Content/index-deep.json'; }
     static get NAVIGATOR_HTML_PATH() { return 'StreamingAssets/SpaceCraft/navigator.html'; }
     static get SELECTOR_HTML_PATH() { return 'StreamingAssets/SpaceCraft/selector.html'; }
-    static get CONTROLLER_CHANNEL_NAME() { return 'controllers'; }
+    static get CLIENT_CHANNEL_NAME() { return 'clients'; }
+    
+    /**
+     * Get the channel name from URL query parameter or use default
+     * @returns {string} Channel name to use
+     */
+    static getChannelName() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const channelFromUrl = urlParams.get('channel');
+        return channelFromUrl || this.CLIENT_CHANNEL_NAME;
+    }
 
     /**
      * Constructor - initializes instance properties
@@ -258,7 +268,24 @@ class SpaceCraftSim {
             // Get the current URL's query parameters
             const urlParams = new URLSearchParams(window.location.search);
             const explicitBaseUrl = urlParams.get('base_url'); // Check for ?base_url=...
-            const currentSearchParams = window.location.search;
+            
+            // Build search parameters for QR codes, ensuring channel is included
+            const qrParams = new URLSearchParams();
+            
+            // Copy existing parameters except base_url (which is for QR generation only)
+            for (const [key, value] of urlParams) {
+                if (key !== 'base_url') {
+                    qrParams.set(key, value);
+                }
+            }
+            
+            // Ensure channel parameter is included (use current channel or default)
+            const currentChannel = SpaceCraftSim.getChannelName();
+            if (currentChannel !== SpaceCraftSim.CLIENT_CHANNEL_NAME) {
+                qrParams.set('channel', currentChannel);
+            }
+            
+            const currentSearchParams = qrParams.toString() ? '?' + qrParams.toString() : '';
 
             let baseDirectory;
             let usingExplicitUrl = false;
@@ -706,7 +733,8 @@ class SpaceCraftSim {
      * Initialize Supabase client and channel
      */
     setupSupabase() {
-        console.log("[SpaceCraft] Setting up Supabase client");
+        const channelName = SpaceCraftSim.getChannelName();
+        console.log(`[SpaceCraft] Setting up Supabase client with channel: ${channelName}`);
         
         // Create a Supabase client
         const client = window.supabase.createClient(
@@ -715,7 +743,7 @@ class SpaceCraftSim {
         );
         
         // Create a channel for client communication
-        this.clientChannel = client.channel('clients');
+        this.clientChannel = client.channel(channelName);
         
         console.log("[SpaceCraft] Supabase client and channel created");
     }
@@ -734,7 +762,7 @@ class SpaceCraftSim {
      * Subscribe to the client channel and set up event handlers
      */
     subscribeToClientChannel(channel) {
-        console.log("[SpaceCraft] Subscribing to Supabase 'clients' channel");
+        console.log(`[SpaceCraft] Subscribing to Supabase '${SpaceCraftSim.getChannelName()}' channel`);
 
         channel
             .on('broadcast', { event: 'pan' }, (data) => { 

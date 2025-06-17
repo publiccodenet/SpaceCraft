@@ -55,6 +55,8 @@
     "unity:serve": "tsx scripts/unity-automation.js serve-webgl",
     "unity:schemas": "npm run schemas:generate && tsx scripts/unity-automation.js regenerate-schemas",
     "unity:linkup": "tsx scripts/unity-automation.js linkup-webgl",
+    "unity:copydown": "tsx scripts/unity-automation.js copydown-webgl",
+    "unity:copyup": "tsx scripts/unity-automation.js copyup-webgl",
     "unity:logs": "tsx scripts/unity-automation.js check-logs",
     "unity:start": "tsx scripts/unity-automation.js launch",
     "unity:openproject": "tsx scripts/unity-automation.js run openproject",

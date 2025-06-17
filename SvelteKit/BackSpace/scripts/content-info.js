@@ -7,10 +7,15 @@ import path from 'path';
 import chalk from 'chalk';
 import { BaseCommand } from './base-command.js';
 import { 
-  COLLECTIONS_PATH, 
-  FILE_NAMES, 
-  EMOJI 
+  EMOJI,
+  PATHS
 } from '../src/lib/constants/index.ts';
+
+// Define constants that were missing
+const COLLECTIONS_PATH = path.resolve('../../Content/collections');
+const FILE_NAMES = {
+  COLLECTION: 'collection.json'
+};
 
 class ContentInfoCommand extends BaseCommand {
   constructor() {
@@ -120,7 +125,7 @@ class ContentInfoCommand extends BaseCommand {
     }
   }
   
-  private async getDirStats(directory: string): Promise<{ size: number; files: number }> {
+  async getDirStats(directory) {
     let size = 0;
     let files = 0;
     
@@ -143,7 +148,7 @@ class ContentInfoCommand extends BaseCommand {
     return { size, files };
   }
   
-  private formatBytes(bytes: number, decimals = 2): string {
+  formatBytes(bytes, decimals = 2) {
     if (bytes === 0) return '0 Bytes';
     
     const k = 1024;

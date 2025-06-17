@@ -66,14 +66,21 @@
  * Base Controller class that provides common functionality for all controller types
  */
 window.BaseController = class BaseController {
-    selectedItemChanged(selectedItemJSON) {
-        // Base implementation does nothing. Subclasses like InspectorController will override.
-    }
     
     // API constants
     static SUPABASE_URL = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
     static SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc';
     static CLIENT_CHANNEL_NAME = 'clients';
+    
+    /**
+     * Get the channel name from URL query parameter or use default
+     * @returns {string} Channel name to use
+     */
+    static getChannelName() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const channelFromUrl = urlParams.get('channel');
+        return channelFromUrl || this.CLIENT_CHANNEL_NAME;
+    }
     
     // Shake detection constants
     static SHAKE_THRESHOLD = 15; // Acceleration threshold for shake detection WITHOUT gravity (m/s²)
@@ -455,6 +462,7 @@ window.BaseController = class BaseController {
                 return;
             }
             this.targetElement = targetElement;
+            
             // Set up event handlers
             this.setupPageEventHandlers();
         }
@@ -1770,9 +1778,10 @@ window.BaseController = class BaseController {
             this.initAudioContext();
             
             // Create Supabase client and channel
-            this.logEvent('Init', 'Creating Supabase client and channel');
+            const channelName = this.constructor.getChannelName();
+            this.logEvent('Init', `Creating Supabase client and channel: ${channelName}`);
             this.supabaseClient = supabase.createClient(this.constructor.SUPABASE_URL, this.constructor.SUPABASE_ANON_KEY);
-            this.clientChannel = this.supabaseClient.channel(this.constructor.CLIENT_CHANNEL_NAME, {
+            this.clientChannel = this.supabaseClient.channel(channelName, {
                 config: {
                     presence: {
                         key: this.clientId,
@@ -1892,7 +1901,6 @@ window.BaseController = class BaseController {
         // MAX: Log new selected item JSON if its ID has changed
         if (this.simulatorState.selectedItemId !== previousSelectedItemId) {
             this.logEvent('MAX', 'New selected item json (ID changed):', this.simulatorState.selectedItem);
-            this.selectedItemChanged(this.simulatorState.selectedItem);
         }
         
         this.updateUIFromState();
@@ -2394,8 +2402,44 @@ window.SelectorController = class SelectorController extends BaseController {
 
 };
 
+/**
+ * Inspector Controller - specializes in displaying item data
+ */
+window.InspectorController = class InspectorController extends BaseController {
+    constructor() {
+        super('inspector'); // Client type
+        this.jsonOutputElement = null;
+        this.iframeElement = null;
+    }
+    
+    setupControllerSpecificUI() {
+        this.logEvent('Init', 'Setting up Inspector-specific UI');
+        this.jsonOutputElement = document.getElementById('inspector-json-output');
+        this.iframeElement = document.getElementById('inspector-iframe');
+        
+        if (!this.jsonOutputElement) {
+            this.logEvent('Error', 'Inspector JSON output element not found!');
+        }
+    }
+    
+    // This method will be called when the selected item data changes
+    selectedItemChanged(selectedItemJSON) {
+        this.logEvent('Inspector', 'Received new selected item JSON:', selectedItemJSON);
+        if (this.iframeElement) {
+            if (selectedItemJSON) {
+                // this.jsonOutputElement.innerHTML = JSON.stringify(selectedItemJSON)
+                this.iframeElement.src = `https://archive.org/details/${selectedItemJSON['id']}`;
+                this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON);
+            } else {
+                this.jsonOutputElement.textContent = 'No item currently selected.';
+            }
+        }
+    }
+};
+
 // Simple initialization on DOM ready - directly instantiates the right controller
 document.addEventListener('DOMContentLoaded', function() {
+    
     // Get controller type from meta tag
     const metaTag = document.querySelector('meta[name="controller-type"]');
     if (!metaTag) {
@@ -2425,33 +2469,3 @@ document.addEventListener('DOMContentLoaded', function() {
     window.controller = controller;
 });
 
-window.InspectorController = class InspectorController extends BaseController {
-    constructor() {
-        super('inspector'); // Client type
-        this.jsonOutputElement = null;
-        this.iFrameElement = null;
-    }
-
-    setupControllerSpecificUI() {
-        this.logEvent('Init', 'Setting up Inspector-specific UI');
-        this.jsonOutputElement = document.getElementById('inspector-json-output');
-        this.iFrameElement = document.getElementById('inspector-iframe');
-        if (!this.jsonOutputElement) {
-            this.logEvent('Error', 'Inspector JSON output element not found!');
-        }
-    }
-
-    // This method will be called when the selected item data changes
-    selectedItemChanged(selectedItemJSON) {
-        this.logEvent('Inspector', 'Received new selected item JSON:', selectedItemJSON);
-        if (this.iFrameElement) {
-            if (selectedItemJSON) {
-                // this.jsonOutputElement.innerHTML = JSON.stringify(selectedItemJSON)
-                this.iFrameElement.src = `https://archive.org/details/${selectedItemJSON['id']}`;
-                this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON);
-            } else {
-                this.jsonOutputElement.textContent = 'No item currently selected.';
-            }
-        }
-    }
-};

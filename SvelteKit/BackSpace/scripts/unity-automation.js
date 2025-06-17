@@ -118,6 +118,12 @@ if (!command) {
       case 'linkup-webgl':
         await linkupWebGL(unityEnv);
         break;
+      case 'copydown-webgl':
+        await copydownWebGL(unityEnv);
+        break;
+      case 'copyup-webgl':
+        await copyupWebGL(unityEnv);
+        break;
       case 'serve-webgl':
         await serveWebGLBuild();
         break;
@@ -921,6 +927,156 @@ async function linkupWebGL(env) {
 }
 
 /**
+ * Copy WebGL build from WebSites/spacetime to Unity/SpaceCraft/Builds/SpaceCraft
+ * This creates a writable copy for development
+ * @param {object} env Environment variables discovered by discoverUnityEnvironment
+ */
+async function copyupWebGL(env) {
+  console.log(chalk.blue('Copying WebGL build from WebSites/spacetime to Unity/SpaceCraft/Builds/SpaceCraft'));
+  console.log(chalk.yellow('This creates a writable copy for development work'));
+  
+  const unityProjectPath = env.UNITY_APP;
+  const buildPath = path.join(unityProjectPath, 'Builds/SpaceCraft');
+  const websitePath = path.resolve(__dirname, '../../../WebSites/spacetime');
+  
+  // Check if source exists
+  if (!fs.existsSync(websitePath)) {
+    console.error(chalk.red(`Website source not found: ${websitePath}`));
+    throw new Error('WebSites/spacetime directory not found.');
+  }
+  
+  try {
+    // Clean the build directory first
+    if (fs.existsSync(buildPath)) {
+      console.log(chalk.yellow(`Cleaning existing build directory: ${buildPath}`));
+      fs.rmSync(buildPath, { recursive: true, force: true });
+    }
+    
+    // Create the build directory
+    fs.mkdirSync(buildPath, { recursive: true });
+    console.log(chalk.gray(`Created directory: ${buildPath}`));
+    
+    // Copy all files from website to build
+    console.log(chalk.cyan('Copying files from WebSites/spacetime to Unity/SpaceCraft/Builds/SpaceCraft...'));
+    
+    const copyRecursive = (src, dest) => {
+      const entries = fs.readdirSync(src, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        const srcPath = path.join(src, entry.name);
+        const destPath = path.join(dest, entry.name);
+        
+        if (entry.isDirectory()) {
+          fs.mkdirSync(destPath, { recursive: true });
+          copyRecursive(srcPath, destPath);
+        } else {
+          fs.copyFileSync(srcPath, destPath);
+        }
+      }
+    };
+    
+    copyRecursive(websitePath, buildPath);
+    
+    console.log(chalk.green('✅ Copy completed successfully!'));
+    console.log(chalk.cyan('You now have a writable copy of the WebGL build for development.'));
+    console.log(chalk.cyan('Next steps:'));
+    console.log(chalk.white('  1. Run "npm run unity:linkup" to replace JS files with symlinks'));
+    console.log(chalk.white('  2. Edit JS files in Unity/SpaceCraft/Assets/StreamingAssets/SpaceCraft/'));
+    console.log(chalk.white('  3. Test with "npm run unity:serve"'));
+    console.log(chalk.white('  4. When ready, run "npm run unity:copydown" to update source control'));
+    
+  } catch (error) {
+    console.error(chalk.red(`Copy failed: ${error.message}`));
+    throw error;
+  }
+}
+
+/**
+ * Copy edited JS files from Unity/SpaceCraft/Assets/StreamingAssets/SpaceCraft back to WebSites/spacetime
+ * This updates the source control version with your development changes
+ * @param {object} env Environment variables discovered by discoverUnityEnvironment
+ */
+async function copydownWebGL(env) {
+  console.log(chalk.blue('Copying edited JS files from Unity/SpaceCraft/Assets/StreamingAssets/SpaceCraft to WebSites/spacetime'));
+  console.log(chalk.yellow('This updates the source control version with your development changes'));
+  
+  const unityProjectPath = env.UNITY_APP;
+  const streamingAssetsSpaceCraftPath = path.join(unityProjectPath, 'Assets/StreamingAssets/SpaceCraft');
+  const websiteSpaceCraftPath = path.resolve(__dirname, '../../../WebSites/spacetime/StreamingAssets/SpaceCraft');
+  
+  // Check if source exists
+  if (!fs.existsSync(streamingAssetsSpaceCraftPath)) {
+    console.error(chalk.red(`Source directory not found: ${streamingAssetsSpaceCraftPath}`));
+    throw new Error('Unity/SpaceCraft/Assets/StreamingAssets/SpaceCraft directory not found.');
+  }
+  
+  // Check if target exists
+  if (!fs.existsSync(websiteSpaceCraftPath)) {
+    console.error(chalk.red(`Target directory not found: ${websiteSpaceCraftPath}`));
+    throw new Error('WebSites/spacetime/StreamingAssets/SpaceCraft directory not found.');
+  }
+  
+  try {
+    // List of files to copy (JS and related files)
+    const filesToCopy = [
+      'controller.js',
+      'spacecraft.js',
+      'navigator.html',
+      'selector.html',
+      'inspector.html',
+      'controller.css',
+      'spacecraft.css'
+    ];
+    
+    console.log(chalk.cyan('Copying development files to source control...'));
+    
+    let copiedCount = 0;
+    let skippedCount = 0;
+    
+    for (const fileName of filesToCopy) {
+      const sourcePath = path.join(streamingAssetsSpaceCraftPath, fileName);
+      const targetPath = path.join(websiteSpaceCraftPath, fileName);
+      
+      if (fs.existsSync(sourcePath)) {
+        // Check if source is a symlink (from linkup)
+        const stats = fs.lstatSync(sourcePath);
+        if (stats.isSymbolicLink()) {
+          console.log(chalk.gray(`Skipping symlink: ${fileName} (this is expected after linkup)`));
+          skippedCount++;
+          continue;
+        }
+        
+        // Copy the file
+        fs.copyFileSync(sourcePath, targetPath);
+        console.log(chalk.green(`✓ Copied: ${fileName}`));
+        copiedCount++;
+      } else {
+        console.log(chalk.yellow(`⚠ Not found: ${fileName}`));
+        skippedCount++;
+      }
+    }
+    
+    console.log(chalk.green(`\n✅ Copy completed! ${copiedCount} files copied, ${skippedCount} skipped`));
+    
+    if (skippedCount > 0) {
+      console.log(chalk.yellow('\nNote: Skipped files are likely symlinks from linkup, which is normal.'));
+      console.log(chalk.yellow('The actual source files in Assets/StreamingAssets/SpaceCraft are what get copied.'));
+    }
+    
+    console.log(chalk.cyan('\nNext steps:'));
+    console.log(chalk.white('  1. Review changes: git diff'));
+    console.log(chalk.white('  2. Add changes: git add .'));
+    console.log(chalk.white('  3. Commit: git commit -m "Update JS files"'));
+    console.log(chalk.white('  4. Push: git push'));
+    console.log(chalk.white('  5. Create PR to merge to main'));
+    
+  } catch (error) {
+    console.error(chalk.red(`Copy failed: ${error.message}`));
+    throw error;
+  }
+}
+
+/**
  * Install Unity WebGL build into the SvelteKit static directory
  * @param {string[]} args Command line arguments
  */
@@ -1054,7 +1210,9 @@ ${chalk.italic('Commands:')}
   build-webgl-prod      - Build WebGL project in production mode
   unbuild-webgl         - Copy files from build back to source
   diff-webgl            - Show differences between build and source
-  linkup                - Create symlinks from build to source
+  linkup-webgl          - Create symlinks from build to source for development
+  copyup-webgl          - Copy WebSites/spacetime to Unity/SpaceCraft/Builds/SpaceCraft
+  copydown-webgl        - Copy edited JS files back to WebSites/spacetime
   serve-webgl           - Serve the built WebGL files for testing
   ci                    - Run Unity CI build
   check-logs            - Check Unity logs for errors
