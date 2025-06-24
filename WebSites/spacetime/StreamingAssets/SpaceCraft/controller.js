@@ -77,7 +77,7 @@ window.BaseController = class BaseController {
      * @returns {string} Channel name to use
      */
     static getChannelName() {
-        const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.search);
         const channelFromUrl = urlParams.get('channel');
         return channelFromUrl || this.CLIENT_CHANNEL_NAME;
     }
@@ -790,8 +790,9 @@ window.BaseController = class BaseController {
             y: this.touchStartY,
             pointerId: ev.pointerId
         });
-
-        // allow clicks in input text
+        
+        // Allow clicks in input text elements (like the search box!)
+        // This prevents the touch handler from interfering with typing
         if (ev.target?.tagName !== 'INPUT') ev.preventDefault();
     }
     
@@ -1166,6 +1167,7 @@ window.BaseController = class BaseController {
                 <div class="debug-section">
                     <div>Ship: <b>${this.currentName || 'unknown'}</b></div>
                     <div>Connection: ${connectionState} (${channelInfo})</div>
+                    <div>Search: "${this.currentSearchQuery || '(none)'}"</div>
                     <div>Motion: ${motionState} (${this.tiltingActive ? 'active' : 'inactive'})</div>
                     <div>Acceleration: ${accelInfo}</div>
                     <div>Mag: ${magnitudeInfo} With G: ${magnitudeWithGravityInfo}</div>
@@ -1860,12 +1862,13 @@ window.BaseController = class BaseController {
                         this.isSubscribed = true;
                         this.updatePermissionStatus('connection', 'granted');
                         
-                        // Track client presence
+                        // Track client presence - include search query from the start!
                         this.clientChannel.track({
                             clientId: this.clientId,
                             clientType: this.clientType,
                             clientName: this.currentName,
-                            screenId: this.currentScreenId
+                            screenId: this.currentScreenId,
+                            searchQuery: this.currentSearchQuery  // Start with empty search, ready for updates!
                         });
                     } else {
                         this.logEvent('Connection', `Channel subscription status: ${status}`);
@@ -2035,6 +2038,62 @@ window.BaseController = class BaseController {
             this.logEvent('UI', 'Could not update ship name in UI - element not found');
         }
     }
+    
+    /**
+     * Updates the search query and syncs it via presence state
+     * This follows the same pattern as triggerRename - we update local state
+     * then sync it to Supabase presence so the simulator can see it!
+     * @param {string} query - The new search query (empty string to clear)
+     */
+    updateSearchQuery(query) {
+        // Normalize the query (trim whitespace, handle empty)
+        const normalizedQuery = (query || '').trim();
+        
+        // Only update if the query actually changed
+        if (normalizedQuery === this.currentSearchQuery) {
+            this.logEvent('Search', 'Search query unchanged, skipping update');
+            return;
+        }
+        
+        // Store the old query for logging
+        const oldQuery = this.currentSearchQuery;
+        this.currentSearchQuery = normalizedQuery;
+        
+        this.logEvent('Search', `Search query updated: "${oldQuery}" → "${this.currentSearchQuery}"`);
+        
+        // Play a little search sound for feedback
+        if (this.soundEnabled && this.currentSearchQuery) {
+            this.playSound(BaseController.SOUND_PATTERNS.CLICK);
+        }
+        
+        // Announce the search if speech is enabled
+        if (this.speechEnabled && this.currentSearchQuery) {
+            this.speakText(`Searching for ${this.currentSearchQuery}`);
+        }
+        
+        // Update presence state with the new search query
+        // This follows the exact same pattern as triggerRename!
+        if (this.clientChannel && this.isSubscribed) {
+            try {
+                this.clientChannel.track({
+                    clientId: this.clientId,
+                    clientType: this.clientType,
+                    clientName: this.currentName,
+                    screenId: this.currentScreenId,
+                    searchQuery: this.currentSearchQuery,  // ← The magic happens here!
+                    onlineAt: new Date().toISOString()
+                });
+                this.logEvent('Search', 'Updated presence with search query');
+            } catch (err) {
+                this.logEvent('Error', 'Error updating presence with search:', err);
+            }
+        } else {
+            this.logEvent('Search', 'Cannot update presence - channel not ready');
+        }
+        
+        // Update debug overlay to show the new search query
+        this.updateDebugOverlay();
+    }
 };
 
 /**
@@ -2058,7 +2117,7 @@ window.NavigatorController = class NavigatorController extends BaseController {
      */
     handlePointerDown(ev) {
         this.logEvent('Input', 'Navigator Pointer down', { x: ev.clientX, y: ev.clientY, pointerId: ev.pointerId });
-        ev.target.setPointerCapture(ev.pointerId);
+        ev.target.setPointerCapture(ev.pointerId); 
         this.evCache.push(ev);
 
         if (this.evCache.length === 1) { // First finger down
@@ -2073,9 +2132,9 @@ window.NavigatorController = class NavigatorController extends BaseController {
         if (this.soundEnabled) {
             this.playSound(this.constructor.SOUND_PATTERNS.TOUCH);
         }
-        ev.preventDefault();
+        ev.preventDefault(); 
     }
-    
+
     /**
      * Handle pointer move event - specialized for navigator panning and zooming
      */
@@ -2431,7 +2490,7 @@ window.InspectorController = class InspectorController extends BaseController {
                 // this.jsonOutputElement.innerHTML = JSON.stringify(selectedItemJSON)
                 this.iframeElement.src = `https://archive.org/details/${selectedItemJSON['id']}`;
                 this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON);
-            } else {
+        } else {
                 this.jsonOutputElement.textContent = 'No item currently selected.';
             }
         }
