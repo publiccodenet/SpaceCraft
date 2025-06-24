@@ -18,18 +18,16 @@
     <!-- Shared Controller Logic -->
     <script src="controller.js"></script>
   </head>
-  <body>
+  <body id="target">
     <div class="container selector-container">
         <h1 class="page-title">Selector</h1>
         <p class="instructions"><strong>TAP or SWIPE left/right/up/down</strong></p>
-        
+        <p>Search: <input type="text" id="searchBox"></input></p>
+        <div id="status" class="status">Connecting...</div>
         <div class="ship-name-display">
             <div class="ship-name-label">Space Ship Name:</div>
             <div id="ship-name" class="ship-name-value">Connecting...</div>
         </div>
-        
-        <div id="status" class="status">Connecting...</div>
-        <div id="target"></div>
     </div>
 
     <div id="debug-panel">
@@ -42,5 +40,21 @@
         <button id="speech-toggle">Start<br/>Speech</button>
         <button id="tilt-toggle">Start<br/>Tilting</button>
     </div>
+    <script>
+        const searchElement = document.getElementById("searchBox");
+        function debounce(func, delay) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+        searchElement.onkeyup = debounce(() => {
+            // console.log('doSearch', searchElement.value)
+            sendUpdate('search', searchElement.value)
+        }, 100)
+    </script>
   </body>
 </html> 
