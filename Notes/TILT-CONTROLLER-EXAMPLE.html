@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceCraft Tilt Controller Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+            text-align: center;
+        }
+        
+        .tilt-controls {
+            margin: 20px auto;
+            padding: 20px;
+            background: #333;
+            border-radius: 10px;
+            max-width: 300px;
+        }
+        
+        .tilt-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        .tilt-enable {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .tilt-disable {
+            background: #f44336;
+            color: white;
+        }
+        
+        .tilt-values {
+            margin: 20px 0;
+            padding: 15px;
+            background: #444;
+            border-radius: 8px;
+        }
+        
+        .tilt-indicator {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background: #555;
+            border-radius: 50%;
+            position: relative;
+            border: 3px solid #666;
+        }
+        
+        .tilt-dot {
+            width: 20px;
+            height: 20px;
+            background: #4CAF50;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.2s;
+        }
+        
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .status.enabled {
+            background: #2d5a2d;
+        }
+        
+        .status.disabled {
+            background: #5a2d2d;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 SpaceCraft Tilt Controller</h1>
+    <p>Example implementation of cooperative tilt control</p>
+    
+    <div class="tilt-controls">
+        <div id="status" class="status disabled">
+            Tilting: DISABLED
+        </div>
+        
+        <button id="tiltButton" class="tilt-button tilt-enable" onclick="toggleTilting()">
+            Start Tilting
+        </button>
+        
+        <div class="tilt-values">
+            <div>Tilt X: <span id="tiltX">0°</span></div>
+            <div>Tilt Z: <span id="tiltZ">0°</span></div>
+            <div style="font-size: 12px; margin-top: 10px;">
+                Hold phone face up toward ceiling for neutral
+            </div>
+        </div>
+        
+        <div class="tilt-indicator">
+            <div id="tiltDot" class="tilt-dot"></div>
+        </div>
+        
+        <div style="font-size: 12px; color: #ccc;">
+            The dot shows where gravity pulls the books
+        </div>
+    </div>
+
+    <script>
+        // Tilt Controller Implementation
+        class TiltController {
+            constructor() {
+                this.tiltEnabled = false;
+                this.baseOrientation = null;
+                this.currentTiltX = 0;
+                this.currentTiltZ = 0;
+                
+                // Request device orientation permission (iOS 13+)
+                this.requestOrientationPermission();
+            }
+            
+            async requestOrientationPermission() {
+                if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    const permission = await DeviceOrientationEvent.requestPermission();
+                    if (permission === 'granted') {
+                        console.log('Device orientation permission granted');
+                    } else {
+                        console.warn('Device orientation permission denied');
+                    }
+                }
+            }
+            
+            enableTilting() {
+                this.tiltEnabled = true;
+                this.calibrateNeutral();
+                this.startDeviceOrientationUpdates();
+                
+                // Update UI
+                document.getElementById('status').className = 'status enabled';
+                document.getElementById('status').textContent = 'Tilting: ENABLED';
+                document.getElementById('tiltButton').className = 'tilt-button tilt-disable';
+                document.getElementById('tiltButton').textContent = 'Stop Tilting';
+                
+                console.log('Tilt control enabled');
+            }
+            
+            disableTilting() {
+                this.tiltEnabled = false;
+                this.stopDeviceOrientationUpdates();
+                
+                // Reset to neutral
+                this.currentTiltX = 0;
+                this.currentTiltZ = 0;
+                this.updateUI();
+                
+                // Update UI
+                document.getElementById('status').className = 'status disabled';
+                document.getElementById('status').textContent = 'Tilting: DISABLED';
+                document.getElementById('tiltButton').className = 'tilt-button tilt-enable';
+                document.getElementById('tiltButton').textContent = 'Start Tilting';
+                
+                // In real implementation, would update Supabase presence:
+                // this.updatePresence({ tiltEnabled: false, tiltX: 0, tiltZ: 0 });
+                
+                console.log('Tilt control disabled');
+            }
+            
+            calibrateNeutral() {
+                // In real implementation, would store the current device orientation
+                // as the reference for "neutral" (0°, 0°)
+                console.log('Calibrated neutral orientation');
+            }
+            
+            startDeviceOrientationUpdates() {
+                window.addEventListener('deviceorientation', this.handleDeviceOrientation.bind(this));
+            }
+            
+            stopDeviceOrientationUpdates() {
+                window.removeEventListener('deviceorientation', this.handleDeviceOrientation.bind(this));
+            }
+            
+            handleDeviceOrientation(event) {
+                if (!this.tiltEnabled) return;
+                
+                // Extract tilt angles from device orientation
+                // Note: This is simplified - real implementation would handle
+                // device orientation properly relative to calibrated neutral
+                
+                // For demo purposes, use beta (front-back) and gamma (left-right)
+                let tiltX = event.gamma || 0;  // Left-right tilt
+                let tiltZ = event.beta || 0;   // Front-back tilt
+                
+                // Clamp to reasonable ranges
+                tiltX = Math.max(-45, Math.min(45, tiltX));
+                tiltZ = Math.max(-45, Math.min(45, tiltZ));
+                
+                this.currentTiltX = tiltX;
+                this.currentTiltZ = tiltZ;
+                
+                this.updateUI();
+                
+                // In real implementation, would throttle and update Supabase presence:
+                // this.throttledUpdatePresence({
+                //     tiltEnabled: true,
+                //     tiltX: tiltX,
+                //     tiltZ: tiltZ
+                // });
+                
+                console.log(`Tilt: X=${tiltX.toFixed(1)}°, Z=${tiltZ.toFixed(1)}°`);
+            }
+            
+            updateUI() {
+                // Update text values
+                document.getElementById('tiltX').textContent = `${this.currentTiltX.toFixed(1)}°`;
+                document.getElementById('tiltZ').textContent = `${this.currentTiltZ.toFixed(1)}°`;
+                
+                // Update visual indicator
+                const dot = document.getElementById('tiltDot');
+                const maxOffset = 80; // Max pixels from center
+                
+                const offsetX = (this.currentTiltX / 45) * maxOffset;
+                const offsetZ = (this.currentTiltZ / 45) * maxOffset;
+                
+                dot.style.transform = `translate(${-50 + offsetX}%, ${-50 + offsetZ}%)`;
+                
+                // Change dot color based on tilt magnitude
+                const magnitude = Math.sqrt(this.currentTiltX * this.currentTiltX + this.currentTiltZ * this.currentTiltZ);
+                const intensity = Math.min(1, magnitude / 30);
+                dot.style.background = `rgb(${76 + intensity * 179}, ${175 - intensity * 50}, ${80 - intensity * 50})`;
+            }
+        }
+        
+        // Global tilt controller instance
+        const tiltController = new TiltController();
+        
+        // Button click handler
+        function toggleTilting() {
+            if (tiltController.tiltEnabled) {
+                tiltController.disableTilting();
+            } else {
+                tiltController.enableTilting();
+            }
+        }
+        
+        // Initialize UI
+        tiltController.updateUI();
+        
+        // Display device capabilities
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.DeviceOrientationEvent) {
+                document.body.innerHTML += '<p style="color: red;">⚠️ Device orientation not supported on this device</p>';
+            } else {
+                document.body.innerHTML += '<p style="color: green;">✅ Device orientation supported</p>';
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "exportedAt": "2025-04-22T15:33:58.954Z",
+  "exportedAt": "2025-06-17T03:11:59.723Z",
   "collections": {
     "scifi": {
       "id": "scifi",
@@ -183,6 +183,8 @@
         "the-goblin-02",
         "the-moon-maid",
         "the-stars-my-destination",
+        "cyberiadfablesfo0000lems_n6t8",
+        "thedispossessed0000legu",
         "theone-magazine-23",
         "thethingintheatt32447gut",
         "twilight00step",
@@ -442,8 +444,8 @@
               "automatisation"
             ],
             "collection": [
-              "opensource",
-              "community"
+              "booksbylanguage_french",
+              "booksbylanguage"
             ],
             "mediatype": "texts",
             "coverImage": "https://archive.org/services/img/CapekRUR",
@@ -4651,6 +4653,28 @@
             "coverImage": "https://archive.org/services/img/the-stars-my-destination",
             "coverWidth": 180,
             "coverHeight": 236,
+            "favoriteCount": 0
+          }
+        },
+        "cyberiadfablesfo0000lems_n6t8": {
+          "item": {
+            "id": "cyberiadfablesfo0000lems_n6t8",
+            "title": "The cyberiad : fables for the cybernetic age ",
+            "description": "295 p. : 21 cm\nEnglish translation originally published: New York : Seabury Press, 1974\nTranslation of: Cyberiada\n\"A Harvest book.\"",
+            "creator": "Lem, Stanisław",
+            "subject": [
+              "Short stories, Polish",
+              "Science fiction, Polish"
+            ],
+            "collection": [
+              "internetarchivebooks",
+              "inlibrary",
+              "printdisabled"
+            ],
+            "mediatype": "texts",
+            "coverImage": "https://archive.org/services/img/cyberiadfablesfo0000lems_n6t8",
+            "coverWidth": 180,
+            "coverHeight": 271,
             "favoriteCount": 0
           }
         },

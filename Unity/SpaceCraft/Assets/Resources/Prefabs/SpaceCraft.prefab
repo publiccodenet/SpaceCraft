@@ -675,7 +675,7 @@ MonoBehaviour:
   invertDrag: 0
   minZoom: 0.01
   maxZoom: 200
-  scrollWheelZoomFactor: 0.1
+  scrollWheelZoomFactor: 0.4
   keyboardZoomFactor: 5
   navigatorZoomFactor: 0.25
   baseVelocityThreshold: 0.2

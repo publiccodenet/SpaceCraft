@@ -152,6 +152,9 @@ class SpaceCraftSim {
         this.domContentLoaded = false; // Flag to track if DOM is ready
         this.loadedContent = null; // Store the loaded content data here (private to simulator)
         
+        // Search state
+        this.currentSearchQuery = ''; // Track current search query for change detection
+        
         // --- Client Registry ---
         // Stores information about currently connected clients
         this.clients = {}; // Key: clientId, Value: client info object
@@ -637,10 +640,17 @@ class SpaceCraftSim {
             }
         });
         
-        // Store the reference globally
-        window.spaceCraft = this.spaceCraft;
+        // Create the ground plane as a child of SpaceCraft
+        this.groundPlane = window.bridge.createObject({
+            prefab: "Prefabs/GroundPlane",
+            parent: this.spaceCraft
+        });
         
-        console.log("[SpaceCraft] SpaceCraft object created with content data");
+        // Store references globally
+        window.spaceCraft = this.spaceCraft;
+        window.groundPlane = this.groundPlane;
+        
+        console.log("[SpaceCraft] SpaceCraft object and ground plane created with content data");
         return true;
     }
     
@@ -867,6 +877,12 @@ class SpaceCraftSim {
                         );
                     }
                 }
+                
+                // Check for search queries from controllers
+                this.checkForSearchQueries(allPresences);
+                
+                // Check for cooperative tilt inputs from controllers
+                this.checkForTiltInputs(allPresences);
             })
             .on('presence', { event: 'join' }, ({ newPresences }) => {
                 console.log("[SpaceCraft] New presences joined:", newPresences);
@@ -889,6 +905,12 @@ class SpaceCraftSim {
                         );
                     }
                 }
+                
+                // Check for search queries from the new presences
+                this.checkForSearchQueries(channel.presenceState());
+                
+                // Check for cooperative tilt inputs from new presences
+                this.checkForTiltInputs(channel.presenceState());
             })
             .on('presence', { event: 'leave' }, ({ leftPresences }) => {
                 console.log("[SpaceCraft] Presences left:", leftPresences);
@@ -1129,6 +1151,138 @@ class SpaceCraftSim {
                 this.updateState({
                     highlightedItemId: null,
                     highlightedItem: null
+                });
+            }
+        }
+    }
+
+    /**
+     * Checks for search queries from controllers in the presence state
+     * Finds the first non-empty search query and sends it to Unity
+     * @param {Object} presences - The presence state object
+     */
+    /**
+     * Check all controller presence states for tilt inputs and combine them cooperatively
+     * Multiple controllers can tilt/shake together for combined physics control!
+     * @param {Object} presences - Current presence states from all clients
+     */
+    checkForTiltInputs(presences) {
+        const tiltInputs = [];
+        let activeTiltControllers = 0;
+        
+        // Collect tilt data from all connected controllers
+        for (const [clientId, presence] of Object.entries(presences)) {
+            if (presence && presence.tiltEnabled === true) {
+                // Only process controllers that have tilting explicitly enabled
+                const tiltX = presence.tiltX || 0;
+                const tiltZ = presence.tiltZ || 0;
+                
+                // Include all enabled controllers, even if neutral (for cooperative averaging)
+                tiltInputs.push({
+                    clientId: clientId,
+                    clientName: presence.clientName || 'Unknown',
+                    tiltX: tiltX,
+                    tiltZ: tiltZ
+                });
+                
+                // Count as active if actually tilting (not just enabled)
+                if (Math.abs(tiltX) > 1.0 || Math.abs(tiltZ) > 1.0) { // 1 degree threshold
+                    activeTiltControllers++;
+                }
+            }
+        }
+        
+        // Combine all tilt inputs (average for smooth cooperative control)
+        let combinedTiltX = 0;
+        let combinedTiltZ = 0;
+        
+        if (tiltInputs.length > 0) {
+            for (const tilt of tiltInputs) {
+                combinedTiltX += tilt.tiltX;
+                combinedTiltZ += tilt.tiltZ;
+            }
+            
+            // Average the tilts for smooth cooperative control
+            combinedTiltX /= tiltInputs.length;
+            combinedTiltZ /= tiltInputs.length;
+            
+            // Log cooperative tilt status
+            if (activeTiltControllers > 0) {
+                console.log(`[SpaceCraft] Cooperative tilt: ${activeTiltControllers}/${tiltInputs.length} controllers active, combined: (${combinedTiltX.toFixed(1)}°, ${combinedTiltZ.toFixed(1)}°)`);
+            }
+            
+            // Convert tilt angles to normalized values for Unity (-1 to +1)
+            const normalizedTiltX = Math.max(-1, Math.min(1, combinedTiltX / 45)); // 45° = full tilt
+            const normalizedTiltZ = Math.max(-1, Math.min(1, combinedTiltZ / 45)); // 45° = full tilt
+            
+            // Send combined tilt to Unity via bridge
+            if (this.spaceCraft && window.bridge) {
+                window.bridge.updateObject(this.spaceCraft, {
+                    "method:PushTiltInput": ['simulator', 'Spacecraft Simulator', normalizedTiltX, normalizedTiltZ]
+                });
+            }
+        } else {
+            // No controllers have tilting enabled - send neutral state
+            if (this.spaceCraft && window.bridge) {
+                window.bridge.updateObject(this.spaceCraft, {
+                    "method:PushTiltInput": ['simulator', 'Spacecraft Simulator', 0, 0]
+                });
+            }
+        }
+    }
+
+    checkForSearchQueries(presences) {
+        if (!this.spaceCraft) {
+            // SpaceCraft bridge object not ready yet
+            return;
+        }
+        
+        let foundSearchQuery = '';
+        let searchSourceClient = null;
+        
+        // Look through all presences for controller search queries
+        for (const presenceKey in presences) {
+            const presenceList = presences[presenceKey];
+            for (const presence of presenceList) {
+                // Skip our own presence
+                if (presence.clientId === this.identity.clientId) continue;
+                
+                // Skip non-controller clients
+                if (!presence.clientType || presence.clientType === 'simulator') continue;
+                
+                // Check if this presence has a search query
+                if (presence.searchQuery && typeof presence.searchQuery === 'string' && presence.searchQuery.trim()) {
+                    foundSearchQuery = presence.searchQuery.trim();
+                    searchSourceClient = {
+                        id: presence.clientId,
+                        name: presence.clientName || "Unknown Controller",
+                        type: presence.clientType
+                    };
+                    console.log(`[SpaceCraft] Found search query: "${foundSearchQuery}" from ${searchSourceClient.name} (${searchSourceClient.id})`);
+                    break; // Use the first non-empty search query we find
+                }
+            }
+            
+            if (foundSearchQuery) break; // Found a search query, stop looking
+        }
+        
+        // Update our stored search query and send to Unity if it changed
+        if (foundSearchQuery !== this.currentSearchQuery) {
+            this.currentSearchQuery = foundSearchQuery;
+            
+            if (searchSourceClient) {
+                console.log(`[SpaceCraft] Sending search query to Unity: "${foundSearchQuery}" from ${searchSourceClient.name}`);
+                
+                // Send search update to Unity via bridge (simple property update)
+                bridge.updateObject(this.spaceCraft, {
+                    searchString: foundSearchQuery
+                });
+            } else if (foundSearchQuery === '') {
+                // Search was cleared
+                console.log("[SpaceCraft] Search query cleared, notifying Unity");
+                
+                bridge.updateObject(this.spaceCraft, {
+                    searchString: ""
                 });
             }
         }

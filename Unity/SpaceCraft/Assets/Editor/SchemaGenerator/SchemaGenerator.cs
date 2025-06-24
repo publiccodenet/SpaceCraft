@@ -336,6 +336,8 @@ public class SchemaGenerator
                     
                     sb.AppendLine($"            }}");
                     sb.AppendLine($"            catch (Exception ex) {{ Debug.LogError($\"Error converting '{jsonPropertyName}' directly: {{ex.Message}}\"); }}");
+                    sb.AppendLine($"        }} else {{");
+                    sb.AppendLine($"            Debug.Log($\"ItemSchema: {jsonPropertyName} is null\" );");
                     sb.AppendLine($"        }}");
                 }
                 

@@ -18,18 +18,16 @@
     <!-- Shared Controller Logic -->
     <script src="controller.js"></script>
   </head>
-  <body>
+  <body id="target">
     <div class="container selector-container">
         <h1 class="page-title">Selector</h1>
         <p class="instructions"><strong>TAP or SWIPE left/right/up/down</strong></p>
-        
+        <p>Search: <input type="text" id="searchBox"></input></p>
+        <div id="status" class="status">Connecting...</div>
         <div class="ship-name-display">
             <div class="ship-name-label">Space Ship Name:</div>
             <div id="ship-name" class="ship-name-value">Connecting...</div>
         </div>
-        
-        <div id="status" class="status">Connecting...</div>
-        <div id="target"></div>
     </div>
 
     <div id="debug-panel">
@@ -42,5 +40,35 @@
         <button id="speech-toggle">Start<br/>Speech</button>
         <button id="tilt-toggle">Start<br/>Tilting</button>
     </div>
+    <script>
+        // Set up search functionality using the proper presence-based method!
+        // This is much better than the old sendUpdate approach which used broadcasts
+        const searchElement = document.getElementById("searchBox");
+        
+        // Handy debounce function to avoid spamming the server
+        function debounce(func, delay) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+        
+        // Set up the search input handler - this is the magic! ✨
+        searchElement.onkeyup = debounce(() => {
+            // Use the proper updateSearchQuery method which updates presence state
+            // instead of the old broken sendUpdate('search', value) approach
+            if (window.controller && window.controller.updateSearchQuery) {
+                window.controller.updateSearchQuery(searchElement.value);
+                console.log('[Search] Updated search query via presence:', searchElement.value);
+            } else {
+                console.warn('[Search] Controller not ready yet, search will work once connected');
+            }
+        }, 100); // 100ms debounce for responsive feeling
+        
+        console.log('[Search] Search functionality initialized with presence-based updates!');
+    </script>
   </body>
 </html> 

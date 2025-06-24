@@ -26,6 +26,9 @@ public class SpaceCraft : BridgeObject
     [Header("Content State")]
     public JObject content;
     
+    [Header("Search State")]  
+    public string searchString = ""; // Search query from controllers - updated via bridge
+    
     // Backing fields for state lists
     private List<string> _selectedItemIds = new List<string>();
     private List<string> _highlightedItemIds = new List<string>(); // Can contain duplicates for multiple highlights
@@ -184,6 +187,15 @@ public class SpaceCraft : BridgeObject
 
         // Notify JS that the content has been loaded and processed
         SendEventName(ContentLoadedEvent);
+    }
+    
+    private void Update()
+    {
+        // Forward search string updates to InputManager
+        if (inputManager != null && inputManager.searchString != searchString)
+        {
+            inputManager.searchString = searchString;
+        }
     }
     
     private void LateUpdate()
@@ -806,6 +818,21 @@ public class SpaceCraft : BridgeObject
         else
         {
             Debug.LogWarning("[SpaceCraft] PushCameraVelocity called but InputManager is null.");
+        }
+    }
+
+    /// <summary>
+    /// Forward tilt input to InputManager (Bridge compatibility)
+    /// </summary>
+    public void PushTiltInput(string controllerId, string controllerName, float normalizedTiltX, float normalizedTiltZ)
+    {
+        if (inputManager != null)
+        {
+            inputManager.PushTiltInput(controllerId, controllerName, normalizedTiltX, normalizedTiltZ);
+        }
+        else
+        {
+            Debug.LogWarning("[SpaceCraft] Cannot forward PushTiltInput - InputManager is null");
         }
     }
 
