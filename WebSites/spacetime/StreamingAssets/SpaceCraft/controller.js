@@ -790,8 +790,9 @@ window.BaseController = class BaseController {
             y: this.touchStartY,
             pointerId: ev.pointerId
         });
-        
-        ev.preventDefault();
+
+        // allow clicks in input text
+        if (ev.target?.tagName !== 'INPUT') ev.preventDefault();
     }
     
     /**
