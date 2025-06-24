@@ -11,8 +11,8 @@
     "automatisation"
   ],
   "collection": [
-    "opensource",
-    "community"
+    "booksbylanguage_french",
+    "booksbylanguage"
   ],
   "publicdate": "2015-06-28 14:20:17",
   "identifier": "CapekRUR",
@@ -31,6 +31,7 @@
   "repub_state": "4",
   "year": "1921",
   "backup_location": "ia905307_19",
+  "collection_added": "booksbylanguage",
   "coverImage": "https://archive.org/services/img/CapekRUR",
   "favoriteCount": 0,
   "coverImageWidth": 180,

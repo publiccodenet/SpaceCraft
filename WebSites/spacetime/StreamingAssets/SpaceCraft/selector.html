@@ -41,7 +41,11 @@
         <button id="tilt-toggle">Start<br/>Tilting</button>
     </div>
     <script>
+        // Set up search functionality using the proper presence-based method!
+        // This is much better than the old sendUpdate approach which used broadcasts
         const searchElement = document.getElementById("searchBox");
+        
+        // Handy debounce function to avoid spamming the server
         function debounce(func, delay) {
             let timeout;
             return function (...args) {
@@ -51,10 +55,20 @@
                 }, delay);
             };
         }
+        
+        // Set up the search input handler - this is the magic! ✨
         searchElement.onkeyup = debounce(() => {
-            // console.log('doSearch', searchElement.value)
-            sendUpdate('search', searchElement.value)
-        }, 100)
+            // Use the proper updateSearchQuery method which updates presence state
+            // instead of the old broken sendUpdate('search', value) approach
+            if (window.controller && window.controller.updateSearchQuery) {
+                window.controller.updateSearchQuery(searchElement.value);
+                console.log('[Search] Updated search query via presence:', searchElement.value);
+            } else {
+                console.warn('[Search] Controller not ready yet, search will work once connected');
+            }
+        }, 100); // 100ms debounce for responsive feeling
+        
+        console.log('[Search] Search functionality initialized with presence-based updates!');
     </script>
   </body>
 </html> 
