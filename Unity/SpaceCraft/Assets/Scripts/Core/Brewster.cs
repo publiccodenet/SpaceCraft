@@ -207,7 +207,7 @@ public class Brewster : MonoBehaviour
                 JObject itemJson = itemDir["item"] as JObject;
                 if (itemJson == null)
                 {
-                    Debug.LogError($"Brewster: Item '{itemId}' has no nested 'item' json object");
+                    Debug.LogError($"Brewster: Item '{itemId}' has no nested 'item' json object. Available keys: {string.Join(", ", itemDir.Properties().Select(p => p.Name))}");
                     continue;
                 }
 
@@ -215,17 +215,35 @@ public class Brewster : MonoBehaviour
 
                 Item item = ScriptableObject.CreateInstance<Item>();
                 
-                item.ImportFromJToken(itemJson);
-
-                // If no ID from JSON, use the key as ID
-                if (string.IsNullOrEmpty(item.Id))
+                try 
                 {
-                    //Debug.Log($"Brewster: Setting explicit ID for item '{itemId}' as it was not found in metadata");
-                    item.Id = itemId;
-                }
+                    item.ImportFromJToken(itemJson);
+                    
+                    // Validate critical fields and log what's missing
+                    List<string> missingFields = new List<string>();
+                    if (string.IsNullOrEmpty(item.Id)) missingFields.Add("id");
+                    if (string.IsNullOrEmpty(item.Title)) missingFields.Add("title");
+                    
+                    if (missingFields.Count > 0)
+                    {
+                        Debug.LogWarning($"Brewster: Item '{itemId}' has missing/empty fields: {string.Join(", ", missingFields)}. Available JSON keys: {string.Join(", ", itemJson.Properties().Select(p => p.Name))}");
+                    }
+                    
+                    // If no ID from JSON, use the key as ID
+                    if (string.IsNullOrEmpty(item.Id))
+                    {
+                        Debug.Log($"Brewster: Setting explicit ID for item '{itemId}' as it was not found in metadata");
+                        item.Id = itemId;
+                    }
 
-                _items[itemId] = item;
-                //Debug.Log($"Brewster: Successfully added item '{itemId}' with ID '{item.Id}' title {item.Title}"); // description {item.Description} subject {item.Subject} creator {item.Creator} collection {item.Collection} mediatype {item.Mediatype} coverImage {item.CoverImage} coverWidth {item.CoverWidth} coverHeight {item.CoverHeight}");
+                    _items[itemId] = item;
+                    Debug.Log($"Brewster: Successfully added item '{itemId}' with ID '{item.Id}' title '{item.Title ?? "NULL"}'");
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Brewster: Failed to import item '{itemId}': {ex.Message}. ItemJson structure: {itemJson}");
+                    continue;
+                }
                 
             }
     

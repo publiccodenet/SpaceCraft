@@ -1,13 +1,23 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UI;
 using TMPro;
 using Newtonsoft.Json.Linq;
 
+
+
 /// <summary>
 /// Handles camera panning, zooming, physics-based movement, and item selection.
 /// Relies on an assigned CameraController to access the camera and its rig.
+/// 
+/// COLLIDER ARCHITECTURE:
+/// - Mouse Hit Detection: Uses TRIGGER colliders on itemLayer (no physics interaction)
+/// - Physics Rolling: Uses NON-TRIGGER colliders on other layers (no mouse interaction)  
+/// - Separation: Allows independent mouse detection and physics behavior
+/// - Data-Driven: All collider setup done in Unity Editor, code only handles behavior
 /// </summary>
 public class InputManager : MonoBehaviour
 {
@@ -26,19 +36,25 @@ public class InputManager : MonoBehaviour
     [Header("Zoom Settings")]
     public float minZoom = 0.1f; // Min Orthographic Size
     public float maxZoom = 100f; // Max Orthographic Size
-    public float scrollWheelZoomFactor = 2f; // Multiplicative factor per scroll unit
+    public float scrollWheelZoomFactor = 5f; // Multiplicative factor per scroll unit - INCREASED for more powerful scrolling
     public float keyboardZoomFactor = 5f; // Multiplicative factor per second
     public float navigatorZoomFactor = 1f; // Was 0.5f 
 
     [Header("Physics Settings")]
-    public float baseVelocityThreshold = 0.2f;
-    public float velocitySmoothingFactor = 0.1f; 
+    [Tooltip("Velocity threshold below which camera stops on drag release - HIGHER = easier to stop")]
+    public float baseVelocityThreshold = 2.0f; // INCREASED from 0.2f - much easier to stop!
+    [Tooltip("Velocity smoothing - LOWER = more responsive to sudden stops")]
+    public float velocitySmoothingFactor = 0.05f; // REDUCED from 0.1f - more responsive
+    [Tooltip("Additional velocity damping on release - helps eliminate tiny drifts")]
+    public float releaseVelocityDamping = 0.3f; // NEW - strong damping on release
     public float frictionFactor = 0.999f;
     public float bounceFactor = 0.9f; 
     public float navigatorVelocityFactor = 1f; // Multiplier for PushCameraVelocity
 
     [Header("UI References")]
     public ItemInfoPanel itemInfoPanel;
+    
+    [Tooltip("Layer mask for mouse hit detection - use TRIGGER colliders on this layer for clicks, physics colliders on other layers")]
     public LayerMask itemLayer;
 
     [Header("UI Settings")]
@@ -48,6 +64,122 @@ public class InputManager : MonoBehaviour
     public float maxSelectionDistance = 100f;
     public float selectMaxClickDistance = 0.1f; 
     public float selectMaxClickTime = 0.3f; 
+    
+    [Header("Search Settings")]
+    public string searchString = ""; // Current search query for filtering
+    
+    [Header("Search Scaling - Bridge Controllable")]
+    [Tooltip("Curve type name (bridge-compatible string)")]
+    public string curveTypeName = "Sigmoid";
+    
+    [Tooltip("Minimum scale for books (valley/pebble size)")]
+    [Range(0.01f, 1f)]
+    public float minBookScale = 0.2f; // DOUBLED from 0.1f - bigger small books!
+    
+    [Tooltip("Maximum scale for books (mountain size)")]
+    [Range(1f, 10f)]  
+    public float maxBookScale = 3.0f;
+    
+    [Tooltip("Base scale when no search is active")]
+    [Range(0.1f, 2f)]
+    public float neutralBookScale = 1.0f;
+    
+    [Tooltip("Scaling animation speed (how fast books change size)")]
+    [Range(0.1f, 10f)]
+    public float scaleAnimationSpeed = 3.0f;
+    
+    [Header("Curve Parameters - Bridge Controllable")]
+    [Tooltip("Intensity/steepness parameter")]
+    [Range(0.1f, 20f)]
+    public float curveIntensity = 5f;
+    
+    [Tooltip("Power/exponential parameter")]
+    [Range(0.1f, 10f)]
+    public float curvePower = 2f;
+    
+    [Tooltip("Alpha/shape parameter")]
+    [Range(0.1f, 5f)]
+    public float curveAlpha = 1.16f;
+    
+    [Tooltip("Curve that maps relevance score (0-1) to scale multiplier. X=score, Y=scale")]
+    public AnimationCurve scoreToScaleCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+    
+    [Header("Physics Forces - Bridge Controllable")]
+    [Tooltip("Force strength pulling books toward center")]
+    [Range(0f, 100f)]
+    public float centerForceStrength = 35f; // Reduced from 50f for gentler gathering
+    
+    [Tooltip("Distance where center force starts applying")]
+    [Range(10f, 200f)]
+    public float centerForceRadius = 40f; // Reduced from 80f to have force apply sooner
+    
+    [Tooltip("Center point for gravitational force")]
+    public Vector3 centerPoint = Vector3.zero;
+    
+    [Tooltip("Manual offset to center point (X, Y, Z adjustment)")]
+    public Vector3 manualCenterOffset = new Vector3(0, -10, 0); // Default gravity pulls down!
+    
+    [Tooltip("Tilt-based offset to center point (from controller input)")]
+    public Vector3 centerOffset = Vector3.zero;
+    
+    [Tooltip("How strongly tilt affects center position")]
+    [Range(0f, 50f)]
+    public float tiltSensitivity = 20f;
+    
+    [Tooltip("Apply center force to books")]
+    public bool enableCenterForce = true;
+    
+    [Tooltip("Scale-based force multiplier - smaller books get less force")]
+    public bool enableScaleBasedForce = true;
+    
+    [Tooltip("Minimum force multiplier for smallest books (0-1)")]
+    [Range(0f, 1f)]
+    public float minForceMultiplier = 0.3f; // Small books get 30% of force
+    
+    [Tooltip("Maximum force multiplier for largest books (0-2)")]  
+    [Range(0f, 2f)]
+    public float maxForceMultiplier = 1.5f; // Big books get 150% of force
+    
+    [Tooltip("Only apply physics to items in the current collection")]
+    public bool limitToCurrentCollection = false;
+    
+    [Header("Physics Material Properties - Bridge Controllable")]
+    [Tooltip("Physics material friction")]
+    [Range(0f, 2f)]
+    public float physicsFriction = 0.01f; // ULTRA LOW - ice skating level friction!
+    
+    [Tooltip("Physics material bounciness")]
+    [Range(0f, 1f)]
+    public float physicsBounciness = 0.2f;
+    
+    [Tooltip("Global gravity strength multiplier")]
+    [Range(0.1f, 3f)]
+    public float gravityMultiplier = 1.2f;
+    
+    [Header("Rigidbody Physics Parameters - Bridge Controllable")]
+    [Tooltip("Linear resistance - higher values slow movement")]
+    [Range(0f, 10f)]
+    public float rigidbodyDrag = 0.5f; // Reduced from 2f for more responsive movement
+    
+    [Tooltip("Rotational resistance - higher values reduce spinning")]
+    [Range(0f, 20f)]
+    public float rigidbodyAngularDrag = 0.1f;
+    
+    [Tooltip("Velocity threshold below which rigidbodies go to sleep")]
+    [Range(0.01f, 1f)]
+    public float rigidbodySleepThreshold = 0.05f;
+    
+    [Tooltip("Lock rotation to maintain billboard effect (always face camera)")]
+    public bool rigidbodyFreezeRotation = true; // LOCKED - no spinning books!
+    
+    [Tooltip("Enable Weeble Wobble physics - books can tilt but not spin")]
+    public bool enableWeebleWobble = true; // Toggle between full lock vs wobble mode
+    
+    [Tooltip("Underground center of mass offset for self-righting (Y should be negative)")]
+    public Vector3 weebleCenterOfMass = new Vector3(0, 0, 0); // Underground for stability
+    
+    [Tooltip("Use continuous collision detection for fast-moving objects")]
+    public bool rigidbodyUseContinuousDetection = true;
     
     // State variables
     private bool isDragging = false;
@@ -62,6 +194,7 @@ public class InputManager : MonoBehaviour
     private ItemView hoveredItem;
     private SpaceCraft spaceCraft;
     private Camera _mainCamera; // Cache the controlled camera
+    private string searchStringLast = null; // Track last processed search to detect changes
 
     private void Start()
     {
@@ -80,12 +213,17 @@ public class InputManager : MonoBehaviour
             enabled = false;
             return;
         }
+        
+        // Initialize physics settings on all existing ItemViews
+        UpdatePhysicsMaterials();
+        UpdateRigidbodySettings();
     }
 
     private void Update()
     {
         HandleInput();
         UpdateHoveredItem();
+        CheckForSearchStringChanges();
     }
 
     private void HandleInput()
@@ -120,8 +258,30 @@ public class InputManager : MonoBehaviour
                 }
                 else if (filteredVelocity.magnitude > GetScaledVelocityThreshold())
                 {
-                    cameraVelocity = filteredVelocity;
-                    physicsEnabled = true;
+                    // Apply release damping to reduce tiny unwanted drifts
+                    Vector3 dampedVelocity = filteredVelocity * releaseVelocityDamping;
+                    
+                    // Double-check threshold after damping - prevents micro-drifts
+                    if (dampedVelocity.magnitude > GetScaledVelocityThreshold() * 0.5f) // Lower threshold for damped velocity
+                    {
+                        cameraVelocity = dampedVelocity;
+                        physicsEnabled = true;
+                        Debug.Log($"[Drag Release] Physics enabled: original={filteredVelocity.magnitude:F3}, damped={dampedVelocity.magnitude:F3}, threshold={GetScaledVelocityThreshold():F3}");
+                    }
+                    else
+                    {
+                        // Velocity too small even after damping - force stop
+                        cameraVelocity = Vector3.zero;
+                        physicsEnabled = false;
+                        Debug.Log($"[Drag Release] Forced stop: damped velocity {dampedVelocity.magnitude:F3} below threshold {GetScaledVelocityThreshold() * 0.5f:F3}");
+                    }
+                }
+                else
+                {
+                    // Below threshold - clean stop
+                    cameraVelocity = Vector3.zero;
+                    physicsEnabled = false;
+                    Debug.Log($"[Drag Release] Clean stop: velocity {filteredVelocity.magnitude:F3} below threshold {GetScaledVelocityThreshold():F3}");
                 }
             }
             itemAtDragStart = null;
@@ -142,6 +302,12 @@ public class InputManager : MonoBehaviour
         if (physicsEnabled)
         {
             ApplyPhysics();
+        }
+        
+        // Apply center force to books
+        if (enableCenterForce)
+        {
+            ApplyCenterForce();
         }
     }
 
@@ -336,6 +502,148 @@ public class InputManager : MonoBehaviour
         //Debug.Log($"PushCameraVelocity from {controllerId}: Delta=({panXDelta}, {panYDelta}) -> WorldVelDelta=({worldVelocityDelta.x}, {worldVelocityDelta.z}), NewTotalVelocity=({cameraVelocity.x}, {cameraVelocity.z})");
     }
 
+    // --- Bridge Methods for Real-Time Physics Control ---
+
+    /// <summary>
+    /// Update curve type from controller
+    /// Expects parameters: controllerId (string), controllerName (string), curveType (string)
+    /// </summary>
+    public void SetCurveType(string controllerId, string controllerName, string curveType)
+    {
+        curveTypeName = curveType;
+        Debug.Log($"Physics: Curve type changed to '{curveType}' by {controllerId} ('{controllerName}')");
+        
+        // Immediately reapply current search to show effect
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            ApplySearchBasedScaling(searchString);
+        }
+    }
+
+    /// <summary>
+    /// Update curve parameters from controller
+    /// Expects parameters: controllerId (string), controllerName (string), parameterName (string), value (float)
+    /// </summary>
+    public void SetCurveParameter(string controllerId, string controllerName, string parameterName, float value)
+    {
+        switch (parameterName.ToLower())
+        {
+            case "intensity":
+                curveIntensity = Mathf.Clamp(value, 0.1f, 20f);
+                break;
+            case "power":
+                curvePower = Mathf.Clamp(value, 0.1f, 10f);
+                break;
+            case "alpha":
+                curveAlpha = Mathf.Clamp(value, 0.1f, 5f);
+                break;
+            case "minscale":
+                minBookScale = Mathf.Clamp(value, 0.01f, 1f);
+                break;
+            case "maxscale":
+                maxBookScale = Mathf.Clamp(value, 1f, 10f);
+                break;
+            case "animationspeed":
+                scaleAnimationSpeed = Mathf.Clamp(value, 0.1f, 10f);
+                break;
+            default:
+                Debug.LogWarning($"Unknown curve parameter: {parameterName}");
+                return;
+        }
+        
+        Debug.Log($"Physics: {parameterName} = {value} by {controllerId} ('{controllerName}')");
+        
+        // Immediately reapply current search to show effect
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            ApplySearchBasedScaling(searchString);
+        }
+    }
+
+    /// <summary>
+    /// Update physics parameters from controller
+    /// Expects parameters: controllerId (string), controllerName (string), parameterName (string), value (float or bool)
+    /// </summary>
+    public void SetPhysicsParameter(string controllerId, string controllerName, string parameterName, float value)
+    {
+        switch (parameterName.ToLower())
+        {
+            case "centerforce":
+                centerForceStrength = Mathf.Clamp(value, 0f, 100f);
+                break;
+            case "centerradius":
+                centerForceRadius = Mathf.Clamp(value, 10f, 200f);
+                break;
+            case "tiltsensitivity":
+                tiltSensitivity = Mathf.Clamp(value, 0f, 50f);
+                break;
+            case "friction":
+                physicsFriction = Mathf.Clamp(value, 0f, 2f);
+                UpdatePhysicsMaterials();
+                break;
+            case "bounciness":
+                physicsBounciness = Mathf.Clamp(value, 0f, 1f);
+                UpdatePhysicsMaterials();
+                break;
+            case "gravity":
+                gravityMultiplier = Mathf.Clamp(value, 0.1f, 3f);
+                Physics.gravity = new Vector3(0, -9.81f * gravityMultiplier, 0);
+                break;
+            case "drag":
+                rigidbodyDrag = Mathf.Clamp(value, 0f, 10f);
+                UpdateRigidbodySettings();
+                break;
+            case "angulardrag":
+                rigidbodyAngularDrag = Mathf.Clamp(value, 0f, 20f);
+                UpdateRigidbodySettings();
+                break;
+            case "sleepthreshold":
+                rigidbodySleepThreshold = Mathf.Clamp(value, 0.01f, 1f);
+                UpdateRigidbodySettings();
+                break;
+            case "freezerotation":
+                rigidbodyFreezeRotation = value > 0.5f; // Treat as boolean (>0.5 = true)
+                UpdateRigidbodySettings();
+                break;
+            case "continuousdetection":
+                rigidbodyUseContinuousDetection = value > 0.5f; // Treat as boolean (>0.5 = true)
+                UpdateRigidbodySettings();
+                break;
+            default:
+                Debug.LogWarning($"Unknown physics parameter: {parameterName}");
+                return;
+        }
+        
+        Debug.Log($"Physics: {parameterName} = {value} by {controllerId} ('{controllerName}')");
+    }
+
+    /// <summary>
+    /// Receive tilt input from controller to offset center gravity point
+    /// Coordinate system: Camera looks down at books from above
+    /// - Phone face up toward ceiling = neutral (0, 0)
+    /// - Phone tilt left/right = World X offset (left = negative, right = positive)  
+    /// - Phone tilt forward/back = World Z offset (forward = positive, back = negative)
+    /// Expects parameters: controllerId (string), controllerName (string), normalizedTiltX (float -1 to +1), normalizedTiltZ (float -1 to +1)
+    /// </summary>
+    public void PushTiltInput(string controllerId, string controllerName, float normalizedTiltX, float normalizedTiltZ)
+    {
+        // Clamp inputs to safe range
+        normalizedTiltX = Mathf.Clamp(normalizedTiltX, -1f, 1f);
+        normalizedTiltZ = Mathf.Clamp(normalizedTiltZ, -1f, 1f);
+        
+        // Convert normalized tilt (-1 to +1) to world offset using sensitivity
+        centerOffset.x = normalizedTiltX * tiltSensitivity;
+        centerOffset.z = normalizedTiltZ * tiltSensitivity;
+        
+        // Log tilt input (only if actually tilting to reduce spam)
+        if (Mathf.Abs(normalizedTiltX) > 0.01f || Mathf.Abs(normalizedTiltZ) > 0.01f)
+        {
+            Debug.Log($"Physics: Tilt input ({normalizedTiltX:F2}, {normalizedTiltZ:F2}) -> Center offset ({centerOffset.x:F1}, {centerOffset.z:F1}) by {controllerId}");
+        }
+    }
+
+
+
     // --- Core Logic Helpers ---
 
     /// <summary>
@@ -461,8 +769,9 @@ public class InputManager : MonoBehaviour
     
     private float GetScaledVelocityThreshold()
     {
-        // Scale threshold based on zoom - higher zoom means smaller threshold for physics to feel right
-        return baseVelocityThreshold * (_mainCamera.orthographicSize / 10f); // Adjust '10f' as a reference zoom level 
+        // Scale threshold based on zoom - but limit the scaling to prevent tiny thresholds
+        float zoomScale = Mathf.Clamp(_mainCamera.orthographicSize / 10f, 0.5f, 2.0f); // Limit zoom effect
+        return baseVelocityThreshold * zoomScale;
     }
 
     private void UpdateHoveredItem()
@@ -473,6 +782,8 @@ public class InputManager : MonoBehaviour
         ItemView newlyHovered = null;
         
         // Use SphereCast for slightly more forgiving hover detection
+        // NOTE: itemLayer should contain TRIGGER colliders for mouse detection only
+        // Physics colliders should be on different layers to avoid interference
         if (Physics.SphereCast(ray, 0.05f, out RaycastHit hit, maxSelectionDistance, itemLayer))
         {
             newlyHovered = hit.collider.GetComponentInParent<ItemView>();
@@ -511,5 +822,888 @@ public class InputManager : MonoBehaviour
         ItemView[] allItemViewsArray = FindObjectsByType<ItemView>(FindObjectsSortMode.None);
         // Convert the array to a list and return it
         return new List<ItemView>(allItemViewsArray);
+    }
+
+    /// <summary>
+    /// Check if the search string has changed and process the update
+    /// </summary>
+    private void CheckForSearchStringChanges()
+    {
+        // Normalize the current search string
+        string normalizedSearch = (searchString ?? "").Trim();
+        
+        // Check if the search string has changed
+        if (normalizedSearch != searchStringLast)
+        {
+            searchStringLast = normalizedSearch;
+            searchStringChanged(normalizedSearch);
+        }
+    }
+
+    /// <summary>
+    /// Called whenever the search string changes, logs the new value and applies scaling
+    /// </summary>
+    private void searchStringChanged(string newSearchString)
+    {
+        // Log the search update
+        Debug.Log($"Search: String changed to: '{newSearchString}'");
+        
+        // Process the search change
+        if (string.IsNullOrEmpty(newSearchString))
+        {
+            Debug.Log("Search: Cleared search filter - all books should return to normal size");
+        }
+        else
+        {
+            Debug.Log($"Search: Filtering for '{newSearchString}' - matching books should grow, non-matching should shrink");
+        }
+        
+        // Apply search-based scaling to all books for physics-based semantic landscape!
+        ApplySearchBasedScaling(newSearchString);
+    }
+
+    /// <summary>
+    /// Apply search-based scaling to create physics-based semantic landscape!
+    /// Uses Levenshtein distance for fuzzy matching and flexible curve mapping for scaling.
+    /// </summary>
+    /// <param name="searchQuery">The search query to score against</param>
+    private void ApplySearchBasedScaling(string searchQuery)
+    {
+        List<ItemView> allItemViews = GetAllItemViews();
+        if (allItemViews.Count == 0) return;
+        
+        // Filter to current collection if enabled
+        if (limitToCurrentCollection && spaceCraft != null)
+        {
+            allItemViews = FilterToCurrentCollection(allItemViews);
+        }
+        
+        // If no search query, reset all scales to neutral
+        if (string.IsNullOrEmpty(searchQuery))
+        {
+            foreach (var itemView in allItemViews)
+            {
+                if (itemView != null)
+                {
+                    itemView.ViewScale = neutralBookScale;
+                }
+            }
+            return;
+        }
+        
+        // Tokenize search query for better matching
+        string[] searchTokens = TokenizeAndNormalize(searchQuery);
+        
+        // Calculate relevance scores for all items
+        List<(ItemView view, float score)> itemScores = new List<(ItemView, float)>();
+        float minScore = float.MaxValue;
+        float maxScore = float.MinValue;
+        
+        foreach (var itemView in allItemViews)
+        {
+            if (itemView?.Model == null) continue;
+            
+            float score = CalculateRelevanceScore(itemView.Model, searchTokens);
+            itemScores.Add((itemView, score));
+            
+            minScore = Mathf.Min(minScore, score);
+            maxScore = Mathf.Max(maxScore, score);
+        }
+        
+        // Normalize scores and apply curve-based scaling
+        float scoreRange = maxScore - minScore;
+        if (scoreRange < 0.001f) scoreRange = 1.0f; // Prevent division by zero
+        
+        foreach (var (itemView, score) in itemScores)
+        {
+            // Normalize score to 0-1 range for curve evaluation
+            float normalizedScore = (score - minScore) / scoreRange;
+            
+            // Apply the selected scaling method
+            float curveScale = ApplyScalingMethod(normalizedScore);
+            
+            // Clamp to min/max bounds
+            float finalScale = Mathf.Clamp(curveScale, minBookScale, maxBookScale);
+            
+            itemView.ViewScale = finalScale;
+        }
+        
+        Debug.Log($"[Search Landscape] Applied curve-based scaling to {itemScores.Count} books. Score range: {minScore:F3} - {maxScore:F3}");
+    }
+    
+    /// <summary>
+    /// Calculate relevance score for an item based on search tokens
+    /// Uses fuzzy string matching with Levenshtein distance for near matches
+    /// </summary>
+    private float CalculateRelevanceScore(Item item, string[] searchTokens)
+    {
+        if (searchTokens.Length == 0) return 0f;
+        
+        float totalScore = 0f;
+        int matchCount = 0;
+        
+        // Get all searchable text from the item
+        List<string> itemTokens = new List<string>();
+        itemTokens.AddRange(TokenizeAndNormalize(item.Title ?? ""));
+        itemTokens.AddRange(TokenizeAndNormalize(item.Description ?? ""));
+        itemTokens.AddRange(TokenizeAndNormalize(item.Creator ?? ""));
+        
+        // Add subject keywords if available
+        if (item.Subject != null)
+        {
+            foreach (string subject in item.Subject)
+            {
+                itemTokens.AddRange(TokenizeAndNormalize(subject));
+            }
+        }
+        
+        // Score each search token against all item tokens
+        foreach (string searchToken in searchTokens)
+        {
+            float bestMatchScore = 0f;
+            
+            foreach (string itemToken in itemTokens)
+            {
+                float matchScore;
+                
+                if (itemToken.Contains(searchToken))
+                {
+                    // Exact substring match - high score
+                    matchScore = 1.0f;
+                }
+                else if (searchToken.Contains(itemToken))
+                {
+                    // Item token is substring of search - good score
+                    matchScore = 0.8f;
+                }
+                else
+                {
+                    // Use Levenshtein distance for fuzzy matching
+                    int editDistance = CalculateLevenshteinDistance(searchToken, itemToken);
+                    int maxLength = Mathf.Max(searchToken.Length, itemToken.Length);
+                    
+                    if (maxLength == 0) continue;
+                    
+                    // Convert edit distance to similarity score (0-1)
+                    float similarity = 1.0f - (float)editDistance / maxLength;
+                    
+                    // Only consider matches above threshold to avoid noise
+                    matchScore = similarity > 0.6f ? similarity * 0.7f : 0f;
+                }
+                
+                bestMatchScore = Mathf.Max(bestMatchScore, matchScore);
+            }
+            
+            if (bestMatchScore > 0f)
+            {
+                totalScore += bestMatchScore;
+                matchCount++;
+            }
+        }
+        
+        // Average score across all search tokens, with bonus for matching multiple terms
+        if (matchCount == 0) return 0f;
+        
+        float averageScore = totalScore / searchTokens.Length;
+        float completenessBonus = (float)matchCount / searchTokens.Length;
+        
+        return averageScore * (0.7f + 0.3f * completenessBonus);
+    }
+    
+    /// <summary>
+    /// Tokenize and normalize text for search matching
+    /// </summary>
+    private string[] TokenizeAndNormalize(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return new string[0];
+        
+        // Convert to lowercase, split on whitespace and punctuation, filter empty
+        return text.ToLowerInvariant()
+                  .Split(new char[] { ' ', '\t', '\n', '\r', '.', ',', ';', ':', '!', '?', '-', '_', '(', ')', '[', ']', '{', '}' }, 
+                         StringSplitOptions.RemoveEmptyEntries)
+                  .Where(token => token.Length > 1) // Filter out single characters
+                  .ToArray();
+    }
+    
+    /// <summary>
+    /// Calculate Levenshtein distance between two strings for fuzzy matching
+    /// The "Lichtenwhatshisname" algorithm the user mentioned! 
+    /// </summary>
+    private int CalculateLevenshteinDistance(string source, string target)
+    {
+        if (string.IsNullOrEmpty(source)) return target?.Length ?? 0;
+        if (string.IsNullOrEmpty(target)) return source.Length;
+        
+        int sourceLength = source.Length;
+        int targetLength = target.Length;
+        
+        // Create matrix
+        int[,] matrix = new int[sourceLength + 1, targetLength + 1];
+        
+        // Initialize first row and column
+        for (int i = 0; i <= sourceLength; i++) matrix[i, 0] = i;
+        for (int j = 0; j <= targetLength; j++) matrix[0, j] = j;
+        
+        // Fill matrix
+        for (int i = 1; i <= sourceLength; i++)
+        {
+            for (int j = 1; j <= targetLength; j++)
+            {
+                int cost = source[i - 1] == target[j - 1] ? 0 : 1;
+                
+                matrix[i, j] = Mathf.Min(
+                    Mathf.Min(
+                        matrix[i - 1, j] + 1,     // Deletion
+                        matrix[i, j - 1] + 1),   // Insertion
+                    matrix[i - 1, j - 1] + cost  // Substitution
+                );
+            }
+        }
+        
+        return matrix[sourceLength, targetLength];
+    }
+    
+    /// <summary>
+    /// Test method to demonstrate search-based scaling with sample queries
+    /// Call this from inspector or via code to test the semantic landscape system
+    /// </summary>
+    [ContextMenu("Test Search Scaling")]
+    public void TestSearchScaling()
+    {
+        Debug.Log("[Test] Testing search-based scaling system...");
+        
+        // Simulate a search for "science fiction" 
+        ApplySearchBasedScaling("science fiction");
+        
+        // You can test other searches by calling this method with different terms:
+        // ApplySearchBasedScaling("adventure");
+        // ApplySearchBasedScaling("mystery"); 
+        // ApplySearchBasedScaling("romance");
+        // ApplySearchBasedScaling(""); // Reset to normal
+    }
+    
+    /// <summary>
+    /// Create a random search landscape for testing physics interactions
+    /// </summary>
+    [ContextMenu("Test Random Landscape")]  
+    public void TestRandomLandscape()
+    {
+        List<ItemView> allItemViews = GetAllItemViews();
+        Debug.Log($"[Test] Creating random landscape with {allItemViews.Count} books...");
+        
+        foreach (var itemView in allItemViews)
+        {
+            if (itemView != null)
+            {
+                // Create random scale distribution for testing physics
+                float randomScale = UnityEngine.Random.Range(0.2f, 2.5f);
+                itemView.ViewScale = randomScale;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Test center force by scattering books randomly and watching them get pulled back
+    /// </summary>
+    [ContextMenu("Test Center Force")]
+    public void TestCenterForce()
+    {
+        List<ItemView> allItemViews = GetAllItemViews();
+        Debug.Log($"[Test] Scattering {allItemViews.Count} books to test center force...");
+        
+        foreach (var itemView in allItemViews)
+        {
+            if (itemView?.GetComponent<Rigidbody>() != null)
+            {
+                // Scatter books randomly with some velocity
+                Vector3 randomPosition = centerPoint + UnityEngine.Random.insideUnitSphere * (centerForceRadius * 2f);
+                randomPosition.y = Mathf.Max(1f, randomPosition.y); // Keep above ground
+                
+                itemView.transform.position = randomPosition;
+                
+                Rigidbody rb = itemView.GetComponent<Rigidbody>();
+                rb.linearVelocity = UnityEngine.Random.insideUnitSphere * 5f; // Random initial velocity
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Filter ItemViews to only include those in the current collection
+    /// </summary>
+    /// <param name="allItemViews">All ItemViews in the scene</param>
+    /// <returns>Filtered list of ItemViews in current collection</returns>
+    private List<ItemView> FilterToCurrentCollection(List<ItemView> allItemViews)
+    {
+        if (spaceCraft == null) return allItemViews;
+        
+        // Get current collection ID from SpaceCraft (you'll need to expose this)
+        // For now, return all items - this can be enhanced later
+        // TODO: Get current collection from SpaceCraft and filter by collection membership
+        
+        return allItemViews; // Placeholder - return all for now
+    }
+    
+    /// <summary>
+    /// Calculate the actual center point of the collection based on book positions
+    /// Uses bounding box calculation to find the true geometric center in WORLD coordinates
+    /// </summary>
+    /// <param name="itemViews">List of ItemViews to calculate center for</param>
+    /// <returns>The geometric center point of all books in world space</returns>
+    private Vector3 CalculateCollectionCenter(List<ItemView> itemViews)
+    {
+        if (itemViews == null || itemViews.Count == 0) 
+        {
+            Debug.LogWarning("[CenterForce] No items to calculate center for - using Vector3.zero");
+            return Vector3.zero;
+        }
+        
+        // Calculate bounding box using WORLD positions (not local!)
+        Vector3 minBounds = Vector3.positiveInfinity;
+        Vector3 maxBounds = Vector3.negativeInfinity;
+        Vector3 sumPositions = Vector3.zero;
+        int validPositions = 0;
+        
+        foreach (var itemView in itemViews)
+        {
+            if (itemView != null && itemView.transform != null)
+            {
+                // Use world position for correct coordinate space
+                Vector3 worldPosition = itemView.transform.position;
+                
+                // Expand bounding box
+                minBounds = Vector3.Min(minBounds, worldPosition);
+                maxBounds = Vector3.Max(maxBounds, worldPosition);
+                sumPositions += worldPosition;
+                validPositions++;
+            }
+        }
+        
+        if (validPositions == 0)
+        {
+            Debug.LogWarning("[CenterForce] No valid item positions found - using Vector3.zero");
+            return Vector3.zero;
+        }
+        
+        // Use CENTER OF MASS (average position) instead of bounding box center
+        // This is more accurate for irregular distributions
+        Vector3 centerOfMass = sumPositions / validPositions;
+        
+        // Optional: Use bounding box center instead (geometric center)
+        Vector3 boundingBoxCenter = (minBounds + maxBounds) * 0.5f;
+        
+        // Choose center of mass for more natural physics behavior
+        Vector3 calculatedCenter = centerOfMass;
+        
+        // Debug info (only log occasionally to avoid spam)
+        if (Time.frameCount % 300 == 0) // Every 5 seconds at 60fps
+        {
+            Vector3 boundingSize = maxBounds - minBounds;
+            Debug.Log($"[CenterForce] Center of mass from {validPositions} books: {calculatedCenter:F1}");
+            Debug.Log($"[CenterForce] Bounding box: {minBounds:F1} to {maxBounds:F1} (size: {boundingSize:F1})");
+            Debug.Log($"[CenterForce] Center of mass vs bbox center: {centerOfMass:F1} vs {boundingBoxCenter:F1}");
+        }
+        
+        return calculatedCenter;
+    }
+    
+    /// <summary>
+    /// Apply center force to draw books toward the center point
+    /// Creates a gentle gravitational effect to keep books from drifting too far
+    /// </summary>
+    private void ApplyCenterForce()
+    {
+        List<ItemView> allItemViews = GetAllItemViews();
+        
+        // Filter to current collection if enabled
+        if (limitToCurrentCollection && spaceCraft != null)
+        {
+            allItemViews = FilterToCurrentCollection(allItemViews);
+        }
+        
+        // Calculate dynamic center point from actual book positions (NOT hardcoded Vector3.zero!)
+        Vector3 dynamicCenterPoint = CalculateCollectionCenter(allItemViews);
+        
+        int forcesApplied = 0;
+        int kinematicBodies = 0;
+        
+        foreach (var itemView in allItemViews)
+        {
+            if (itemView?.GetComponent<Rigidbody>() == null) continue;
+            
+            Rigidbody rb = itemView.GetComponent<Rigidbody>();
+            
+            // Skip kinematic bodies (they won't respond to forces)
+            if (rb.isKinematic) 
+            {
+                kinematicBodies++;
+                continue;
+            }
+            
+            Vector3 itemPosition = itemView.transform.position;
+            
+            // Calculate distance from DYNAMIC center (including manual offset + tilt offset)
+            Vector3 effectiveCenterPoint = dynamicCenterPoint + manualCenterOffset + centerOffset;
+            Vector3 toCenter = effectiveCenterPoint - itemPosition;
+            float distanceToCenter = toCenter.magnitude;
+            
+            // Calculate scale-based force multiplier
+            float scaleBasedMultiplier = 1.0f;
+            if (enableScaleBasedForce && itemView != null)
+            {
+                // Get current scale of the book
+                float currentScale = itemView.CurrentScale;
+                
+                // Normalize scale to 0-1 range based on min/max book scales
+                float normalizedScale = Mathf.InverseLerp(minBookScale, maxBookScale, currentScale);
+                
+                // Apply linear interpolation for force multiplier
+                scaleBasedMultiplier = Mathf.Lerp(minForceMultiplier, maxForceMultiplier, normalizedScale);
+            }
+            
+            // Apply force with different logic based on distance
+            Vector3 centerForce = Vector3.zero;
+            
+            if (distanceToCenter > centerForceRadius)
+            {
+                // Outside radius: Strong attractive force with linear falloff (not quadratic!)
+                float forceMultiplier = centerForceStrength * (distanceToCenter - centerForceRadius) / distanceToCenter;
+                forceMultiplier *= scaleBasedMultiplier; // Apply scale-based adjustment!
+                centerForce = toCenter.normalized * forceMultiplier;
+            }
+            else if (distanceToCenter > 1f) // Avoid division by zero for very close objects
+            {
+                // Inside radius: Gentle centering force (10% of max force)
+                float gentleForceMultiplier = centerForceStrength * 0.1f;
+                gentleForceMultiplier *= scaleBasedMultiplier; // Apply scale-based adjustment!
+                centerForce = toCenter.normalized * gentleForceMultiplier;
+            }
+            
+            if (centerForce.magnitude > 0.01f) // Only apply meaningful forces
+            {
+                rb.AddForce(centerForce, ForceMode.Force);
+                forcesApplied++;
+                
+                // Debug logging for first few objects to help diagnose
+                if (forcesApplied <= 3)
+                {
+                    Debug.Log($"[CenterForce] Applied force {centerForce.magnitude:F2} to {itemView.name} at distance {distanceToCenter:F1}");
+                }
+            }
+        }
+        
+        // Periodic debug info (every 60 frames = ~1 second at 60fps)
+        if (Time.frameCount % 60 == 0 && (forcesApplied > 0 || kinematicBodies > 0))
+        {
+            Debug.Log($"[CenterForce] Frame {Time.frameCount}: Applied forces to {forcesApplied} objects, {kinematicBodies} kinematic bodies skipped");
+        }
+    }
+    
+    /// <summary>
+    /// Apply the selected scaling method to map normalized score (0-1) to scale value
+    /// Uses string-based curve type selection for Bridge compatibility
+    /// </summary>
+    /// <param name="normalizedScore">Score normalized to 0-1 range</param>
+    /// <returns>Scale value based on selected method</returns>
+    private float ApplyScalingMethod(float normalizedScore)
+    {
+        switch (curveTypeName.ToLower())
+        {
+            case "animationcurve":
+            case "curve":
+                return scoreToScaleCurve.Evaluate(normalizedScore);
+                
+            case "sigmoid":
+                return SigmoidCurve(normalizedScore);
+                
+            case "swish":
+                return SwishCurve(normalizedScore);
+                
+            case "tanh":
+                return TanhCurve(normalizedScore);
+                
+            case "gelu":
+                return GeluCurve(normalizedScore);
+                
+            case "powerlaw":
+            case "power":
+                return PowerLawCurve(normalizedScore);
+                
+            case "logperceptual":
+            case "log":
+                return LogPerceptualCurve(normalizedScore);
+                
+            case "pareto":
+                return ParetoCurve(normalizedScore);
+                
+            case "linear":
+                return Mathf.Lerp(minBookScale, maxBookScale, normalizedScore);
+                
+            default:
+                Debug.LogWarning($"Unknown curve type: {curveTypeName}, using linear");
+                return Mathf.Lerp(minBookScale, maxBookScale, normalizedScore);
+        }
+    }
+    
+    // ===== NEURAL NETWORK ACTIVATION FUNCTIONS =====
+    
+    /// <summary>
+    /// Sigmoid activation - creates S-curve with clear boundaries
+    /// Good for: Creating distinct size classes, avoiding extreme tiny/huge books
+    /// </summary>
+    private float SigmoidCurve(float x)
+    {
+        float adjusted = (x - 0.5f) * curveIntensity;
+        float sigmoid = 1f / (1f + Mathf.Exp(-adjusted));
+        // Map from [0,1] sigmoid output to [minScale, maxScale] range
+        return Mathf.Lerp(minBookScale, maxBookScale, sigmoid);
+    }
+    
+    /// <summary>
+    /// Swish activation (x * sigmoid(x)) - smooth, non-monotonic
+    /// Good for: Smooth transitions with slight emphasis on mid-range scores
+    /// </summary>
+    private float SwishCurve(float x)
+    {
+        float sigmoid = 1f / (1f + Mathf.Exp(-curveIntensity * x));
+        float swish = x * sigmoid;
+        return Mathf.Lerp(minBookScale, maxBookScale, swish);
+    }
+    
+    /// <summary>
+    /// Hyperbolic tangent - smoother than sigmoid
+    /// Good for: Gentle S-curve with less aggressive extremes
+    /// </summary>
+    private float TanhCurve(float x)
+    {
+        float adjusted = (x - 0.5f) * curveIntensity;
+        float tanh = (Mathf.Exp(adjusted) - Mathf.Exp(-adjusted)) / 
+                     (Mathf.Exp(adjusted) + Mathf.Exp(-adjusted));
+        // Map tanh output [-1,1] to [0,1], then to scale range
+        float normalized = (tanh + 1f) * 0.5f;
+        return Mathf.Lerp(minBookScale, maxBookScale, normalized);
+    }
+    
+    /// <summary>
+    /// GELU (Gaussian Error Linear Unit) - used in transformers
+    /// Good for: Very smooth scaling with natural probability-like curve
+    /// </summary>
+    private float GeluCurve(float x)
+    {
+        // Approximate GELU: 0.5 * x * (1 + tanh(sqrt(2/π) * (x + 0.044715 * x^3)))
+        float inner = Mathf.Sqrt(2f / Mathf.PI) * (x + 0.044715f * x * x * x);
+        float tanh = (Mathf.Exp(inner) - Mathf.Exp(-inner)) / (Mathf.Exp(inner) + Mathf.Exp(-inner));
+        float gelu = 0.5f * x * (1f + tanh);
+        return Mathf.Lerp(minBookScale, maxBookScale, Mathf.Clamp01(gelu));
+    }
+    
+    // ===== DISTRIBUTION SHAPING FUNCTIONS =====
+    
+    /// <summary>
+    /// Power law scaling - creates natural hierarchies (Zipf-like distribution)
+    /// Good for: Few giant books, many small ones (like city sizes, word frequencies)
+    /// </summary>
+    private float PowerLawCurve(float x)
+    {
+        float powered = Mathf.Pow(x, curvePower);
+        return Mathf.Lerp(minBookScale, maxBookScale, powered);
+    }
+    
+    /// <summary>
+    /// Logarithmic perceptual scaling (Weber-Fechner law)
+    /// Good for: How humans actually perceive size differences
+    /// </summary>
+    private float LogPerceptualCurve(float x)
+    {
+        // Logarithmic scaling: log(1 + x * (base-1)) / log(base)
+        float baseValue = 10f; // Can be adjusted for different steepness
+        float logged = Mathf.Log(1f + x * (baseValue - 1f)) / Mathf.Log(baseValue);
+        return Mathf.Lerp(minBookScale, maxBookScale, logged);
+    }
+    
+    /// <summary>
+    /// Pareto distribution (80/20 rule) - dramatic size differences
+    /// Good for: Creating very dramatic landscapes with few massive mountains
+    /// </summary>
+    private float ParetoCurve(float x)
+    {
+        // Inverse Pareto CDF: 1 - (1-x)^(1/alpha)
+        float pareto = 1f - Mathf.Pow(1f - x, 1f / curveAlpha);
+        return Mathf.Lerp(minBookScale, maxBookScale, pareto);
+    }
+    
+    /// <summary>
+    /// Update physics materials on all ItemViews with current friction/bounciness values
+    /// Only updates NON-TRIGGER colliders (physics colliders, not mouse hit zones)
+    /// </summary>
+    private void UpdatePhysicsMaterials()
+    {
+        List<ItemView> allItemViews = GetAllItemViews();
+        
+        foreach (var itemView in allItemViews)
+        {
+            // Get all colliders and update only non-trigger ones (physics colliders)
+            Collider[] colliders = itemView.GetComponents<Collider>();
+            foreach (var collider in colliders)
+            {
+                if (collider != null && !collider.isTrigger) // Only physics colliders
+                {
+                    // Create or update physics material
+                    if (collider.material == null)
+                    {
+                        collider.material = new PhysicsMaterial("DynamicBookMaterial");
+                    }
+                    
+                    collider.material.dynamicFriction = physicsFriction;
+                    collider.material.staticFriction = physicsFriction;
+                    collider.material.bounciness = physicsBounciness;
+                    collider.material.frictionCombine = PhysicsMaterialCombine.Average;
+                    collider.material.bounceCombine = PhysicsMaterialCombine.Average;
+                }
+            }
+        }
+        
+        Debug.Log($"[Physics] Updated materials: friction={physicsFriction:F2}, bounciness={physicsBounciness:F2}");
+    }
+    
+    /// <summary>
+    /// Update rigidbody settings on all ItemViews with current parameter values
+    /// </summary>
+    private void UpdateRigidbodySettings()
+    {
+        List<ItemView> allItemViews = GetAllItemViews();
+        
+        foreach (var itemView in allItemViews)
+        {
+            Rigidbody rb = itemView.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                // Apply all rigidbody settings from InputManager parameters
+                rb.linearDamping = rigidbodyDrag;
+                rb.angularDamping = rigidbodyAngularDrag;
+                rb.sleepThreshold = rigidbodySleepThreshold;
+                
+                if (enableWeebleWobble)
+                {
+                    // WEEBLE WOBBLE MODE - can tilt (X,Z) but not spin (Y)
+                    rb.freezeRotation = false; // Allow physics rotation
+                    rb.constraints = RigidbodyConstraints.FreezeRotationY; // Lock ONLY Y-axis (no spinning like a top)
+                    rb.centerOfMass = weebleCenterOfMass; // Underground center for self-righting
+                    rb.angularVelocity = new Vector3(rb.angularVelocity.x, 0, rb.angularVelocity.z); // Kill Y rotation only
+                    rb.maxAngularVelocity = 2f; // Allow moderate tilting
+                    Debug.Log($"[Weeble] Book can tilt but not spin - Y rotation locked, center of mass: {weebleCenterOfMass}");
+                }
+                else
+                {
+                    // BILLBOARD MODE - completely locked (original behavior)
+                    rb.freezeRotation = true; // Unity's simple approach
+                    rb.constraints = RigidbodyConstraints.FreezeRotationX | 
+                                    RigidbodyConstraints.FreezeRotationY | 
+                                    RigidbodyConstraints.FreezeRotationZ; // Explicit constraint flags
+                    rb.angularVelocity = Vector3.zero; // Kill any existing rotation
+                    rb.maxAngularVelocity = 0f; // Prevent any future angular velocity
+                }
+                rb.collisionDetectionMode = rigidbodyUseContinuousDetection ? 
+                    CollisionDetectionMode.ContinuousDynamic : 
+                    CollisionDetectionMode.Discrete;
+                
+                // Mass is handled separately in UpdatePhysicsForScale()
+            }
+        }
+        
+        Debug.Log($"[Physics] Updated rigidbody settings: drag={rigidbodyDrag:F1}, angularDrag={rigidbodyAngularDrag:F1}, sleepThreshold={rigidbodySleepThreshold:F2}");
+        Debug.Log($"[Physics] ROTATION LOCKED on all {allItemViews.Count} rigidbodies - no spinning allowed!");
+    }
+    
+    /// <summary>
+    /// Test all physics parameters at once
+    /// </summary>
+    [ContextMenu("Test Physics Playground")]
+    public void TestPhysicsPlayground()
+    {
+        Debug.Log("[Test] Setting up physics playground...");
+        
+        // Set dramatic curve for fun
+        curveTypeName = "Pareto";
+        curveAlpha = 1.0f; // Very dramatic
+        
+        // Set up physics for chaos
+        centerForceStrength = 25f;
+        physicsFriction = 0.3f; // Slippery
+        physicsBounciness = 0.2f; // Bouncy
+        gravityMultiplier = 1.2f; // Heavy
+        
+        // Apply search to create size differences
+        ApplySearchBasedScaling("science");
+        
+        // Update materials, rigidbody settings, and gravity
+        UpdatePhysicsMaterials();
+        UpdateRigidbodySettings();
+        Physics.gravity = new Vector3(0, -9.81f * gravityMultiplier, 0);
+        
+        // Scatter books for chaos
+        TestCenterForce();
+        
+        Debug.Log("[Test] Physics playground ready! Use tilt controls to stir the pot!");
+    }
+    
+    /// <summary>
+    /// Test the tilt system by simulating various tilt inputs
+    /// </summary>
+    [ContextMenu("Test Tilt System")]
+    public void TestTiltSystem()
+    {
+        Debug.Log("[Test] Testing tilt system...");
+        
+        // Enable center force if not already enabled
+        enableCenterForce = true;
+        tiltSensitivity = 20f;
+        
+        StartCoroutine(TiltTestSequence());
+    }
+    
+    /// <summary>
+    /// Coroutine that tests various tilt patterns
+    /// </summary>
+    private System.Collections.IEnumerator TiltTestSequence()
+    {
+        Debug.Log("[Test] Tilt sequence: Starting neutral...");
+        PushTiltInput("test", "Tilt Test", 0f, 0f);
+        yield return new WaitForSeconds(2f);
+        
+        Debug.Log("[Test] Tilt sequence: Tilting right...");
+        PushTiltInput("test", "Tilt Test", 0.5f, 0f);
+        yield return new WaitForSeconds(2f);
+        
+        Debug.Log("[Test] Tilt sequence: Tilting forward...");
+        PushTiltInput("test", "Tilt Test", 0f, 0.5f);
+        yield return new WaitForSeconds(2f);
+        
+        Debug.Log("[Test] Tilt sequence: Tilting left-back...");
+        PushTiltInput("test", "Tilt Test", -0.5f, -0.5f);
+        yield return new WaitForSeconds(2f);
+        
+        Debug.Log("[Test] Tilt sequence: Circular motion...");
+        for (float angle = 0; angle < 360; angle += 30)
+        {
+            float x = Mathf.Sin(angle * Mathf.Deg2Rad) * 0.7f;
+            float z = Mathf.Cos(angle * Mathf.Deg2Rad) * 0.7f;
+            PushTiltInput("test", "Tilt Test", x, z);
+            yield return new WaitForSeconds(0.5f);
+        }
+        
+        Debug.Log("[Test] Tilt sequence: Return to neutral");
+        PushTiltInput("test", "Tilt Test", 0f, 0f);
+        Debug.Log("[Test] Tilt test complete!");
+    }
+    
+    /// <summary>
+    /// Force-refresh all physics settings if books are still rotating (emergency fix!)
+    /// </summary>
+    [ContextMenu("EMERGENCY: Force Stop All Rotation")]
+    public void EmergencyStopAllRotation()
+    {
+        List<ItemView> allItemViews = GetAllItemViews();
+        int fixedBooks = 0;
+        
+        foreach (var itemView in allItemViews)
+        {
+            Rigidbody rb = itemView.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                // NUCLEAR OPTION - force stop everything!
+                rb.freezeRotation = true;
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | 
+                                RigidbodyConstraints.FreezeRotationY | 
+                                RigidbodyConstraints.FreezeRotationZ;
+                rb.angularVelocity = Vector3.zero;
+                rb.maxAngularVelocity = 0f;
+                rb.angularDamping = 1000f; // Extreme angular drag as backup
+                
+                // Also reset transform rotation to identity
+                itemView.transform.rotation = Quaternion.identity;
+                
+                fixedBooks++;
+            }
+        }
+        
+        Debug.Log($"[EMERGENCY] FORCE-STOPPED rotation on {fixedBooks} books! They should be completely locked now!");
+        
+        // Also refresh materials and settings
+        UpdatePhysicsMaterials();
+        UpdateRigidbodySettings();
+    }
+    
+    /// <summary>
+    /// Test Weeble Wobble physics - tip books and watch them self-right!
+    /// </summary>
+    [ContextMenu("Test Weeble Wobble Physics")]
+    public void TestWeebleWobblePhysics()
+    {
+        if (!enableWeebleWobble)
+        {
+            Debug.LogWarning("[Test] Weeble Wobble is disabled! Enable 'enableWeebleWobble' first.");
+            return;
+        }
+        
+        List<ItemView> allItemViews = GetAllItemViews();
+        Debug.Log($"[Test] Testing Weeble Wobble physics on {allItemViews.Count} books...");
+        
+        foreach (var itemView in allItemViews.Take(5)) // Test first 5 books
+        {
+            Rigidbody rb = itemView.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                // Give each book a random tilt (but not spin!)
+                Vector3 randomTilt = new Vector3(
+                    UnityEngine.Random.Range(-2f, 2f), // X rotation - forward/back tilt
+                    0f,                                 // Y rotation - LOCKED (no spinning)
+                    UnityEngine.Random.Range(-2f, 2f)  // Z rotation - left/right tilt
+                );
+                
+                rb.angularVelocity = randomTilt;
+                Debug.Log($"[Test] Applied tilt to {itemView.name}: {randomTilt} (should self-right due to underground center of mass)");
+            }
+        }
+        
+        Debug.Log("[Test] Weeble Wobble test complete! Books should tilt, wobble, and return upright while staying readable!");
+    }
+    
+    /// <summary>
+    /// Test all controllable physics parameters for Bridge control verification
+    /// </summary>
+    [ContextMenu("Test All Physics Parameters")]
+    public void TestAllPhysicsParameters()
+    {
+        Debug.Log("[Test] Testing all controllable physics parameters...");
+        
+        // Test curve parameters
+        SetCurveType("test", "Parameter Test", "Sigmoid");
+        SetCurveParameter("test", "Parameter Test", "intensity", 8f);
+        SetCurveParameter("test", "Parameter Test", "minscale", 0.2f);
+        SetCurveParameter("test", "Parameter Test", "maxscale", 4f);
+        SetCurveParameter("test", "Parameter Test", "animationspeed", 5f);
+        
+        // Test physics force parameters
+        SetPhysicsParameter("test", "Parameter Test", "centerforce", 25f);
+        SetPhysicsParameter("test", "Parameter Test", "centerradius", 100f);
+        SetPhysicsParameter("test", "Parameter Test", "tiltsensitivity", 30f);
+        
+        // Test material parameters
+        SetPhysicsParameter("test", "Parameter Test", "friction", 0.8f);
+        SetPhysicsParameter("test", "Parameter Test", "bounciness", 0.5f);
+        SetPhysicsParameter("test", "Parameter Test", "gravity", 2f);
+        
+        // Test rigidbody parameters
+        SetPhysicsParameter("test", "Parameter Test", "drag", 5f);
+        SetPhysicsParameter("test", "Parameter Test", "angulardrag", 15f);
+        SetPhysicsParameter("test", "Parameter Test", "sleepthreshold", 0.2f);
+        SetPhysicsParameter("test", "Parameter Test", "freezerotation", 1f); // true
+        SetPhysicsParameter("test", "Parameter Test", "continuousdetection", 1f); // true
+        
+        // Test tilt input
+        PushTiltInput("test", "Parameter Test", 0.5f, 0.3f);
+        
+        Debug.Log("[Test] All physics parameters tested! Check console for parameter updates.");
+        Debug.Log("[Test] Controllers can now use these same Bridge methods for real-time control!");
     }
 }

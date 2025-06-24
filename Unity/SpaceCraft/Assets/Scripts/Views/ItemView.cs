@@ -37,6 +37,13 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     [SerializeField] private float selectionMargin = 0.2f; // Larger margin around the item for selection mesh
     [SerializeField] private Color selectionColor = new Color(0f, 0.5f, 0f, 1.0f);
     
+    [Header("Dynamic Scaling")]
+    [SerializeField] private float viewScale = 1.0f; // Aspirational scale (1.0 = normal size)
+    [SerializeField] private float currentScale = 1.0f; // Current actual scale (for smooth transitions)
+    [SerializeField] private float viewScaleSlerpRate = 3.0f; // Rate of scale transitions (higher = faster) - increased for responsive scaling
+    [SerializeField] private float minViewScale = 0.1f; // Minimum scale to prevent books from disappearing
+    [SerializeField] private float maxViewScale = 3.0f; // Maximum scale to prevent giant books
+    
     // State
     private bool isHighlighted = false;
     private bool isSelected = false;
@@ -47,6 +54,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
     private BoxCollider boxCollider;
+    private Rigidbody rigidBody; // Physics body for movement (if present)
     
     // Collection context
     [SerializeField] private string collectionId;
@@ -70,6 +78,19 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     public bool IsSelected => isSelected;
     public int CurrentHighlightCount => highlightCount; // Public getter for the count
     
+    // Public accessors for dynamic scaling
+    public float ViewScale 
+    { 
+        get => viewScale; 
+        set => viewScale = Mathf.Clamp(value, minViewScale, maxViewScale); 
+    }
+    public float CurrentScale => currentScale;
+    public float ViewScaleSlerpRate 
+    { 
+        get => viewScaleSlerpRate; 
+        set => viewScaleSlerpRate = Mathf.Max(0.1f, value); 
+    }
+    
     private void Awake()
     {
         // Cache component references
@@ -83,6 +104,9 @@ public class ItemView : MonoBehaviour, IModelView<Item>
             
         boxCollider = GetComponent<BoxCollider>();
         
+        // Setup physics behavior (works with whatever colliders exist in prefab)
+        SetupPhysicsBehavior();
+        
         // Note: We don't create the highlight/selection meshes here anymore
         // They will be created lazily when needed in SetHighlighted/SetSelected
         
@@ -90,6 +114,195 @@ public class ItemView : MonoBehaviour, IModelView<Item>
         {
             // Register with model on awake
             model.RegisterView(this);
+        }
+        
+        // Initialize scaling - start with normal size and apply to transform
+        viewScale = 1.0f;
+        currentScale = 1.0f;
+        transform.localScale = Vector3.one * currentScale;
+    }
+    
+    private void Update()
+    {
+        // Handle smooth scaling transitions - the "dirty but sweet" incremental slerp technique!
+        if (!Mathf.Approximately(currentScale, viewScale))
+        {
+            // Get dynamic animation speed from InputManager for real-time control
+            float animationSpeed = GetAnimationSpeedFromInputManager();
+            
+            // Incremental slerp towards target scale - not mathematically pure but aesthetically pleasing
+            currentScale = Mathf.Lerp(currentScale, viewScale, Time.deltaTime * animationSpeed);
+            
+            // Snap to target when very close to prevent infinite tiny movements
+            if (Mathf.Abs(currentScale - viewScale) < 0.001f)
+            {
+                currentScale = viewScale;
+            }
+            
+            // Apply the current scale to the transform
+            transform.localScale = Vector3.one * currentScale;
+            
+            // Update physics properties for new scale
+            UpdatePhysicsForScale();
+            
+            // Debug visualization (can be removed later)
+            if (Time.frameCount % 60 == 0) // Log once per second at 60fps
+            {
+                Debug.Log($"[ItemView:{Model?.Title ?? "Unknown"}] Scaling: {currentScale:F3} -> {viewScale:F3} @ speed {animationSpeed:F1}");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Get the current animation speed from InputManager, fallback to local setting
+    /// This enables real-time control of scaling speed via Bridge from controllers!
+    /// </summary>
+    private float GetAnimationSpeedFromInputManager()
+    {
+        // Use the singleton reference instead of expensive scene search
+        if (SpaceCraft.Instance?.InputManager != null)
+        {
+            return SpaceCraft.Instance.InputManager.scaleAnimationSpeed;
+        }
+        
+        // Fallback to local setting if SpaceCraft/InputManager not found
+        return viewScaleSlerpRate;
+    }
+    
+    /// <summary>
+    /// Setup physics behavior for marble madness rolling physics!
+    /// Completely data-driven: Works with whatever colliders/rigidbody exist in prefab
+    /// All physics parameters controlled by InputManager - no hardcoded values!
+    /// </summary>
+    private void SetupPhysicsBehavior()
+    {
+        // Get rigidbody if it exists (configured in prefab)
+        rigidBody = GetComponent<Rigidbody>();
+        
+        // If no rigidbody, this ItemView doesn't use physics
+        if (rigidBody == null) 
+        {
+            Debug.Log($"[ItemView] No Rigidbody found on {name} - physics disabled");
+            return;
+        }
+        
+        // Configure initial mass (other settings applied by InputManager.UpdateRigidbodySettings)
+        rigidBody.mass = GetPhysicsMass(); // Dynamic mass based on scale
+        
+        // Anti-jiggle initialization - start stable and settled
+        rigidBody.linearVelocity = Vector3.zero;
+        rigidBody.angularVelocity = Vector3.zero;
+        
+        // Apply current InputManager physics settings
+        ApplyInputManagerPhysicsSettings();
+        
+        Debug.Log($"[ItemView] Physics behavior configured for {name}");
+        
+        // Start in kinematic mode to prevent initial jiggling, then enable physics after settling
+        StartCoroutine(EnablePhysicsAfterSettling());
+    }
+    
+    /// <summary>
+    /// Apply physics settings from InputManager to this rigidbody
+    /// Called during setup and when InputManager settings change
+    /// </summary>
+    private void ApplyInputManagerPhysicsSettings()
+    {
+        if (rigidBody == null) return;
+        
+        // Use the singleton reference instead of expensive scene search
+        InputManager inputManager = SpaceCraft.Instance?.InputManager;
+        if (inputManager != null)
+        {
+            rigidBody.linearDamping = inputManager.rigidbodyDrag;
+            rigidBody.angularDamping = inputManager.rigidbodyAngularDrag;
+            rigidBody.sleepThreshold = inputManager.rigidbodySleepThreshold;
+            
+            // Check if Weeble Wobble mode is enabled
+            if (inputManager.enableWeebleWobble)
+            {
+                // WEEBLE WOBBLE MODE - can tilt but not spin
+                rigidBody.freezeRotation = false;
+                rigidBody.constraints = RigidbodyConstraints.FreezeRotationY; // Lock Y-axis only
+                //rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; // Lock Y-axis only
+                rigidBody.centerOfMass = inputManager.weebleCenterOfMass; // Underground for self-righting
+                rigidBody.angularVelocity = new Vector3(rigidBody.angularVelocity.x, 0, rigidBody.angularVelocity.z);
+                rigidBody.maxAngularVelocity = 2f;
+            }
+            else
+            {
+                // BILLBOARD MODE - completely locked
+                rigidBody.freezeRotation = true;
+                //rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+                rigidBody.constraints = 0;
+                rigidBody.angularVelocity = Vector3.zero;
+                //rigidBody.maxAngularVelocity = 0f;
+                rigidBody.maxAngularVelocity = 2f;
+            }
+            
+            rigidBody.collisionDetectionMode = inputManager.rigidbodyUseContinuousDetection ? 
+                CollisionDetectionMode.ContinuousDynamic : 
+                CollisionDetectionMode.Discrete;
+        }
+        else
+        {
+            Debug.LogWarning($"[ItemView] No SpaceCraft/InputManager found - using default BILLBOARD mode");
+            
+            // Without InputManager, default to billboard mode (fully locked)
+            rigidBody.freezeRotation = true;
+            rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | 
+                                   RigidbodyConstraints.FreezeRotationY | 
+                                   RigidbodyConstraints.FreezeRotationZ;
+            rigidBody.angularVelocity = Vector3.zero;
+            rigidBody.maxAngularVelocity = 0f;
+        }
+    }
+    
+    /// <summary>
+    /// Starts kinematic then enables physics after a brief delay to prevent creation jiggling
+    /// </summary>
+    private System.Collections.IEnumerator EnablePhysicsAfterSettling()
+    {
+        if (rigidBody == null) yield break;
+        
+        // Start kinematic (no physics forces)
+        rigidBody.isKinematic = true;
+        
+        // Wait for layout positioning to complete
+        yield return new WaitForSeconds(0.1f);
+        
+        // Enable physics smoothly
+        rigidBody.isKinematic = false;
+        rigidBody.linearVelocity = Vector3.zero;
+        rigidBody.angularVelocity = Vector3.zero;
+        
+        Debug.Log($"[ItemView] Physics enabled for {Model?.Title ?? "Unknown"}");
+    }
+    
+    /// <summary>
+    /// Force the book to settle immediately (useful when layout changes)
+    /// </summary>
+    public void ForceSettle()
+    {
+        if (rigidBody != null)
+        {
+            rigidBody.linearVelocity = Vector3.zero;
+            rigidBody.angularVelocity = Vector3.zero;
+            rigidBody.Sleep(); // Force physics sleep state
+        }
+    }
+    
+    /// <summary>
+    /// Update physics properties when scale changes (mass only - other settings from InputManager)
+    /// Called automatically when scale changes during Update()
+    /// </summary>
+    private void UpdatePhysicsForScale()
+    {
+        if (rigidBody != null)
+        {
+            // Update mass based on current scale - larger books = more mass
+            // All other physics settings are controlled by InputManager
+            rigidBody.mass = GetPhysicsMass();
         }
     }
     
@@ -647,5 +860,43 @@ public class ItemView : MonoBehaviour, IModelView<Item>
         //         // highlightMesh.transform.localScale = new Vector3(scale, 1f, scale);
         //     }
         // }
+    }
+    
+    /// <summary>
+    /// Check if the item is currently scaling (useful for physics interactions)
+    /// </summary>
+    public bool IsScaling => !Mathf.Approximately(currentScale, viewScale);
+    
+    /// <summary>
+    /// Get the relative size category for physics interactions
+    /// Useful for determining how this book should interact with others in the landscape
+    /// </summary>
+    public string GetSizeCategory()
+    {
+        if (viewScale >= 2.0f) return "mountain";      // Big books - create terrain features
+        if (viewScale >= 1.2f) return "hill";         // Medium books - gentle slopes  
+        if (viewScale >= 0.6f) return "ground";       // Normal books - flat terrain
+        if (viewScale >= 0.3f) return "pebble";       // Small books - roll easily
+        return "grain";                                // Tiny books - roll into cracks
+    }
+    
+    /// <summary>
+    /// Calculate the physics mass that should be used based on current scale
+    /// Larger books should have more mass for realistic physics interactions
+    /// </summary>
+    public float GetPhysicsMass()
+    {
+        // Cubic scaling for mass (volume scales with cube of linear dimension)
+        return Mathf.Pow(currentScale, 3f);
+    }
+    
+    /// <summary>
+    /// Set scale immediately without transition (useful for initialization)
+    /// </summary>
+    public void SetScaleImmediate(float scale)
+    {
+        viewScale = Mathf.Clamp(scale, minViewScale, maxViewScale);
+        currentScale = viewScale;
+        transform.localScale = Vector3.one * currentScale;
     }
 } 
