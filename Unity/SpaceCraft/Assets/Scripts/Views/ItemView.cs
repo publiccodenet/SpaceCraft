@@ -144,12 +144,6 @@ public class ItemView : MonoBehaviour, IModelView<Item>
             
             // Update physics properties for new scale
             UpdatePhysicsForScale();
-            
-            // Debug visualization (can be removed later)
-            if (Time.frameCount % 60 == 0) // Log once per second at 60fps
-            {
-                Debug.Log($"[ItemView:{Model?.Title ?? "Unknown"}] Scaling: {currentScale:F3} -> {viewScale:F3} @ speed {animationSpeed:F1}");
-            }
         }
     }
     
@@ -171,12 +165,15 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     
     /// <summary>
     /// Setup physics behavior for marble madness rolling physics!
-    /// Completely data-driven: Works with whatever colliders/rigidbody exist in prefab
-    /// All physics parameters controlled by InputManager - no hardcoded values!
+    /// Ensures proper collider configuration:
+    /// - Box collider (trigger) on "Items" layer for mouse detection
+    /// - Sphere colliders (non-trigger) for physics, will be excluded by layer mask in InputManager
     /// </summary>
     private void SetupPhysicsBehavior()
     {
-        // Get rigidbody if it exists (configured in prefab)
+
+        
+        // Get rigidbody if it exists (configured in prefab) 
         rigidBody = GetComponent<Rigidbody>();
         
         // If no rigidbody, this ItemView doesn't use physics
@@ -202,6 +199,10 @@ public class ItemView : MonoBehaviour, IModelView<Item>
         StartCoroutine(EnablePhysicsAfterSettling());
     }
     
+
+    
+
+    
     /// <summary>
     /// Apply physics settings from InputManager to this rigidbody
     /// Called during setup and when InputManager settings change
@@ -210,52 +211,23 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     {
         if (rigidBody == null) return;
         
-        // Use the singleton reference instead of expensive scene search
-        InputManager inputManager = SpaceCraft.Instance?.InputManager;
-        if (inputManager != null)
-        {
-            rigidBody.linearDamping = inputManager.rigidbodyDrag;
-            rigidBody.angularDamping = inputManager.rigidbodyAngularDrag;
-            rigidBody.sleepThreshold = inputManager.rigidbodySleepThreshold;
-            
-            // Check if Weeble Wobble mode is enabled
-            if (inputManager.enableWeebleWobble)
-            {
-                // WEEBLE WOBBLE MODE - can tilt but not spin
-                rigidBody.freezeRotation = false;
-                rigidBody.constraints = RigidbodyConstraints.FreezeRotationY; // Lock Y-axis only
-                //rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; // Lock Y-axis only
-                rigidBody.centerOfMass = inputManager.weebleCenterOfMass; // Underground for self-righting
-                rigidBody.angularVelocity = new Vector3(rigidBody.angularVelocity.x, 0, rigidBody.angularVelocity.z);
-                rigidBody.maxAngularVelocity = 2f;
-            }
-            else
-            {
-                // BILLBOARD MODE - completely locked
-                rigidBody.freezeRotation = true;
-                //rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-                rigidBody.constraints = 0;
-                rigidBody.angularVelocity = Vector3.zero;
-                //rigidBody.maxAngularVelocity = 0f;
-                rigidBody.maxAngularVelocity = 2f;
-            }
-            
-            rigidBody.collisionDetectionMode = inputManager.rigidbodyUseContinuousDetection ? 
-                CollisionDetectionMode.ContinuousDynamic : 
-                CollisionDetectionMode.Discrete;
-        }
-        else
-        {
-            Debug.LogWarning($"[ItemView] No SpaceCraft/InputManager found - using default BILLBOARD mode");
-            
-            // Without InputManager, default to billboard mode (fully locked)
-            rigidBody.freezeRotation = true;
-            rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | 
-                                   RigidbodyConstraints.FreezeRotationY | 
-                                   RigidbodyConstraints.FreezeRotationZ;
-            rigidBody.angularVelocity = Vector3.zero;
-            rigidBody.maxAngularVelocity = 0f;
-        }
+        InputManager inputManager = SpaceCraft.Instance.InputManager;
+        
+        // Direct physics control - no modes or complexity
+        rigidBody.linearDamping = inputManager.rigidbodyDrag;
+        rigidBody.angularDamping = inputManager.freezeRotation ? inputManager.extremeAngularDrag : inputManager.rigidbodyAngularDrag;
+        rigidBody.sleepThreshold = inputManager.rigidbodySleepThreshold;
+        rigidBody.centerOfMass = inputManager.centerOfMass; // Apply InputManager center of mass
+        rigidBody.maxAngularVelocity = inputManager.freezeRotation ? 0f : inputManager.maxAngularVelocity;
+        
+        // NUCLEAR ROTATION STOP
+        rigidBody.freezeRotation = inputManager.freezeRotation;
+        rigidBody.constraints = (RigidbodyConstraints)inputManager.rotationConstraints;
+        rigidBody.angularVelocity = Vector3.zero; // Force stop any current rotation
+        
+        rigidBody.collisionDetectionMode = inputManager.rigidbodyUseContinuousDetection ? 
+            CollisionDetectionMode.ContinuousDynamic : 
+            CollisionDetectionMode.Discrete;
     }
     
     /// <summary>
@@ -275,6 +247,20 @@ public class ItemView : MonoBehaviour, IModelView<Item>
         rigidBody.isKinematic = false;
         rigidBody.linearVelocity = Vector3.zero;
         rigidBody.angularVelocity = Vector3.zero;
+        
+        // FORCE ALL rotation controls again to override prefab settings
+        InputManager inputManager = SpaceCraft.Instance.InputManager;
+        if (inputManager != null)
+        {
+            // NUCLEAR OPTION - apply all rotation stopping measures
+            rigidBody.freezeRotation = inputManager.freezeRotation;
+            rigidBody.constraints = (RigidbodyConstraints)inputManager.rotationConstraints;
+            rigidBody.maxAngularVelocity = inputManager.freezeRotation ? 0f : inputManager.maxAngularVelocity;
+            rigidBody.angularDamping = inputManager.freezeRotation ? inputManager.extremeAngularDrag : inputManager.rigidbodyAngularDrag;
+            rigidBody.angularVelocity = Vector3.zero;
+            
+            Debug.Log($"[ItemView] NUCLEAR ROTATION STOP: freezeRotation={inputManager.freezeRotation}, constraints={(RigidbodyConstraints)inputManager.rotationConstraints}, maxAngular={rigidBody.maxAngularVelocity} for {Model?.Title ?? "Unknown"}");
+        }
         
         Debug.Log($"[ItemView] Physics enabled for {Model?.Title ?? "Unknown"}");
     }
@@ -716,21 +702,52 @@ public class ItemView : MonoBehaviour, IModelView<Item>
         
         meshFilter.mesh = mesh;
         
-        // Update collider if present
-        if (boxCollider != null)
-        {
-            // Calculate collider size based on visual size, capping width at 1.0
-            float colliderWidth = Mathf.Min(1f, width);
-            float colliderHeight = height; // Use visual height directly
-            float colliderThickness = 0.1f; // Keep thickness small
-
-            boxCollider.size = new Vector3(colliderWidth, colliderThickness, colliderHeight);
-            // Optional: Adjust center if needed, but likely okay at 0,0,0 if mesh is centered
-            // boxCollider.center = Vector3.zero; 
-        }
+        // Update box collider to match book cover dimensions exactly
+        UpdateBookCoverCollider(width, height);
         
         // Update highlight and selection meshes to match the new size
         UpdateHighlightMeshSize();
+    }
+    
+    /// <summary>
+    /// Update the BookCoverBox child's box collider to exactly match the book cover dimensions
+    /// This ensures mouse detection area perfectly fits the visual book cover
+    /// </summary>
+    private void UpdateBookCoverCollider(float bookWidth, float bookHeight)
+    {
+        // Find BookCoverBox child (from prefab structure)
+        Transform bookCoverBox = transform.Find("BookCoverBox");
+        if (bookCoverBox != null)
+        {
+            BoxCollider childBoxCollider = bookCoverBox.GetComponent<BoxCollider>();
+            if (childBoxCollider != null)
+            {
+                // Set collider size to exactly match book cover (no capping, perfect fit)
+                float colliderThickness = 0.1f; // Thin thickness for trigger detection
+                childBoxCollider.size = new Vector3(bookWidth, colliderThickness, bookHeight);
+                
+                // Ensure it's positioned correctly (slightly above the book surface)
+                childBoxCollider.center = new Vector3(0, colliderThickness/2, 0);
+                
+                Debug.Log($"[ItemView] Updated BookCoverBox collider: {bookWidth:F2} x {bookHeight:F2} for {Model?.Title ?? "Unknown"}");
+            }
+            else
+            {
+                Debug.LogWarning($"[ItemView] BookCoverBox found but no BoxCollider component on {name}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[ItemView] BookCoverBox child not found on {name}");
+        }
+        
+        // Also update main object box collider if it exists (legacy support)
+        if (boxCollider != null)
+        {
+            float colliderThickness = 0.1f;
+            boxCollider.size = new Vector3(bookWidth, colliderThickness, bookHeight);
+            boxCollider.center = new Vector3(0, colliderThickness/2, 0);
+        }
     }
     
     // Set the model and update the view
@@ -882,12 +899,12 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     
     /// <summary>
     /// Calculate the physics mass that should be used based on current scale
-    /// Larger books should have more mass for realistic physics interactions
+    /// All items now have the same mass for equal physics response
     /// </summary>
     public float GetPhysicsMass()
     {
-        // Cubic scaling for mass (volume scales with cube of linear dimension)
-        return Mathf.Pow(currentScale, 3f);
+        // Fixed mass for all items regardless of scale
+        return 1.0f;
     }
     
     /// <summary>

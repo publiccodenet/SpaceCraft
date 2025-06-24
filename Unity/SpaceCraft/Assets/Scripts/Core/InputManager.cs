@@ -63,7 +63,35 @@ public class InputManager : MonoBehaviour
     [Header("Selection Settings")]
     public float maxSelectionDistance = 100f;
     public float selectMaxClickDistance = 0.1f; 
-    public float selectMaxClickTime = 0.3f; 
+    public float selectMaxClickTime = 0.3f;
+    
+    [Header("Item Dragging Settings")]
+    [Tooltip("Enable physics-based item dragging")]
+    public bool enableItemDragging = true;
+    [Tooltip("Force strength for rubber band dragging")]
+    [Range(10f, 500000f)]
+    public float dragForceStrength = 100000f;
+    [Tooltip("Maximum distance for drag force (like rubber band stretch limit)")]
+    [Range(1f, 50f)]
+    public float dragMaxDistance = 10f;
+    [Tooltip("Drag force damping (higher = less oscillation)")]
+    [Range(0.01f, 10f)]
+    public float dragDamping = 0.1f;
+    [Tooltip("Mass multiplier when dragging (heavier = pushes others away)")]
+    [Range(1f, 500f)]
+    public float dragMassMultiplier = 100f;
+    [Tooltip("Normal mass when not dragging")]
+    [Range(0.1f, 10f)]
+    public float normalMass = 1f;
+    [Tooltip("Mouse velocity multiplier for direct velocity application")]
+    [Range(0f, 1000f)]
+    public float mouseVelocityMultiplier = 20f;
+    [Tooltip("Maximum velocity that can be applied to dragged item")]
+    [Range(1f, 2000f)]
+    public float maxDragVelocity = 50f;
+    [Tooltip("Velocity multiplier when throwing item on release")]
+    [Range(0f, 50f)]
+    public float throwStrength = 10f; 
     
     [Header("Search Settings")]
     public string searchString = ""; // Current search query for filtering
@@ -105,19 +133,19 @@ public class InputManager : MonoBehaviour
     public AnimationCurve scoreToScaleCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
     
     [Header("Physics Forces - Bridge Controllable")]
-    [Tooltip("Force strength pulling books toward center")]
-    [Range(0f, 100f)]
-    public float centerForceStrength = 35f; // Reduced from 50f for gentler gathering
+    [Tooltip("Maximum force strength at zero distance")]
+    [Range(0f, 500f)]
+    public float centerForceMaxStrength = 200f;
     
-    [Tooltip("Distance where center force starts applying")]
-    [Range(10f, 200f)]
-    public float centerForceRadius = 40f; // Reduced from 80f to have force apply sooner
+    [Tooltip("Maximum distance where force applies (linear falloff to zero)")]
+    [Range(1f, 200f)]
+    public float centerForceMaxDistance = 10f;
     
     [Tooltip("Center point for gravitational force")]
     public Vector3 centerPoint = Vector3.zero;
     
     [Tooltip("Manual offset to center point (X, Y, Z adjustment)")]
-    public Vector3 manualCenterOffset = new Vector3(0, -10, 0); // Default gravity pulls down!
+    public Vector3 manualCenterOffset = new Vector3(0, -0.5f, 0); // Default gravity pulls down!
     
     [Tooltip("Tilt-based offset to center point (from controller input)")]
     public Vector3 centerOffset = Vector3.zero;
@@ -129,28 +157,39 @@ public class InputManager : MonoBehaviour
     [Tooltip("Apply center force to books")]
     public bool enableCenterForce = true;
     
-    [Tooltip("Scale-based force multiplier - smaller books get less force")]
+    [Tooltip("Use constant force regardless of size or distance")]
+    public bool useConstantCenterForce = true;
+    
+    [Tooltip("Constant center force strength (ignores all scaling and distance)")]
+    [Range(0f, 1000f)]
+    public float constantCenterForce = 50f;
+    
+    [Tooltip("Scale-based force multiplier - bigger books get MORE force")]
     public bool enableScaleBasedForce = true;
     
-    [Tooltip("Minimum force multiplier for smallest books (0-1)")]
-    [Range(0f, 1f)]
-    public float minForceMultiplier = 0.3f; // Small books get 30% of force
+    [Tooltip("Minimum force multiplier for smallest books (0.5-1)")]
+    [Range(0.5f, 1f)]
+    public float minForceMultiplier = 5.0f; // Small books get 100% center force (normal attraction)
     
-    [Tooltip("Maximum force multiplier for largest books (0-2)")]  
-    [Range(0f, 2f)]
-    public float maxForceMultiplier = 1.5f; // Big books get 150% of force
+    [Tooltip("Maximum force multiplier for largest books (1-5)")]  
+    [Range(1f, 5f)]
+    public float maxForceMultiplier = 20.0f; // Big books get 300% center force (3x stronger attraction!)
     
     [Tooltip("Only apply physics to items in the current collection")]
     public bool limitToCurrentCollection = false;
     
+    [Tooltip("Minimum scale threshold - items smaller than this ignore center force")]
+    [Range(0.1f, 1f)]
+    public float centerForceMinScale = 0.8f;
+    
     [Header("Physics Material Properties - Bridge Controllable")]
     [Tooltip("Physics material friction")]
     [Range(0f, 2f)]
-    public float physicsFriction = 0.01f; // ULTRA LOW - ice skating level friction!
+    public float physicsFriction = 0.001f; // VIRTUALLY ZERO - perfect sliding!
     
     [Tooltip("Physics material bounciness")]
     [Range(0f, 1f)]
-    public float physicsBounciness = 0.2f;
+    public float physicsBounciness = 0.5f;
     
     [Tooltip("Global gravity strength multiplier")]
     [Range(0.1f, 3f)]
@@ -159,7 +198,7 @@ public class InputManager : MonoBehaviour
     [Header("Rigidbody Physics Parameters - Bridge Controllable")]
     [Tooltip("Linear resistance - higher values slow movement")]
     [Range(0f, 10f)]
-    public float rigidbodyDrag = 0.5f; // Reduced from 2f for more responsive movement
+    public float rigidbodyDrag = 0.05f; // Increased drag to slow down movement and reduce drift
     
     [Tooltip("Rotational resistance - higher values reduce spinning")]
     [Range(0f, 20f)]
@@ -169,14 +208,24 @@ public class InputManager : MonoBehaviour
     [Range(0.01f, 1f)]
     public float rigidbodySleepThreshold = 0.05f;
     
-    [Tooltip("Lock rotation to maintain billboard effect (always face camera)")]
-    public bool rigidbodyFreezeRotation = true; // LOCKED - no spinning books!
+    [Tooltip("Direct center of mass control for all rigidbodies")]
+    public Vector3 centerOfMass = new Vector3(0, 0, 0);
     
-    [Tooltip("Enable Weeble Wobble physics - books can tilt but not spin")]
-    public bool enableWeebleWobble = true; // Toggle between full lock vs wobble mode
+    [Tooltip("Rotation constraints: 0=None, 1=FreezeRotationX, 2=FreezeRotationY, 4=FreezeRotationZ (combine with +)")]
+    public int rotationConstraints = (int)(RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ); // ALL ROTATION FROZEN
+    //public int rotationConstraints = (int)RigidbodyConstraints.FreezeRotationY; // WEEBLE WOBBLE: Only freeze Y rotation (no spinning toward camera)
+    //public int rotationConstraints = (int)RigidbodyConstraints.FreezeRotationX;
+    //public int rotationConstraints = (int)0;
     
-    [Tooltip("Underground center of mass offset for self-righting (Y should be negative)")]
-    public Vector3 weebleCenterOfMass = new Vector3(0, 0, 0); // Underground for stability
+    [Tooltip("Maximum angular velocity for rigidbodies")]
+    //public float maxAngularVelocity = 0f;
+    public float maxAngularVelocity = 0.0f;
+    
+    [Tooltip("Force freeze rotation on all rigidbodies (overrides constraints)")]
+    public bool freezeRotation = true;
+    
+    [Tooltip("Extreme angular drag to stop any residual rotation")]
+    public float extremeAngularDrag = 1000f;
     
     [Tooltip("Use continuous collision detection for fast-moving objects")]
     public bool rigidbodyUseContinuousDetection = true;
@@ -195,6 +244,16 @@ public class InputManager : MonoBehaviour
     private SpaceCraft spaceCraft;
     private Camera _mainCamera; // Cache the controlled camera
     private string searchStringLast = null; // Track last processed search to detect changes
+    
+    // Item dragging state
+    private bool isDraggingItem = false;
+    private ItemView draggedItem = null;
+    private Vector3 dragLocalOffset = Vector3.zero; // Local offset on the item that was clicked
+    private Vector3 dragStartItemPosition = Vector3.zero; // World position of item when drag started
+    private Rigidbody draggedRigidbody = null;
+    private float originalMass = 1f; // Store original mass to restore later
+    private Vector3 previousMouseWorldPos = Vector3.zero; // Track mouse movement for velocity
+    private Vector3 mouseVelocity = Vector3.zero; // Current mouse velocity in world space
 
     private void Start()
     {
@@ -222,41 +281,104 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
         HandleInput();
-        UpdateHoveredItem();
+        
+        // Don't update hover during item dragging - keep dragged item highlighted
+        if (!isDraggingItem)
+        {
+            UpdateHoveredItem();
+        }
+        
         CheckForSearchStringChanges();
     }
 
     private void HandleInput()
     {
-        // Mouse Button Down (Start Drag / Potential Click)
+        // DEBUG: Log all mouse button presses
+        if (Input.GetMouseButtonDown(0))
+            Debug.Log($"[MOUSE DEBUG] LEFT BUTTON DOWN - hoveredItem: {(hoveredItem?.name ?? "null")}, isDragging: {isDragging}, isDraggingItem: {isDraggingItem}");
+        if (Input.GetMouseButtonDown(1))
+            Debug.Log($"[MOUSE DEBUG] RIGHT BUTTON DOWN - hoveredItem: {(hoveredItem?.name ?? "null")}, isDragging: {isDragging}, isDraggingItem: {isDraggingItem}");
+        if (Input.GetMouseButtonUp(0))
+            Debug.Log($"[MOUSE DEBUG] LEFT BUTTON UP - isDragging: {isDragging}, isDraggingItem: {isDraggingItem}");
+        if (Input.GetMouseButtonUp(1))
+            Debug.Log($"[MOUSE DEBUG] RIGHT BUTTON UP - isDragging: {isDragging}, isDraggingItem: {isDraggingItem}");
+            
+        // LEFT MOUSE BUTTON - Item Interaction Only
         if (Input.GetMouseButtonDown(0))
         {
+            Debug.Log($"[LEFT MOUSE] Processing left click - hoveredItem: {(hoveredItem?.name ?? "null")}");
+            
+            // Check if we should start item dragging
+            if (enableItemDragging && hoveredItem != null && hoveredItem.GetComponent<Rigidbody>() != null)
+            {
+                Debug.Log($"[LEFT MOUSE] Starting item drag on {hoveredItem.name}");
+                StartItemDrag(hoveredItem, Input.mousePosition);
+            }
+            else if (hoveredItem != null)
+            {
+                Debug.Log($"[LEFT MOUSE] Storing item for potential selection: {hoveredItem.name}");
+                // Store for potential click selection (no camera dragging)
+                dragStartPosition = Input.mousePosition;
+                dragStartWorldPos = GetWorldPositionAtScreenPoint(Input.mousePosition);
+                lastDragTime = Time.realtimeSinceStartup;
+                itemAtDragStart = hoveredItem;
+            }
+            else
+            {
+                Debug.Log($"[LEFT MOUSE] No item under cursor - doing nothing (NO camera pan)");
+            }
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            Debug.Log($"[LEFT MOUSE] Left button up - isDraggingItem: {isDraggingItem}, itemAtDragStart: {(itemAtDragStart?.name ?? "null")}");
+            
+            // Handle item drag end
+            if (isDraggingItem)
+            {
+                Debug.Log($"[LEFT MOUSE] Ending item drag");
+                EndItemDrag();
+            }
+            else if (itemAtDragStart != null)
+            {
+                Debug.Log($"[LEFT MOUSE] Checking for item selection");
+                // Handle item selection (click without drag)
+                float dragDistance = Vector3.Distance(dragStartWorldPos, GetWorldPositionAtScreenPoint(Input.mousePosition));
+                float dragTime = Time.realtimeSinceStartup - lastDragTime;
+                
+                if (dragDistance < selectMaxClickDistance && dragTime < selectMaxClickTime && itemAtDragStart.Model != null)
+                {
+                    Debug.Log($"[LEFT MOUSE] Selecting item: {itemAtDragStart.name}");
+                    // Pass default controller info for mouse click selection toggle
+                    spaceCraft.ToggleItemSelection("mouse_input", "Local Mouse", "main", itemAtDragStart.Model.Id);
+                }
+                itemAtDragStart = null;
+            }
+        }
+        
+        // RIGHT MOUSE BUTTON - Camera Panning Only
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log($"[RIGHT MOUSE] Starting camera drag - SHOULD WORK!");
+            // Start camera dragging
             isDragging = true;
             previousMousePosition = Input.mousePosition;
             dragStartPosition = Input.mousePosition;
-            dragStartWorldPos = GetWorldPositionAtScreenPoint(Input.mousePosition); // Use helper
+            dragStartWorldPos = GetWorldPositionAtScreenPoint(Input.mousePosition);
             lastDragTime = Time.realtimeSinceStartup;
             physicsEnabled = false;
             cameraVelocity = Vector3.zero;
-            itemAtDragStart = hoveredItem;
         }
-        // Mouse Button Up (End Drag / Complete Click)
-        else if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(1))
         {
+            Debug.Log($"[RIGHT MOUSE] Right button up - wasDragging: {isDragging}");
+            // Handle camera drag end
             bool wasDragging = isDragging;
             isDragging = false;
             
             if (wasDragging)
             {
-                float dragDistance = Vector3.Distance(dragStartWorldPos, GetWorldPositionAtScreenPoint(Input.mousePosition));
-                float dragTime = Time.realtimeSinceStartup - lastDragTime;
-                
-                if (dragDistance < selectMaxClickDistance && dragTime < selectMaxClickTime && itemAtDragStart != null && itemAtDragStart.Model != null)
-                {
-                    // Pass default controller info for mouse click selection toggle
-                    spaceCraft.ToggleItemSelection("mouse_input", "Local Mouse", "main", itemAtDragStart.Model.Id);
-                }
-                else if (filteredVelocity.magnitude > GetScaledVelocityThreshold())
+                Debug.Log($"[RIGHT MOUSE] Ending camera drag with velocity: {filteredVelocity.magnitude:F3}");
+                if (filteredVelocity.magnitude > GetScaledVelocityThreshold())
                 {
                     // Apply release damping to reduce tiny unwanted drifts
                     Vector3 dampedVelocity = filteredVelocity * releaseVelocityDamping;
@@ -266,14 +388,14 @@ public class InputManager : MonoBehaviour
                     {
                         cameraVelocity = dampedVelocity;
                         physicsEnabled = true;
-                        Debug.Log($"[Drag Release] Physics enabled: original={filteredVelocity.magnitude:F3}, damped={dampedVelocity.magnitude:F3}, threshold={GetScaledVelocityThreshold():F3}");
+                        Debug.Log($"[RIGHT MOUSE] Physics enabled: original={filteredVelocity.magnitude:F3}, damped={dampedVelocity.magnitude:F3}");
                     }
                     else
                     {
                         // Velocity too small even after damping - force stop
                         cameraVelocity = Vector3.zero;
                         physicsEnabled = false;
-                        Debug.Log($"[Drag Release] Forced stop: damped velocity {dampedVelocity.magnitude:F3} below threshold {GetScaledVelocityThreshold() * 0.5f:F3}");
+                        Debug.Log($"[RIGHT MOUSE] Forced stop: damped velocity too small");
                     }
                 }
                 else
@@ -281,16 +403,22 @@ public class InputManager : MonoBehaviour
                     // Below threshold - clean stop
                     cameraVelocity = Vector3.zero;
                     physicsEnabled = false;
-                    Debug.Log($"[Drag Release] Clean stop: velocity {filteredVelocity.magnitude:F3} below threshold {GetScaledVelocityThreshold():F3}");
+                    Debug.Log($"[RIGHT MOUSE] Clean stop: velocity below threshold");
                 }
             }
-            itemAtDragStart = null;
         }
         
-        // Active Dragging (Mouse)
+        // Active Dragging (Mouse) - Should ONLY happen with RIGHT mouse button
         if (isDragging)
         {   
+            Debug.Log($"[MOUSE DEBUG] HandleMouseDrag called - isDragging: {isDragging}");
             HandleMouseDrag();
+        }
+        
+        // Active Item Dragging
+        if (isDraggingItem)
+        {
+            HandleItemDrag();
         }
 
         // Other Inputs
@@ -335,6 +463,140 @@ public class InputManager : MonoBehaviour
         
         previousMousePosition = currentMousePos;
         lastDragTime = Time.realtimeSinceStartup;
+    }
+    
+    /// <summary>
+    /// Start dragging an item with precise local coordinate tracking
+    /// </summary>
+    private void StartItemDrag(ItemView item, Vector3 mouseScreenPos)
+    {
+        if (item == null) return;
+        
+        Rigidbody rb = item.GetComponent<Rigidbody>();
+        if (rb == null) return;
+        
+        // Calculate the local offset on the item that was clicked
+        Vector3 mouseWorldPos = GetWorldPositionAtScreenPoint(mouseScreenPos);
+        Vector3 itemWorldPos = item.transform.position;
+        
+        // Convert world offset to local item coordinates
+        dragLocalOffset = item.transform.InverseTransformPoint(mouseWorldPos);
+        
+        // BULLDOZER MODE: Make item HEAVY to push others out of the way!
+        originalMass = rb.mass;
+        rb.mass = originalMass * dragMassMultiplier;
+        
+        // Set up item drag state
+        isDraggingItem = true;
+        draggedItem = item;
+        draggedRigidbody = rb;
+        dragStartItemPosition = itemWorldPos;
+        
+        // LOCK HIGHLIGHT on dragged item
+        item.SetHighlighted(true);
+        
+        // Disable camera dragging while dragging an item
+        isDragging = false;
+        physicsEnabled = false;
+        cameraVelocity = Vector3.zero;
+        
+        Debug.Log($"[ItemDrag] Started SUPER-HEAVY dragging {item.name} - mass: {originalMass:F1} → {rb.mass:F1} (x{dragMassMultiplier}) + VELOCITY!");
+    }
+    
+    /// <summary>
+    /// Handle ongoing item drag with SMOOTH POSITION MOVEMENT + SUPER STRONG RUBBER BAND
+    /// </summary>
+    private void HandleItemDrag()
+    {
+        if (!isDraggingItem || draggedItem == null || draggedRigidbody == null) return;
+        
+        // Get current mouse world position EVERY FRAME with high precision
+        Vector3 mouseWorldPos = GetWorldPositionAtScreenPoint(Input.mousePosition);
+        
+        // Track mouse velocity for throwing
+        if (previousMouseWorldPos != Vector3.zero)
+        {
+            mouseVelocity = (mouseWorldPos - previousMouseWorldPos) / Time.deltaTime;
+        }
+        previousMouseWorldPos = mouseWorldPos;
+        
+        // Calculate where the grabbed point on the item SHOULD be (target position)
+        Vector3 targetWorldPos = mouseWorldPos;
+        
+        // Calculate where the grabbed point on the item ACTUALLY is (current position)
+        Vector3 currentGrabWorldPos = draggedItem.transform.TransformPoint(dragLocalOffset);
+        
+        // Calculate the rubber band vector (from current grab point to target)
+        Vector3 rubberBandVector = targetWorldPos - currentGrabWorldPos;
+        float distance = rubberBandVector.magnitude;
+        
+        // SMOOTH POSITION MOVEMENT with SUPER STRONG RUBBER BAND
+        if (distance > 0.001f)
+        {
+            // Much more aggressive rubber band for instant snapping
+            float pullStrength = Mathf.Clamp01(distance / dragMaxDistance);
+            
+            // ULTRA STRONG rubber band - more responsive
+            float smoothedPull = pullStrength * 0.95f + 0.05f; // Always at least 5% pull, up to 95%
+            
+            // Calculate target item position directly
+            Vector3 currentItemPos = draggedItem.transform.position;
+            Vector3 targetItemPos = targetWorldPos - draggedItem.transform.TransformDirection(dragLocalOffset);
+            
+            // SMOOTH LERP for buttery movement - much more aggressive
+            Vector3 newItemPos = Vector3.Lerp(currentItemPos, targetItemPos, smoothedPull);
+            
+            // Use MovePosition for smooth rigidbody movement instead of direct transform
+            draggedRigidbody.MovePosition(newItemPos);
+            
+            // Still clear angular velocity to prevent spinning
+            draggedRigidbody.angularVelocity = Vector3.zero;
+        }
+    }
+    
+    /// <summary>
+    /// End item dragging and restore normal weight
+    /// </summary>
+    private void EndItemDrag()
+    {
+        if (isDraggingItem && draggedItem != null && draggedRigidbody != null)
+        {
+            // Apply throw velocity based on mouse movement
+            Vector3 throwVelocity = mouseVelocity * throwStrength;
+            
+            // Clamp the throw velocity to prevent extreme speeds
+            if (throwVelocity.magnitude > maxDragVelocity)
+            {
+                throwVelocity = throwVelocity.normalized * maxDragVelocity;
+            }
+            
+            // Apply the throw velocity to the rigidbody
+            draggedRigidbody.linearVelocity = throwVelocity;
+            
+            // RESTORE NORMAL WEIGHT: Return to lightweight physics
+            draggedRigidbody.mass = originalMass;
+            Debug.Log($"[ItemDrag] Ended HEAVY dragging {draggedItem.name} - restored mass: {draggedRigidbody.mass:F1}, throw velocity: {throwVelocity.magnitude:F2}");
+        }
+        
+        // Reset item drag state
+        ItemView draggedItemRef = draggedItem; // Store reference before clearing
+        isDraggingItem = false;
+        draggedItem = null;
+        draggedRigidbody = null;
+        dragLocalOffset = Vector3.zero;
+        dragStartItemPosition = Vector3.zero;
+        originalMass = 1f;
+        mouseVelocity = Vector3.zero;
+        previousMouseWorldPos = Vector3.zero;
+        
+        // UNLOCK HIGHLIGHT - let normal hover system take over
+        if (draggedItemRef != null)
+        {
+            draggedItemRef.SetHighlighted(false);
+        }
+        
+        // Re-enable physics
+        physicsEnabled = true;
     }
 
     private void HandleKeyboardPan()
@@ -569,10 +831,12 @@ public class InputManager : MonoBehaviour
         switch (parameterName.ToLower())
         {
             case "centerforce":
-                centerForceStrength = Mathf.Clamp(value, 0f, 100f);
+            case "centerforcemaxstrength":
+                centerForceMaxStrength = Mathf.Clamp(value, 0f, 200f);
                 break;
             case "centerradius":
-                centerForceRadius = Mathf.Clamp(value, 10f, 200f);
+            case "centerforcemaxdistance":
+                centerForceMaxDistance = Mathf.Clamp(value, 1f, 200f);
                 break;
             case "tiltsensitivity":
                 tiltSensitivity = Mathf.Clamp(value, 0f, 50f);
@@ -602,7 +866,8 @@ public class InputManager : MonoBehaviour
                 UpdateRigidbodySettings();
                 break;
             case "freezerotation":
-                rigidbodyFreezeRotation = value > 0.5f; // Treat as boolean (>0.5 = true)
+                // Rotation control is now handled via rotationConstraints int
+                //rotationConstraints = value > 0.5f ? 112 : 0; // 112 = all frozen, 0 = none frozen
                 UpdateRigidbodySettings();
                 break;
             case "continuousdetection":
@@ -782,11 +1047,19 @@ public class InputManager : MonoBehaviour
         ItemView newlyHovered = null;
         
         // Use SphereCast for slightly more forgiving hover detection
-        // NOTE: itemLayer should contain TRIGGER colliders for mouse detection only
-        // Physics colliders should be on different layers to avoid interference
-        if (Physics.SphereCast(ray, 0.05f, out RaycastHit hit, maxSelectionDistance, itemLayer))
+        // NOTE: Only detect TRIGGER colliders on itemLayer (box colliders for mouse detection)
+        // Physics colliders (sphere colliders) are on child objects and excluded from detection
+        if (Physics.SphereCast(ray, 0.05f, out RaycastHit hit, maxSelectionDistance, itemLayer, QueryTriggerInteraction.Collide))
         {
             newlyHovered = hit.collider.GetComponentInParent<ItemView>();
+            
+            // Debug: Show exactly what type of collider was detected
+            string colliderInfo = $"Detected {hit.collider.GetType().Name}";
+            if (hit.collider.isTrigger) colliderInfo += " (trigger)";
+            else colliderInfo += " (physics)";
+            colliderInfo += $" on layer {hit.collider.gameObject.layer}";
+            
+            Debug.Log($"[Mouse Detection] {colliderInfo} - Item: {newlyHovered?.Model?.Title ?? "Unknown"}");
         }
 
         // Check if hover state changed
@@ -1116,7 +1389,7 @@ public class InputManager : MonoBehaviour
             if (itemView?.GetComponent<Rigidbody>() != null)
             {
                 // Scatter books randomly with some velocity
-                Vector3 randomPosition = centerPoint + UnityEngine.Random.insideUnitSphere * (centerForceRadius * 2f);
+                Vector3 randomPosition = centerPoint + UnityEngine.Random.insideUnitSphere * (centerForceMaxDistance * 2f);
                 randomPosition.y = Mathf.Max(1f, randomPosition.y); // Keep above ground
                 
                 itemView.transform.position = randomPosition;
@@ -1186,13 +1459,13 @@ public class InputManager : MonoBehaviour
         
         // Use CENTER OF MASS (average position) instead of bounding box center
         // This is more accurate for irregular distributions
-        Vector3 centerOfMass = sumPositions / validPositions;
+        Vector3 calculatedCenterOfMass = sumPositions / validPositions;
         
         // Optional: Use bounding box center instead (geometric center)
         Vector3 boundingBoxCenter = (minBounds + maxBounds) * 0.5f;
         
         // Choose center of mass for more natural physics behavior
-        Vector3 calculatedCenter = centerOfMass;
+        Vector3 calculatedCenter = calculatedCenterOfMass;
         
         // Debug info (only log occasionally to avoid spam)
         if (Time.frameCount % 300 == 0) // Every 5 seconds at 60fps
@@ -1200,7 +1473,7 @@ public class InputManager : MonoBehaviour
             Vector3 boundingSize = maxBounds - minBounds;
             Debug.Log($"[CenterForce] Center of mass from {validPositions} books: {calculatedCenter:F1}");
             Debug.Log($"[CenterForce] Bounding box: {minBounds:F1} to {maxBounds:F1} (size: {boundingSize:F1})");
-            Debug.Log($"[CenterForce] Center of mass vs bbox center: {centerOfMass:F1} vs {boundingBoxCenter:F1}");
+            Debug.Log($"[CenterForce] Center of mass vs bbox center: {calculatedCenterOfMass:F1} vs {boundingBoxCenter:F1}");
         }
         
         return calculatedCenter;
@@ -1220,8 +1493,8 @@ public class InputManager : MonoBehaviour
             allItemViews = FilterToCurrentCollection(allItemViews);
         }
         
-        // Calculate dynamic center point from actual book positions (NOT hardcoded Vector3.zero!)
-        Vector3 dynamicCenterPoint = CalculateCollectionCenter(allItemViews);
+        // Use FIXED center point - the magnet should NEVER move with the books!
+        Vector3 fixedCenterPoint = centerPoint; // Fixed at (0,0,0) or whatever is set in inspector
         
         int forcesApplied = 0;
         int kinematicBodies = 0;
@@ -1241,8 +1514,15 @@ public class InputManager : MonoBehaviour
             
             Vector3 itemPosition = itemView.transform.position;
             
-            // Calculate distance from DYNAMIC center (including manual offset + tilt offset)
-            Vector3 effectiveCenterPoint = dynamicCenterPoint + manualCenterOffset + centerOffset;
+            // Check scale threshold - skip center force for small items (pebbles)
+            float currentScale = itemView.CurrentScale;
+            if (currentScale < centerForceMinScale)
+            {
+                continue; // Skip center force for items below threshold
+            }
+            
+            // Calculate distance from FIXED center (including manual offset + tilt offset)
+            Vector3 effectiveCenterPoint = fixedCenterPoint + manualCenterOffset + centerOffset;
             Vector3 toCenter = effectiveCenterPoint - itemPosition;
             float distanceToCenter = toCenter.magnitude;
             
@@ -1250,9 +1530,6 @@ public class InputManager : MonoBehaviour
             float scaleBasedMultiplier = 1.0f;
             if (enableScaleBasedForce && itemView != null)
             {
-                // Get current scale of the book
-                float currentScale = itemView.CurrentScale;
-                
                 // Normalize scale to 0-1 range based on min/max book scales
                 float normalizedScale = Mathf.InverseLerp(minBookScale, maxBookScale, currentScale);
                 
@@ -1260,22 +1537,29 @@ public class InputManager : MonoBehaviour
                 scaleBasedMultiplier = Mathf.Lerp(minForceMultiplier, maxForceMultiplier, normalizedScale);
             }
             
-            // Apply force with different logic based on distance
+            // Choose between constant force or distance-based force
             Vector3 centerForce = Vector3.zero;
             
-            if (distanceToCenter > centerForceRadius)
+            if (useConstantCenterForce)
             {
-                // Outside radius: Strong attractive force with linear falloff (not quadratic!)
-                float forceMultiplier = centerForceStrength * (distanceToCenter - centerForceRadius) / distanceToCenter;
-                forceMultiplier *= scaleBasedMultiplier; // Apply scale-based adjustment!
-                centerForce = toCenter.normalized * forceMultiplier;
+                // CONSTANT FORCE - same strength regardless of distance or scale
+                if (distanceToCenter > 0.01f) // Avoid division by zero
+                {
+                    centerForce = toCenter.normalized * constantCenterForce;
+                }
             }
-            else if (distanceToCenter > 1f) // Avoid division by zero for very close objects
+            else
             {
-                // Inside radius: Gentle centering force (10% of max force)
-                float gentleForceMultiplier = centerForceStrength * 0.1f;
-                gentleForceMultiplier *= scaleBasedMultiplier; // Apply scale-based adjustment!
-                centerForce = toCenter.normalized * gentleForceMultiplier;
+                // Original variable force system
+                if (distanceToCenter < centerForceMaxDistance && distanceToCenter > 0.01f) // Avoid division by zero
+                {
+                    // Linear falloff: force = maxStrength * (1 - distance/maxDistance)
+                    float distanceRatio = distanceToCenter / centerForceMaxDistance;
+                    float forceStrength = centerForceMaxStrength * (1f - distanceRatio);
+                    forceStrength *= scaleBasedMultiplier; // Apply scale-based adjustment
+                    
+                    centerForce = toCenter.normalized * forceStrength;
+                }
             }
             
             if (centerForce.magnitude > 0.01f) // Only apply meaningful forces
@@ -1283,19 +1567,11 @@ public class InputManager : MonoBehaviour
                 rb.AddForce(centerForce, ForceMode.Force);
                 forcesApplied++;
                 
-                // Debug logging for first few objects to help diagnose
-                if (forcesApplied <= 3)
-                {
-                    Debug.Log($"[CenterForce] Applied force {centerForce.magnitude:F2} to {itemView.name} at distance {distanceToCenter:F1}");
-                }
+                // No spam debug logging
             }
         }
         
-        // Periodic debug info (every 60 frames = ~1 second at 60fps)
-        if (Time.frameCount % 60 == 0 && (forcesApplied > 0 || kinematicBodies > 0))
-        {
-            Debug.Log($"[CenterForce] Frame {Time.frameCount}: Applied forces to {forcesApplied} objects, {kinematicBodies} kinematic bodies skipped");
-        }
+        // No spam debug logging
     }
     
     /// <summary>
@@ -1479,29 +1755,16 @@ public class InputManager : MonoBehaviour
             {
                 // Apply all rigidbody settings from InputManager parameters
                 rb.linearDamping = rigidbodyDrag;
-                rb.angularDamping = rigidbodyAngularDrag;
+                rb.angularDamping = freezeRotation ? extremeAngularDrag : rigidbodyAngularDrag;
                 rb.sleepThreshold = rigidbodySleepThreshold;
                 
-                if (enableWeebleWobble)
-                {
-                    // WEEBLE WOBBLE MODE - can tilt (X,Z) but not spin (Y)
-                    rb.freezeRotation = false; // Allow physics rotation
-                    rb.constraints = RigidbodyConstraints.FreezeRotationY; // Lock ONLY Y-axis (no spinning like a top)
-                    rb.centerOfMass = weebleCenterOfMass; // Underground center for self-righting
-                    rb.angularVelocity = new Vector3(rb.angularVelocity.x, 0, rb.angularVelocity.z); // Kill Y rotation only
-                    rb.maxAngularVelocity = 2f; // Allow moderate tilting
-                    Debug.Log($"[Weeble] Book can tilt but not spin - Y rotation locked, center of mass: {weebleCenterOfMass}");
-                }
-                else
-                {
-                    // BILLBOARD MODE - completely locked (original behavior)
-                    rb.freezeRotation = true; // Unity's simple approach
-                    rb.constraints = RigidbodyConstraints.FreezeRotationX | 
-                                    RigidbodyConstraints.FreezeRotationY | 
-                                    RigidbodyConstraints.FreezeRotationZ; // Explicit constraint flags
-                    rb.angularVelocity = Vector3.zero; // Kill any existing rotation
-                    rb.maxAngularVelocity = 0f; // Prevent any future angular velocity
-                }
+                // NUCLEAR ROTATION STOP
+                rb.freezeRotation = freezeRotation;
+                rb.constraints = (RigidbodyConstraints)rotationConstraints;
+                rb.centerOfMass = centerOfMass; // Apply InputManager center of mass to all items
+                rb.maxAngularVelocity = freezeRotation ? 0f : maxAngularVelocity;
+                rb.angularVelocity = Vector3.zero; // Force stop any current rotation
+                
                 rb.collisionDetectionMode = rigidbodyUseContinuousDetection ? 
                     CollisionDetectionMode.ContinuousDynamic : 
                     CollisionDetectionMode.Discrete;
@@ -1512,53 +1775,6 @@ public class InputManager : MonoBehaviour
         
         Debug.Log($"[Physics] Updated rigidbody settings: drag={rigidbodyDrag:F1}, angularDrag={rigidbodyAngularDrag:F1}, sleepThreshold={rigidbodySleepThreshold:F2}");
         Debug.Log($"[Physics] ROTATION LOCKED on all {allItemViews.Count} rigidbodies - no spinning allowed!");
-    }
-    
-    /// <summary>
-    /// Test all physics parameters at once
-    /// </summary>
-    [ContextMenu("Test Physics Playground")]
-    public void TestPhysicsPlayground()
-    {
-        Debug.Log("[Test] Setting up physics playground...");
-        
-        // Set dramatic curve for fun
-        curveTypeName = "Pareto";
-        curveAlpha = 1.0f; // Very dramatic
-        
-        // Set up physics for chaos
-        centerForceStrength = 25f;
-        physicsFriction = 0.3f; // Slippery
-        physicsBounciness = 0.2f; // Bouncy
-        gravityMultiplier = 1.2f; // Heavy
-        
-        // Apply search to create size differences
-        ApplySearchBasedScaling("science");
-        
-        // Update materials, rigidbody settings, and gravity
-        UpdatePhysicsMaterials();
-        UpdateRigidbodySettings();
-        Physics.gravity = new Vector3(0, -9.81f * gravityMultiplier, 0);
-        
-        // Scatter books for chaos
-        TestCenterForce();
-        
-        Debug.Log("[Test] Physics playground ready! Use tilt controls to stir the pot!");
-    }
-    
-    /// <summary>
-    /// Test the tilt system by simulating various tilt inputs
-    /// </summary>
-    [ContextMenu("Test Tilt System")]
-    public void TestTiltSystem()
-    {
-        Debug.Log("[Test] Testing tilt system...");
-        
-        // Enable center force if not already enabled
-        enableCenterForce = true;
-        tiltSensitivity = 20f;
-        
-        StartCoroutine(TiltTestSequence());
     }
     
     /// <summary>
@@ -1631,79 +1847,5 @@ public class InputManager : MonoBehaviour
         // Also refresh materials and settings
         UpdatePhysicsMaterials();
         UpdateRigidbodySettings();
-    }
-    
-    /// <summary>
-    /// Test Weeble Wobble physics - tip books and watch them self-right!
-    /// </summary>
-    [ContextMenu("Test Weeble Wobble Physics")]
-    public void TestWeebleWobblePhysics()
-    {
-        if (!enableWeebleWobble)
-        {
-            Debug.LogWarning("[Test] Weeble Wobble is disabled! Enable 'enableWeebleWobble' first.");
-            return;
-        }
-        
-        List<ItemView> allItemViews = GetAllItemViews();
-        Debug.Log($"[Test] Testing Weeble Wobble physics on {allItemViews.Count} books...");
-        
-        foreach (var itemView in allItemViews.Take(5)) // Test first 5 books
-        {
-            Rigidbody rb = itemView.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                // Give each book a random tilt (but not spin!)
-                Vector3 randomTilt = new Vector3(
-                    UnityEngine.Random.Range(-2f, 2f), // X rotation - forward/back tilt
-                    0f,                                 // Y rotation - LOCKED (no spinning)
-                    UnityEngine.Random.Range(-2f, 2f)  // Z rotation - left/right tilt
-                );
-                
-                rb.angularVelocity = randomTilt;
-                Debug.Log($"[Test] Applied tilt to {itemView.name}: {randomTilt} (should self-right due to underground center of mass)");
-            }
-        }
-        
-        Debug.Log("[Test] Weeble Wobble test complete! Books should tilt, wobble, and return upright while staying readable!");
-    }
-    
-    /// <summary>
-    /// Test all controllable physics parameters for Bridge control verification
-    /// </summary>
-    [ContextMenu("Test All Physics Parameters")]
-    public void TestAllPhysicsParameters()
-    {
-        Debug.Log("[Test] Testing all controllable physics parameters...");
-        
-        // Test curve parameters
-        SetCurveType("test", "Parameter Test", "Sigmoid");
-        SetCurveParameter("test", "Parameter Test", "intensity", 8f);
-        SetCurveParameter("test", "Parameter Test", "minscale", 0.2f);
-        SetCurveParameter("test", "Parameter Test", "maxscale", 4f);
-        SetCurveParameter("test", "Parameter Test", "animationspeed", 5f);
-        
-        // Test physics force parameters
-        SetPhysicsParameter("test", "Parameter Test", "centerforce", 25f);
-        SetPhysicsParameter("test", "Parameter Test", "centerradius", 100f);
-        SetPhysicsParameter("test", "Parameter Test", "tiltsensitivity", 30f);
-        
-        // Test material parameters
-        SetPhysicsParameter("test", "Parameter Test", "friction", 0.8f);
-        SetPhysicsParameter("test", "Parameter Test", "bounciness", 0.5f);
-        SetPhysicsParameter("test", "Parameter Test", "gravity", 2f);
-        
-        // Test rigidbody parameters
-        SetPhysicsParameter("test", "Parameter Test", "drag", 5f);
-        SetPhysicsParameter("test", "Parameter Test", "angulardrag", 15f);
-        SetPhysicsParameter("test", "Parameter Test", "sleepthreshold", 0.2f);
-        SetPhysicsParameter("test", "Parameter Test", "freezerotation", 1f); // true
-        SetPhysicsParameter("test", "Parameter Test", "continuousdetection", 1f); // true
-        
-        // Test tilt input
-        PushTiltInput("test", "Parameter Test", 0.5f, 0.3f);
-        
-        Debug.Log("[Test] All physics parameters tested! Check console for parameter updates.");
-        Debug.Log("[Test] Controllers can now use these same Bridge methods for real-time control!");
     }
 }
