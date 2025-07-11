@@ -26,8 +26,7 @@ public class SpaceCraft : BridgeObject
     [Header("Content State")]
     public JObject content;
     
-    [Header("Search State")]  
-    public string searchString = ""; // Search query from controllers - updated via bridge
+    // Search state moved to InputManager - SpaceCraft just forwards updates
     
     // Backing fields for state lists
     private List<string> _selectedItemIds = new List<string>();
@@ -94,12 +93,18 @@ public class SpaceCraft : BridgeObject
         return true;
     }
 
-    // Configuration
-    public bool multiSelectEnabled = false;
+    // TODO: Future refactoring - these will move to specialized managers:
+    // - SelectionManager: SelectedItemIds, HighlightedItemIds, selection logic
+    // - SearchManager: search string and search visualization
+    // - SemanticPhysicsSimulator: physics, forces, and scale-based behaviors
     
     // Create events to notify Bridge when there are changes
     public bool selectedItemsChanged = false;
     public bool highlightedItemsChanged = false;
+    public bool searchStringChangedFromUI = false;
+    
+    // Track last search string from Bridge to avoid feedback loops
+    private string searchStringFromBridge = "";
 
     // RENAMED: Event name for when content is processed
     private const string ContentLoadedEvent = "ContentLoaded";
@@ -191,11 +196,7 @@ public class SpaceCraft : BridgeObject
     
     private void Update()
     {
-        // Forward search string updates to InputManager
-        if (inputManager != null && inputManager.searchString != searchString)
-        {
-            inputManager.searchString = searchString;
-        }
+        // Update method available for future use
     }
     
     private void LateUpdate()
@@ -214,7 +215,7 @@ public class SpaceCraft : BridgeObject
 
         List<string> newList;
         // Handle single selection mode
-        if (!multiSelectEnabled)
+        if (inputManager != null && !inputManager.multiSelectEnabled)
         {
             // If it's already the only selected item, do nothing extra
             if (_selectedItemIds.Count == 1 && _selectedItemIds[0] == itemId) return;
@@ -321,7 +322,7 @@ public class SpaceCraft : BridgeObject
         else
         {   // Item is not selected, so select it
              Debug.Log($"[SpaceCraft] Toggle: Selecting {itemId}");
-           if (!multiSelectEnabled)
+           if (inputManager != null && !inputManager.multiSelectEnabled)
             {
                 // Single select mode: clear list before adding
                 newList.Clear();
@@ -342,7 +343,7 @@ public class SpaceCraft : BridgeObject
         Debug.Log($"[SpaceCraft] SetSelectedItems API called by {clientName}({clientId}) with {newList.Count} items.");
         
         // Enforce single selection mode if active
-        if (!multiSelectEnabled && newList.Count > 1)
+        if (inputManager != null && !inputManager.multiSelectEnabled && newList.Count > 1)
         {
             string lastItem = newList.LastOrDefault(); // Keep only the last one
             newList = string.IsNullOrEmpty(lastItem) ? new List<string>() : new List<string> { lastItem };
@@ -362,7 +363,7 @@ public class SpaceCraft : BridgeObject
         Debug.Log($"[SpaceCraft] AddSelectedItems API called by {clientName}({clientId}) with {itemIds.Count} items.");
 
         // Handle single select mode separately
-        if (!multiSelectEnabled)
+        if (inputManager != null && !inputManager.multiSelectEnabled)
         {
             // Call the primary SelectItem method
             SelectItem(clientId, clientName, itemIds.LastOrDefault());
@@ -420,9 +421,9 @@ public class SpaceCraft : BridgeObject
         if (inputManager == null) return;
         Debug.Log($"[SpaceCraft] SetMultiSelectMode called: {enable}");
         
-        if (multiSelectEnabled != enable)
+        if (inputManager.multiSelectEnabled != enable)
         {
-            multiSelectEnabled = enable;
+            inputManager.multiSelectEnabled = enable;
             
             // If turning off multi-select and we have multiple selections, keep only the first one
             if (!enable && SelectedItemIds.Count > 1)
@@ -522,6 +523,35 @@ public class SpaceCraft : BridgeObject
         if (string.IsNullOrEmpty(itemId)) return;
         // Delegate to RemoveHighlightedItems
         RemoveHighlightedItems(clientId, clientName, new List<string>{ itemId });
+    }
+    
+    /// <summary>
+    /// Update the search string (Bridge API)
+    /// Called by JavaScript when controllers update the search string.
+    /// This updates InputManager which then syncs with the UI.
+    /// </summary>
+    public void SetSearchString(string searchString)
+    {
+        if (inputManager != null)
+        {
+            // Track that this update came from Bridge to avoid feedback loops
+            searchStringFromBridge = searchString;
+            inputManager.searchString = searchString;
+            Debug.Log($"[SpaceCraft] Search string updated from Bridge to: '{searchString}'");
+        }
+    }
+    
+    /// <summary>
+    /// Called by InputManager when the user types in the Unity UI search field
+    /// </summary>
+    public void OnSearchStringChangedFromUI(string newSearchString)
+    {
+        // Only send event if this is actually a UI change (not an echo from Bridge update)
+        if (newSearchString != searchStringFromBridge)
+        {
+            searchStringChangedFromUI = true;
+            Debug.Log($"[SpaceCraft] Search string changed from UI to: '{newSearchString}'");
+        }
     }
     
     /// <summary>
@@ -855,6 +885,16 @@ public class SpaceCraft : BridgeObject
             Debug.Log("SpaceCraft: HighlightedItemsChanged: highlightedItemIds: " + string.Join(",", HighlightedItemIds));
             SendEventName("HighlightedItemsChanged");
             highlightedItemsChanged = false; // Reset flag here
+        }
+        
+        if (searchStringChangedFromUI)
+        {
+            Debug.Log($"SpaceCraft: SearchStringChanged from UI: '{inputManager?.searchString ?? ""}'");
+            // JavaScript should express interest with query template: {"searchString": "component:InputManager/searchString"}
+            SendEventName("SearchStringChanged");
+            searchStringChangedFromUI = false; // Reset flag here
+            // Also update our tracking to prevent feedback loops
+            searchStringFromBridge = inputManager?.searchString ?? "";
         }
     }
 

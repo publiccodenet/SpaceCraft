@@ -110,6 +110,8 @@ public static class Build
 
         // --- PRE-BUILD STEP: Remove symlinks from build target directory --- 
         Debug.Log($"[Build Pre-Clean] Cleaning symlinks from: {buildPath}");
+        Debug.Log("[Build Pre-Clean] Note: This removes symlinks that might cause issues with WebGL builds.");
+        Debug.Log("[Build Pre-Clean] If you encounter content loading errors, verify that your StreamingAssets data is complete and consistent.");
         RemoveSymlinksRecursive(buildPath);
         Debug.Log("[Build Pre-Clean] Symlink cleaning complete.");
         // --- END PRE-BUILD STEP ---

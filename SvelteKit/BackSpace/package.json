@@ -12,23 +12,19 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write .",
-    
     "# Schema Processing": "Commands for schema generation, export and validation",
     "schemas:generate": "tsx scripts/schemas-export.js",
     "schemas:debug": "tsx scripts/schemas-debug.js",
     "schemas:export": "copyfiles -f ../../Content/schemas/*.json ../../Unity/SpaceCraft/Assets/StreamingAssets/Content/schemas/",
     "schemas:export:unity": "npm run schemas:export",
-    
     "# Content Pipeline": "High-level content pipeline commands",
     "pipeline": "tsx scripts/pipeline.js",
     "pipeline:run": "tsx scripts/pipeline.js run",
     "pipeline:import": "tsx scripts/pipeline.js import",
     "pipeline:export": "tsx scripts/pipeline.js export",
     "pipeline:bootstrap": "tsx scripts/pipeline.js bootstrap",
-    
     "# Internet Archive": "Internet Archive specific commands",
     "ia:import": "tsx scripts/pipeline.js import --importer ia",
-    
     "# Content Management": "Direct content management commands",
     "content:init": "tsx scripts/content-init.js",
     "content:info": "tsx scripts/content-info.js",
@@ -37,12 +33,10 @@
     "collection:manage": "tsx scripts/collection-manage.js",
     "collection:validate": "tsx scripts/collection-exclude.js check",
     "collection:excluded": "tsx scripts/collection-exclude.js list",
-    
     "# Item Management": "Individual item management",
     "item:list": "tsx scripts/item-manage.js list",
     "item:get": "tsx scripts/item-manage.js get",
     "item:create": "tsx scripts/item-create.js",
-    
     "# Unity Integration": "Unity-specific commands",
     "unity:setup": "tsx scripts/unity-automation.js install",
     "unity:env": "tsx scripts/unity-env.js --verbose",
@@ -77,6 +71,7 @@
     "glob": "^9.3.5",
     "image-size": "^2.0.2",
     "internetarchive-sdk-js": "^1.0.37",
+    "lodash": "^4.17.21",
     "open": "^10.1.1",
     "p-queue": "^8.1.0",
     "pino": "^8.21.0",

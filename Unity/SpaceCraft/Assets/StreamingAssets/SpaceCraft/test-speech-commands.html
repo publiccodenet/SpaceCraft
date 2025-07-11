@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<!--
+    SpaceCraft Speech Command Test
+    
+    This demonstrates command parsing inspired by MIT LOGO (LLOGO) from the 1970s.
+    The boolean expression handling exactly matches the original LISP implementation
+    by Seymour Papert, Cynthia Solomon, and the MIT LOGO team.
+    
+    LLOGO ASK function accepted: YES Y T TRUE RIGHT for yes, NO N NIL F FALSE WRONG for no.
+    This philosophy of accepting multiple valid expressions of the same idea made
+    LOGO accessible and friendly to learners of all ages.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SpaceCraft Speech Command Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .command-list {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .command-group {
+            margin-bottom: 15px;
+        }
+        .command-group h3 {
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+        .synonyms {
+            color: #666;
+            font-style: italic;
+        }
+        #testInput {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            min-height: 50px;
+        }
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .no-match {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 SpaceCraft Speech Command Tester</h1>
+        <p>This demonstrates the LLOGO-inspired command parsing with speech-friendly synonyms.</p>
+        
+        <div class="command-list">
+            <h2>Available Commands:</h2>
+            
+            <div class="command-group">
+                <h3>✅ Confirmations (Exact LLOGO boolean expressions)</h3>
+                <div class="synonyms">
+                    Yes: <code>yes, y, t, true, right, 1</code> (from LLOGO: '(YES Y T TRUE RIGHT) plus numeric 1)<br>
+                    No: <code>no, n, nil, f, false, wrong, 0</code> (from LLOGO: '(NO N NIL F FALSE WRONG) plus numeric 0)
+                </div>
+            </div>
+            
+            <div class="command-group">
+                <h3>🔧 Debug Mode</h3>
+                <div class="synonyms">Say: debug, sudo, xyzzy, plugh, admin, developer, dev mode, debug mode</div>
+                <div>With LLOGO boolean parameters: <code>debug yes</code>, <code>sudo t</code>, <code>xyzzy false</code>, <code>plugh wrong</code>, <code>debug 1</code>, <code>sudo 0</code></div>
+            </div>
+            
+            <div class="command-group">
+                <h3>🏠 Reset View</h3>
+                <div class="synonyms">Say: reset, reset view, home, go home, center, origin, start</div>
+            </div>
+            
+            <div class="command-group">
+                <h3>❓ Help</h3>
+                <div class="synonyms">Say: help, what can i do, what can you do, commands, instructions, ?</div>
+            </div>
+            
+            <div class="command-group">
+                <h3>🎤 Secret Speech Synthesis (NEW!)</h3>
+                <div class="synonyms">Say: <code>hal</code>, <code>speak</code>, <code>voice</code>, <code>hello computer</code>, <code>computer</code></div>
+                <div>With parameters: <code>hal yes</code> to enable, <code>voice no</code> to disable</div>
+                <div>Activates speech output - references HAL 9000 and Star Trek IV!</div>
+            </div>
+        </div>
+        
+        <h2>Try it out:</h2>
+        <input type="text" id="testInput" placeholder="Type a command or search term...">
+        
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        // Simplified command parser for testing
+        function parseCommand(input) {
+            // Canonicalize input: lowercase, trim, remove punctuation
+            const canonical = (input || '')
+                .toLowerCase()
+                .trim()
+                .replace(/[.,!?;:'"]/g, '')
+                .replace(/\s+/g, ' ');
+            
+            // Command synonym lists (from controller.js)
+            const COMMANDS = {
+                debug: {
+                    synonyms: ['debug', 'sudo', 'xyzzy', 'plugh', 'admin', 'developer', 'dev mode', 'debug mode'],
+                    action: 'enableDebug'
+                },
+                reset: {
+                    synonyms: ['reset', 'reset view', 'home', 'go home', 'center', 'origin', 'start'],
+                    action: 'resetView'
+                },
+                speech: {
+                    synonyms: ['hal', 'speak', 'voice', 'hello computer', 'computer', 'engage voice', 'activate speech'],
+                    action: 'enableSpeech'
+                },
+                yes: {
+                    // EXACTLY matching LLOGO: '(YES Y T TRUE RIGHT) plus numeric 1
+                    synonyms: ['yes', 'y', 't', 'true', 'right', '1'],
+                    action: 'confirmYes'
+                },
+                no: {
+                    // EXACTLY matching LLOGO: '(NO N NIL F FALSE WRONG) plus numeric 0
+                    synonyms: ['no', 'n', 'nil', 'f', 'false', 'wrong', '0'],
+                    action: 'confirmNo'
+                },
+                help: {
+                    synonyms: ['help', 'what can i do', 'what can you do', 'commands', 'instructions', '?'],
+                    action: 'showHelp'
+                }
+            };
+            
+            // Check for debug mode parameters
+            // Uses LLOGO boolean expressions for parameters
+            const debugMatch = canonical.match(/^(debug|sudo|xyzzy|plugh)\s+(.+)$/);
+            if (debugMatch) {
+                const param = debugMatch[2];
+                // Use LLOGO's exact boolean expressions plus numeric
+                // YES Y T TRUE RIGHT 1 = enable
+                // NO N NIL F FALSE WRONG 0 = disable
+                const isEnable = ['yes', 'y', 't', 'true', 'right', '1'].includes(param);
+                const isDisable = ['no', 'n', 'nil', 'f', 'false', 'wrong', '0'].includes(param);
+                
+                if (isEnable || isDisable) {
+                    return {
+                        command: 'debug',
+                        action: 'enableDebug', 
+                        params: { enable: isEnable },
+                        canonical: canonical
+                    };
+                }
+            }
+            
+            // Find matching command
+            for (const [cmdName, cmdDef] of Object.entries(COMMANDS)) {
+                if (cmdDef.synonyms.some(syn => canonical === syn || canonical.startsWith(syn + ' '))) {
+                    return {
+                        command: cmdName,
+                        action: cmdDef.action,
+                        params: {},
+                        canonical: canonical
+                    };
+                }
+            }
+            
+            // No command found
+            return null;
+        }
+        
+        // Test the parser
+        const input = document.getElementById('testInput');
+        const result = document.getElementById('result');
+        
+        input.addEventListener('input', () => {
+            const value = input.value;
+            const parsed = parseCommand(value);
+            
+            if (parsed) {
+                result.className = 'success';
+                result.innerHTML = `
+                    <strong>✅ Command Detected!</strong><br>
+                    Input: "${value}"<br>
+                    Canonical: "${parsed.canonical}"<br>
+                    Command: ${parsed.command}<br>
+                    Action: ${parsed.action}<br>
+                    Params: ${JSON.stringify(parsed.params)}
+                `;
+            } else if (value.trim()) {
+                result.className = 'no-match';
+                result.innerHTML = `
+                    <strong>🔍 Regular Search</strong><br>
+                    This would search for: "${value}"
+                `;
+            } else {
+                result.className = '';
+                result.innerHTML = 'Type something to test the parser...';
+            }
+        });
+        
+        // Some example inputs to try
+        const examples = [
+            'debug', 'XYZZY', 'sudo yes', 'plugh n', 'debug true', 'xyzzy false',
+            'debug 1', 'sudo 0', 'hal 1', 'speak 0',
+            'reset', 'go home', 'center',
+            'yes', 'y', 't', 'true', 'right', '1',
+            'no', 'n', 'nil', 'f', 'false', 'wrong', '0',
+            'help', 'what can I do?',
+            'hal', 'hello computer', 'speak', 'voice',
+            'spacecraft items', 'unity controller'
+        ];
+        
+        console.log('Try these examples:', examples);
+    </script>
+</body>
+</html> 

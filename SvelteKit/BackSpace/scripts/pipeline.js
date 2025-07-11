@@ -24,6 +24,7 @@ import os from 'os';
 import sharp from 'sharp';
 import InternetArchive from 'internetarchive-sdk-js';
 import * as converters from '../src/lib/schemas/converters.js';
+import _ from 'lodash';
 
 // Import constants from lib
 import { EMOJI, CLI_FORMATTING, PATHS } from '../src/lib/constants/index.ts';
@@ -81,6 +82,7 @@ class PipelineLogger {
       cover_cache_hits: 0,
       cover_cache_misses: 0,
       cover_requested_count: 0,
+      cover_custom_used: 0,
       
       // Item metrics
       item_processed_count: 0,
@@ -625,92 +627,127 @@ class ContentPipeline {
    * @param {string} itemId Item ID
    * @param {Object} options Fetch options
    * @returns {Promise<Object>} Item data
+   * 
+   * Custom Cover Support:
+   * To use a custom cover image instead of the Internet Archive cover:
+   * 1. Place a file named "cover-custom.jpg" in the cache directory:
+   *    Content/collections/{collectionId}/Items/{itemId}/cover-custom.jpg
+   * 2. The pipeline will use this custom cover instead of downloading from IA
+   * 3. Unity will receive this as "cover.jpg" (no difference from Unity's perspective)
+   * 4. The item.json will contain the dimensions of the custom cover
    */
   async fetchItem(collectionId, itemId, options = {}) {
     const context = { function: 'fetchItem', collectionId, itemId, ...options };
     this.logger.increment('item_requested_count', 1, context);
     
-    try {
-      this.logger.info(`Fetching item ${itemId} from collection ${collectionId}`, null, context);
-      
-      // Track API metrics
-      const startTime = Date.now();
-      this.logger.increment('api_calls_total', 1, context);
-      
-      // Make API request using Internet Archive SDK
-      const response = await this.api.getItem(itemId);
-      
-      // Calculate metrics
-      const endTime = Date.now();
-      const duration = (endTime - startTime) / 1000; // in seconds
-      const responseSize = JSON.stringify(response).length;
-      
-      // Update API metrics
-      this.logger.add('api_response_bytesDownloaded', responseSize, context);
-      this.logger.add('api_response_time', duration, context);
-      
-      if (response && response.metadata) {
-        const item = {
-          id: itemId,
-          name: response.metadata.title || itemId,
-          title: response.metadata.title,
-          description: response.metadata.description,
-          creator: response.metadata.creator,
-          subject: response.metadata.subject,
-          collection: response.metadata.collection,
-          publicdate: response.metadata.publicdate,
-          ...response.metadata
-        };
-        this.logger.info(`Successfully fetched item: ${item.name} (${item.id})`, null, context);
-        
-        // Always set the coverImage URL based on item ID
-        // This ensures we use the Internet Archive API endpoint rather than files in the item directory
-        item.coverImage = `https://archive.org/services/img/${itemId}`;
-        
-        // Normalize the item data (perform type conversions, calculate favoriteCount)
-        const normalizedItem = this.normalizeItemData(item);
-        
-        // Process cover image
-        if (options.processCoverImage !== false) {
+    const itemCachePath = path.join(this.contentCache, collectionId, 'Items', itemId);
+    const itemJsonPath = path.join(itemCachePath, 'item.json');
+    const customItemJsonPath = path.join(itemCachePath, 'item-custom.json');
+    let itemData = null;
+
+    // Check for a pre-existing item.json. This could be a fully custom item or a cached IA item.
+    if (fs.existsSync(itemJsonPath)) {
+        try {
+            const existingData = await fs.readJson(itemJsonPath);
+            // If it's a custom item, we use this as our base and do not fetch from IA.
+            if (existingData.custom_item === true) {
+                this.logger.info(`Processing as custom item: ${itemId}`, null, context);
+                itemData = existingData;
+            }
+        } catch (error) {
+            this.logger.error(`Could not read existing item.json for ${itemId}: ${error.message}`, error, context);
+        }
+    }
+
+    // If it's not a custom item (itemData is null), fetch from Internet Archive.
+    if (!itemData) {
+        try {
+            // Fetch metadata directly from Internet Archive
+            const metadataUrl = `https://archive.org/metadata/${itemId}`;
+            this.logger.info(`Fetching metadata from: ${metadataUrl}`, null, context);
+            
+            const response = await axios.get(metadataUrl);
+            const iaJson = response.data;
+            
+            if (!iaJson || !iaJson.metadata) {
+                throw new Error('Invalid metadata from Internet Archive');
+            }
+            
+            // This is our base data for non-custom items
+            itemData = this.normalizeItemData({ id: itemId, ...iaJson.metadata });
+            this.logger.info(`Fetched item from IA: ${itemData.title || itemData.name || itemId} (${itemData.id})`, null, context);
+
+            // NOW, check for custom overlay data for this IA item
+            if (fs.existsSync(customItemJsonPath)) {
+                const customData = await fs.readJson(customItemJsonPath);
+                _.merge(itemData, customData); // Deep merge custom data over IA data
+                this.logger.info(`Overlayed custom metadata for IA item ${itemId}`, null, context);
+            }
+
+        } catch (error) {
+            this.logger.error(`Failed to fetch or process IA item ${itemId}: ${error.message}`, error, context);
+            return null; // Stop processing this item
+        }
+    }
+
+    // Always ensure coverImage URL is set for non-custom items
+    if (!itemData.coverImage) {
+        itemData.coverImage = `https://archive.org/services/img/${itemId}`;
+    }
+
+    // Process cover image for both custom and IA items
+    if (options.processCoverImage !== false) {
+      try {
+        await fs.ensureDir(itemCachePath);
+        const customCoverPath = path.join(itemCachePath, 'cover-custom.jpg');
+        const standardCoverPath = path.join(itemCachePath, 'cover.jpg');
+        let coverPathToMeasure = null;
+
+        if (fs.existsSync(customCoverPath)) {
+          coverPathToMeasure = customCoverPath;
+          this.logger.receipt.cover_custom_used++;
+        } else if (fs.existsSync(standardCoverPath)) {
+          coverPathToMeasure = standardCoverPath;
+        } else if (itemData.coverImage) {
+          // Download cover if we have a URL and no cover exists
+          this.logger.info(`Downloading cover for ${itemId}`, null, context);
           try {
-            const coverUrl = normalizedItem.coverImage;
-            const filename = `${itemId}.jpg`;
-            const localPath = path.join(this.tempPath, 'covers', filename);
-            
-            // Download cover image
-            this.logger.info(`Downloading cover image for ${normalizedItem.id}: ${coverUrl}`, null, context);
-            await this.downloadFile(coverUrl, localPath, { ...context, type: 'coverImage' });
-            
-            // Get image dimensions with Sharp
-            const imageMetadata = await sharp(localPath).metadata();
-            normalizedItem.coverImageWidth = imageMetadata.width;
-            normalizedItem.coverImageHeight = imageMetadata.height;
-            this.logger.info(`Cover image dimensions: ${normalizedItem.coverImageWidth}x${normalizedItem.coverImageHeight}`, null, context);
-            
-            // Save cover image to the item directory in cache
-            const itemPath = path.join(this.contentCache, collectionId, 'Items', itemId);
-            await fs.ensureDir(itemPath);
-            await fs.copyFile(localPath, path.join(itemPath, 'cover.jpg'));
-            
-            // Save the normalized item to cache
-            await fs.writeJSON(path.join(itemPath, 'item.json'), normalizedItem, { spaces: 2 });
+            await this.downloadFile(itemData.coverImage, standardCoverPath, context);
+            coverPathToMeasure = standardCoverPath;
+            this.logger.increment('cover_download_count', 1);
           } catch (error) {
-            this.logger.error(`Error processing cover image for ${normalizedItem.id}`, error, context);
-            this.logger.increment('cover_image_errors', 1, context);
+            this.logger.error(`Failed to download cover for ${itemId}`, error, context);
           }
         }
-        
-        return normalizedItem;
-      } else {
-        this.logger.error(`Failed to fetch item ${itemId}: Invalid response`, null, context);
-        this.logger.increment('api_errors', 1, context);
-        throw new Error(`Invalid item response for ${itemId}`);
+
+        if (coverPathToMeasure) {
+          const dimensions = await this.getImageDimensions(coverPathToMeasure);
+          if (dimensions) {
+            itemData.coverWidth = dimensions.width;
+            itemData.coverHeight = dimensions.height;
+            this.logger.info(`Set cover dimensions for ${itemId}: ${dimensions.width}x${dimensions.height}`, null, context);
+          } else {
+            itemData.coverWidth = 0;
+            itemData.coverHeight = 0;
+            this.logger.warn(`Could not get dimensions for ${itemId}`, null, context);
+          }
+        } else {
+          itemData.coverWidth = 0;
+          itemData.coverHeight = 0;
+          this.logger.warn(`No cover found for ${itemId}`, null, context);
+        }
+      } catch (err) {
+        this.logger.error(`Error processing cover for ${itemId}: ${err.message}`, err, context);
+        itemData.coverWidth = 0;
+        itemData.coverHeight = 0;
       }
-    } catch (error) {
-      this.logger.error(`Error fetching item ${itemId} from collection ${collectionId}`, error, context);
-      this.logger.increment('api_errors', 1, context);
-      throw error;
     }
+
+    // Save final item data (with updated dimensions) to cache
+    await fs.writeJson(itemJsonPath, itemData, { spaces: 2 });
+    this.logger.receipt.item_updated_count++;
+    
+    return itemData;
   }
   
   /**
@@ -790,6 +827,8 @@ class ContentPipeline {
       const itemsUpdated = this.logger.receipt.item_updated_count || 0;
       const itemsSkipped = this.logger.receipt.item_skipped_count || 0;
       const coversProcessed = this.logger.receipt.cover_processed_count || 0;
+      const customCoversUsed = this.logger.receipt.cover_custom_used || 0;
+      const coversDownloaded = this.logger.receipt.cover_download_count || 0;
       const errorsEncountered = this.logger.receipt.error_count || 0;
       
       console.log('Import statistics:');
@@ -798,6 +837,8 @@ class ContentPipeline {
       console.log(`Items updated: ${itemsUpdated}`);
       console.log(`Items skipped: ${itemsSkipped}`);
       console.log(`Covers processed: ${coversProcessed}`);
+      console.log(`Custom covers used: ${customCoversUsed}`);
+      console.log(`Covers downloaded: ${coversDownloaded}`);
       console.log(`Errors encountered: ${errorsEncountered}`);
       
       return {
@@ -923,15 +964,25 @@ class ContentPipeline {
         );
         this.logger.debug(`Wrote item.json for ${collectionId}/${itemId}`, null, context);
         
-        // Copy cover image file if it exists locally
-        if (fs.existsSync(coverCachePath)) {
-          // Copy cover image to Unity
+        // Copy cover image file - check for custom cover first
+        const customCoverCachePath = path.join(this.contentCache, collectionId, 'Items', itemId, 'cover-custom.jpg');
+        
+        if (fs.existsSync(customCoverCachePath)) {
+          // Custom cover exists - copy it as cover.jpg to Unity
+          await fs.copyFile(
+            customCoverCachePath,
+            path.join(exportItemPath, 'cover.jpg')
+          );
+          this.logger.info(`Exported custom cover for ${collectionId}/${itemId}`, null, context);
+        } else if (fs.existsSync(coverCachePath)) {
+          // No custom cover, but standard cover exists
           await fs.copyFile(
             coverCachePath,
             path.join(exportItemPath, 'cover.jpg')
           );
+          this.logger.debug(`Exported standard cover for ${collectionId}/${itemId}`, null, context);
         } else {
-          this.logger.debug(`No local cover image found for ${collectionId}/${itemId}`, null, context);
+          this.logger.debug(`No cover image found for ${collectionId}/${itemId}`, null, context);
         }
       } else {
         throw new Error(`Item ${itemId} not found in cache`);
@@ -1123,10 +1174,16 @@ class ContentPipeline {
               await fs.copyFile(itemJsonPath, path.join(targetItemPath, 'item.json'));
             }
             
-            // Copy cover.jpg
-            const coverPath = path.join(sourceItemPath, 'cover.jpg');
-            if (fs.existsSync(coverPath)) {
-              await fs.copyFile(coverPath, path.join(targetItemPath, 'cover.jpg'));
+            // Copy cover - check for custom cover first
+            const customCoverPath = path.join(sourceItemPath, 'cover-custom.jpg');
+            const standardCoverPath = path.join(sourceItemPath, 'cover.jpg');
+            
+            if (fs.existsSync(customCoverPath)) {
+              // Custom cover exists - copy it as cover.jpg
+              await fs.copyFile(customCoverPath, path.join(targetItemPath, 'cover.jpg'));
+            } else if (fs.existsSync(standardCoverPath)) {
+              // No custom cover, copy standard cover
+              await fs.copyFile(standardCoverPath, path.join(targetItemPath, 'cover.jpg'));
             }
           }
         }

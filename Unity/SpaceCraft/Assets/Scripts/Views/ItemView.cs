@@ -193,7 +193,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
         // Apply current InputManager physics settings
         ApplyInputManagerPhysicsSettings();
         
-        Debug.Log($"[ItemView] Physics behavior configured for {name}");
+        // Debug.Log($"[ItemView] Physics behavior configured for {name}");
         
         // Start in kinematic mode to prevent initial jiggling, then enable physics after settling
         StartCoroutine(EnablePhysicsAfterSettling());
@@ -729,7 +729,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
                 // Ensure it's positioned correctly (slightly above the book surface)
                 childBoxCollider.center = new Vector3(0, colliderThickness/2, 0);
                 
-                Debug.Log($"[ItemView] Updated BookCoverBox collider: {bookWidth:F2} x {bookHeight:F2} for {Model?.Title ?? "Unknown"}");
+                // Debug.Log($"[ItemView] Updated BookCoverBox collider: {bookWidth:F2} x {bookHeight:F2} for {Model?.Title ?? "Unknown"}");
             }
             else
             {

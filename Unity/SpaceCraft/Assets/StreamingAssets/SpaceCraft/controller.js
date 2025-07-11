@@ -52,8 +52,7 @@
  *
  * --- PRESENCE EVENTS ---
  * 'presence' { event: 'sync' }: Full state of all connected clients
- * 'presence' { event: 'join' }: New client has connected
- * 'presence' { event: 'leave' }: Client has disconnected
+ * 'presence' { event: 'join' }, 'presence' { event: 'leave' }: New client has connected/disconnected
  *
  * --- SIMULATOR TAKEOVER ---
  * 'simulator_takeover': Sent when a new simulator takes over
@@ -95,121 +94,28 @@ window.BaseController = class BaseController {
     // Global volume control
     static OVERALL_VOLUME = 0.25;
     
-    // List of Fun Astronomical & Sci-Fi Names
-    static funNameList = [
-        // Solar System Planets & Moons
-        'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus',
-        'Neptune', 'Pluto', 'Luna', 'Io', 'Europa', 'Ganymede', 'Callisto',
-        'Titan', 'Enceladus', 'Triton', 'Charon',
-
-        // Well-Known Stars
-        'Sol', 'Proxima Centauri', 'Alpha Centauri', 'Sirius', 'Vega',
-        'Betelgeuse', 'Rigel', 'Polaris', 'Antares', 'Arcturus',
-        'Capella', 'Aldebaran', 'Spica', 'Altair', 'Deneb',
-        'Fomalhaut', 'Procyon', 'Achernar', 'Castor', 'Pollux',
-
-        // Famous Nebulae & Galaxies
-        'Andromeda Galaxy', 'Milky Way', 'Orion Nebula', 'Crab Nebula',
-        'Eagle Nebula', 'Pillars of Creation', 'Horsehead Nebula',
-        'Triangulum Galaxy', 'Whirlpool Galaxy', 'Sombrero Galaxy',
-        'Cat\'s Eye Nebula', 'Boomerang Nebula', 'Ring Nebula',
-        'Hourglass Nebula', 'Helix Nebula', 'Butterfly Nebula',
+    // Generate timestamp-based anonymous name
+    static generateAnonymousName() {
+        const now = new Date();
+        const year = now.getUTCFullYear();
+        const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(now.getUTCDate()).padStart(2, '0');
+        const hours = String(now.getUTCHours()).padStart(2, '0');
+        const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+        // Get 2 significant figures of the second fraction (milliseconds / 10)
+        const fraction = String(Math.floor(now.getUTCMilliseconds() / 10)).padStart(2, '0');
         
-        // Star Trek Planets & Locations
-        'Vulcan', 'Kronos', 'Romulus', 'Bajor', 'Risa', 'Betazed', 'Andoria',
-        'Deep Space 9', 'Starbase 1', 'Guardian of Forever',
+        return `Anonymous-${year}-${month}-${day}-${hours}-${minutes}-${seconds}-${fraction}`;
+    }
+    
 
-        // Star Trek Ships
-        'USS Enterprise', 'USS Voyager', 'USS Defiant', 'USS Excelsior',
-        'USS Stargazer', 'Bird-of-Prey',
-
-        // Star Wars Planets & Moons
-        'Tatooine', 'Hoth', 'Endor', 'Dagobah', 'Naboo', 'Coruscant',
-        'Bespin', 'Kamino', 'Alderaan', 'Yavin 4', 'Kashyyyk', 'Mandalore',
-
-        // Star Wars Ships & Stations
-        'Millennium Falcon', 'X-Wing', 'TIE Fighter', 'Star Destroyer',
-        'Death Star', 'Tantive IV', 'Home One',
-        'Lambda Shuttle', 'Sandcrawler', 'Sail Barge',
-
-        // Iain M. Banks' Culture Ships
-        'Clear Air Turbulence', 'Limiting Factor', 'Just Read The Instructions',
-        'Of Course I Still Love You', 'Sleeper Service', 'Grey Area',
-        'Attitude Adjuster', 'Congenital Optimist', 'Size Isn\'t Everything',
-        'Ethics Gradient', 'Just Testing', 'Frank Exchange Of Views',
-        'No Fixed Abode', 'Very Little Gravitas Indeed',
-        'Experiencing A Significant Gravitas Shortfall',
-        'Sense Amid Madness, Wit Amidst Folly',
-        'Falling Outside the Normal Moral Constraints',
-        
-        // More Culture Ships - Excellent for "I am..."
-        'Serious Callers Only', 'Unfortunate Conflict Of Evidence',
-        'Wisdom Like Silence', 'Zero Gravitas', 'Problem Child',
-        'Unacceptable Behaviour', 'Honest Mistake', 'Fate Amenable To Change',
-        'Jaundiced Outlook', 'Recent Convert', 'Yawning Angel',
-        'Gunboat Diplomat', 'Ultimate Ship The Second', 'Kiss The Blade',
-        'Boo!', 'Dramatic Exit', 'Awkward Customer', 'Reformed Nice Guy',
-        'Now Look What You\'ve Made Me Do', 'Kiss This Then',
-        'Different Tan', 'Sweet and Full of Grace',
-        'Well I Was In The Neighbourhood',
-        'Lapsed Pacifist', 'You\'ll Thank Me Later', 'Perfidy',
-        'Synchronize Your Dogmas', 'God Told Me To Do It',
-        'Just Another Victim Of The Ambient Morality',
-        'Advanced Case Of Chronic Patheticism',
-        'Don\'t Try This At Home', 'You Naughty Monsters',
-        'It\'s My Party And I\'ll Sing If I Want To',
-        'Lightly Seared On The Reality Grill',
-        'Now We Try It My Way', 'Pure Big Mad Boat Man',
-        'You\'ll Clean That Up Before You Leave',
-        'Total Internal Reflection', 'Fixed Grin',
-        'Me, I\'m Counting', 'Inappropriate Response',
-        'Helpless In The Face Of Your Beauty',
-        'Not Wanted on Voyage', 'Credibility Problem',
-        'Dramatic Exit, Or, Thank you And Goodnight',
-        'Synchronize Your Dogmas',
-        'The Precise Nature Of The Catastrophe',
-
-        // Other Iconic Sci-Fi Planets
-        'Arrakis', 'Dune', 'Solaris', 'Pandora', 'Magrathea', 'Cybertron',
-        'Gallifrey', 'Terminus', 'Trantor',
-        'Caprica', 'Kobol', 'Reach', 'Genesis', 'Hyperion', 'Terra Nova',
-        'Serenity Valley',
-
-        // Other Iconic Sci-Fi Ships, Stations & Entities
-        'Serenity', 'Nostromo', 'Discovery One', 'HAL 9000', 'Valley Forge',
-        'Battlestar Galactica', 'Pegasus', 'Rama', 'Heart of Gold', 'Red Dwarf',
-        'White Star', 'Babylon 5', 'Ark', 'Axiom', 'Rocinante', 'Tycho Station',
-        'Ceres Station', 'ISV Venture Star', 'Gunstar', 'TARDIS',
-        'Swordfish II', 'Bebop', 'Planet Express Ship', 'Moya',
-        'Ansible',
-        
-        // More Sci-Fi Ships
-        'Sulaco', 'Pillar of Autumn', 'Galactica', 'Normandy',
-        'Tempest', 'Hyperion', 'Icarus', 'Event Horizon', 'Prometheus',
-        'Nostradamus', 'Andromeda Ascendant', 'Lewis and Clark',
-        'Excalibur', 'Odyssey', 'Destiny', 'Lexx', 'The Liberator',
-        'The Yamato', 'Thunderbird 5', 'Eagle Transporter',
-        'Jupiter 2', 'Rodger Young', 'Colonial One', 'Time Machine',
-        'FTL Scout Ship', 'Nebuchadnezzar', 'Borg Cube', 'Soyuz',
-        
-        // Famous Real Space Mission Names
-        'Apollo', 'Voyager', 'Cassini', 'Hubble', 'Curiosity',
-        'Perseverance', 'Pioneer', 'New Horizons', 'Sputnik',
-        'Rosetta', 'Galileo', 'Opportunity', 'Chandrayaan',
-        'Mariner', 'Viking', 'Columbia', 'Challenger', 'Discovery',
-        'Enterprise', 'Atlantis', 'Endeavour', 'Skylab', 'Mir',
-        'Venera', 'Vostok', 'Kepler', 'Herschel', 'Spitzer',
-    ];
     
     // Sound patterns - defined inline to avoid circular reference issues
     static SOUND_PATTERNS = {
         CLICK: { frequency: 1200, duration: 40, type: 'sine', category: 'ui' },
         SUCCESS: { frequency: 880, duration: 60, type: 'sine', fadeOut: true, category: 'feedback' },
         ERROR: { frequency: 220, duration: 150, type: 'square', category: 'feedback' },
-        RENAME: [
-            { frequency: 660, duration: 50, type: 'sine', category: 'event' },
-            { frequency: 880, duration: 60, type: 'sine', category: 'event' }
-        ],
         TILT_ON: { frequency: 440, duration: 75, type: 'triangle', fadeIn: true, category: 'feedback' },
         TILT_OFF: { frequency: 330, duration: 75, type: 'triangle', fadeOut: true, category: 'feedback' },
         JOIN: [
@@ -223,7 +129,6 @@ window.BaseController = class BaseController {
         BUTTON_TILT: { frequency: 1320, duration: 30, type: 'sine', category: 'ui' },
         BUTTON_SPEECH: { frequency: 1100, duration: 30, type: 'sine', category: 'ui' },
         BUTTON_SOUND: { frequency: 980, duration: 30, type: 'sine', category: 'ui' },
-        BUTTON_RENAME: { frequency: 860, duration: 30, type: 'sine', category: 'ui' },
         
         // Generic ON/OFF button sounds
         BUTTON_ON: { frequency: 1000, duration: 20, type: 'sine', category: 'ui' },
@@ -281,7 +186,7 @@ window.BaseController = class BaseController {
         // Identity properties 
         this.clientType = clientType;
         this.clientId = this.generateClientId();
-        this.clientName = this.getOrGenerateShipName();
+        this.anonymousName = this.constructor.generateAnonymousName();
         
         // UI elements
         this.targetElement = null;
@@ -299,6 +204,9 @@ window.BaseController = class BaseController {
         // Screen state
         this.currentScreenId = 'main';
         
+        // Search state
+        this.currentSearchQuery = '';
+        
         // Simulator state - initialize as null, will be populated from presence
         this.currentSimulatorId = null;
         this.simulatorState = null;
@@ -314,6 +222,15 @@ window.BaseController = class BaseController {
         this.lastOrientation = { alpha: 0, beta: 0, gamma: 0 };
         this.lastMotionMagnitude = 0;
         this.motionListenerActive = false;
+        
+        // Tilt tracking for force field control
+        this.neutralOrientation = null; // Captured on touch down
+        this.currentTiltX = 0; // Front-back tilt relative to neutral
+        this.currentTiltZ = 0; // Left-right tilt relative to neutral
+        this.isTiltTransmitting = false; // Only transmit while touching
+        this.lastTiltUpdateTime = 0; // For throttling tilt presence updates
+        this.lastSentTiltX = 0; // Track last sent values to avoid redundant updates
+        this.lastSentTiltZ = 0;
         
         // Bound event handlers for motion detection (store references for removal)
         this.boundHandleDeviceMotion = (event) => this.handleDeviceMotion(event);
@@ -331,11 +248,6 @@ window.BaseController = class BaseController {
         this.isSubscribed = false;
         this.tiltingActive = false;
         
-        // Name history - initialize with current name
-        this.nameHistory = []; 
-        this.currentNameIndex = -1;
-        this.initializeNameHistory();
-        
         // Sound and speech
         this.soundEnabled = false; // Default to disabled initially
         this.audioContext = null;
@@ -350,7 +262,7 @@ window.BaseController = class BaseController {
         this.wheelZoomSensitivity = this.constructor.WHEEL_ZOOM_SENSITIVITY;
         this.trackpadZoomSensitivity = this.constructor.TRACKPAD_ZOOM_SENSITIVITY;
         
-        this.logEvent('Init', `Client created: type=${this.clientType}, id=${this.clientId}, name=${this.clientName}`);
+        this.logEvent('Init', `Client created: type=${this.clientType}, id=${this.clientId}, name=${this.anonymousName}`);
     }
     
     /**
@@ -360,96 +272,7 @@ window.BaseController = class BaseController {
         return 'client_' + Math.random().toString(36).substring(2, 10);
     }
     
-    /**
-     * Generates a random name from the funNameList
-     */
-    generateRandomName() {
-        const randomIndex = Math.floor(Math.random() * this.constructor.funNameList.length);
-        return this.constructor.funNameList[randomIndex];
-    }
-    
-    /**
-     * Gets or generates a ship name
-     */
-    getOrGenerateShipName() {
-        // Try to load from localStorage first
-        try {
-            const savedName = localStorage.getItem('shipName');
-            if (savedName) {
-                this.logEvent('Name', `Loaded saved name: ${savedName}`);
-                return savedName;
-            }
-        } catch (e) {
-            this.logEvent('Storage', 'Error loading name from localStorage:', e);
-        }
-        
-        // Generate a new name
-        const newName = this.generateRandomName();
-        
-        try {
-            localStorage.setItem('shipName', newName);
-        } catch (e) {
-            this.logEvent('Storage', 'Error loading name from localStorage:', e);
-        }
-        
-        this.logEvent('Name', `Generated new name: ${newName}`);
-        return newName;
-    }
-    
-    /**
-     * Saves the current name history to localStorage
-     */
-    saveNameHistory(nameHistory, currentNameIndex, currentName) {
-        try {
-            localStorage.setItem('nameHistory', JSON.stringify(nameHistory));
-            localStorage.setItem('nameIndex', currentNameIndex.toString());
-            localStorage.setItem('shipName', currentName);
-            this.logEvent('Storage', `Saved name history: ${nameHistory.length} items, current index: ${currentNameIndex}`);
-        } catch (e) {
-            this.logEvent('Storage', 'Error saving name history to localStorage:', e);
-        }
-    }
-    
-    /**
-     * Checks for more storage keys in the constructor method
-     */
-    initializeNameHistory() {
-        // Try to load from localStorage
-        try {
-            const savedHistory = localStorage.getItem('nameHistory');
-            const savedIndex = localStorage.getItem('nameIndex');
-            
-            if (savedHistory) {
-                this.nameHistory = JSON.parse(savedHistory);
-                this.currentNameIndex = parseInt(savedIndex || "0", 10);
-                
-                // Ensure the current name is set to the current index
-                if (this.nameHistory.length > 0 && this.currentNameIndex >= 0 && this.currentNameIndex < this.nameHistory.length) {
-                    this.currentName = this.nameHistory[this.currentNameIndex];
-                    this.logEvent('Name', `Loaded name history: ${this.nameHistory.length} items, current index: ${this.currentNameIndex}, current name: ${this.currentName}`);
-                    
-                    // Update localStorage with current name
-                    localStorage.setItem('shipName', this.currentName);
-                } else {
-                    // Reset index if it's invalid
-                    this.currentNameIndex = this.nameHistory.length - 1;
-                    if (this.currentNameIndex >= 0) {
-                        this.currentName = this.nameHistory[this.currentNameIndex];
-                        localStorage.setItem('shipName', this.currentName);
-                    }
-                }
-            }
-        } catch (e) {
-            this.logEvent('Storage', 'Error loading name history from localStorage:', e);
-        }
-        
-        // If no history yet, or it's empty, initialize with current name
-        if (!this.nameHistory || this.nameHistory.length === 0) {
-            this.nameHistory = [this.currentName];
-            this.currentNameIndex = 0;
-            this.saveNameHistory(this.nameHistory, this.currentNameIndex, this.currentName);
-        }
-    }
+    // Ship naming methods removed - all controllers are anonymous
     
     /**
      * Initialize controller
@@ -514,6 +337,16 @@ window.BaseController = class BaseController {
                         tiltToggleBtn.innerHTML = disableText;
                         this.logEvent('Motion', 'Started motion tracking');
                         
+                        // CAPTURE NEUTRAL ORIENTATION FOR TILT REFERENCE!
+                        if (this.lastOrientation) {
+                            this.neutralOrientation = { ...this.lastOrientation };
+                            this.isTiltTransmitting = true;
+                            this.currentTiltX = 0;
+                            this.currentTiltZ = 0;
+                            this.updateTiltPresence();
+                            this.logEvent('Tilt', 'Captured neutral orientation, starting continuous tilt transmission');
+                        }
+                        
                         // Play success sound
                         if (this.soundEnabled) {
                             this.playSound(BaseController.SOUND_PATTERNS.TILT_ON);
@@ -538,6 +371,14 @@ window.BaseController = class BaseController {
                         this.tiltingActive = false;
                         tiltToggleBtn.innerHTML = enableText;
                         this.logEvent('Motion', 'Stopped motion tracking');
+                        
+                        // STOP TILT TRANSMISSION!
+                        this.isTiltTransmitting = false;
+                        this.currentTiltX = 0;
+                        this.currentTiltZ = 0;
+                        this.neutralOrientation = null;
+                        this.updateTiltPresence();
+                        this.logEvent('Tilt', 'Stopped continuous tilt transmission');
                         
                         // Play tone-down sound
                         if (this.soundEnabled) {
@@ -570,6 +411,9 @@ window.BaseController = class BaseController {
             
             // Set initial state - disabled by default
             soundToggleBtn.innerHTML = enableText;
+            
+            // Hide sound button initially - it's a secret feature!
+            soundToggleBtn.style.display = 'none';
             
             soundToggleBtn.addEventListener('click', () => {
                 this.logEvent('UI', 'Sound toggle button clicked');
@@ -621,6 +465,9 @@ window.BaseController = class BaseController {
             // Set initial state - ensure it matches speechEnabled reality
             speechToggleBtn.innerHTML = this.speechEnabled ? disableText : enableText;
             
+            // Hide speech button initially - it's a secret feature!
+            speechToggleBtn.style.display = 'none';
+            
             speechToggleBtn.addEventListener('click', () => {
                 this.logEvent('UI', 'Speech toggle button clicked');
                 
@@ -647,22 +494,10 @@ window.BaseController = class BaseController {
             this.logEvent('Init', 'Speech toggle button setup complete');
         }
         
-        // Handle rename button
+        // Handle rename button - now does nothing since all controllers are anonymous
         if (renameBtn) {
-            renameBtn.addEventListener('click', () => {
-                this.logEvent('UI', 'Rename button clicked');
-                
-                // Play rename button click
-                if (this.soundEnabled) {
-                    this.playSound(BaseController.SOUND_PATTERNS.BUTTON_ON);
-                }
-                
-                // Call the triggerRename method
-                this.logEvent('Rename', 'Triggering rename');
-                this.triggerRename('next');
-            });
-            
-            this.logEvent('Init', 'Rename button setup complete');
+            renameBtn.style.display = 'none'; // Hide the rename button
+            this.logEvent('Init', 'Rename button hidden (anonymous mode)');
         }
         
         // Make ship name clickable to say who I am
@@ -932,42 +767,32 @@ window.BaseController = class BaseController {
         this.logEvent('Gesture', `Detected ${gestureType} gesture`);
         
         // Route to appropriate handler based on gesture type
-        switch(gestureType) {
-            case 'north':
-                this.handleNorth();
-                break;
-            case 'south':
-                this.handleSouth();
-                break;
-            case 'east':
-                this.handleEast();
-                break;
-            case 'west':
-                this.handleWest();
-                break;
-            case 'up':
-                this.handleUp();
-                break;
-            case 'down':
-                this.handleDown();
-                break;
-            case 'tap':
-                this.handleTap();
-                break;
-            // Add more gesture types as needed
+        const gestureHandlers = {
+            'north': () => this.handleNorth(),
+            'south': () => this.handleSouth(),
+            'east': () => this.handleEast(),
+            'west': () => this.handleWest(),
+            'up': () => this.handleUp(),
+            'down': () => this.handleDown(),
+            'tap': () => this.handleTap()
+        };
+        
+        const handler = gestureHandlers[gestureType];
+        if (handler) {
+            handler();
         }
         
         return gestureType;
     }
     
-    // Direction handlers - backstops that just log in the base class
-    handleNorth() { this.logEvent('Direction', 'North - base handler'); }
-    handleSouth() { this.logEvent('Direction', 'South - base handler'); }
-    handleEast() { this.logEvent('Direction', 'East - base handler'); }
-    handleWest() { this.logEvent('Direction', 'West - base handler'); }
-    handleUp() { this.logEvent('Direction', 'Up - base handler'); }
-    handleDown() { this.logEvent('Direction', 'Down - base handler'); }
-    handleTap() { this.logEvent('Direction', 'Tap - base handler'); }
+    // Direction handlers - base class provides empty implementations
+    handleNorth() { }
+    handleSouth() { }
+    handleEast() { }
+    handleWest() { }
+    handleUp() { }
+    handleDown() { }
+    handleTap() { }
     
     /**
      * Helper to clean up pointer cache
@@ -996,7 +821,7 @@ window.BaseController = class BaseController {
                 payload: {
                     clientId: this.clientId,
                     clientType: this.clientType,
-                    clientName: this.currentName,
+                    clientName: this.anonymousName,
                     ...payload
                 }
             });
@@ -1005,101 +830,7 @@ window.BaseController = class BaseController {
         }
     }
     
-    /**
-     * Trigger a rename operation (only updates name locally, no event sent to simulator)
-     */
-    triggerRename(direction = 'next') {
-        this.logEvent('Rename', `Generating ${direction} name...`);
-        
-        // 1. Play rename sound locally (different sounds for up/down)
-        if (this.soundEnabled) {
-            if (direction === 'previous') {
-                this.playSound(this.constructor.SOUND_PATTERNS.RENAME);
-            } else {
-                // Play the rename sound in reverse for "down" direction
-                this.playSound([
-                    this.constructor.SOUND_PATTERNS.RENAME[1],
-                    this.constructor.SOUND_PATTERNS.RENAME[0]
-                ]);
-            }
-        }
-        
-        // 2. Get a new name based on direction
-        const oldName = this.currentName;
-            
-        if (direction === 'next') {
-            // Going forward in history or generating new name
-            if (this.currentNameIndex < this.nameHistory.length - 1) {
-                // We have names ahead in history, use the next one
-                this.currentNameIndex++;
-                this.currentName = this.nameHistory[this.currentNameIndex];
-                this.logEvent('Rename', `Moved next in name history to: ${this.currentName}`);
-            } else {
-                // Generate new name and add to history
-                this.currentName = this.generateRandomName();
-                this.nameHistory.push(this.currentName);
-                this.currentNameIndex = this.nameHistory.length - 1;
-                this.logEvent('Rename', `Moved next in name history and generated new name: ${this.currentName}`);
-            }
-        } else {
-            // Going backward in history or generating new name at beginning
-            if (this.currentNameIndex > 0) {
-                // We have names before in history, use the previous one
-                this.currentNameIndex--;
-                this.currentName = this.nameHistory[this.currentNameIndex];
-                this.logEvent('Rename', `Moved backward in name history to: ${this.currentName}`);
-            } else {
-                // Generate new name and prepend to history
-                this.currentName = this.generateRandomName();
-                this.nameHistory.unshift(this.currentName);
-                // Keep current index at 0 since we prepended
-                this.currentNameIndex = 0;
-                this.logEvent('Rename', `Moved backward in name history and generated new name: ${this.currentName}`);
-            }
-        }
-        
-        // 3. Save the name history and current index to localStorage
-        localStorage.setItem('shipName', this.currentName);
-        localStorage.setItem('nameHistory', JSON.stringify(this.nameHistory));
-        localStorage.setItem('nameIndex', this.currentNameIndex.toString());
-        
-        // Update the ship name in the UI
-        this.updateShipNameUI();
-        
-        // 4. ALWAYS announce the new name using speech - NO COOLDOWN
-        if (this.speechEnabled) {
-            // Force immediate announcement regardless of any other speech
-            if (window.speechSynthesis && window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel(); // Cancel any current speech
-            }
-            
-            // Announce with a tiny delay to ensure the cancel completes
-            setTimeout(() => {
-                this.sayWhoIAm();
-            }, 50);
-        }
-            
-        // 5. Update presence - use track with full object rather than trying to use setState
-        try {
-            if (this.clientChannel) {
-                // Update presence data with full object including updated name
-                this.clientChannel.track({
-                    clientId: this.clientId,
-                    clientType: this.clientType,
-                    clientName: this.currentName,
-                    onlineAt: new Date().toISOString() 
-                });
-                this.logEvent('Rename', 'Updated presence with new name');
-            }
-        } catch (err) {
-            this.logEvent('Rename', 'Error updating presence:', err);
-        }
-        
-        // 6. Update debug overlay
-        this.updateDebugOverlay();
-        
-        this.logEvent('Rename', `Changed from '${oldName}' to '${this.currentName}'`);
-    }
+    // Rename functionality removed - all controllers are anonymous
 
     /**
      * Updates the debug overlay with current controller state
@@ -1165,7 +896,7 @@ window.BaseController = class BaseController {
             // Format output with both magnitude types
             let debugInfo = `
                 <div class="debug-section">
-                    <div>Ship: <b>${this.currentName || 'unknown'}</b></div>
+                    <div>Ship: <b>${this.anonymousName}</b></div>
                     <div>Connection: ${connectionState} (${channelInfo})</div>
                     <div>Search: "${this.currentSearchQuery || '(none)'}"</div>
                     <div>Motion: ${motionState} (${this.tiltingActive ? 'active' : 'inactive'})</div>
@@ -1173,6 +904,7 @@ window.BaseController = class BaseController {
                     <div>Mag: ${magnitudeInfo} With G: ${magnitudeWithGravityInfo}</div>
                     <div>Shake: Impulse: ${this.isDetectingImpulse ? `${this.impulseAxis}-${this.impulseDirection}` : 'none'}</div>
                     <div>Last Shake: ${this.lastShakeTime ? new Date(this.lastShakeTime).toLocaleTimeString() : 'none'}</div>
+                    <div>Tilt TX: ${this.isTiltTransmitting ? 'ON' : 'OFF'} X:${this.currentTiltX.toFixed(1)}° Z:${this.currentTiltZ.toFixed(1)}°</div>
                 </div>
             `;
             
@@ -1258,16 +990,11 @@ window.BaseController = class BaseController {
     }
     
     /**
-     * Announces controller/ship name using speech.
+     * Announces controller name using speech.
      */
     sayWhoIAm() {
-        const nameToSpeak = this.currentName; // Use the instance's current name
-        this.logEvent('Speech', `Attempting to announce name: ${nameToSpeak}`);
-        
-        if (!nameToSpeak) {
-            this.logEvent('Speech', 'No name available to speak');
-            return false;
-        }
+        const nameToSpeak = this.anonymousName;
+        this.logEvent('Speech', `Speaking name: ${nameToSpeak}`);
         
         // Ensure we cancel any existing speech first
         if (this.speechSynthesis && this.speechSynthesis.speaking) {
@@ -1276,12 +1003,7 @@ window.BaseController = class BaseController {
         
         // Wait a short moment to ensure speech system is ready
         setTimeout(() => {
-            this.logEvent('Speech', `Speaking just the name: "${nameToSpeak}"`);
-            const result = this.speakText(nameToSpeak, { rate: 1.0, pitch: 1.0 });
-            
-            if (!result) {
-                this.logEvent('Speech', 'Failed to speak name');
-            }
+            this.speakText(nameToSpeak, { rate: 1.0, pitch: 1.0 });
         }, 100);
         
         return true;
@@ -1467,10 +1189,7 @@ window.BaseController = class BaseController {
         return this.soundEnabled;
     }
     
-    /**
-     * Saves name history state to localStorage - Now static, called via BaseController.saveNameHistory
-     */
-    // saveNameHistory() removed as it's now static
+
 
     /**
      * Process device motion data for shake detection.
@@ -1639,14 +1358,42 @@ window.BaseController = class BaseController {
             gamma: event.gamma  // left-to-right tilt (-90 to 90)
         };
         
+        // Calculate relative tilt if we have a neutral orientation and tilting is active
+        if (this.neutralOrientation && this.tiltingActive && this.isTiltTransmitting) {
+            // Calculate relative tilts
+            // Beta is front-back tilt, Gamma is left-right tilt
+            const prevTiltX = this.currentTiltX;
+            const prevTiltZ = this.currentTiltZ;
+            this.currentTiltX = event.beta - this.neutralOrientation.beta;
+            this.currentTiltZ = event.gamma - this.neutralOrientation.gamma;
+            
+            // Clamp to reasonable ranges
+            this.currentTiltX = Math.max(-90, Math.min(90, this.currentTiltX));
+            this.currentTiltZ = Math.max(-90, Math.min(90, this.currentTiltZ));
+            
+            // Log significant changes
+            if (Math.abs(this.currentTiltX - prevTiltX) > 1 || Math.abs(this.currentTiltZ - prevTiltZ) > 1) {
+                this.logEvent('Tilt', `Orientation changed: X=${this.currentTiltX.toFixed(1)}° Z=${this.currentTiltZ.toFixed(1)}° (raw beta=${event.beta?.toFixed(1)}° gamma=${event.gamma?.toFixed(1)}°)`);
+            }
+            
+            // Update presence with tilt data
+            this.updateTiltPresence();
+        } else if (this.tiltingActive && !this.neutralOrientation && this.lastOrientation) {
+            // We're supposed to be tilting but haven't captured neutral yet
+            // Try to capture it now
+            this.neutralOrientation = { ...this.lastOrientation };
+            this.isTiltTransmitting = true;
+            this.currentTiltX = 0;
+            this.currentTiltZ = 0;
+            this.logEvent('Tilt', `Captured neutral orientation on demand: Beta=${this.neutralOrientation.beta?.toFixed(1)}° Gamma=${this.neutralOrientation.gamma?.toFixed(1)}°`);
+            this.updateTiltPresence();
+        }
+        
         // Update debug information
         this.updateDebugOverlay();
     }
 
-    /**
-     * Initialize name history - Now static, called via BaseController.initializeNameHistory
-     */
-    // initializeNameHistory() removed as it's now static
+
 
     /**
      * Check if the device is iOS.
@@ -1678,6 +1425,15 @@ window.BaseController = class BaseController {
             window.removeEventListener('deviceorientation', this.boundHandleDeviceOrientation);
             this.motionListenerActive = false;
             this.tiltingActive = false;
+            
+            // Also stop any tilt transmission
+            if (this.isTiltTransmitting) {
+                this.isTiltTransmitting = false;
+                this.currentTiltX = 0;
+                this.currentTiltZ = 0;
+                this.neutralOrientation = null;
+                this.updateTiltPresence();
+            }
             
             this.updatePermissionStatus('motion', 'inactive');
             this.logEvent('Motion', 'Motion tracking stopped');
@@ -1754,6 +1510,20 @@ window.BaseController = class BaseController {
             this.motionListenerActive = true;
             this.tiltingActive = true;
             
+            // Start tilt transmission immediately with first available orientation
+            setTimeout(() => {
+                if (this.tiltingActive && this.lastOrientation && !this.neutralOrientation) {
+                    this.neutralOrientation = { ...this.lastOrientation };
+                    this.isTiltTransmitting = true;
+                    this.currentTiltX = 0;
+                    this.currentTiltZ = 0;
+                    this.updateTiltPresence();
+                    this.logEvent('Tilt', `Captured initial neutral orientation: Beta=${this.neutralOrientation.beta?.toFixed(1)}° Gamma=${this.neutralOrientation.gamma?.toFixed(1)}°`);
+                } else {
+                    this.logEvent('Tilt', `Could not capture neutral orientation - tiltingActive:${this.tiltingActive} hasOrientation:${!!this.lastOrientation} hasNeutral:${!!this.neutralOrientation}`);
+                }
+            }, 100); // Small delay to ensure we get first orientation event
+            
             this.logEvent('Motion', 'Motion listeners attached successfully');
             this.updateDebugOverlay();
         } catch (e) {
@@ -1796,7 +1566,7 @@ window.BaseController = class BaseController {
             this.clientChannel
                 .on('presence', { event: 'sync' }, () => {
                     const presenceState = this.clientChannel.presenceState();
-                    this.logEvent('Presence', `Sync with ${Object.keys(presenceState).length} peers`, presenceState);
+                    // Only log sync events that involve simulators
                     
                     // Find the current simulator from presence
                     const simulator = this.findCurrentSimulator(presenceState);
@@ -1812,7 +1582,7 @@ window.BaseController = class BaseController {
                         
                         // Update state from simulator
                         this.updateSimulatorState(simulator);
-                    } else {
+                    } else if (this.currentSimulatorId) { // Only log if we're losing a simulator
                         this.logEvent('Simulator', 'No simulator found in presence');
                         this.currentSimulatorId = null;
                     }
@@ -1821,7 +1591,11 @@ window.BaseController = class BaseController {
                     this.updateDebugOverlay();
                 })
                 .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-                    this.logEvent('Presence', `Join event for key: ${key}`, newPresences);
+                    // Only log if it's a simulator joining
+                    const hasSimulator = newPresences.some(p => p.clientType === 'simulator');
+                    if (hasSimulator) {
+                        this.logEvent('Presence', `Simulator join event`, newPresences.filter(p => p.clientType === 'simulator'));
+                    }
                     
                     // Check if the new presence is a simulator
                     for (const presence of newPresences) {
@@ -1841,7 +1615,11 @@ window.BaseController = class BaseController {
                     }
                 })
                 .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-                    this.logEvent('Presence', `Leave event for key: ${key}`, leftPresences);
+                    // Only log if it's important (simulator leaving or our simulator)
+                    const hasSimulator = leftPresences.some(p => p.clientType === 'simulator' || p.clientId === this.currentSimulatorId);
+                    if (hasSimulator) {
+                        this.logEvent('Presence', `Important leave event`, leftPresences.filter(p => p.clientType === 'simulator' || p.clientId === this.currentSimulatorId));
+                    }
                     
                     // Check if the current simulator left
                     for (const presence of leftPresences) {
@@ -1850,6 +1628,35 @@ window.BaseController = class BaseController {
                             
                             // Find a new simulator if available
                             this.currentSimulatorId = null;
+                        }
+                    }
+                });
+                
+            // --- Broadcast Event Handlers ---
+            this.clientChannel
+                .on('broadcast', { event: 'search_string_update' }, (payload) => {
+                    // Handle search string updates from the simulator/Unity
+                    if (payload && payload.payload && payload.payload.searchString !== undefined) {
+                        const newSearchString = payload.payload.searchString;
+                        
+                        // Only update if it's different and it came from Unity (not another controller)
+                        if (newSearchString !== this.currentSearchQuery && payload.payload.sourceType === 'unity') {
+                            this.currentSearchQuery = newSearchString;
+                            
+                            // Update the search input field if it exists
+                            const searchElement = document.getElementById('searchBox');
+                            if (searchElement) {
+                                searchElement.value = newSearchString;
+                                this.logEvent('Search', `Search field updated from Unity: "${newSearchString}"`);
+                            }
+                            
+                            // Update debug overlay
+                            this.updateDebugOverlay();
+                            
+                            // Announce the search update if speech is enabled
+                            if (this.speechEnabled && newSearchString) {
+                                this.speakText(`Search updated to ${newSearchString}`);
+                            }
                         }
                     }
                 });
@@ -1866,9 +1673,12 @@ window.BaseController = class BaseController {
                         this.clientChannel.track({
                             clientId: this.clientId,
                             clientType: this.clientType,
-                            clientName: this.currentName,
+                            clientName: this.anonymousName,
                             screenId: this.currentScreenId,
-                            searchQuery: this.currentSearchQuery  // Start with empty search, ready for updates!
+                            searchQuery: this.currentSearchQuery,  // Start with empty search, ready for updates!
+                            tiltEnabled: false, // Start with tilt disabled
+                            tiltX: 0,
+                            tiltZ: 0
                         });
                     } else {
                         this.logEvent('Connection', `Channel subscription status: ${status}`);
@@ -1917,10 +1727,10 @@ window.BaseController = class BaseController {
     updateUIFromState() {
         // Base implementation - subclasses should override
         
-        // Update ship name display with the controller's own name
+        // Update ship name display with anonymous name
         const shipNameElement = document.getElementById('ship-name');
         if (shipNameElement) {
-            shipNameElement.textContent = this.clientName || 'Unknown Ship';
+            shipNameElement.textContent = this.anonymousName;
         }
 
         // Update status display
@@ -2004,7 +1814,7 @@ window.BaseController = class BaseController {
             const fullPayload = {
                 clientId: this.clientId,
                 clientType: this.clientType,
-                clientName: this.clientName,
+                clientName: this.anonymousName,
                 screenId: this.currentScreenId,
                 targetSimulatorId: this.currentSimulatorId,
                                                 ...payload
@@ -2032,10 +1842,8 @@ window.BaseController = class BaseController {
     updateShipNameUI() {
         const shipNameElement = document.getElementById('ship-name');
         if (shipNameElement) {
-            shipNameElement.textContent = this.currentName || 'Unknown Ship';
-            this.logEvent('UI', `Updated ship name in UI to: ${this.currentName}`);
-        } else {
-            this.logEvent('UI', 'Could not update ship name in UI - element not found');
+            shipNameElement.textContent = this.anonymousName;
+            this.logEvent('UI', `Updated ship name in UI to: ${this.anonymousName}`);
         }
     }
     
@@ -2078,7 +1886,7 @@ window.BaseController = class BaseController {
                 this.clientChannel.track({
                     clientId: this.clientId,
                     clientType: this.clientType,
-                    clientName: this.currentName,
+                    clientName: this.anonymousName,
                     screenId: this.currentScreenId,
                     searchQuery: this.currentSearchQuery,  // ← The magic happens here!
                     onlineAt: new Date().toISOString()
@@ -2093,6 +1901,586 @@ window.BaseController = class BaseController {
         
         // Update debug overlay to show the new search query
         this.updateDebugOverlay();
+    }
+    
+    /**
+     * Command parser for speech-friendly input
+     * Inspired by LLOGO's user-friendly synonym handling
+     * 
+     * Based on MIT LOGO (LLOGO) from the 1970s
+     * Original LISP implementation by Seymour Papert, Cynthia Solomon, and the MIT LOGO team
+     * 
+     * The LLOGO parser accepted multiple variations of common responses,
+     * treating the user with respect and understanding that there are many
+     * valid ways to express the same idea. This philosophy is carried forward here.
+     */
+    parseCommand(input) {
+        // Canonicalize input: lowercase, trim, remove punctuation
+        const canonical = (input || '')
+            .toLowerCase()
+            .trim()
+            .replace(/[.,!?;:'"]/g, '') // Remove common punctuation
+            .replace(/\s+/g, ' '); // Normalize whitespace
+        
+        this.logEvent('Command', `Parsing: "${input}" → "${canonical}"`);
+        
+        // Command synonym lists (inspired by LLOGO's ASK function)
+        const COMMANDS = {
+            // Debug mode activation
+            debug: {
+                synonyms: ['debug', 'sudo', 'xyzzy', 'plugh', 'admin', 'developer', 'dev mode', 'debug mode'],
+                action: 'enableDebug'
+            },
+            
+            // Reset view/navigation
+            reset: {
+                synonyms: ['reset', 'reset view', 'home', 'go home', 'center', 'origin', 'start'],
+                action: 'resetView'
+            },
+            
+            // Secret speech synthesis activation!
+            speech: {
+                synonyms: ['hal', 'speak', 'voice', 'hello computer', 'computer', 'engage voice', 'activate speech'],
+                action: 'enableSpeech'
+            },
+            
+            // Yes/No commands from MIT LOGO (LLOGO) circa 1970s
+            // Original LISP code by MIT LOGO team (Papert, Solomon, et al.):
+            // (DEFUN ASK NIL 
+            //        ;;USER IS ASKED YES-NO QUESTION.  IT RETURNS T OR NIL.
+            //        ...
+            //        (COND ((MEMQ ANS '(YES Y T TRUE RIGHT)) (RETURN T))
+            //              ((MEMQ ANS '(NO N NIL F FALSE WRONG)) (RETURN NIL))
+            //              ((DPRINC '";PLEASE TYPE YES OR NO. ")
+            //               (GO A))))))
+            // Plus modern additions: 1 for true, 0 for false
+            yes: {
+                // EXACTLY matching LLOGO: '(YES Y T TRUE RIGHT) plus 1
+                synonyms: ['yes', 'y', 't', 'true', 'right', '1'],
+                action: 'confirmYes'
+            },
+            
+            no: {
+                // EXACTLY matching LLOGO: '(NO N NIL F FALSE WRONG) plus 0
+                synonyms: ['no', 'n', 'nil', 'f', 'false', 'wrong', '0'],
+                action: 'confirmNo'
+            },
+            
+            // Help command
+            help: {
+                synonyms: ['help', 'what can i do', 'what can you do', 'commands', 'instructions', '?'],
+                action: 'showHelp'
+            }
+        };
+        
+        // Check for debug mode parameters
+        // Uses LLOGO boolean expressions for parameters
+        let debugParam = null;
+        const debugMatch = canonical.match(/^(debug|sudo|xyzzy|plugh)\s+(.+)$/);
+        if (debugMatch) {
+            const param = debugMatch[2];
+            // Use LLOGO's exact boolean expressions
+            // YES Y T TRUE RIGHT 1 = enable
+            // NO N NIL F FALSE WRONG 0 = disable
+            const isEnable = ['yes', 'y', 't', 'true', 'right', '1'].includes(param);
+            const isDisable = ['no', 'n', 'nil', 'f', 'false', 'wrong', '0'].includes(param);
+            
+            if (isEnable || isDisable) {
+                return {
+                    command: 'debug',
+                    action: 'enableDebug',
+                    params: { enable: isEnable }
+                };
+            }
+        }
+        
+        // Check for speech mode parameters
+        const speechMatch = canonical.match(/^(hal|speak|voice|computer)\s+(.+)$/);
+        if (speechMatch) {
+            const param = speechMatch[2];
+            const isEnable = ['yes', 'y', 't', 'true', 'right', '1'].includes(param);
+            const isDisable = ['no', 'n', 'nil', 'f', 'false', 'wrong', '0'].includes(param);
+            
+            if (isEnable || isDisable) {
+                return {
+                    command: 'speech',
+                    action: 'toggleSpeech',
+                    params: { enable: isEnable }
+                };
+            }
+        }
+        
+        // Find matching command
+        for (const [cmdName, cmdDef] of Object.entries(COMMANDS)) {
+            if (cmdDef.synonyms.some(syn => canonical === syn || canonical.startsWith(syn + ' '))) {
+                return {
+                    command: cmdName,
+                    action: cmdDef.action,
+                    params: {}
+                };
+            }
+        }
+        
+        // No command found - treat as regular search
+        return null;
+    }
+    
+    /**
+     * Execute a parsed command
+     */
+    executeCommand(parsedCommand) {
+        if (!parsedCommand) return false;
+        
+        const { command, action, params } = parsedCommand;
+        
+        this.logEvent('Command', `Executing: ${action}`, params);
+        
+        // Play command feedback sound
+        if (this.soundEnabled) {
+            this.playSound(BaseController.SOUND_PATTERNS.SUCCESS);
+        }
+        
+        switch (action) {
+            case 'enableDebug':
+                const enable = params.enable !== false; // Default to true
+                if (enable) {
+                    this.enableDebugMode();
+                } else {
+                    this.disableDebugMode();
+                }
+                break;
+                
+            case 'resetView':
+                this.resetView();
+                break;
+                
+            case 'confirmYes':
+                this.handleConfirmation(true);
+                break;
+                
+            case 'confirmNo':
+                this.handleConfirmation(false);
+                break;
+                
+            case 'showHelp':
+                this.showHelp();
+                break;
+                
+            case 'enableSpeech':
+                this.enableSpeechSynthesis();
+                break;
+                
+            case 'toggleSpeech':
+                if (params.enable) {
+                    this.enableSpeechSynthesis();
+                } else {
+                    this.disableSpeechSynthesis();
+                }
+                break;
+                
+            default:
+                this.logEvent('Command', `Unknown action: ${action}`);
+                return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Enable debug mode with enhanced features
+     */
+    enableDebugMode() {
+        this.debugModeEnabled = true;
+        this.logEvent('Command', 'Debug mode ENABLED');
+        
+        // Update UI to show debug features
+        const debugPanel = document.getElementById('debug-panel');
+        if (debugPanel) {
+            debugPanel.style.display = 'block';
+        }
+        
+        // Add debug tab if using unified controller
+        if (this.addDebugTab) {
+            this.addDebugTab();
+        }
+        
+        // Announce if speech enabled
+        if (this.speechEnabled) {
+            this.speakText('Debug mode activated');
+        }
+        
+        // Update debug overlay
+        this.updateDebugOverlay();
+    }
+    
+    /**
+     * Disable debug mode
+     */
+    disableDebugMode() {
+        this.debugModeEnabled = false;
+        this.logEvent('Command', 'Debug mode DISABLED');
+        
+        // Hide debug features
+        const debugPanel = document.getElementById('debug-panel');
+        if (debugPanel && !BaseController.isDebugMode) {
+            debugPanel.style.display = 'none';
+        }
+        
+        // Remove debug tab if using unified controller
+        if (this.removeDebugTab) {
+            this.removeDebugTab();
+        }
+        
+        // Announce if speech enabled
+        if (this.speechEnabled) {
+            this.speakText('Debug mode deactivated');
+        }
+    }
+    
+    /**
+     * Enable speech synthesis via secret command
+     * References: HAL 9000 from 2001: A Space Odyssey
+     * and Star Trek IV's "Hello, computer" scene
+     */
+    enableSpeechSynthesis() {
+        this.logEvent('Command', '🎤 SECRET SPEECH COMMAND ACTIVATED!');
+        
+        // Enable sound first (required for speech)
+        if (!this.soundEnabled) {
+            this.soundEnabled = true;
+            this.initAudioContext();
+            
+            // Update sound button if it exists
+            const soundToggleBtn = document.getElementById('sound-toggle');
+            if (soundToggleBtn) {
+                soundToggleBtn.innerHTML = "Stop<br/>Sound";
+                soundToggleBtn.style.display = 'block'; // Reveal the secret button!
+            }
+        }
+        
+        // Enable speech
+        this.speechEnabled = true;
+        
+        // Update speech button if it exists
+        const speechToggleBtn = document.getElementById('speech-toggle');
+        if (speechToggleBtn) {
+            speechToggleBtn.innerHTML = "Stop<br/>Speech";
+            speechToggleBtn.style.display = 'block'; // Reveal the secret button!
+        }
+        
+        // Play activation sound
+        if (this.soundEnabled) {
+            this.playSound([
+                { frequency: 440, duration: 100, type: 'sine' },
+                { frequency: 880, duration: 150, type: 'sine' }
+            ]);
+        }
+        
+        // Announce activation with a fun message
+        const greetings = [
+            "Hello, Dave. I am now speaking.",
+            "Speech synthesis activated. How may I assist you?",
+            "Voice interface online. Welcome to SpaceCraft.",
+            "Greetings, human. Speech mode engaged.",
+            "I can speak! Try saying my name."
+        ];
+        
+        const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+        this.speakText(greeting);
+        
+        // Update debug overlay
+        this.updateDebugOverlay();
+    }
+    
+    /**
+     * Disable speech synthesis via command
+     */
+    disableSpeechSynthesis() {
+        this.logEvent('Command', 'Disabling speech synthesis');
+        
+        // Announce before disabling
+        if (this.speechEnabled) {
+            this.speakText('Speech synthesis deactivating. Goodbye.');
+        }
+        
+        // Wait for speech to finish before disabling
+        setTimeout(() => {
+            this.speechEnabled = false;
+            
+            // Update speech button if it exists
+            const speechToggleBtn = document.getElementById('speech-toggle');
+            if (speechToggleBtn) {
+                speechToggleBtn.innerHTML = "Start<br/>Speech";
+                // Keep button visible once revealed
+            }
+            
+            // Play deactivation sound
+            if (this.soundEnabled) {
+                this.playSound([
+                    { frequency: 880, duration: 100, type: 'sine' },
+                    { frequency: 440, duration: 150, type: 'sine' }
+                ]);
+            }
+            
+            this.updateDebugOverlay();
+        }, 1500);
+    }
+    
+    /**
+     * Reset view to origin/home
+     */
+    resetView() {
+        this.logEvent('Command', 'Resetting view to origin');
+        
+        // Send reset command to Unity
+        if (this.clientChannel) {
+            this.sendUpdate('reset_view', {});
+        }
+        
+        // Announce if speech enabled
+        if (this.speechEnabled) {
+            this.speakText('View reset to origin');
+        }
+    }
+    
+    /**
+     * Handle yes/no confirmations
+     */
+    handleConfirmation(isYes) {
+        this.lastConfirmation = isYes;
+        this.logEvent('Command', `Confirmation: ${isYes ? 'YES' : 'NO'}`);
+        
+        // Trigger any pending confirmation callbacks
+        if (this.pendingConfirmation) {
+            this.pendingConfirmation(isYes);
+            this.pendingConfirmation = null;
+        }
+    }
+    
+    /**
+     * Show help/available commands
+     */
+    showHelp() {
+        const helpText = `
+🎮 SECRET CHEAT COMMANDS 🎮
+
+Magic words:
+- "xyzzy" or "plugh" - Enable debug mode
+- "hal" or "hello computer" - Activate speech synthesis
+- "reset" or "home" - Reset view to origin
+
+Debug commands:
+- "debug yes/no" - Toggle debug mode
+- "sudo t/f" - Another way to toggle debug
+- "xyzzy 1/0" - Using numeric booleans
+
+Boolean expressions (LOGO-style):
+- YES: "yes", "y", "t", "true", "right", "1"
+- NO: "no", "n", "nil", "f", "false", "wrong", "0"
+
+Based on MIT LOGO's user-friendly boolean handling from the 1970s.
+Try searching for special items too... you never know what you'll find!
+        `.trim();
+        
+        this.logEvent('Command', 'Showing help');
+        
+        // Show help in UI if available
+        if (this.showHelpUI) {
+            this.showHelpUI(helpText);
+        }
+        
+        // Speak help if enabled
+        if (this.speechEnabled) {
+            this.speakText('You have discovered the secret cheat commands! Try saying xyzzy for debug mode, or reset to go home.');
+        }
+    }
+    
+    /**
+     * Initialize speech recognition (Web Speech API)
+     */
+    initSpeechRecognition() {
+        // Check for Web Speech API support
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        if (!SpeechRecognition) {
+            this.logEvent('Speech', 'Web Speech API not supported in this browser');
+            return false;
+        }
+        
+        try {
+            this.recognition = new SpeechRecognition();
+            this.recognition.continuous = false;
+            this.recognition.interimResults = true;
+            this.recognition.lang = 'en-US';
+            
+            // Handle speech results
+            this.recognition.onresult = (event) => {
+                let finalTranscript = '';
+                let interimTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                
+                // Update search box with interim results for feedback
+                const searchBox = document.getElementById('searchBox');
+                if (searchBox) {
+                    searchBox.value = finalTranscript || interimTranscript;
+                    
+                    // If we have a final result, process it
+                    if (finalTranscript) {
+                        this.logEvent('Speech', `Final transcript: "${finalTranscript}"`);
+                        
+                        // Trigger the search handler
+                        const event = new Event('keyup');
+                        searchBox.dispatchEvent(event);
+                    }
+                }
+            };
+            
+            // Handle speech recognition errors
+            this.recognition.onerror = (event) => {
+                this.logEvent('Speech', `Recognition error: ${event.error}`);
+                
+                // Update button state
+                const speechButton = document.getElementById('speechButton');
+                if (speechButton) {
+                    speechButton.textContent = '🎤';
+                    speechButton.classList.remove('recording');
+                }
+                
+                // Provide user feedback
+                if (this.soundEnabled) {
+                    this.playSound(BaseController.SOUND_PATTERNS.ERROR);
+                }
+                
+                if (event.error === 'no-speech') {
+                    if (this.speechEnabled) {
+                        this.speakText('No speech detected. Please try again.');
+                    }
+                } else if (event.error === 'not-allowed') {
+                    alert('Microphone access denied. Please enable microphone permissions.');
+                }
+            };
+            
+            // Handle speech end
+            this.recognition.onend = () => {
+                this.logEvent('Speech', 'Recognition ended');
+                
+                // Update button state
+                const speechButton = document.getElementById('speechButton');
+                if (speechButton) {
+                    speechButton.textContent = '🎤';
+                    speechButton.classList.remove('recording');
+                }
+            };
+            
+            this.logEvent('Speech', 'Speech recognition initialized');
+            return true;
+            
+        } catch (e) {
+            this.logEvent('Speech', 'Error initializing speech recognition:', e);
+            return false;
+        }
+    }
+    
+    /**
+     * Toggle speech recognition on/off
+     */
+    toggleSpeechRecognition() {
+        if (!this.recognition) {
+            if (!this.initSpeechRecognition()) {
+                alert('Speech recognition is not supported in your browser. Try Chrome or Edge.');
+                return;
+            }
+        }
+        
+        const speechButton = document.getElementById('speechButton');
+        
+        try {
+            if (this.recognition && speechButton) {
+                if (speechButton.classList.contains('recording')) {
+                    // Stop recognition
+                    this.recognition.stop();
+                    this.logEvent('Speech', 'Stopping recognition');
+                } else {
+                    // Start recognition
+                    this.recognition.start();
+                    speechButton.textContent = '🔴';
+                    speechButton.classList.add('recording');
+                    this.logEvent('Speech', 'Starting recognition');
+                    
+                    // Play feedback sound
+                    if (this.soundEnabled) {
+                        this.playSound(BaseController.SOUND_PATTERNS.CLICK);
+                    }
+                }
+            }
+        } catch (e) {
+            this.logEvent('Speech', 'Error toggling speech recognition:', e);
+            
+            // Reset button state
+            if (speechButton) {
+                speechButton.textContent = '🎤';
+                speechButton.classList.remove('recording');
+            }
+        }
+    }
+    
+    /**
+     * Updates presence with current tilt data
+     */
+    updateTiltPresence() {
+        if (!this.clientChannel || !this.isSubscribed) {
+            return;
+        }
+        
+        // Throttle updates to prevent spam - max 10 updates per second
+        const now = Date.now();
+        if (now - this.lastTiltUpdateTime < 100) { // 100ms minimum between updates
+            return;
+        }
+        
+        // Only update if values have changed significantly (more than 0.5 degrees)
+        const tiltXChanged = Math.abs(this.currentTiltX - this.lastSentTiltX) > 0.5;
+        const tiltZChanged = Math.abs(this.currentTiltZ - this.lastSentTiltZ) > 0.5;
+        const enabledChanged = this.isTiltTransmitting !== (this.lastSentTiltX !== 0 || this.lastSentTiltZ !== 0);
+        
+        if (!tiltXChanged && !tiltZChanged && !enabledChanged) {
+            return; // No significant change, skip update
+        }
+        
+        try {
+            // Log non-zero tilt updates
+            if (this.isTiltTransmitting && (this.currentTiltX !== 0 || this.currentTiltZ !== 0)) {
+                this.logEvent('Tilt', `Sending tilt update: X=${this.currentTiltX.toFixed(1)}° Z=${this.currentTiltZ.toFixed(1)}°`);
+            }
+            
+            // Update presence with tilt data
+            this.clientChannel.track({
+                clientId: this.clientId,
+                clientType: this.clientType,
+                clientName: this.constructor.ANONYMOUS_NAME,
+                screenId: this.currentScreenId,
+                searchQuery: this.currentSearchQuery,
+                tiltEnabled: this.isTiltTransmitting,
+                tiltX: this.currentTiltX,
+                tiltZ: this.currentTiltZ,
+                onlineAt: new Date().toISOString()
+            });
+            
+            // Update tracking variables
+            this.lastTiltUpdateTime = now;
+            this.lastSentTiltX = this.currentTiltX;
+            this.lastSentTiltZ = this.currentTiltZ;
+        } catch (err) {
+            this.logEvent('Error', 'Error updating tilt presence:', err);
+        }
     }
 };
 
@@ -2497,6 +2885,575 @@ window.InspectorController = class InspectorController extends BaseController {
     }
 };
 
+/**
+ * Abstract Tab class - base for all tab implementations
+ */
+window.Tab = class Tab {
+    constructor(controller, tabId) {
+        this.controller = controller;
+        this.tabId = tabId;
+        this.button = document.querySelector(`[data-tab="${tabId}"]`);
+        this.pane = document.getElementById(`${tabId}-tab`);
+        this.isActive = false;
+        this.isInitialized = false;
+    }
+    
+    /**
+     * Initialize the tab (called once on first activation)
+     */
+    async initialize() {
+        this.isInitialized = true;
+    }
+    
+    /**
+     * Activate the tab
+     */
+    async activate() {
+        if (!this.isInitialized) {
+            await this.initialize();
+        }
+        this.isActive = true;
+        this.button.classList.add('active');
+        this.pane.classList.add('active');
+        this.onActivate();
+    }
+    
+    /**
+     * Deactivate the tab
+     */
+    deactivate() {
+        this.isActive = false;
+        this.button.classList.remove('active');
+        this.pane.classList.remove('active');
+        this.onDeactivate();
+    }
+    
+    /**
+     * Called when tab becomes active - override in subclasses
+     */
+    onActivate() {}
+    
+    /**
+     * Called when tab becomes inactive - override in subclasses
+     */
+    onDeactivate() {}
+    
+    /**
+     * Update UI from controller state - override in subclasses
+     */
+    updateFromState() {}
+};
+
+/**
+ * About Tab - Welcome and help information
+ */
+window.AboutTab = class AboutTab extends Tab {
+    constructor(controller) {
+        super(controller, 'about');
+    }
+    
+    async initialize() {
+        await super.initialize();
+        
+        // Set up ship name click handler
+        const shipNameEl = this.pane.querySelector('#ship-name');
+        if (shipNameEl) {
+            shipNameEl.style.cursor = 'pointer';
+            shipNameEl.addEventListener('click', () => {
+                if (this.controller.soundEnabled) {
+                    this.controller.playSound(BaseController.SOUND_PATTERNS.CLICK);
+                }
+                if (this.controller.speechEnabled) {
+                    this.controller.sayWhoIAm();
+                }
+            });
+        }
+    }
+    
+    updateFromState() {
+        const shipNameEl = this.pane.querySelector('#ship-name');
+        if (shipNameEl) {
+            shipNameEl.textContent = BaseController.ANONYMOUS_NAME;
+        }
+    }
+};
+
+/**
+ * Navigate Tab - Pan and zoom controls
+ */
+window.NavigateTab = class NavigateTab extends Tab {
+    constructor(controller) {
+        super(controller, 'navigate');
+        this.target = null;
+        this.evCache = [];
+        this.prevDiff = -1;
+        this.prevX = 0;
+        this.prevY = 0;
+    }
+    
+    async initialize() {
+        await super.initialize();
+        
+        this.target = this.pane.querySelector('#nav-target');
+        if (!this.target) return;
+        
+        // Set up event handlers
+        this.target.addEventListener('pointerdown', (ev) => this.handlePointerDown(ev));
+        this.target.addEventListener('pointermove', (ev) => this.handlePointerMove(ev));
+        this.target.addEventListener('pointerup', (ev) => this.handlePointerUp(ev));
+        this.target.addEventListener('pointercancel', (ev) => this.handlePointerCancel(ev));
+        this.target.addEventListener('wheel', (ev) => this.handleWheel(ev), { passive: false });
+        
+        // Set up search box
+        const searchBox = this.pane.querySelector('#searchBox');
+        if (searchBox) {
+            searchBox.onkeyup = BaseController.debounce(() => {
+                const inputValue = searchBox.value;
+                const parsedCommand = this.controller.parseCommand(inputValue);
+                
+                if (parsedCommand) {
+                    this.controller.executeCommand(parsedCommand);
+                    searchBox.value = '';
+                    this.controller.updateSearchQuery('');
+                } else {
+                    this.controller.updateSearchQuery(inputValue);
+                }
+            }, 100);
+        }
+    }
+    
+    updateFromState() {
+        // Update ship name
+        const shipNameEl = this.pane.querySelector('.ship-name-nav');
+        if (shipNameEl) {
+            shipNameEl.textContent = BaseController.ANONYMOUS_NAME;
+        }
+        
+        // Update status
+        const statusEl = this.pane.querySelector('#status');
+        if (statusEl && this.controller.simulatorState) {
+            statusEl.textContent = `Connected to: ${this.controller.simulatorState.clientName || 'Simulator'}`;
+        }
+    }
+    
+    handlePointerDown(ev) {
+        if (!this.controller.isSubscribed) return;
+        ev.target.setPointerCapture(ev.pointerId);
+        this.evCache.push(ev);
+        
+        if (this.evCache.length === 1) {
+            this.prevX = ev.clientX;
+            this.prevY = ev.clientY;
+        }
+        if (this.evCache.length === 2) {
+            this.prevDiff = Math.abs(this.evCache[0].clientX - this.evCache[1].clientX);
+        }
+        
+        if (this.controller.soundEnabled) {
+            this.controller.playSound(BaseController.SOUND_PATTERNS.TOUCH);
+        }
+        ev.preventDefault();
+    }
+    
+    handlePointerMove(ev) {
+        if (!this.controller.isSubscribed || this.evCache.length === 0) return;
+        
+        const index = this.evCache.findIndex((cachedEv) => cachedEv.pointerId === ev.pointerId);
+        if (index === -1) return;
+        this.evCache[index] = ev;
+        
+        if (this.evCache.length === 2) {
+            // Pinch zoom
+            const curDiff = Math.abs(this.evCache[0].clientX - this.evCache[1].clientX);
+            if (this.prevDiff > 0) {
+                const zoomDelta = (curDiff - this.prevDiff) * this.controller.pinchZoomSensitivity * this.controller.userZoomSensitivity * -1;
+                this.controller.sendUpdate('zoom', { zoomDelta });
+            }
+            this.prevDiff = curDiff;
+        } else if (this.evCache.length === 1) {
+            // Panning
+            const dx = ev.clientX - this.prevX;
+            const dy = ev.clientY - this.prevY;
+            const panXDelta = dx * this.controller.userPanSensitivity * 0.125;
+            const panYDelta = dy * this.controller.userPanSensitivity * 0.125;
+            if (Math.abs(panXDelta) > 0.001 || Math.abs(panYDelta) > 0.001) {
+                this.controller.sendUpdate('pan', { panXDelta, panYDelta });
+            }
+            this.prevX = ev.clientX;
+            this.prevY = ev.clientY;
+        }
+        ev.preventDefault();
+    }
+    
+    handlePointerUp(ev) {
+        if (!this.controller.isSubscribed) return;
+        ev.target.releasePointerCapture(ev.pointerId);
+        
+        const index = this.evCache.findIndex(cachedEv => cachedEv.pointerId === ev.pointerId);
+        if (index !== -1) {
+            this.evCache.splice(index, 1);
+        }
+        
+        if (this.evCache.length < 2) {
+            this.prevDiff = -1;
+        }
+        if (this.evCache.length === 1) {
+            this.prevX = this.evCache[0].clientX;
+            this.prevY = this.evCache[0].clientY;
+        }
+        
+        if (this.controller.soundEnabled) {
+            this.controller.playSound(BaseController.SOUND_PATTERNS.RELEASE_TAP);
+        }
+        ev.preventDefault();
+    }
+    
+    handlePointerCancel(ev) {
+        this.handlePointerUp(ev);
+    }
+    
+    handleWheel(ev) {
+        if (!this.controller.isSubscribed) return;
+        ev.preventDefault();
+        
+        const isTrackpadPinch = ev.ctrlKey;
+        const sensitivity = isTrackpadPinch ? this.controller.trackpadZoomSensitivity : this.controller.wheelZoomSensitivity;
+        const zoomDelta = ev.deltaY * sensitivity * this.controller.userZoomSensitivity;
+        
+        this.controller.sendUpdate('zoom', { zoomDelta });
+    }
+};
+
+/**
+ * Select Tab - Selection controls
+ */
+window.SelectTab = class SelectTab extends Tab {
+    constructor(controller) {
+        super(controller, 'select');
+        this.target = null;
+        this.pointerDown = false;
+        this.touchStartX = 0;
+        this.touchStartY = 0;
+    }
+    
+    async initialize() {
+        await super.initialize();
+        
+        this.target = this.pane.querySelector('#sel-target');
+        if (!this.target) return;
+        
+        // Set up event handlers
+        this.target.addEventListener('pointerdown', (ev) => this.handlePointerDown(ev));
+        this.target.addEventListener('pointermove', (ev) => this.handlePointerMove(ev));
+        this.target.addEventListener('pointerup', (ev) => this.handlePointerUp(ev));
+        this.target.addEventListener('pointercancel', (ev) => this.handlePointerCancel(ev));
+    }
+    
+    updateFromState() {
+        // Update ship name
+        const shipNameEl = this.pane.querySelector('.ship-name-sel');
+        if (shipNameEl) {
+            shipNameEl.textContent = BaseController.ANONYMOUS_NAME;
+        }
+        
+        // Update selected item info
+        const selectedInfoEl = this.pane.querySelector('#selected-item-info');
+        if (selectedInfoEl && this.controller.simulatorState && this.controller.simulatorState.selectedItem) {
+            selectedInfoEl.textContent = this.controller.simulatorState.selectedItem.title || 'Unknown item';
+        }
+    }
+    
+    handlePointerDown(ev) {
+        if (!this.controller.isSubscribed) return;
+        
+        this.pointerDown = true;
+        this.touchStartX = ev.clientX;
+        this.touchStartY = ev.clientY;
+        
+        ev.target.setPointerCapture(ev.pointerId);
+        
+        if (this.controller.soundEnabled) {
+            this.controller.playSound(BaseController.SOUND_PATTERNS.TOUCH);
+        }
+        
+        ev.preventDefault();
+    }
+    
+    handlePointerMove(ev) {
+        ev.preventDefault();
+    }
+    
+    handlePointerUp(ev) {
+        if (!this.controller.isSubscribed || !this.pointerDown) return;
+        ev.target.releasePointerCapture(ev.pointerId);
+        this.pointerDown = false;
+        
+        // Detect gesture
+        const deltaX = ev.clientX - this.touchStartX;
+        const deltaY = ev.clientY - this.touchStartY;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        let gestureType = 'tap';
+        let releaseSound = BaseController.SOUND_PATTERNS.RELEASE_TAP;
+        
+        if (distance > BaseController.INACTIVE_RADIUS) {
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 0) {
+                    gestureType = 'east';
+                    releaseSound = BaseController.SOUND_PATTERNS.RELEASE_EAST;
+                } else {
+                    gestureType = 'west';
+                    releaseSound = BaseController.SOUND_PATTERNS.RELEASE_WEST;
+                }
+            } else {
+                if (deltaY > 0) {
+                    gestureType = 'south';
+                    releaseSound = BaseController.SOUND_PATTERNS.RELEASE_SOUTH;
+                } else {
+                    gestureType = 'north';
+                    releaseSound = BaseController.SOUND_PATTERNS.RELEASE_NORTH;
+                }
+            }
+        }
+        
+        if (this.controller.soundEnabled) {
+            this.controller.playSound(releaseSound);
+        }
+        
+        this.controller.sendUpdate('select', { action: gestureType });
+        
+        ev.preventDefault();
+    }
+    
+    handlePointerCancel(ev) {
+        this.handlePointerUp(ev);
+    }
+};
+
+/**
+ * Inspect Tab - Item inspection
+ */
+window.InspectTab = class InspectTab extends Tab {
+    constructor(controller) {
+        super(controller, 'inspect');
+    }
+    
+    updateFromState() {
+        if (!this.controller.simulatorState || !this.controller.simulatorState.selectedItem) return;
+        
+        const item = this.controller.simulatorState.selectedItem;
+        const iframe = this.pane.querySelector('#inspector-iframe');
+        const jsonOutput = this.pane.querySelector('#inspector-json-output');
+        
+        if (iframe && item.id) {
+            iframe.src = `https://archive.org/details/${item.id}`;
+        }
+        
+        if (jsonOutput) {
+            jsonOutput.textContent = JSON.stringify(item, null, 2);
+        }
+    }
+};
+
+/**
+ * Adjust Tab - Settings controls
+ */
+window.AdjustTab = class AdjustTab extends Tab {
+    constructor(controller) {
+        super(controller, 'adjust');
+    }
+    
+    async initialize() {
+        await super.initialize();
+        
+        // Pan sensitivity
+        const panSlider = this.pane.querySelector('#pan-sensitivity');
+        const panValue = this.pane.querySelector('#pan-value');
+        if (panSlider && panValue) {
+            panSlider.value = this.controller.userPanSensitivity;
+            panValue.textContent = this.controller.userPanSensitivity.toFixed(1);
+            
+            panSlider.addEventListener('input', (e) => {
+                this.controller.userPanSensitivity = parseFloat(e.target.value);
+                panValue.textContent = this.controller.userPanSensitivity.toFixed(1);
+                
+                if (this.controller.soundEnabled) {
+                    this.controller.playSound(BaseController.SOUND_PATTERNS.CLICK);
+                }
+            });
+        }
+        
+        // Zoom sensitivity
+        const zoomSlider = this.pane.querySelector('#zoom-sensitivity');
+        const zoomValue = this.pane.querySelector('#zoom-value');
+        if (zoomSlider && zoomValue) {
+            zoomSlider.value = this.controller.userZoomSensitivity;
+            zoomValue.textContent = this.controller.userZoomSensitivity.toFixed(1);
+            
+            zoomSlider.addEventListener('input', (e) => {
+                this.controller.userZoomSensitivity = parseFloat(e.target.value);
+                zoomValue.textContent = this.controller.userZoomSensitivity.toFixed(1);
+                
+                if (this.controller.soundEnabled) {
+                    this.controller.playSound(BaseController.SOUND_PATTERNS.CLICK);
+                }
+            });
+        }
+        
+        // Theme select
+        const themeSelect = this.pane.querySelector('#theme-select');
+        if (themeSelect) {
+            themeSelect.addEventListener('change', (e) => {
+                this.controller.logEvent('Settings', `Theme changed to ${e.target.value}`);
+                // TODO: Implement theme switching
+                
+                if (this.controller.soundEnabled) {
+                    this.controller.playSound(BaseController.SOUND_PATTERNS.CLICK);
+                }
+            });
+        }
+        
+        // Debug panel toggle
+        const debugToggle = this.pane.querySelector('#show-debug');
+        if (debugToggle) {
+            debugToggle.checked = BaseController.isDebugMode || this.controller.debugModeEnabled;
+            debugToggle.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    this.controller.enableDebugMode();
+                } else {
+                    this.controller.disableDebugMode();
+                }
+            });
+        }
+    }
+};
+
+/**
+ * Unified Controller - manages tabs and delegates to BaseController functionality
+ */
+window.UnifiedController = class UnifiedController extends BaseController {
+    constructor() {
+        super('unified');
+        
+        // Tab management
+        this.tabs = {};
+        this.currentTab = null;
+        
+        // Override targetElement since we don't use a single target
+        this.targetElement = document.createElement('div');
+        this.targetElement.id = 'unified-target';
+    }
+    
+    /**
+     * Initialize the unified controller
+     */
+    initialize() {
+        // Initialize base controller without page handlers
+        super.initialize(true);
+        
+        // Create tab instances
+        this.tabs = {
+            about: new AboutTab(this),
+            navigate: new NavigateTab(this),
+            select: new SelectTab(this),
+            inspect: new InspectTab(this),
+            adjust: new AdjustTab(this)
+        };
+        
+        // Set up tab switching
+        this.setupTabSwitching();
+        
+        // Activate default tab
+        this.switchTab('about');
+        
+        // Initialize connection
+        return this.initializeControllerConnection();
+    }
+    
+    /**
+     * Set up tab button click handlers
+     */
+    setupTabSwitching() {
+        Object.values(this.tabs).forEach(tab => {
+            if (tab.button) {
+                tab.button.addEventListener('click', () => {
+                    this.switchTab(tab.tabId);
+                });
+            }
+        });
+    }
+    
+    /**
+     * Switch to a different tab
+     */
+    async switchTab(tabId) {
+        const newTab = this.tabs[tabId];
+        if (!newTab || newTab === this.currentTab) return;
+        
+        this.logEvent('Tabs', `Switching to ${tabId}`);
+        
+        // Play tab switch sound
+        if (this.soundEnabled) {
+            this.playSound(BaseController.SOUND_PATTERNS.CLICK);
+        }
+        
+        // Deactivate current tab
+        if (this.currentTab) {
+            this.currentTab.deactivate();
+        }
+        
+        // Activate new tab
+        this.currentTab = newTab;
+        await this.currentTab.activate();
+        
+        // Announce tab change if speech enabled
+        if (this.speechEnabled) {
+            this.speakText(`${tabId} tab`);
+        }
+    }
+    
+    /**
+     * Override setupControllerSpecificUI to update all tabs
+     */
+    setupControllerSpecificUI() {
+        this.logEvent('Init', 'Setting up Unified-specific UI');
+        
+        // Let each tab update its UI
+        Object.values(this.tabs).forEach(tab => {
+            tab.updateFromState();
+        });
+    }
+    
+    /**
+     * Override updateUIFromState to update all tabs
+     */
+    updateUIFromState() {
+        // Let each tab update from current state
+        Object.values(this.tabs).forEach(tab => {
+            tab.updateFromState();
+        });
+        
+        // Update debug panel
+        this.updateDebugOverlay();
+    }
+    
+    /**
+     * Add static debounce utility to BaseController
+     */
+    static debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
+        };
+    }
+};
+
+// Add debounce to BaseController as a static method
+BaseController.debounce = UnifiedController.debounce;
+
 // Simple initialization on DOM ready - directly instantiates the right controller
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -2520,6 +3477,9 @@ document.addEventListener('DOMContentLoaded', function() {
     } else if (controllerType === 'inspector') { // ADD THIS BLOCK
         controller = new InspectorController();
         controller.initialize(true);
+    } else if (controllerType === 'unified') {
+        controller = new UnifiedController();
+        controller.initialize();
     } else {
         console.error('Invalid controller type: ' + controllerType);
         return;

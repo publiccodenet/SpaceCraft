@@ -53,6 +53,7 @@ public class InputManager : MonoBehaviour
 
     [Header("UI References")]
     public ItemInfoPanel itemInfoPanel;
+    public SearchPanel searchPanel;
     
     [Tooltip("Layer mask for mouse hit detection - use TRIGGER colliders on this layer for clicks, physics colliders on other layers")]
     public LayerMask itemLayer;
@@ -96,6 +97,10 @@ public class InputManager : MonoBehaviour
     [Header("Search Settings")]
     public string searchString = ""; // Current search query for filtering
     
+    [Header("Selection Settings")]
+    public bool multiSelectEnabled = false; // TODO: Will move to SelectionManager
+    
+    #region Search Visualization (TODO: Move to SearchManager)
     [Header("Search Scaling - Bridge Controllable")]
     [Tooltip("Curve type name (bridge-compatible string)")]
     public string curveTypeName = "Sigmoid";
@@ -132,6 +137,9 @@ public class InputManager : MonoBehaviour
     [Tooltip("Curve that maps relevance score (0-1) to scale multiplier. X=score, Y=scale")]
     public AnimationCurve scoreToScaleCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
     
+    #endregion // Search Visualization
+    
+    #region Semantic Physics (TODO: Move to SemanticPhysicsSimulator)
     [Header("Physics Forces - Bridge Controllable")]
     [Tooltip("Maximum force strength at zero distance")]
     [Range(0f, 500f)]
@@ -153,6 +161,20 @@ public class InputManager : MonoBehaviour
     [Tooltip("How strongly tilt affects center position")]
     [Range(0f, 50f)]
     public float tiltSensitivity = 20f;
+    
+    [Tooltip("Use impulsive tilt (only apply force when changing tilt, not when still)")]
+    public bool useImpulsiveTilt = true;
+    
+    [Tooltip("Impulsive tilt force multiplier")]
+    [Range(0f, 200f)]
+    public float impulsiveTiltForce = 50f;
+    
+    [Tooltip("Affect Unity gravity directly with tilt")]
+    public bool tiltAffectsGravity = false;
+    
+    [Tooltip("Gravity tilt sensitivity")]
+    [Range(0f, 5f)]
+    public float gravityTiltSensitivity = 1f;
     
     [Tooltip("Apply center force to books")]
     public bool enableCenterForce = true;
@@ -229,6 +251,7 @@ public class InputManager : MonoBehaviour
     
     [Tooltip("Use continuous collision detection for fast-moving objects")]
     public bool rigidbodyUseContinuousDetection = true;
+    #endregion // Semantic Physics
     
     // State variables
     private bool isDragging = false;
@@ -243,7 +266,7 @@ public class InputManager : MonoBehaviour
     private ItemView hoveredItem;
     private SpaceCraft spaceCraft;
     private Camera _mainCamera; // Cache the controlled camera
-    private string searchStringLast = null; // Track last processed search to detect changes
+    private string searchStringLast = ""; // Track last processed search to detect changes
     
     // Item dragging state
     private bool isDraggingItem = false;
@@ -254,6 +277,10 @@ public class InputManager : MonoBehaviour
     private float originalMass = 1f; // Store original mass to restore later
     private Vector3 previousMouseWorldPos = Vector3.zero; // Track mouse movement for velocity
     private Vector3 mouseVelocity = Vector3.zero; // Current mouse velocity in world space
+    
+    // Tilt tracking for impulsive mode
+    private Vector3 previousTiltInput = Vector3.zero;
+    private Vector3 tiltVelocity = Vector3.zero;
 
     private void Start()
     {
@@ -896,14 +923,49 @@ public class InputManager : MonoBehaviour
         normalizedTiltX = Mathf.Clamp(normalizedTiltX, -1f, 1f);
         normalizedTiltZ = Mathf.Clamp(normalizedTiltZ, -1f, 1f);
         
-        // Convert normalized tilt (-1 to +1) to world offset using sensitivity
-        centerOffset.x = normalizedTiltX * tiltSensitivity;
-        centerOffset.z = normalizedTiltZ * tiltSensitivity;
+        Vector3 currentTiltInput = new Vector3(normalizedTiltX, 0, normalizedTiltZ);
+        
+        if (useImpulsiveTilt)
+        {
+            // Calculate tilt velocity (change in tilt)
+            tiltVelocity = (currentTiltInput - previousTiltInput) / Time.deltaTime;
+            previousTiltInput = currentTiltInput;
+            
+            // Apply tilt velocity as impulse force in ApplyCenterForce
+            // The actual force application happens there
+        }
+        else
+        {
+            // Original behavior - continuous offset
+            centerOffset.x = normalizedTiltX * tiltSensitivity;
+            centerOffset.z = normalizedTiltZ * tiltSensitivity;
+        }
+        
+        // Affect Unity gravity directly if enabled
+        if (tiltAffectsGravity)
+        {
+            // Tilt affects gravity on perpendicular axes
+            // Default gravity is (0, -9.81, 0)
+            Vector3 baseGravity = new Vector3(0, -9.81f, 0);
+            Vector3 tiltGravity = new Vector3(
+                normalizedTiltX * gravityTiltSensitivity * 9.81f,
+                -9.81f, // Keep Y gravity constant
+                normalizedTiltZ * gravityTiltSensitivity * 9.81f
+            );
+            Physics.gravity = tiltGravity * gravityMultiplier;
+        }
         
         // Log tilt input (only if actually tilting to reduce spam)
         if (Mathf.Abs(normalizedTiltX) > 0.01f || Mathf.Abs(normalizedTiltZ) > 0.01f)
         {
-            Debug.Log($"Physics: Tilt input ({normalizedTiltX:F2}, {normalizedTiltZ:F2}) -> Center offset ({centerOffset.x:F1}, {centerOffset.z:F1}) by {controllerId}");
+            if (useImpulsiveTilt)
+            {
+                Debug.Log($"Physics: Impulsive tilt velocity ({tiltVelocity.x:F2}, {tiltVelocity.z:F2}) by {controllerId}");
+            }
+            else
+            {
+                Debug.Log($"Physics: Tilt input ({normalizedTiltX:F2}, {normalizedTiltZ:F2}) -> Center offset ({centerOffset.x:F1}, {centerOffset.z:F1}) by {controllerId}");
+            }
         }
     }
 
@@ -1102,10 +1164,32 @@ public class InputManager : MonoBehaviour
     /// </summary>
     private void CheckForSearchStringChanges()
     {
-        // Normalize the current search string
+        // Two-way sync with SearchPanel UI
+        if (searchPanel != null && searchPanel.InputField != null)
+        {
+            string uiText = searchPanel.GetSearchText();
+            
+            // Check if UI has changed (user typed in the field)
+            if (uiText != searchString)
+            {
+                searchString = uiText;
+                // Notify SpaceCraft to send event to Bridge
+                if (spaceCraft != null)
+                {
+                    spaceCraft.OnSearchStringChangedFromUI(searchString);
+                }
+            }
+            // Check if searchString was updated programmatically (from Bridge)
+            else if (searchString != searchPanel.GetSearchText())
+            {
+                searchPanel.SetSearchText(searchString);
+            }
+        }
+        
+        // Original search visualization logic
         string normalizedSearch = (searchString ?? "").Trim();
         
-        // Check if the search string has changed
+        // Check if the search string has changed for visualization
         if (normalizedSearch != searchStringLast)
         {
             searchStringLast = normalizedSearch;
@@ -1568,6 +1652,14 @@ public class InputManager : MonoBehaviour
                 forcesApplied++;
                 
                 // No spam debug logging
+            }
+            
+            // Apply impulsive tilt force if enabled
+            if (useImpulsiveTilt && tiltVelocity.magnitude > 0.01f)
+            {
+                // Apply tilt velocity as an impulse force
+                Vector3 impulsiveForce = new Vector3(tiltVelocity.x, 0, tiltVelocity.z) * impulsiveTiltForce;
+                rb.AddForce(impulsiveForce, ForceMode.Impulse);
             }
         }
         

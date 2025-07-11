@@ -1,187 +1,535 @@
-/* ==========================================================================
-   SpaceCraft Controller Styles
-   Unified CSS for navigator and selector controllers
-   ========================================================================== */
-
-/* -----------------------------
-   1. Base & Reset Styles
-   ----------------------------- */
-html, body {
+/* Base styles */
+* {
     margin: 0;
     padding: 0;
-    width: 100vw;
-    height: 100vh;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: "Mulish", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
-    background-color: #111;
-    color: #eee;
-    font-family: 'Mulish', 'Roboto', sans-serif;
-    
-    /* Prevent mobile browser behaviors */
-    overscroll-behavior: none;
-    touch-action: none;
-    -webkit-text-size-adjust: 100%;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
+    position: fixed;
+    background: #1a1a1a;
+    color: #ffffff;
     user-select: none;
+    -webkit-user-select: none;
 }
 
-/* -----------------------------
-   2. Layout Containers
-   ----------------------------- */
-.container {
-    padding: 20px 10px 60px;
-    padding-top: 60px;
-    text-align: center;
+/* Tab Bar */
+.tab-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 100;
 }
 
-/* Target area for all pointer interactions */
-#target {
-    width: 100vw;
-    height: 100vh;
+.tab-button {
+    flex: 1;
+    height: 40px;
+    margin: 0 5px;
+    background: #3a3a3a;
+    border: none;
+    border-radius: 8px;
+    color: #888;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    background: #4a4a4a;
+    color: #aaa;
+}
+
+.tab-button.active {
+    background: #5a5a5a;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Tab Content */
+.tab-content {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 60px;
+    overflow: hidden;
+}
+
+.tab-pane {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
-    background-color: transparent;
-    -webkit-touch-callout: none;
+    right: 0;
+    bottom: 0;
+    display: none;
+    overflow-y: auto;
 }
 
-/* -----------------------------
-   3. Typography & Text Elements
-   ----------------------------- */
+.tab-pane.active {
+    display: block;
+}
+
+/* Container styles */
+.container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 .page-title {
-    font-size: 32px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-weight: bold;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-align: center;
 }
 
 .instructions {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 14px;
+    color: #ccc;
     text-align: center;
-    margin: 20px 0;
-    padding: 10px;
+    margin-bottom: 15px;
 }
 
-/* -----------------------------
-   4. UI Components
-   ----------------------------- */
-/* Ship name display */
-.ship-name-display {
+/* About Tab Styles */
+.about-container {
     text-align: center;
-    margin: 15px auto;
-    padding: 5px;
+}
+
+.welcome-message {
+    background: #2a2a2a;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.welcome-message p {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.help-content {
+    text-align: left;
+    background: #2a2a2a;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.help-content h2 {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #4a9eff;
+}
+
+.help-content h2:first-child {
+    margin-top: 0;
+}
+
+.help-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.help-content li {
+    padding: 5px 0;
+}
+
+.secret-commands li {
+    font-family: monospace;
+}
+
+.secret-commands code {
+    background: #3a3a3a;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #4a9eff;
+}
+
+/* Ship Name Display */
+.ship-name-display {
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: center;
 }
 
 .ship-name-label {
-    font-size: 16px;
+    font-size: 12px;
+    color: #888;
     margin-bottom: 5px;
 }
 
 .ship-name-value {
-    font-size: 28px;
-    font-weight: bold;
-    margin-top: 5px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #4a9eff;
+    cursor: pointer;
 }
 
-/* Status display - hidden by default */
+/* Search Box */
+#searchBox {
+    width: 100%;
+    padding: 10px 15px;
+    background: #2a2a2a;
+    border: 2px solid #3a3a3a;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+#searchBox:focus {
+    outline: none;
+    border-color: #4a9eff;
+}
+
+/* Status */
 .status {
-    display: none;
-    padding: 5px;
-    margin: 5px 0;
-    background-color: #333;
-}
-
-/* -----------------------------
-   5. Controls Bar
-   ----------------------------- */
-#controls-bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    padding: 5px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    box-sizing: border-box;
-    z-index: 1000;
-}
-
-#controls-bar button {
-    flex: 1;
-    margin: 0 2px;
-    box-sizing: border-box;
-    padding: 10px 5px; 
-    height: 50px;
-    min-width: 60px;
-    font-size: 0.8em;
-    font-weight: bold;
-    font-family: "Mulish", Helvetica, sans-serif;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 6px;
+    font-size: 14px;
+    color: #888;
     text-align: center;
-    line-height: 1.2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 10px 0;
 }
 
-#controls-bar button:active {
-    background-color: #555;
-}
-
-/* Button order in the flex container */
-#rename-button { order: 1; }
-#vibration-toggle, #sound-toggle { order: 2; }
-#speech-toggle { order: 3; }
-#tilt-toggle { order: 4; }
-
-/* -----------------------------
-   6. Debug Panel
-   ----------------------------- */
-#debug-panel {
-    position: fixed;
-    bottom: 60px; /* Position above the controls bar */
-    left: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: #0F0;
-    padding: 10px;
-    font-size: 13px;
-    font-family: "Mulish", monospace;
-    z-index: 100;
-    height: auto;
-    max-height: 30vh;
-    overflow-y: auto;
-}
-
-#debug-panel pre {
-    margin: 0;
-    padding: 0;
-    text-align: left;
-    font-family: "Mulish", monospace;
-}
-
-.debug-section {
-    font-family: monospace;
-    line-height: 1.3;
-}
-
-/* -----------------------------
-   7. Controller-Specific Styles
-   ----------------------------- */
-/* Navigator cursor style */
-.navigator-container #target {
+/* Target Areas */
+.target-area {
+    flex: 1;
+    background: #2a2a2a;
+    border-radius: 12px;
+    border: 2px dashed #3a3a3a;
+    position: relative;
+    touch-action: none;
     cursor: move;
 }
 
-/* Selector cursor style */
-.selector-container #target {
+/* Selected Info */
+.selected-info {
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.selected-info h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #4a9eff;
+}
+
+#selected-item-info {
+    font-size: 14px;
+    color: #ccc;
+}
+
+/* Inspector Content */
+.inspector-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#inspector-iframe {
+    flex: 1;
+    width: 100%;
+    background: #fff;
+    border-radius: 8px;
+    min-height: 300px;
+}
+
+#inspector-json-output {
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 15px;
+    font-family: monospace;
+    font-size: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+/* Settings Groups */
+.settings-group {
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.settings-group h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #4a9eff;
+}
+
+.settings-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.settings-group input[type="range"] {
+    width: 200px;
+    margin: 0 10px;
+}
+
+.settings-group select {
+    background: #3a3a3a;
+    border: 1px solid #4a4a4a;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* Debug Panel */
+#debug-panel {
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.9);
+    border-top: 1px solid #3a3a3a;
+    display: none;
+    overflow-y: auto;
+    z-index: 99;
+}
+
+#debug-content {
+    padding: 10px;
+    font-family: monospace;
+    font-size: 11px;
+    color: #0f0;
+    white-space: pre-wrap;
+}
+
+/* Controls Bar */
+#controls-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 20px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+#controls-bar button {
+    background: #3a3a3a;
+    border: none;
+    border-radius: 8px;
+    color: #ccc;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#controls-bar button:hover {
+    background: #4a4a4a;
+    color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .tab-button {
+        font-size: 12px;
+        margin: 0 2px;
+    }
+    
+    .container {
+        padding: 15px;
+    }
+    
+    .page-title {
+        font-size: 20px;
+    }
+    
+    #controls-bar button {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+}
+
+/* Hide speech button by default (secret feature) */
+#speech-toggle {
+    display: none;
+}
+
+/* Show sound button only when activated */
+#sound-toggle {
+    display: none;
+}
+
+/* Recording state for speech button */
+.recording {
+    background: #ff4444 !important;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+} 
+
+/* Tab pane content structure */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* About tab specific */
+#about-tab .main-content {
+    flex: 0 0 auto;
+}
+
+#about-tab .help-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    background: #3a3a3a;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+#about-tab h2 {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+#about-tab h3 {
+    color: #0ea5e9;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+#about-tab ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#about-tab li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+#about-tab li:before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: #0ea5e9;
+}
+
+/* Controls section for navigate/select tabs */
+.controls-section {
+    flex: 0 0 auto;
+    background: #3a3a3a;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.controls-section h2 {
+    color: #fff;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+/* Gesture target areas */
+.gesture-target {
+    flex: 1 1 auto;
+    background: #2a2a2a;
+    border: 2px solid #4a4a4a;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    min-height: 200px;
+}
+
+.gesture-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #666;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    pointer-events: none;
+}
+
+/* Search container */
+.search-container {
+    margin: 15px 0;
+}
+
+.search-container label {
+    display: block;
+    color: #aaa;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 10px 15px;
+    background: #2a2a2a;
+    border: 1px solid #4a4a4a;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+}
+
+/* Selected info */
+.selected-info {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: #2a2a2a;
+    border-radius: 8px;
+    color: #aaa;
+}
+
+.selected-info strong {
+    color: #fff;
+}
+
+#selected-item-info {
+    color: #0ea5e9;
 } 

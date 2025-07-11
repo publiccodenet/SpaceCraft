@@ -47,24 +47,149 @@ public class Collection : CollectionSchema
     { 
         get 
         { 
+            if (_itemIds == null)
+            {
+                Debug.LogWarning($"[Collection:{Id ?? "UNKNOWN"}] ItemIds list is null - no items available.");
+                yield break;
+            }
+
             if (_itemIds.Count == 0)
             {
-                Debug.LogWarning($"[Collection:{Id}] No item IDs available.");
+                Debug.LogWarning($"[Collection:{Id ?? "UNKNOWN"}] No item IDs available.");
                 yield break;
             }
             
+            if (Brewster.Instance == null)
+            {
+                Debug.LogError($"[Collection:{Id ?? "UNKNOWN"}] Brewster instance is null - cannot retrieve items.");
+                yield break;
+            }
+            
+            int foundCount = 0;
+            int missingCount = 0;
+            int totalCount = _itemIds.Count;
+            
             foreach (string itemId in _itemIds)
             {
-                Item item = Brewster.Instance.GetItem(itemId);
+                if (string.IsNullOrEmpty(itemId))
+                {
+                    Debug.LogWarning($"[Collection:{Id ?? "UNKNOWN"}] Found null/empty item ID in collection.");
+                    missingCount++;
+                    continue;
+                }
+
+                Item item = null;
+                try
+                {
+                    item = Brewster.Instance.GetItem(itemId);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[Collection:{Id ?? "UNKNOWN"}] Exception retrieving item '{itemId}': {ex.Message}");
+                    missingCount++;
+                    continue;
+                }
+
                 if (item != null)
                 {
+                    foundCount++;
                     yield return item;
                 }
-                else 
+                else
                 {
-                    Debug.LogWarning($"[Collection:{Id}] Failed to retrieve Item with ID '{itemId}' from registry.");
+                    missingCount++;
+                    Debug.LogWarning($"[Collection:{Id ?? "UNKNOWN"}] Failed to retrieve Item with ID '{itemId}' from registry.");
                 }
             }
+            
+            // Only log summary if we had missing items or for debugging
+            if (missingCount > 0 || Debug.isDebugBuild)
+            {
+                Debug.Log($"[Collection:{Id ?? "UNKNOWN"}] Items summary - Found: {foundCount}, Missing: {missingCount}, Total: {totalCount}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Safely gets the count of available items (excludes missing items)
+    /// </summary>
+    public int AvailableItemCount
+    {
+        get
+        {
+            try
+            {
+                return Items?.Count() ?? 0;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[Collection:{Id ?? "UNKNOWN"}] Error counting available items: {ex.Message}");
+                return 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets the total count of item IDs (includes missing items)
+    /// </summary>
+    public int TotalItemIdCount
+    {
+        get
+        {
+            return _itemIds?.Count ?? 0;
+        }
+    }
+
+    /// <summary>
+    /// Safely checks if this collection has any valid items
+    /// </summary>
+    public bool HasItems
+    {
+        get
+        {
+            try
+            {
+                return Items?.Any() == true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[Collection:{Id ?? "UNKNOWN"}] Error checking if collection has items: {ex.Message}");
+                return false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets a specific item by ID if it exists in this collection
+    /// </summary>
+    public Item GetItem(string itemId)
+    {
+        if (string.IsNullOrEmpty(itemId))
+        {
+            Debug.LogWarning($"[Collection:{Id ?? "UNKNOWN"}] Cannot get item with null/empty ID");
+            return null;
+        }
+
+        if (_itemIds == null || !_itemIds.Contains(itemId))
+        {
+            Debug.LogWarning($"[Collection:{Id ?? "UNKNOWN"}] Item '{itemId}' is not in this collection's item list");
+            return null;
+        }
+
+        if (Brewster.Instance == null)
+        {
+            Debug.LogError($"[Collection:{Id ?? "UNKNOWN"}] Brewster instance is null - cannot retrieve item '{itemId}'");
+            return null;
+        }
+
+        try
+        {
+            return Brewster.Instance.GetItem(itemId);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Collection:{Id ?? "UNKNOWN"}] Exception getting item '{itemId}': {ex.Message}");
+            return null;
         }
     }
 

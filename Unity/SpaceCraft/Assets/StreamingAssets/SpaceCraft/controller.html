@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>SpaceCraft Controller</title>
+    <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+    <meta name="controller-type" content="unified">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Mulish:400italic,400,600italic,600,700italic,700" rel="stylesheet">
+    
+    <!-- Shared Controller Styles -->
+    <link rel="stylesheet" href="controller.css">
+    <!-- Supabase library (Local Copy) -->
+    <script src="supabase.min.js"></script>
+    <!-- Shared Controller Logic -->
+    <script src="controller.js"></script>
+  </head>
+  <body>
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <button class="tab-button active" data-tab="about">About</button>
+      <button class="tab-button" data-tab="navigate">Navigate</button>
+      <button class="tab-button" data-tab="select">Select</button>
+      <button class="tab-button" data-tab="inspect">Inspect</button>
+      <button class="tab-button" data-tab="adjust">Adjust</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- About Tab -->
+      <div id="about-tab" class="tab-pane active">
+        <div class="content-wrapper">
+          <div class="main-content">
+            <h2>HI! I bet you're wondering what this is.</h2>
+            <p>Welcome to the SpaceCraft Controller!</p>
+            
+            <div class="ship-name-display">
+              <div class="ship-name-label">Your Ship Name:</div>
+              <div id="ship-name" class="ship-name-value">Connecting...</div>
+            </div>
+            
+            <p>Use the tabs above to navigate, select items, inspect them, or adjust settings.</p>
+          </div>
+          
+          <div class="help-content">
+            <h3>Quick Help</h3>
+            <ul>
+              <li><strong>Navigate:</strong> Pan and zoom through space</li>
+              <li><strong>Select:</strong> Tap and swipe to select items</li>
+              <li><strong>Inspect:</strong> View details about selected items</li>
+              <li><strong>Adjust:</strong> Configure sensitivity and preferences</li>
+            </ul>
+            
+            <h3>Gestures</h3>
+            <ul>
+              <li><strong>Drag:</strong> Pan the view</li>
+              <li><strong>Pinch:</strong> Zoom in/out</li>
+              <li><strong>Swipe:</strong> Directional selection</li>
+              <li><strong>Shake:</strong> Same as swipe!</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigate Tab -->
+      <div id="navigate-tab" class="tab-pane">
+        <div class="content-wrapper">
+          <div class="controls-section">
+            <h2>Navigator</h2>
+            <p class="instructions"><strong>DRAG to pan, PINCH to zoom</strong></p>
+            
+            <div class="search-container">
+              <label for="searchBox">Search or Command:</label>
+              <input type="text" id="searchBox" placeholder="Search or say a command..." />
+            </div>
+            
+            <div class="ship-name-display">
+              <div class="ship-name-label">Ship Name:</div>
+              <div class="ship-name-value ship-name-nav">Connecting...</div>
+            </div>
+            
+            <div id="status" class="status">Connecting to simulator...</div>
+          </div>
+          
+          <div id="nav-target" class="gesture-target">
+            <div class="gesture-hint">Pan & Zoom Area</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Select Tab -->
+      <div id="select-tab" class="tab-pane">
+        <div class="content-wrapper">
+          <div class="controls-section">
+            <h2>Selector</h2>
+            <p class="instructions"><strong>TAP to select, SWIPE for direction</strong></p>
+            
+            <div class="ship-name-display">
+              <div class="ship-name-label">Ship Name:</div>
+              <div class="ship-name-value ship-name-sel">Connecting...</div>
+            </div>
+            
+            <div class="selected-info">
+              <strong>Selected:</strong> <span id="selected-item-info">Nothing selected</span>
+            </div>
+          </div>
+          
+          <div id="sel-target" class="gesture-target">
+            <div class="gesture-hint">Tap & Swipe Area</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inspect Tab -->
+      <div id="inspect-tab" class="tab-pane">
+        <div class="container inspector-container">
+          <h1 class="page-title">Inspector</h1>
+          <p class="instructions"><strong>View detailed information about selected items</strong></p>
+          
+          <div class="inspector-content">
+            <iframe id="inspector-iframe" src="about:blank" frameborder="0"></iframe>
+            <div id="inspector-json-output">No item selected for inspection</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Adjust Tab -->
+      <div id="adjust-tab" class="tab-pane">
+        <div class="container adjust-container">
+          <h1 class="page-title">Adjust Settings</h1>
+          
+          <div class="settings-group">
+            <h3>Sensitivity</h3>
+            <label>
+              Pan Speed: 
+              <input type="range" id="pan-sensitivity" min="0.1" max="2" step="0.1" value="1">
+              <span id="pan-value">1.0</span>
+            </label>
+            <label>
+              Zoom Speed: 
+              <input type="range" id="zoom-sensitivity" min="0.1" max="2" step="0.1" value="1">
+              <span id="zoom-value">1.0</span>
+            </label>
+          </div>
+          
+          <div class="settings-group">
+            <h3>Appearance</h3>
+            <label>
+              Theme: 
+              <select id="theme-select">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+                <option value="auto">Auto</option>
+              </select>
+            </label>
+          </div>
+          
+          <div class="settings-group">
+            <h3>Advanced</h3>
+            <label>
+              <input type="checkbox" id="show-debug"> Show Debug Panel
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debug Panel (hidden by default) -->
+    <div id="debug-panel">
+      <pre id="debug-content">Initializing...</pre>
+    </div>
+    
+    <!-- Controls Bar -->
+    <div id="controls-bar">
+      <button id="rename-button">Change<br/>Name</button> 
+      <button id="sound-toggle">Start<br/>Sound</button>
+      <button id="speech-toggle">Start<br/>Speech</button>
+      <button id="tilt-toggle">Start<br/>Tilting</button>
+    </div>
+
+    <script>
+      // Initialize unified controller
+      document.addEventListener('DOMContentLoaded', function() {
+        // Create unified controller instance
+        window.controller = new UnifiedController();
+        window.controller.initialize();
+      });
+    </script>
+  </body>
+</html> 

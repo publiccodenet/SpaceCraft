@@ -15,9 +15,6 @@ public class CollectionsView : MonoBehaviour
     public Transform collectionsContainer;
     public float collectionGapX = 10f;
     
-    [Header("Item Detail Display")]
-    public ItemInfoPanel itemInfoPanel;
-    
     // Collection views management
     private List<CollectionView> collectionViews = new List<CollectionView>();
     private Item currentDisplayedItem;
@@ -259,6 +256,7 @@ public class CollectionsView : MonoBehaviour
         }
         
         // Show title in the InfoText component
+        var itemInfoPanel = SpaceCraft.Instance?.InputManager?.itemInfoPanel;
         if (itemInfoPanel != null)
         {
             itemInfoPanel.gameObject.SetActive(true);
@@ -272,6 +270,7 @@ public class CollectionsView : MonoBehaviour
     public void HideItemDetails()
     {
         // Hide panel if present
+        var itemInfoPanel = SpaceCraft.Instance?.InputManager?.itemInfoPanel;
         if (itemInfoPanel != null)
         {
             itemInfoPanel.ClearInfo();

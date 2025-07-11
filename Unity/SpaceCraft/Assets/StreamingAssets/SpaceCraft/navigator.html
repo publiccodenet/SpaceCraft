@@ -22,7 +22,7 @@
     <div class="container navigator-container">
         <h1 class="page-title">Navigator</h1>
         <p class="instructions"><strong>DRAG to move, PINCH or SCROLL to zoom</strong></p>
-        <p>Search: <input type="text" id="searchBox"></input></p>
+        <p>Search: <input type="text" id="searchBox" placeholder="Search or say a command..."></input></p>
         
         <div class="ship-name-display">
             <div class="ship-name-label">Space Ship Name:</div>
@@ -39,7 +39,7 @@
     
     <div id="controls-bar">
         <button id="rename-button">Change<br/>Name</button> 
-        <button id="vibration-toggle">Start<br/>Sound</button>
+        <button id="sound-toggle">Start<br/>Sound</button>
         <button id="speech-toggle">Start<br/>Speech</button>
         <button id="tilt-toggle">Start<br/>Tilting</button>
     </div>
@@ -61,11 +61,31 @@
         
         // Set up the search input handler - this is the magic! ✨
         searchElement.onkeyup = debounce(() => {
-            // Use the proper updateSearchQuery method which updates presence state
-            // instead of the old broken sendUpdate('search', value) approach
-            if (window.controller && window.controller.updateSearchQuery) {
-                window.controller.updateSearchQuery(searchElement.value);
-                console.log('[Search] Updated search query via presence:', searchElement.value);
+            if (window.controller) {
+                const inputValue = searchElement.value;
+                
+                // First check if this is a command
+                const parsedCommand = window.controller.parseCommand(inputValue);
+                
+                if (parsedCommand) {
+                    // It's a command! Execute it and clear the search box
+                    console.log('[Command] Detected command:', parsedCommand);
+                    window.controller.executeCommand(parsedCommand);
+                    
+                    // Clear the search box after command execution
+                    searchElement.value = '';
+                    
+                    // Also clear the search query in presence
+                    if (window.controller.updateSearchQuery) {
+                        window.controller.updateSearchQuery('');
+                    }
+                } else {
+                    // Not a command, treat as regular search
+                    if (window.controller.updateSearchQuery) {
+                        window.controller.updateSearchQuery(inputValue);
+                        console.log('[Search] Updated search query via presence:', inputValue);
+                    }
+                }
             } else {
                 console.warn('[Search] Controller not ready yet, search will work once connected');
             }
