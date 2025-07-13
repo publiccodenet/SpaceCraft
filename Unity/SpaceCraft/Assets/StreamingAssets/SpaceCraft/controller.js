@@ -95,121 +95,15 @@ window.BaseController = class BaseController {
     // Global volume control
     static OVERALL_VOLUME = 0.25;
     
-    // List of Fun Astronomical & Sci-Fi Names
-    static funNameList = [
-        // Solar System Planets & Moons
-        'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus',
-        'Neptune', 'Pluto', 'Luna', 'Io', 'Europa', 'Ganymede', 'Callisto',
-        'Titan', 'Enceladus', 'Triton', 'Charon',
-
-        // Well-Known Stars
-        'Sol', 'Proxima Centauri', 'Alpha Centauri', 'Sirius', 'Vega',
-        'Betelgeuse', 'Rigel', 'Polaris', 'Antares', 'Arcturus',
-        'Capella', 'Aldebaran', 'Spica', 'Altair', 'Deneb',
-        'Fomalhaut', 'Procyon', 'Achernar', 'Castor', 'Pollux',
-
-        // Famous Nebulae & Galaxies
-        'Andromeda Galaxy', 'Milky Way', 'Orion Nebula', 'Crab Nebula',
-        'Eagle Nebula', 'Pillars of Creation', 'Horsehead Nebula',
-        'Triangulum Galaxy', 'Whirlpool Galaxy', 'Sombrero Galaxy',
-        'Cat\'s Eye Nebula', 'Boomerang Nebula', 'Ring Nebula',
-        'Hourglass Nebula', 'Helix Nebula', 'Butterfly Nebula',
-        
-        // Star Trek Planets & Locations
-        'Vulcan', 'Kronos', 'Romulus', 'Bajor', 'Risa', 'Betazed', 'Andoria',
-        'Deep Space 9', 'Starbase 1', 'Guardian of Forever',
-
-        // Star Trek Ships
-        'USS Enterprise', 'USS Voyager', 'USS Defiant', 'USS Excelsior',
-        'USS Stargazer', 'Bird-of-Prey',
-
-        // Star Wars Planets & Moons
-        'Tatooine', 'Hoth', 'Endor', 'Dagobah', 'Naboo', 'Coruscant',
-        'Bespin', 'Kamino', 'Alderaan', 'Yavin 4', 'Kashyyyk', 'Mandalore',
-
-        // Star Wars Ships & Stations
-        'Millennium Falcon', 'X-Wing', 'TIE Fighter', 'Star Destroyer',
-        'Death Star', 'Tantive IV', 'Home One',
-        'Lambda Shuttle', 'Sandcrawler', 'Sail Barge',
-
-        // Iain M. Banks' Culture Ships
-        'Clear Air Turbulence', 'Limiting Factor', 'Just Read The Instructions',
-        'Of Course I Still Love You', 'Sleeper Service', 'Grey Area',
-        'Attitude Adjuster', 'Congenital Optimist', 'Size Isn\'t Everything',
-        'Ethics Gradient', 'Just Testing', 'Frank Exchange Of Views',
-        'No Fixed Abode', 'Very Little Gravitas Indeed',
-        'Experiencing A Significant Gravitas Shortfall',
-        'Sense Amid Madness, Wit Amidst Folly',
-        'Falling Outside the Normal Moral Constraints',
-        
-        // More Culture Ships - Excellent for "I am..."
-        'Serious Callers Only', 'Unfortunate Conflict Of Evidence',
-        'Wisdom Like Silence', 'Zero Gravitas', 'Problem Child',
-        'Unacceptable Behaviour', 'Honest Mistake', 'Fate Amenable To Change',
-        'Jaundiced Outlook', 'Recent Convert', 'Yawning Angel',
-        'Gunboat Diplomat', 'Ultimate Ship The Second', 'Kiss The Blade',
-        'Boo!', 'Dramatic Exit', 'Awkward Customer', 'Reformed Nice Guy',
-        'Now Look What You\'ve Made Me Do', 'Kiss This Then',
-        'Different Tan', 'Sweet and Full of Grace',
-        'Well I Was In The Neighbourhood',
-        'Lapsed Pacifist', 'You\'ll Thank Me Later', 'Perfidy',
-        'Synchronize Your Dogmas', 'God Told Me To Do It',
-        'Just Another Victim Of The Ambient Morality',
-        'Advanced Case Of Chronic Patheticism',
-        'Don\'t Try This At Home', 'You Naughty Monsters',
-        'It\'s My Party And I\'ll Sing If I Want To',
-        'Lightly Seared On The Reality Grill',
-        'Now We Try It My Way', 'Pure Big Mad Boat Man',
-        'You\'ll Clean That Up Before You Leave',
-        'Total Internal Reflection', 'Fixed Grin',
-        'Me, I\'m Counting', 'Inappropriate Response',
-        'Helpless In The Face Of Your Beauty',
-        'Not Wanted on Voyage', 'Credibility Problem',
-        'Dramatic Exit, Or, Thank you And Goodnight',
-        'Synchronize Your Dogmas',
-        'The Precise Nature Of The Catastrophe',
-
-        // Other Iconic Sci-Fi Planets
-        'Arrakis', 'Dune', 'Solaris', 'Pandora', 'Magrathea', 'Cybertron',
-        'Gallifrey', 'Terminus', 'Trantor',
-        'Caprica', 'Kobol', 'Reach', 'Genesis', 'Hyperion', 'Terra Nova',
-        'Serenity Valley',
-
-        // Other Iconic Sci-Fi Ships, Stations & Entities
-        'Serenity', 'Nostromo', 'Discovery One', 'HAL 9000', 'Valley Forge',
-        'Battlestar Galactica', 'Pegasus', 'Rama', 'Heart of Gold', 'Red Dwarf',
-        'White Star', 'Babylon 5', 'Ark', 'Axiom', 'Rocinante', 'Tycho Station',
-        'Ceres Station', 'ISV Venture Star', 'Gunstar', 'TARDIS',
-        'Swordfish II', 'Bebop', 'Planet Express Ship', 'Moya',
-        'Ansible',
-        
-        // More Sci-Fi Ships
-        'Sulaco', 'Pillar of Autumn', 'Galactica', 'Normandy',
-        'Tempest', 'Hyperion', 'Icarus', 'Event Horizon', 'Prometheus',
-        'Nostradamus', 'Andromeda Ascendant', 'Lewis and Clark',
-        'Excalibur', 'Odyssey', 'Destiny', 'Lexx', 'The Liberator',
-        'The Yamato', 'Thunderbird 5', 'Eagle Transporter',
-        'Jupiter 2', 'Rodger Young', 'Colonial One', 'Time Machine',
-        'FTL Scout Ship', 'Nebuchadnezzar', 'Borg Cube', 'Soyuz',
-        
-        // Famous Real Space Mission Names
-        'Apollo', 'Voyager', 'Cassini', 'Hubble', 'Curiosity',
-        'Perseverance', 'Pioneer', 'New Horizons', 'Sputnik',
-        'Rosetta', 'Galileo', 'Opportunity', 'Chandrayaan',
-        'Mariner', 'Viking', 'Columbia', 'Challenger', 'Discovery',
-        'Enterprise', 'Atlantis', 'Endeavour', 'Skylab', 'Mir',
-        'Venera', 'Vostok', 'Kepler', 'Herschel', 'Spitzer',
-    ];
+    // Controller names are now simple timestamps
+    // Format: Controller-yyyy-mm-dd-hh-mm-ss-##
+    // where ## is a random 2-digit number to prevent collisions
     
     // Sound patterns - defined inline to avoid circular reference issues
     static SOUND_PATTERNS = {
         CLICK: { frequency: 1200, duration: 40, type: 'sine', category: 'ui' },
         SUCCESS: { frequency: 880, duration: 60, type: 'sine', fadeOut: true, category: 'feedback' },
         ERROR: { frequency: 220, duration: 150, type: 'square', category: 'feedback' },
-        RENAME: [
-            { frequency: 660, duration: 50, type: 'sine', category: 'event' },
-            { frequency: 880, duration: 60, type: 'sine', category: 'event' }
-        ],
         TILT_ON: { frequency: 440, duration: 75, type: 'triangle', fadeIn: true, category: 'feedback' },
         TILT_OFF: { frequency: 330, duration: 75, type: 'triangle', fadeOut: true, category: 'feedback' },
         JOIN: [
@@ -223,7 +117,6 @@ window.BaseController = class BaseController {
         BUTTON_TILT: { frequency: 1320, duration: 30, type: 'sine', category: 'ui' },
         BUTTON_SPEECH: { frequency: 1100, duration: 30, type: 'sine', category: 'ui' },
         BUTTON_SOUND: { frequency: 980, duration: 30, type: 'sine', category: 'ui' },
-        BUTTON_RENAME: { frequency: 860, duration: 30, type: 'sine', category: 'ui' },
         
         // Generic ON/OFF button sounds
         BUTTON_ON: { frequency: 1000, duration: 20, type: 'sine', category: 'ui' },
@@ -281,11 +174,10 @@ window.BaseController = class BaseController {
         // Identity properties 
         this.clientType = clientType;
         this.clientId = this.generateClientId();
-        this.clientName = this.getOrGenerateShipName();
+        this.clientName = this.generateTimestampName(); // Changed to timestamp format
         
         // UI elements
         this.targetElement = null;
-        this.shipNameElement = null;
         
         // Interaction state
         this.evCache = [];
@@ -331,11 +223,6 @@ window.BaseController = class BaseController {
         this.isSubscribed = false;
         this.tiltingActive = false;
         
-        // Name history - initialize with current name
-        this.nameHistory = []; 
-        this.currentNameIndex = -1;
-        this.initializeNameHistory();
-        
         // Sound and speech
         this.soundEnabled = false; // Default to disabled initially
         this.audioContext = null;
@@ -350,7 +237,34 @@ window.BaseController = class BaseController {
         this.wheelZoomSensitivity = this.constructor.WHEEL_ZOOM_SENSITIVITY;
         this.trackpadZoomSensitivity = this.constructor.TRACKPAD_ZOOM_SENSITIVITY;
         
+        // Gesture tracking (added for dx/dy support)
+        this.lastGestureDeltaX = 0;
+        this.lastGestureDeltaY = 0;
+        
+        // Keep currentName for compatibility
+        this.currentName = this.clientName;
+        
+        // Search functionality
+        this.currentSearchQuery = ''; // Initialize search query
+        
         this.logEvent('Init', `Client created: type=${this.clientType}, id=${this.clientId}, name=${this.clientName}`);
+    }
+    
+    /**
+     * Generates a timestamp-based name
+     * Format: Controller-yyyy-mm-dd-hh-mm-ss-##
+     */
+    generateTimestampName() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const randomSuffix = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+        
+        return `Controller-${year}-${month}-${day}-${hours}-${minutes}-${seconds}-${randomSuffix}`;
     }
     
     /**
@@ -360,95 +274,13 @@ window.BaseController = class BaseController {
         return 'client_' + Math.random().toString(36).substring(2, 10);
     }
     
-    /**
-     * Generates a random name from the funNameList
-     */
-    generateRandomName() {
-        const randomIndex = Math.floor(Math.random() * this.constructor.funNameList.length);
-        return this.constructor.funNameList[randomIndex];
-    }
+
     
     /**
-     * Gets or generates a ship name
+     * Create DOM elements for the controller - must be overridden in subclasses
      */
-    getOrGenerateShipName() {
-        // Try to load from localStorage first
-        try {
-            const savedName = localStorage.getItem('shipName');
-            if (savedName) {
-                this.logEvent('Name', `Loaded saved name: ${savedName}`);
-                return savedName;
-            }
-        } catch (e) {
-            this.logEvent('Storage', 'Error loading name from localStorage:', e);
-        }
-        
-        // Generate a new name
-        const newName = this.generateRandomName();
-        
-        try {
-            localStorage.setItem('shipName', newName);
-        } catch (e) {
-            this.logEvent('Storage', 'Error loading name from localStorage:', e);
-        }
-        
-        this.logEvent('Name', `Generated new name: ${newName}`);
-        return newName;
-    }
-    
-    /**
-     * Saves the current name history to localStorage
-     */
-    saveNameHistory(nameHistory, currentNameIndex, currentName) {
-        try {
-            localStorage.setItem('nameHistory', JSON.stringify(nameHistory));
-            localStorage.setItem('nameIndex', currentNameIndex.toString());
-            localStorage.setItem('shipName', currentName);
-            this.logEvent('Storage', `Saved name history: ${nameHistory.length} items, current index: ${currentNameIndex}`);
-        } catch (e) {
-            this.logEvent('Storage', 'Error saving name history to localStorage:', e);
-        }
-    }
-    
-    /**
-     * Checks for more storage keys in the constructor method
-     */
-    initializeNameHistory() {
-        // Try to load from localStorage
-        try {
-            const savedHistory = localStorage.getItem('nameHistory');
-            const savedIndex = localStorage.getItem('nameIndex');
-            
-            if (savedHistory) {
-                this.nameHistory = JSON.parse(savedHistory);
-                this.currentNameIndex = parseInt(savedIndex || "0", 10);
-                
-                // Ensure the current name is set to the current index
-                if (this.nameHistory.length > 0 && this.currentNameIndex >= 0 && this.currentNameIndex < this.nameHistory.length) {
-                    this.currentName = this.nameHistory[this.currentNameIndex];
-                    this.logEvent('Name', `Loaded name history: ${this.nameHistory.length} items, current index: ${this.currentNameIndex}, current name: ${this.currentName}`);
-                    
-                    // Update localStorage with current name
-                    localStorage.setItem('shipName', this.currentName);
-                } else {
-                    // Reset index if it's invalid
-                    this.currentNameIndex = this.nameHistory.length - 1;
-                    if (this.currentNameIndex >= 0) {
-                        this.currentName = this.nameHistory[this.currentNameIndex];
-                        localStorage.setItem('shipName', this.currentName);
-                    }
-                }
-            }
-        } catch (e) {
-            this.logEvent('Storage', 'Error loading name history from localStorage:', e);
-        }
-        
-        // If no history yet, or it's empty, initialize with current name
-        if (!this.nameHistory || this.nameHistory.length === 0) {
-            this.nameHistory = [this.currentName];
-            this.currentNameIndex = 0;
-            this.saveNameHistory(this.nameHistory, this.currentNameIndex, this.currentName);
-        }
+    createDOM() {
+        this.logEvent('Init', 'Base createDOM called - subclass should override');
     }
     
     /**
@@ -478,225 +310,17 @@ window.BaseController = class BaseController {
      * Automatically finds and sets up buttons
      */
     setupButtons() {
-        // Find all button elements
-        const tiltToggleBtn = document.getElementById('tilt-toggle');
-        const soundToggleBtn = document.getElementById('sound-toggle');
-        const speechToggleBtn = document.getElementById('speech-toggle');
-        const renameBtn = document.getElementById('rename-button');
-        
-        this.logEvent('Init', 'Setting up UI buttons');
-        
-        // Handle tilt toggle button
-        if (tiltToggleBtn) {
-            const enableText = "Start<br/>Tilting";
-            const disableText = "Stop<br/>Tilting";
-            
-            // Set initial button state - always show "Start Tilting" initially
-            tiltToggleBtn.innerHTML = enableText;
-            this.tiltingActive = false;
-            
-            tiltToggleBtn.addEventListener('click', () => {
-                this.logEvent('UI', 'Tilt toggle button clicked');
-                
-                // Determine new state (opposite of current)
-                const newState = !this.tiltingActive;
-                
-                // Play appropriate button sound based on new state
-                if (this.soundEnabled) {
-                    this.playSound(BaseController.SOUND_PATTERNS.BUTTON_ON);
-                }
-                
-                if (newState) {
-                    this.logEvent('Motion', 'Attempting to start motion tracking');
-                    const success = this.requestAndStartMotionTracking();
-                    if (success) {
-                        this.tiltingActive = true;
-                        tiltToggleBtn.innerHTML = disableText;
-                        this.logEvent('Motion', 'Started motion tracking');
-                        
-                        // Play success sound
-                        if (this.soundEnabled) {
-                            this.playSound(BaseController.SOUND_PATTERNS.TILT_ON);
-                        }
-                        
-                        // Speak button action if speech is enabled
-                        if (this.speechEnabled) {
-                            this.speakText(`Start Tilting.`);
-                        }
-                        
-                    } else {
-                        this.logEvent('Error', 'Failed to start motion tracking');
-                        // Play error sound
-                        if (this.soundEnabled) {
-                            this.playSound(BaseController.SOUND_PATTERNS.ERROR);
-                        }
-                    }
-                } else {
-                    this.logEvent('Motion', 'Attempting to stop motion tracking');
-                    const success = this.stopMotionTracking();
-                    if (success) {
-                        this.tiltingActive = false;
-                        tiltToggleBtn.innerHTML = enableText;
-                        this.logEvent('Motion', 'Stopped motion tracking');
-                        
-                        // Play tone-down sound
-                        if (this.soundEnabled) {
-                            this.playSound(BaseController.SOUND_PATTERNS.TILT_OFF);
-                        }
-                        
-                        // Speak button action if speech is enabled
-                        if (this.speechEnabled) {
-                            this.speakText("Stop Tilting.");
-                        }
-                        
-                    } else {
-                        this.logEvent('Error', 'Failed to stop motion tracking');
-                        // Play error sound
-                        if (this.soundEnabled) {
-                            this.playSound(BaseController.SOUND_PATTERNS.ERROR);
-                        }
-                    }
-                }
-                this.updateDebugOverlay();
-            });
-            
-            this.logEvent('Init', 'Tilt toggle button setup complete');
-        }
-        
-        // Handle sound toggle button
-        if (soundToggleBtn) {
-            const enableText = "Start<br/>Sound";
-            const disableText = "Stop<br/>Sound";
-            
-            // Set initial state - disabled by default
-            soundToggleBtn.innerHTML = enableText;
-            
-            soundToggleBtn.addEventListener('click', () => {
-                this.logEvent('UI', 'Sound toggle button clicked');
-                
-                // Determine intended new state (opposite of current)
-                const intendedState = !this.soundEnabled;
-                
-                // Play sound button click (even if sound is disabled, as feedback)
-                if (this.audioContext) {
-                    this.playTone(intendedState ? BaseController.SOUND_PATTERNS.BUTTON_ON : BaseController.SOUND_PATTERNS.BUTTON_OFF);
-                }
-                
-                const isEnabled = this.toggleSound();
-                soundToggleBtn.innerHTML = isEnabled ? disableText : enableText;
-                this.logEvent('Sound', isEnabled ? 'Enabled' : 'Disabled');
-                
-                // Test sound when enabled
-                if (isEnabled) {
-                    this.logEvent('Sound', 'Testing sound');
-                    this.playSound(BaseController.SOUND_PATTERNS.SUCCESS);
-                    // Speak status only if speech is *already* enabled
-                    if (this.speechEnabled) {
-                        this.speakText("Sound effects enabled.");
-                    }
-                } else {
-                     // If speech was enabled, announce sound stopping
-                     if (this.speechEnabled) {
-                         // Speech gets disabled by toggleSound(), announce it here
-                         this.speakText("Sound effects disabled. Speech disabled."); 
-                     } else {
-                         // If only sound was on, just log, no speech needed
-                         this.logEvent('Sound', 'Sound stopped, speech was already off.');
-                     }
-                     // Update speech button state if it exists and sound was turned off
-                     if (speechToggleBtn) {
-                         speechToggleBtn.innerHTML = "Start<br/>Speech"; // Set speech button to "Start"
-                     }
-                }
-            });
-            
-            this.logEvent('Init', 'Sound toggle button setup complete');
-        }
-        
-        // Handle speech toggle button
-        if (speechToggleBtn) {
-            const enableText = "Start<br/>Speech";
-            const disableText = "Stop<br/>Speech";
-            
-            // Set initial state - ensure it matches speechEnabled reality
-            speechToggleBtn.innerHTML = this.speechEnabled ? disableText : enableText;
-            
-            speechToggleBtn.addEventListener('click', () => {
-                this.logEvent('UI', 'Speech toggle button clicked');
-                
-                // Determine intended new state (opposite of current)
-                const intendedState = !this.speechEnabled;
-                
-                // Play speech button click with ON/OFF sound *if sound is available*
-                if (this.soundEnabled || intendedState) { // Play sound if sound is on OR if we are trying to turn speech on (which will turn sound on)
-                     if (this.audioContext) { // Check context before playing
-                        this.playTone(intendedState ? BaseController.SOUND_PATTERNS.BUTTON_ON : BaseController.SOUND_PATTERNS.BUTTON_OFF);
-                    }
-                }
-                
-                const isEnabled = this.toggleSpeech();
-                speechToggleBtn.innerHTML = isEnabled ? disableText : enableText;
-                this.logEvent('Speech', isEnabled ? 'Enabled' : 'Disabled');
-
-                // Update sound button if speech enabling turned sound on
-                if (isEnabled && soundToggleBtn && !this.soundEnabled) {
-                    soundToggleBtn.innerHTML = "Stop<br/>Sound"; // Set sound button to "Stop"
-                }
-            });
-            
-            this.logEvent('Init', 'Speech toggle button setup complete');
-        }
-        
-        // Handle rename button
-        if (renameBtn) {
-            renameBtn.addEventListener('click', () => {
-                this.logEvent('UI', 'Rename button clicked');
-                
-                // Play rename button click
-                if (this.soundEnabled) {
-                    this.playSound(BaseController.SOUND_PATTERNS.BUTTON_ON);
-                }
-                
-                // Call the triggerRename method
-                this.logEvent('Rename', 'Triggering rename');
-                this.triggerRename('next');
-            });
-            
-            this.logEvent('Init', 'Rename button setup complete');
-        }
-        
-        // Make ship name clickable to say who I am
-        const shipNameElement = document.getElementById('ship-name');
-        const shipNameDisplayContainer = document.querySelector('.ship-name-display');
-        
-        if (shipNameElement || shipNameDisplayContainer) {
-            const target = shipNameElement || shipNameDisplayContainer;
-            
-            target.style.cursor = 'pointer'; // Show it's clickable
-            target.addEventListener('click', () => {
-                this.logEvent('UI', 'Ship name clicked');
-                
-                // Play click sound
-                if (this.soundEnabled) {
-                    this.playSound(BaseController.SOUND_PATTERNS.CLICK);
-                }
-                
-                if (this.speechEnabled) {
-                    this.sayWhoIAm();
-                }
-            });
-            
-            this.logEvent('Init', 'Ship name element setup complete');
-        }
+        // Buttons have been removed from the UI
+        // Functions remain available for programmatic use
         
         // Allow controller-specific UI setup
         this.setupControllerSpecificUI();
         
-        this.logEvent('Init', 'All UI buttons setup complete');
+        this.logEvent('Init', 'Button setup complete (no buttons in UI)');
     }
     
     /**
-     * Controller-specific UI setup - override in subclasses
+     * Constructor-specific UI setup - override in subclasses
      */
     setupControllerSpecificUI() {
         // Base implementation does nothing
@@ -875,6 +499,10 @@ window.BaseController = class BaseController {
         const deltaY = touchEndY - this.touchStartY;
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         
+        // Store the deltas for use in handlers
+        this.lastGestureDeltaX = deltaX;
+        this.lastGestureDeltaY = deltaY;
+        
         // Default to tap
         let gestureType = 'tap';
         let releaseSound = this.constructor.SOUND_PATTERNS.RELEASE_TAP;
@@ -1005,101 +633,7 @@ window.BaseController = class BaseController {
         }
     }
     
-    /**
-     * Trigger a rename operation (only updates name locally, no event sent to simulator)
-     */
-    triggerRename(direction = 'next') {
-        this.logEvent('Rename', `Generating ${direction} name...`);
-        
-        // 1. Play rename sound locally (different sounds for up/down)
-        if (this.soundEnabled) {
-            if (direction === 'previous') {
-                this.playSound(this.constructor.SOUND_PATTERNS.RENAME);
-            } else {
-                // Play the rename sound in reverse for "down" direction
-                this.playSound([
-                    this.constructor.SOUND_PATTERNS.RENAME[1],
-                    this.constructor.SOUND_PATTERNS.RENAME[0]
-                ]);
-            }
-        }
-        
-        // 2. Get a new name based on direction
-        const oldName = this.currentName;
-            
-        if (direction === 'next') {
-            // Going forward in history or generating new name
-            if (this.currentNameIndex < this.nameHistory.length - 1) {
-                // We have names ahead in history, use the next one
-                this.currentNameIndex++;
-                this.currentName = this.nameHistory[this.currentNameIndex];
-                this.logEvent('Rename', `Moved next in name history to: ${this.currentName}`);
-            } else {
-                // Generate new name and add to history
-                this.currentName = this.generateRandomName();
-                this.nameHistory.push(this.currentName);
-                this.currentNameIndex = this.nameHistory.length - 1;
-                this.logEvent('Rename', `Moved next in name history and generated new name: ${this.currentName}`);
-            }
-        } else {
-            // Going backward in history or generating new name at beginning
-            if (this.currentNameIndex > 0) {
-                // We have names before in history, use the previous one
-                this.currentNameIndex--;
-                this.currentName = this.nameHistory[this.currentNameIndex];
-                this.logEvent('Rename', `Moved backward in name history to: ${this.currentName}`);
-            } else {
-                // Generate new name and prepend to history
-                this.currentName = this.generateRandomName();
-                this.nameHistory.unshift(this.currentName);
-                // Keep current index at 0 since we prepended
-                this.currentNameIndex = 0;
-                this.logEvent('Rename', `Moved backward in name history and generated new name: ${this.currentName}`);
-            }
-        }
-        
-        // 3. Save the name history and current index to localStorage
-        localStorage.setItem('shipName', this.currentName);
-        localStorage.setItem('nameHistory', JSON.stringify(this.nameHistory));
-        localStorage.setItem('nameIndex', this.currentNameIndex.toString());
-        
-        // Update the ship name in the UI
-        this.updateShipNameUI();
-        
-        // 4. ALWAYS announce the new name using speech - NO COOLDOWN
-        if (this.speechEnabled) {
-            // Force immediate announcement regardless of any other speech
-            if (window.speechSynthesis && window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel(); // Cancel any current speech
-            }
-            
-            // Announce with a tiny delay to ensure the cancel completes
-            setTimeout(() => {
-                this.sayWhoIAm();
-            }, 50);
-        }
-            
-        // 5. Update presence - use track with full object rather than trying to use setState
-        try {
-            if (this.clientChannel) {
-                // Update presence data with full object including updated name
-                this.clientChannel.track({
-                    clientId: this.clientId,
-                    clientType: this.clientType,
-                    clientName: this.currentName,
-                    onlineAt: new Date().toISOString() 
-                });
-                this.logEvent('Rename', 'Updated presence with new name');
-            }
-        } catch (err) {
-            this.logEvent('Rename', 'Error updating presence:', err);
-        }
-        
-        // 6. Update debug overlay
-        this.updateDebugOverlay();
-        
-        this.logEvent('Rename', `Changed from '${oldName}' to '${this.currentName}'`);
-    }
+
 
     /**
      * Updates the debug overlay with current controller state
@@ -1165,7 +699,6 @@ window.BaseController = class BaseController {
             // Format output with both magnitude types
             let debugInfo = `
                 <div class="debug-section">
-                    <div>Ship: <b>${this.currentName || 'unknown'}</b></div>
                     <div>Connection: ${connectionState} (${channelInfo})</div>
                     <div>Search: "${this.currentSearchQuery || '(none)'}"</div>
                     <div>Motion: ${motionState} (${this.tiltingActive ? 'active' : 'inactive'})</div>
@@ -1257,35 +790,7 @@ window.BaseController = class BaseController {
         }
     }
     
-    /**
-     * Announces controller/ship name using speech.
-     */
-    sayWhoIAm() {
-        const nameToSpeak = this.currentName; // Use the instance's current name
-        this.logEvent('Speech', `Attempting to announce name: ${nameToSpeak}`);
-        
-        if (!nameToSpeak) {
-            this.logEvent('Speech', 'No name available to speak');
-            return false;
-        }
-        
-        // Ensure we cancel any existing speech first
-        if (this.speechSynthesis && this.speechSynthesis.speaking) {
-            this.speechSynthesis.cancel();
-        }
-        
-        // Wait a short moment to ensure speech system is ready
-        setTimeout(() => {
-            this.logEvent('Speech', `Speaking just the name: "${nameToSpeak}"`);
-            const result = this.speakText(nameToSpeak, { rate: 1.0, pitch: 1.0 });
-            
-            if (!result) {
-                this.logEvent('Speech', 'Failed to speak name');
-            }
-        }, 100);
-        
-        return true;
-    }
+
     
     /**
      * Toggles speech feedback on/off.
@@ -1468,11 +973,6 @@ window.BaseController = class BaseController {
     }
     
     /**
-     * Saves name history state to localStorage - Now static, called via BaseController.saveNameHistory
-     */
-    // saveNameHistory() removed as it's now static
-
-    /**
      * Process device motion data for shake detection.
      */
     handleDeviceMotion(event) {
@@ -1642,11 +1142,6 @@ window.BaseController = class BaseController {
         // Update debug information
         this.updateDebugOverlay();
     }
-
-    /**
-     * Initialize name history - Now static, called via BaseController.initializeNameHistory
-     */
-    // initializeNameHistory() removed as it's now static
 
     /**
      * Check if the device is iOS.
@@ -1916,12 +1411,6 @@ window.BaseController = class BaseController {
      */
     updateUIFromState() {
         // Base implementation - subclasses should override
-        
-        // Update ship name display with the controller's own name
-        const shipNameElement = document.getElementById('ship-name');
-        if (shipNameElement) {
-            shipNameElement.textContent = this.clientName || 'Unknown Ship';
-        }
 
         // Update status display
         const statusElement = document.getElementById('status');
@@ -1945,6 +1434,8 @@ window.BaseController = class BaseController {
         
         this.logEvent('UI', 'Base updateUIFromState completed'); // Changed log message for clarity
     }
+    
+
     
     /**
      * Finds and returns the most current simulator from presence data
@@ -2026,23 +1517,10 @@ window.BaseController = class BaseController {
         }
     }
 
-    /**
-     * Updates the ship name displayed in the UI
-     */
-    updateShipNameUI() {
-        const shipNameElement = document.getElementById('ship-name');
-        if (shipNameElement) {
-            shipNameElement.textContent = this.currentName || 'Unknown Ship';
-            this.logEvent('UI', `Updated ship name in UI to: ${this.currentName}`);
-        } else {
-            this.logEvent('UI', 'Could not update ship name in UI - element not found');
-        }
-    }
     
     /**
      * Updates the search query and syncs it via presence state
-     * This follows the same pattern as triggerRename - we update local state
-     * then sync it to Supabase presence so the simulator can see it!
+     * We update local state then sync it to Supabase presence so the simulator can see it!
      * @param {string} query - The new search query (empty string to clear)
      */
     updateSearchQuery(query) {
@@ -2072,7 +1550,6 @@ window.BaseController = class BaseController {
         }
         
         // Update presence state with the new search query
-        // This follows the exact same pattern as triggerRename!
         if (this.clientChannel && this.isSubscribed) {
             try {
                 this.clientChannel.track({
@@ -2094,6 +1571,76 @@ window.BaseController = class BaseController {
         // Update debug overlay to show the new search query
         this.updateDebugOverlay();
     }
+    
+    /**
+     * Create search field UI - shared between navigator and selector
+     * @returns {HTMLElement} The search container element
+     */
+    createSearchField() {
+        // Create search container
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'search-container';
+        
+        // Create search input
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.id = 'search-input';
+        searchInput.className = 'search-input';
+        searchInput.placeholder = 'Search items...';
+        searchInput.autocomplete = 'off';
+        searchInput.autocorrect = 'off';
+        searchInput.autocapitalize = 'off';
+        searchInput.spellcheck = 'false';
+        searchInput.value = this.currentSearchQuery || '';
+        searchContainer.appendChild(searchInput);
+        
+        return searchContainer;
+    }
+    
+    /**
+     * Set up search input field event handlers - shared functionality
+     */
+    setupSearchField() {
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            // Prevent pointer events from bubbling to the drag handler
+            searchInput.addEventListener('pointerdown', (e) => {
+                e.stopPropagation();
+            });
+            
+            searchInput.addEventListener('pointerup', (e) => {
+                e.stopPropagation();
+            });
+            
+            searchInput.addEventListener('pointermove', (e) => {
+                e.stopPropagation();
+            });
+            
+            // Handle input changes
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value;
+                this.updateSearchQuery(query);
+            });
+            
+            // Handle Enter key
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const query = e.target.value;
+                    this.updateSearchQuery(query);
+                    // Optionally blur the input to hide keyboard on mobile
+                    // searchInput.blur();
+                }
+            });
+            
+            // Focus the search field
+            searchInput.focus();
+            
+            this.logEvent('Init', 'Search input field initialized');
+        } else {
+            this.logEvent('Error', 'Search input field not found!');
+        }
+    }
 };
 
 /**
@@ -2105,11 +1652,70 @@ window.NavigatorController = class NavigatorController extends BaseController {
     }
     
     /**
+     * Create Navigator-specific DOM elements
+     */
+    createDOM() {
+        this.logEvent('Init', 'Creating Navigator DOM');
+        
+        // Set page title
+        document.title = 'SpaceCraft Navigator';
+        
+        // Add body class
+        document.body.classList.add('navigator-container');
+        
+        // Create target div first (outside container)
+        const targetDiv = document.createElement('div');
+        targetDiv.id = 'target';
+        document.body.appendChild(targetDiv);
+        
+        // Create main container
+        const container = document.createElement('div');
+        container.className = 'container';
+        
+        // Create title
+        const title = document.createElement('h1');
+        title.className = 'page-title';
+        title.textContent = 'Navigator';
+        container.appendChild(title);
+        
+        // Create instructions
+        const instructions = document.createElement('p');
+        instructions.className = 'instructions';
+        instructions.innerHTML = '<strong>DRAG to move, PINCH or SCROLL to zoom</strong>';
+        container.appendChild(instructions);
+        
+        // Create search container
+        const searchContainer = this.createSearchField();
+        container.appendChild(searchContainer);
+        
+        // Create status
+        const status = document.createElement('div');
+        status.id = 'status';
+        status.className = 'status';
+        status.textContent = 'Connecting...';
+        container.appendChild(status);
+        
+        document.body.appendChild(container);
+        
+        // Create debug panel
+        const debugPanel = document.createElement('div');
+        debugPanel.id = 'debug-panel';
+        
+        const debugContent = document.createElement('pre');
+        debugContent.id = 'debug-content';
+        debugContent.textContent = 'Initializing...';
+        debugPanel.appendChild(debugContent);
+        
+        document.body.appendChild(debugPanel);
+    }
+    
+    /**
      * Set up Navigator-specific UI elements
      */
     setupControllerSpecificUI() {
         this.logEvent('Init', 'Setting up Navigator-specific UI');
-        // No specific UI elements for navigator at this time
+        
+        this.setupSearchField();
     }
     
     /**
@@ -2132,7 +1738,10 @@ window.NavigatorController = class NavigatorController extends BaseController {
         if (this.soundEnabled) {
             this.playSound(this.constructor.SOUND_PATTERNS.TOUCH);
         }
-        ev.preventDefault(); 
+        
+        // Allow clicks in input text elements (like the search box!)
+        // This prevents the touch handler from interfering with typing
+        if (ev.target?.tagName !== 'INPUT') ev.preventDefault(); 
     }
 
     /**
@@ -2167,7 +1776,9 @@ window.NavigatorController = class NavigatorController extends BaseController {
             this.prevX = ev.clientX;
             this.prevY = ev.clientY;
         }
-        ev.preventDefault();
+        
+        // Only prevent default if we're actually dragging on the target area, not on input elements
+        if (ev.target?.tagName !== 'INPUT') ev.preventDefault();
     }
 
     /**
@@ -2197,7 +1808,9 @@ window.NavigatorController = class NavigatorController extends BaseController {
         if (this.soundEnabled) {
             this.playSound(this.constructor.SOUND_PATTERNS.RELEASE_TAP);
         }
-        ev.preventDefault();
+        
+        // Allow normal behavior for input elements
+        if (ev.target?.tagName !== 'INPUT') ev.preventDefault();
     }
     
     /**
@@ -2334,11 +1947,69 @@ window.SelectorController = class SelectorController extends BaseController {
     }
     
     /**
+     * Create Selector-specific DOM elements
+     */
+    createDOM() {
+        this.logEvent('Init', 'Creating Selector DOM');
+        
+        // Set page title
+        document.title = 'SpaceCraft Selector';
+        
+        // Add body class
+        document.body.classList.add('selector-container');
+        
+        // Create target div first (outside container)
+        const targetDiv = document.createElement('div');
+        targetDiv.id = 'target';
+        document.body.appendChild(targetDiv);
+        
+        // Create main container
+        const container = document.createElement('div');
+        container.className = 'container';
+        
+        // Create title
+        const title = document.createElement('h1');
+        title.className = 'page-title';
+        title.textContent = 'Selector';
+        container.appendChild(title);
+        
+        // Create instructions
+        const instructions = document.createElement('p');
+        instructions.className = 'instructions';
+        instructions.innerHTML = '<strong>TAP or SWIPE left/right/up/down</strong>';
+        container.appendChild(instructions);
+        
+        // Create search container
+        const searchContainer = this.createSearchField();
+        container.appendChild(searchContainer);
+        
+        // Create status
+        const status = document.createElement('div');
+        status.id = 'status';
+        status.className = 'status';
+        status.textContent = 'Connecting...';
+        container.appendChild(status);
+        
+        document.body.appendChild(container);
+        
+        // Create debug panel
+        const debugPanel = document.createElement('div');
+        debugPanel.id = 'debug-panel';
+        
+        const debugContent = document.createElement('pre');
+        debugContent.id = 'debug-content';
+        debugContent.textContent = 'Initializing...';
+        debugPanel.appendChild(debugContent);
+        
+        document.body.appendChild(debugPanel);
+    }
+    
+    /**
      * Set up Selector-specific UI elements
      */
     setupControllerSpecificUI() {
         this.logEvent('Init', 'Setting up Selector-specific UI');
-        // No specific UI elements for selector at this time
+        this.setupSearchField();
     }
     
     /**
@@ -2354,7 +2025,11 @@ window.SelectorController = class SelectorController extends BaseController {
         
         // Send tap selection event
         if (this.clientChannel) {
-            this.sendUpdate('select', { action: 'tap' });
+            this.sendUpdate('select', { 
+                action: 'tap',
+                dx: 0,
+                dy: 0
+            });
         }
     }
     
@@ -2371,7 +2046,11 @@ window.SelectorController = class SelectorController extends BaseController {
         
         // Select up
         if (this.clientChannel) {
-            this.sendUpdate('select', { action: 'north' });
+            this.sendUpdate('select', { 
+                action: 'north',
+                dx: this.lastGestureDeltaX || 0,
+                dy: this.lastGestureDeltaY || 0
+            });
         }
     }
     
@@ -2388,7 +2067,11 @@ window.SelectorController = class SelectorController extends BaseController {
         
         // Select down
         if (this.clientChannel) {
-            this.sendUpdate('select', { action: 'south' });
+            this.sendUpdate('select', { 
+                action: 'south',
+                dx: this.lastGestureDeltaX || 0,
+                dy: this.lastGestureDeltaY || 0
+            });
         }
     }
     
@@ -2405,7 +2088,11 @@ window.SelectorController = class SelectorController extends BaseController {
         
         // Select right
         if (this.clientChannel) {
-            this.sendUpdate('select', { action: 'east' });
+            this.sendUpdate('select', { 
+                action: 'east',
+                dx: this.lastGestureDeltaX || 0,
+                dy: this.lastGestureDeltaY || 0
+            });
         }
     }
     
@@ -2422,7 +2109,11 @@ window.SelectorController = class SelectorController extends BaseController {
         
         // Select left
         if (this.clientChannel) {
-            this.sendUpdate('select', { action: 'west' });
+            this.sendUpdate('select', { 
+                action: 'west',
+                dx: this.lastGestureDeltaX || 0,
+                dy: this.lastGestureDeltaY || 0
+            });
         }
     }
     
@@ -2439,7 +2130,11 @@ window.SelectorController = class SelectorController extends BaseController {
         
         // Select up layer
         if (this.clientChannel) {
-            this.sendUpdate('select', { action: 'up' });
+            this.sendUpdate('select', { 
+                action: 'up',
+                dx: 0,
+                dy: 0
+            });
         }
     }
     
@@ -2456,7 +2151,11 @@ window.SelectorController = class SelectorController extends BaseController {
         
         // Select down layer
         if (this.clientChannel) {
-            this.sendUpdate('select', { action: 'down' });
+            this.sendUpdate('select', { 
+                action: 'down',
+                dx: 0,
+                dy: 0
+            });
         }
     }
 
@@ -2466,10 +2165,61 @@ window.SelectorController = class SelectorController extends BaseController {
  * Inspector Controller - specializes in displaying item data
  */
 window.InspectorController = class InspectorController extends BaseController {
+    // Debounce time for iframe changes (in milliseconds)
+    static IFRAME_DEBOUNCE_TIME = 1000; // 1 second - adjust this value as needed
+    
     constructor() {
         super('inspector'); // Client type
         this.jsonOutputElement = null;
         this.iframeElement = null;
+        this.currentSelectedItemId = null;
+        this.iframeDebounceTimer = null; // Timer for debouncing iframe changes
+        this.pendingIframeUrl = null; // Store pending URL during debounce
+    }
+    
+    /**
+     * Create Inspector-specific DOM elements
+     */
+    createDOM() {
+        this.logEvent('Init', 'Creating Inspector DOM');
+        
+        // Set page title
+        document.title = 'SpaceCraft Inspector';
+        
+        // Add body class
+        document.body.classList.add('inspector-container');
+        
+        // Create iframe first (background element)
+        const iframe = document.createElement('iframe');
+        iframe.id = 'inspector-iframe';
+        iframe.src = 'about:blank';
+        iframe.width = '100%';
+        iframe.height = '100%';
+        document.body.appendChild(iframe);
+        
+        // Create main container
+        const container = document.createElement('div');
+        container.className = 'container';
+        
+        // Create title
+        const title = document.createElement('h1');
+        title.className = 'page-title';
+        title.textContent = 'Inspector';
+        container.appendChild(title);
+        
+        // Create status
+        const status = document.createElement('div');
+        status.id = 'status';
+        status.className = 'status';
+        status.textContent = 'Connecting...';
+        container.appendChild(status);
+        
+        document.body.appendChild(container);
+        
+        // Create JSON output (for debug mode)
+        const jsonOutput = document.createElement('div');
+        jsonOutput.id = 'inspector-json-output';
+        document.body.appendChild(jsonOutput);
     }
     
     setupControllerSpecificUI() {
@@ -2480,17 +2230,75 @@ window.InspectorController = class InspectorController extends BaseController {
         if (!this.jsonOutputElement) {
             this.logEvent('Error', 'Inspector JSON output element not found!');
         }
+        if (!this.iframeElement) {
+            this.logEvent('Error', 'Inspector iframe element not found!');
+        }
+    }
+    
+    /**
+     * Override updateUIFromState to handle selected item changes
+     */
+    updateUIFromState() {
+        // Call parent implementation first
+        super.updateUIFromState();
+        
+        // Check if selected item has changed
+        if (this.simulatorState && this.simulatorState.selectedItem) {
+            const newSelectedItemId = this.simulatorState.selectedItemId;
+            if (newSelectedItemId !== this.currentSelectedItemId) {
+                this.currentSelectedItemId = newSelectedItemId;
+                this.selectedItemChanged(this.simulatorState.selectedItem);
+            }
+        } else if (this.currentSelectedItemId !== null) {
+            // Item was deselected
+            this.currentSelectedItemId = null;
+            this.selectedItemChanged(null);
+        }
     }
     
     // This method will be called when the selected item data changes
     selectedItemChanged(selectedItemJSON) {
         this.logEvent('Inspector', 'Received new selected item JSON:', selectedItemJSON);
-        if (this.iframeElement) {
+        
+        // Clear any existing debounce timer
+        if (this.iframeDebounceTimer) {
+            clearTimeout(this.iframeDebounceTimer);
+            this.iframeDebounceTimer = null;
+            this.logEvent('Inspector', 'Cleared existing iframe debounce timer');
+        }
+        
+        // Determine the URL to load
+        let targetUrl = 'about:blank';
+        if (selectedItemJSON) {
+            // Use 'identifier' field as that's the archive.org ID
+            const archiveId = selectedItemJSON.identifier || selectedItemJSON.id;
+            if (archiveId) {
+                targetUrl = `https://archive.org/details/${archiveId}`;
+                this.logEvent('Inspector', `Preparing to load archive.org page (after debounce): ${targetUrl}`);
+            } else {
+                this.logEvent('Error', 'Selected item has no identifier field', selectedItemJSON);
+            }
+        }
+        
+        // Store the pending URL
+        this.pendingIframeUrl = targetUrl;
+        
+        // Set up debounce timer
+        this.iframeDebounceTimer = setTimeout(() => {
+            // Load the iframe after debounce time
+            if (this.iframeElement && this.pendingIframeUrl !== null) {
+                this.logEvent('Inspector', `Loading iframe with URL: ${this.pendingIframeUrl}`);
+                this.iframeElement.src = this.pendingIframeUrl;
+                this.pendingIframeUrl = null;
+            }
+            this.iframeDebounceTimer = null;
+        }, InspectorController.IFRAME_DEBOUNCE_TIME);
+        
+        // Update JSON output immediately (no debounce for debug info)
+        if (this.jsonOutputElement) {
             if (selectedItemJSON) {
-                // this.jsonOutputElement.innerHTML = JSON.stringify(selectedItemJSON)
-                this.iframeElement.src = `https://archive.org/details/${selectedItemJSON['id']}`;
-                this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON);
-        } else {
+                this.jsonOutputElement.textContent = JSON.stringify(selectedItemJSON, null, 2);
+            } else {
                 this.jsonOutputElement.textContent = 'No item currently selected.';
             }
         }
@@ -2500,29 +2308,32 @@ window.InspectorController = class InspectorController extends BaseController {
 // Simple initialization on DOM ready - directly instantiates the right controller
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Get controller type from meta tag
-    const metaTag = document.querySelector('meta[name="controller-type"]');
-    if (!metaTag) {
-        console.error('Missing controller type meta tag. Add <meta name="controller-type" content="navigator|selector"> to the page.');
-        return;
-    }
+    // Get controller type from URL parameter, default to 'navigator'
+    const urlParams = new URLSearchParams(window.location.search);
+    const controllerType = urlParams.get('type') || 'navigator';
     
-    const controllerType = metaTag.getAttribute('content');
+    console.log(`Initializing controller type: ${controllerType}`);
     
-    // Create the appropriate controller based on the page type and assign to controller variable
+    // Create the appropriate controller based on the URL parameter
     let controller;
     if (controllerType === 'navigator') {
         controller = new NavigatorController();
+        controller.createDOM();
         controller.initialize();
     } else if (controllerType === 'selector') {
         controller = new SelectorController();
+        controller.createDOM();
         controller.initialize();
-    } else if (controllerType === 'inspector') { // ADD THIS BLOCK
+    } else if (controllerType === 'inspector') {
         controller = new InspectorController();
+        controller.createDOM();
         controller.initialize(true);
     } else {
         console.error('Invalid controller type: ' + controllerType);
-        return;
+        // Default to navigator
+        controller = new NavigatorController();
+        controller.createDOM();
+        controller.initialize();
     }
     
     // Make controller globally accessible

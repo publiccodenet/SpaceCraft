@@ -49,20 +49,14 @@ public class CollectionsView : MonoBehaviour
         }
     }
     
+    // Commented out - SpaceCraft now handles title display based on selection
+    /*
     private void Update()
     {
-        if (spaceCraft == null) return;
-        
-        // Check for state changes that require UI updates
-        if (spaceCraft.selectedItemsChanged || spaceCraft.highlightedItemsChanged)
-        {
-            UpdateDetailPanel();
-            
-            // Flags will be reset by SpaceCraft.SendEvents() after dispatch
-            // spaceCraft.selectedItemsChanged = false; // DO NOT RESET HERE
-            // spaceCraft.highlightedItemsChanged = false; // DO NOT RESET HERE
-        }
+        // Update detail panel based on current highlight/selection state
+        UpdateDetailPanel();
     }
+    */
     
     public void OnDestroy()
     {
@@ -322,7 +316,7 @@ public class CollectionsView : MonoBehaviour
     /// <summary>
     /// Moves the current selection in the specified direction.
     /// </summary>
-    public void MoveSelection(string controllerId, string controllerName, string direction)
+    public void MoveSelection(string controllerId, string controllerName, string direction, float dx = 0f, float dy = 0f)
     {
         string logPrefix = "[CollectionsView:MoveSelection]";
         if (spaceCraft == null) return;
@@ -346,7 +340,7 @@ public class CollectionsView : MonoBehaviour
         }
 
         // 2. Calculate next item ID
-        string newItemId = CalculateNextItemId(currentItemId, direction);
+        string newItemId = CalculateNextItemId(currentItemId, direction, dx, dy);
 
         // 3. Handle outcome
         if (string.IsNullOrEmpty(newItemId)) // No valid move found
@@ -389,7 +383,7 @@ public class CollectionsView : MonoBehaviour
             {
                 currentItemId = lastSelectedItemOrHighlightId;
                 restoredFocus = true;
-                 Debug.Log($"{logPrefix} Restoring focus to last known item: {currentItemId}");
+                Debug.Log($"{logPrefix} Restoring focus to last known item: {currentItemId}");
             }
             else
             {
@@ -473,7 +467,7 @@ public class CollectionsView : MonoBehaviour
     /// using the appropriate layout manager.
     /// </summary>
     /// <returns>The next item ID, or null if no valid move exists.</returns>
-    private string CalculateNextItemId(string currentItemId, string direction)
+    private string CalculateNextItemId(string currentItemId, string direction, float dx = 0f, float dy = 0f)
     {
         string logPrefix = "[CollectionsView:CalculateNextItemId]";
 
@@ -497,7 +491,7 @@ public class CollectionsView : MonoBehaviour
         }
 
         // Delegate the calculation to the layout manager
-        return layoutManager.GetNextItemId(currentItemId, direction);
+        return layoutManager.GetNextItemId(currentItemId, direction, dx, dy);
     }
 
     /// <summary>

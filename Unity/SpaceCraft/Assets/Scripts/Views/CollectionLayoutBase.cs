@@ -19,6 +19,21 @@ public abstract class CollectionLayoutBase : MonoBehaviour
     /// </summary>
     /// <param name="currentItemId">The ID of the starting item.</param>
     /// <param name="direction">Direction to move (e.g., "north", "south", "east", "west").</param>
+    /// <param name="dx">Mouse delta X in pixels</param>
+    /// <param name="dy">Mouse delta Y in pixels</param>
     /// <returns>The ID of the next item in the direction, or null if no valid move exists.</returns>
-    public abstract string GetNextItemId(string currentItemId, string direction);
+    public abstract string GetNextItemId(string currentItemId, string direction, float dx = 0f, float dy = 0f);
+    
+    /// <summary>
+    /// Virtual method to calculate the ID of the next item using grid-based logic.
+    /// Can be overridden by subclasses that support grid-based navigation.
+    /// </summary>
+    /// <param name="currentItemId">The ID of the starting item.</param>
+    /// <param name="direction">Direction to move (e.g., "north", "south", "east", "west").</param>
+    /// <returns>The ID of the next item in the direction, or null if no valid move exists.</returns>
+    public virtual string GetNextGridItemId(string currentItemId, string direction)
+    {
+        // Default implementation returns null - subclasses can override
+        return null;
+    }
 } 

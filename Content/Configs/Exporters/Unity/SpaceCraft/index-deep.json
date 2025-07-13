@@ -17,6 +17,8 @@
         "cache_dir": "scifi",
         "index_cached": "scifi/index.json"
       },
+      "collectionTags": [
+      ],
       "itemsIndex": [
         "5thwave0000yanc",
         "AliensOmnibusVolume1",
