@@ -66,7 +66,7 @@ LICENSE text eol=lf
 static/Build/*.data filter=lfs diff=lfs merge=lfs -text
 static/Build/*.wasm filter=lfs diff=lfs merge=lfs -text
 static/Build/*.framework.js filter=lfs diff=lfs merge=lfs -text
-static/Build/*.loader.js filter=lfs diff=lfs merge=lfs -text size=">1M"
+static/Build/*.loader.js filter=lfs diff=lfs merge=lfs -text
 
 # NPM/Yarn package files (not using LFS)
 package.json text eol=lf
