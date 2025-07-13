@@ -21,5 +21,21 @@
   "coverImage": "https://archive.org/services/img/BraveNewWorld-and-BraveNewWorldRevisited",
   "coverWidth": 180,
   "coverHeight": 316,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "Brave New World and Brave New World Revisited",
+  "publicdate": "2015-11-19 07:52:58",
+  "identifier": "BraveNewWorld-and-BraveNewWorldRevisited",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
+  "uploader": "nickonta@yahoo.com.au",
+  "addeddate": "2015-11-19 07:52:58",
+  "curation": "[curator]validator@archive.org[/curator][date]20151119075827[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/BraveNewWorld-and-BraveNewWorldRevisited",
+  "identifier-ark": "ark:/13960/t46q5qs6s",
+  "ppi": "600",
+  "ocr": "ABBYY FineReader 11.0",
+  "repub_state": "4",
+  "backup_location": "ia905505_12",
+  "coverImageWidth": 180,
+  "coverImageHeight": 316
 }

@@ -26,5 +26,21 @@
   "coverImage": "https://archive.org/services/img/TheArtworkOfAllenAndersoncompiledByDjFDuMarais",
   "coverWidth": 180,
   "coverHeight": 255,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "The Artwork Of Allen Anderson (compiled by DjF du Marais)",
+  "publicdate": "2019-03-24 23:57:24",
+  "identifier": "TheArtworkOfAllenAndersoncompiledByDjFDuMarais",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
+  "uploader": "cootiebug1952@gmail.com",
+  "addeddate": "2019-03-24 23:57:24",
+  "curation": "[curator]validator@archive.org[/curator][date]20190325000328[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/TheArtworkOfAllenAndersoncompiledByDjFDuMarais",
+  "identifier-ark": "ark:/13960/t19m1wn73",
+  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
+  "date": "2010",
+  "year": "2010",
+  "backup_location": "ia906809_34",
+  "coverImageWidth": 180,
+  "coverImageHeight": 255
 }

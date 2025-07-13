@@ -197,6 +197,7 @@ MonoBehaviour:
   collectionsContainer: {fileID: 8982433361578649911}
   collectionGapX: 10
   itemInfoPanel: {fileID: 4087036035030045770}
+  lastSelectedItemOrHighlightId: 
 --- !u!1 &3609899945708333503
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,8 +637,6 @@ MonoBehaviour:
   inputManager: {fileID: 6195128787478445079}
   brewster: {fileID: 8724988698709970488}
   collectionsView: {fileID: 855961219902845085}
-  selectedItemIds: []
-  highlightedItemIds: []
   multiSelectEnabled: 0
   selectedItemsChanged: 0
   highlightedItemsChanged: 0
@@ -666,30 +665,111 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4168a4ba21a274e259b7fbd379e06364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  staticFriction: 0.8
+  dynamicFriction: 0.2
+  bounciness: 0.5
+  itemPhysicsMaterial: {fileID: 13400000, guid: e18634162350347049d861b8a51834b2, type: 2}
+  groundPhysicsMaterial: {fileID: 13400000, guid: e6dce989dec4b4c6588aad913dc8a554, type: 2}
+  rigidbodyDrag: 0.05
+  rigidbodyAngularDrag: 0.1
+  rigidbodySleepThreshold: 0.05
+  gravityMultiplier: 1.2
+  rigidbodyUseContinuousDetection: 1
+  freezeRotation: 1
+  extremeAngularDrag: 1000
+  maxAngularVelocity: 0
+  rotationConstraints: 112
+  centerOfMass: {x: 0, y: 0, z: 0}
+  enableCenterForce: 1
+  useConstantCenterForce: 1
+  centerForceMaxStrength: 40
+  constantCenterForce: 10
+  centerForceMinFloor: 5
+  centerForceMaxDistance: 100
+  centerPoint: {x: 0, y: 0, z: 0}
+  manualCenterOffset: {x: 0, y: -0.5, z: 0}
+  enableScaleBasedForce: 1
+  minForceMultiplier: 1
+  maxForceMultiplier: 5
+  centerForceMinScale: 0.8
+  limitToCurrentCollection: 0
+  maxItemVelocity: 30
+  minBookScale: 0.2
+  maxBookScale: 3
+  neutralBookScale: 1
+  scaleAnimationSpeed: 3
+  curveTypeName: Sigmoid
+  curveIntensity: 5
+  curvePower: 2
+  curveAlpha: 1.16
+  scoreToScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  navigatorPanScaleFactor: 0.1
+  navigatorZoomFactor: 0.25
+  navigatorVelocityFactor: 0.05
+  selectionTapScale: 1.5
+  selectionScale: 2
+  selectionScaleMin: 0.5
+  centerOffset: {x: 0, y: 0, z: 0}
+  tiltSensitivity: 20
+  searchString: 
   cameraController: {fileID: 5363331337815786451}
+  invertDrag: 1
+  cameraBaseVelocityThreshold: 2
+  cameraVelocitySmoothingFactor: 0.05
+  cameraReleaseVelocityDamping: 0.3
+  cameraFrictionFactor: 0.999
+  cameraBounceFactor: 0.9
+  enableItemDragging: 1
+  dragForceStrength: 1000
+  dragMaxDistance: 10
+  dragDamping: 0.1
+  dragMassMultiplier: 50
+  defaultItemMass: 1
+  mouseVelocityMultiplier: 10
+  dragMaxVelocity: 30
+  throwStrength: 10
+  throwSensitivity: 2
   panSpeed: 3
+  scrollWheelZoomFactor: 0.4
+  keyboardZoomFactor: 5
+  pinchZoomSensitivity: 0.04
+  wheelZoomSensitivity: 0.008
+  trackpadZoomSensitivity: 0.016
+  selectionNudgeForce: 10
+  selectionThrustForce: 100
+  minZoom: 0.01
+  maxZoom: 200
   minX: -30
   maxX: 30
   minZ: -40
   maxZ: 20
-  invertDrag: 0
-  minZoom: 0.01
-  maxZoom: 200
-  scrollWheelZoomFactor: 0.4
-  keyboardZoomFactor: 5
-  navigatorZoomFactor: 0.25
-  baseVelocityThreshold: 0.2
-  velocitySmoothingFactor: 0.1
-  frictionFactor: 0.999
-  bounceFactor: 0.95
-  navigatorVelocityFactor: 0.05
-  itemInfoPanel: {fileID: 4087036035030045770}
   itemLayer:
     serializedVersion: 2
     m_Bits: 64
-  descriptionScale: 0.8
   maxSelectionDistance: 100
-  selectMaxClickDistance: 0.1
   selectMaxClickTime: 0.3
 --- !u!1 &9008962793436303644
 GameObject:

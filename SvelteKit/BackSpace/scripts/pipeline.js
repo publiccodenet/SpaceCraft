@@ -875,11 +875,14 @@ class ContentPipeline {
    * @param {string} collectionId Collection ID
    * @param {string} itemId Item ID
    * @param {Object} enhancedIndex Enhanced index to update
+   * @param {Object} keywordCollector Object to collect keywords
    */
-  async exportItem(collectionId, itemId, enhancedIndex) {
+  async exportItem(collectionId, itemId, enhancedIndex, keywordCollector = null) {
     const context = { function: 'exportItem', collectionId, itemId };
     const itemCachePath = path.join(this.contentCache, collectionId, 'Items', itemId, 'item.json');
+    const itemCustomPath = path.join(this.contentCache, collectionId, 'Items', itemId, 'item-custom.json');
     const coverCachePath = path.join(this.contentCache, collectionId, 'Items', itemId, 'cover.jpg');
+    const coverCustomPath = path.join(this.contentCache, collectionId, 'Items', itemId, 'cover-custom.jpg');
     
     // Define Unity item directory path
     const exportItemPath = path.join(this.exportContentPath, 'collections', collectionId, 'items', itemId);
@@ -891,21 +894,38 @@ class ContentPipeline {
       // Add item to the enhanced index if an item.json exists in cache
       if (fs.existsSync(itemCachePath)) {
         // Read item data from cache - already normalized during import
-        const cachedItem = await fs.readJSON(itemCachePath);
+        let itemData = await fs.readJSON(itemCachePath);
         
-        // Filter to only include whitelisted keys
+        // Check for custom metadata overlay
+        if (fs.existsSync(itemCustomPath)) {
+          const customData = await fs.readJSON(itemCustomPath);
+          // Merge custom data over base data
+          Object.assign(itemData, customData);
+          this.logger.info(`Applied custom metadata for ${collectionId}/${itemId}`, null, context);
+        }
+        
+        // Collect keywords/tags if collector provided
+        if (keywordCollector && itemData.spacecraft_tags) {
+          itemData.spacecraft_tags.forEach(tag => {
+            keywordCollector.add(tag);
+          });
+        }
+        
+        // Create filtered item with base fields plus any custom data
         const filteredItem = {
-          id: cachedItem.id,
-          title: cachedItem.title,
-          description: cachedItem.description,
-          creator: cachedItem.creator,
-          subject: cachedItem.subject,
-          collection: cachedItem.collection,
-          mediatype: cachedItem.mediatype,
-          coverImage: cachedItem.coverImage,
-          coverWidth: cachedItem.coverImageWidth,
-          coverHeight: cachedItem.coverImageHeight,
-          favoriteCount: cachedItem.favoriteCount
+          id: itemData.id,
+          title: itemData.title,
+          description: itemData.description,
+          creator: itemData.creator,
+          subject: itemData.subject,
+          collection: itemData.collection,
+          mediatype: itemData.mediatype,
+          coverImage: itemData.coverImage,
+          coverWidth: itemData.coverImageWidth,
+          coverHeight: itemData.coverImageHeight,
+          favoriteCount: itemData.favoriteCount,
+          // Spread any additional fields from custom metadata
+          ...itemData
         };
         
         // Set ONLY the item key - no coverImage or any other keys
@@ -923,15 +943,22 @@ class ContentPipeline {
         );
         this.logger.debug(`Wrote item.json for ${collectionId}/${itemId}`, null, context);
         
-        // Copy cover image file if it exists locally
-        if (fs.existsSync(coverCachePath)) {
-          // Copy cover image to Unity
+        // Copy cover image file - check for custom cover first
+        if (fs.existsSync(coverCustomPath)) {
+          // Copy custom cover image to Unity
+          await fs.copyFile(
+            coverCustomPath,
+            path.join(exportItemPath, 'cover.jpg')
+          );
+          this.logger.info(`Using custom cover for ${collectionId}/${itemId}`, null, context);
+        } else if (fs.existsSync(coverCachePath)) {
+          // Copy standard cover image to Unity
           await fs.copyFile(
             coverCachePath,
             path.join(exportItemPath, 'cover.jpg')
           );
         } else {
-          this.logger.debug(`No local cover image found for ${collectionId}/${itemId}`, null, context);
+          this.logger.debug(`No cover image found for ${collectionId}/${itemId}`, null, context);
         }
       } else {
         throw new Error(`Item ${itemId} not found in cache`);
@@ -986,8 +1013,12 @@ class ContentPipeline {
       version: '1.0',
       exportedAt: new Date().toISOString(),
       collections: {},
-      collectionsIndex: whitelist.collectionsIndex
+      collectionsIndex: whitelist.collectionsIndex,
+      keywords: [] // Will be populated with unique tags
     };
+    
+    // Create a Set to collect unique keywords/tags
+    const keywordCollector = new Set();
     
     // Process each collection in the whitelist
     for (const collectionId of whitelist.collectionsIndex) {
@@ -1053,12 +1084,16 @@ class ContentPipeline {
         }
         
         // Export item - adds to enhancedIndex and copies cover images
-        await this.exportItem(collectionId, itemId, enhancedIndex);
+        await this.exportItem(collectionId, itemId, enhancedIndex, keywordCollector);
         this.logger.increment('item_exported_count', 1, { function: 'export', collectionId, itemId });
       }
       
       this.logger.increment('collection_exported_count', 1, { function: 'export', collectionId });
     }
+    
+    // Convert collected keywords to sorted array and add to index
+    enhancedIndex.keywords = Array.from(keywordCollector).sort();
+    this.logger.info(`Collected ${enhancedIndex.keywords.length} unique keywords`, null, { function: 'export' });
     
     // Write enhanced index-deep.json to Unity - this contains all the metadata
     await fs.writeJSON(

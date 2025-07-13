@@ -21,5 +21,38 @@
   "coverImage": "https://archive.org/services/img/Barsoom",
   "coverWidth": 180,
   "coverHeight": 242,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "Barsoom!",
+  "publicdate": "2011-07-22 05:48:30",
+  "identifier": "Barsoom",
+  "licenseurl": "http://creativecommons.org/publicdomain/zero/1.0/",
+  "addeddate": "2011-07-22 05:40:06",
+  "uploader": "lyndawwcarter@hotmail.com",
+  "updater": [
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter",
+    "Lynda Carter"
+  ],
+  "updatedate": [
+    "2011-07-22 16:55:21",
+    "2011-07-24 06:32:07",
+    "2011-08-06 15:56:57",
+    "2011-08-22 07:06:29",
+    "2011-09-11 04:07:16"
+  ],
+  "identifier-access": "http://www.archive.org/details/Barsoom",
+  "identifier-ark": "ark:/13960/t2z32qz21",
+  "ppi": "72",
+  "ocr": "ABBYY FineReader 8.0",
+  "repub_state": "4",
+  "curation": "[curator]malware@archive.org[/curator][date]20140328050637[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia903701_32",
+  "collection_added": [
+    "comics",
+    "additional_collections"
+  ],
+  "coverImageWidth": 180,
+  "coverImageHeight": 242
 }

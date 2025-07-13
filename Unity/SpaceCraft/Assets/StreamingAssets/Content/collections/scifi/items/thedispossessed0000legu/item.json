@@ -1,0 +1,35 @@
+{
+  "id": "thedispossessed0000legu",
+  "title": "The Dispossessed",
+  "description": "A brilliant physicist from the anarchist moon colony of Anarres risks everything to travel to the mother planet Urras, challenging the structures of both societies in this profound exploration of political systems, individual freedom, and the walls we build between worlds.",
+  "creator": "Ursula K. Le Guin",
+  "subject": [
+    "Science Fiction",
+    "Anarchism",
+    "Utopian Fiction",
+    "Political Philosophy",
+    "Social Commentary"
+  ],
+  "collection": "scifi",
+  "mediatype": "texts",
+  "coverImage": "cover.jpg",
+  "coverWidth": 180,
+  "coverHeight": 288,
+  "spacecraft_custom_item": true,
+  "identifier": "thedispossessed0000legu",
+  "date": "1974",
+  "coverImageWidth": 180,
+  "coverImageHeight": 288,
+  "spacecraft_description": "Shevek, a brilliant physicist from the anarchist moon Anarres, risks everything to bridge two worlds separated by ideology and fear. His journey to the capitalist planet Urras becomes a profound meditation on freedom, belonging, and the walls we build between ourselves.",
+  "spacecraft_tags": [
+    "anarchist-theory",
+    "hugo-winner",
+    "nebula-winner",
+    "feminist-sf",
+    "physics-as-philosophy",
+    "utopia-ambiguous",
+    "must-read",
+    "le-guin-masterpiece"
+  ],
+  "spacecraft_custom_url": "https://en.wikipedia.org/wiki/The_Dispossessed"
+}

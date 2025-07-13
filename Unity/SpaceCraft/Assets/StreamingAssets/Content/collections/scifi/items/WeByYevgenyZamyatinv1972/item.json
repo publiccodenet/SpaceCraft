@@ -23,5 +23,22 @@
   "coverImage": "https://archive.org/services/img/WeByYevgenyZamyatinv1972",
   "coverWidth": 180,
   "coverHeight": 303,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "We: a 1972 science-fiction story by Yevgeny Zamyatin",
+  "publicdate": "2017-01-08 16:51:03",
+  "identifier": "WeByYevgenyZamyatinv1972",
+  "date": "2017-01-08",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
+  "uploader": "hhbooker2@yahoo.com",
+  "addeddate": "2017-01-08 16:51:03",
+  "curation": "[curator]validator@archive.org[/curator][date]20170108170204[/date][comment]checked for malware[/comment]",
+  "identifier-ark": "ark:/13960/t3rv92n38",
+  "ppi": "300",
+  "ocr": "ABBYY FineReader 11.0",
+  "repub_state": "4",
+  "backup_location": "ia906304_3",
+  "identifier-access": "http://archive.org/details/WeByYevgenyZamyatinv1972",
+  "coverImageWidth": 180,
+  "coverImageHeight": 303
 }

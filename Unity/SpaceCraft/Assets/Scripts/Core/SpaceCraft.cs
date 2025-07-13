@@ -2,6 +2,30 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Reflection;
+
+/// <summary>
+/// Attribute to mark public parameters that should be exposed to JavaScript controllers
+/// with metadata for creating dynamic control panels
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
+public class ExposedParameterAttribute : Attribute
+{
+    public string DisplayName { get; set; }
+    public string Category { get; set; }
+    public string Description { get; set; }
+    public float Min { get; set; } = float.MinValue;
+    public float Max { get; set; } = float.MaxValue;
+    public float Step { get; set; } = 0.01f;
+    public string Unit { get; set; }
+    public bool ReadOnly { get; set; } = false;
+    
+    public ExposedParameterAttribute(string displayName = null)
+    {
+        DisplayName = displayName;
+    }
+}
 
 /// <summary>
 /// Central connection point for the main components of the SpaceCraft system.
@@ -25,9 +49,6 @@ public class SpaceCraft : BridgeObject
     // Application state - exposed as public properties for Bridge JSON conversion
     [Header("Content State")]
     public JObject content;
-    
-    [Header("Search State")]  
-    public string searchString = ""; // Search query from controllers - updated via bridge
     
     // Backing fields for state lists
     private List<string> _selectedItemIds = new List<string>();
@@ -100,6 +121,161 @@ public class SpaceCraft : BridgeObject
     // Create events to notify Bridge when there are changes
     public bool selectedItemsChanged = false;
     public bool highlightedItemsChanged = false;
+    
+    /// <summary>
+    /// Returns metadata for all parameters marked with ExposedParameter attribute.
+    /// Used by JavaScript controllers to build dynamic parameter control panels.
+    /// Property is PascalCase but will serialize to camelCase for JavaScript.
+    /// </summary>
+    [Newtonsoft.Json.JsonProperty("parameterMetaData")]
+    public JArray ParameterMetaData
+    {
+        get
+        {
+            var metadataArray = new JArray();
+            
+            // Get InputManager parameters if available
+            if (inputManager != null)
+            {
+                CollectParametersFromObject(inputManager, "InputManager", metadataArray);
+            }
+            
+            // Get SpaceCraft's own parameters
+            CollectParametersFromObject(this, "SpaceCraft", metadataArray);
+            
+            // Could add other components here as needed
+            
+            return metadataArray;
+        }
+    }
+    
+    /// <summary>
+    /// Helper method to collect parameter metadata from an object using reflection
+    /// </summary>
+    private void CollectParametersFromObject(object obj, string componentName, JArray metadataArray)
+    {
+        Type type = obj.GetType();
+        
+        // Get all public fields and properties
+        var members = type.GetMembers(BindingFlags.Public | BindingFlags.Instance)
+            .Where(m => m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property);
+        
+        foreach (var member in members)
+        {
+            // Check for our custom attribute
+            var attr = member.GetCustomAttribute<ExposedParameterAttribute>();
+            if (attr == null) continue;
+            
+            // Get member info
+            string memberName = member.Name;
+            Type memberType = null;
+            object currentValue = null;
+            bool canWrite = true;
+            
+            if (member is FieldInfo field)
+            {
+                memberType = field.FieldType;
+                currentValue = field.GetValue(obj);
+                canWrite = !field.IsInitOnly && !field.IsLiteral;
+            }
+            else if (member is PropertyInfo prop)
+            {
+                memberType = prop.PropertyType;
+                if (prop.CanRead)
+                {
+                    try 
+                    {
+                        currentValue = prop.GetValue(obj);
+                    }
+                    catch 
+                    {
+                        // Some properties might throw exceptions
+                        currentValue = null;
+                    }
+                }
+                canWrite = prop.CanWrite;
+            }
+            
+            // Check for Range attribute for numeric types
+            float? min = null, max = null;
+            var rangeAttr = member.GetCustomAttribute<RangeAttribute>();
+            if (rangeAttr != null)
+            {
+                min = rangeAttr.min;
+                max = rangeAttr.max;
+            }
+            
+            // Use Range values from ExposedParameter if Range attribute not found
+            if (!min.HasValue && attr.Min != float.MinValue)
+                min = attr.Min;
+            if (!max.HasValue && attr.Max != float.MaxValue)
+                max = attr.Max;
+            
+            // Get tooltip from Unity's Tooltip attribute if description not provided
+            string description = attr.Description;
+            if (string.IsNullOrEmpty(description))
+            {
+                var tooltipAttr = member.GetCustomAttribute<TooltipAttribute>();
+                if (tooltipAttr != null)
+                    description = tooltipAttr.tooltip;
+            }
+            
+            // Create metadata object
+            var metadata = new JObject
+            {
+                ["component"] = componentName,
+                ["name"] = memberName,
+                ["displayName"] = attr.DisplayName ?? memberName,
+                ["type"] = GetTypeString(memberType),
+                ["currentValue"] = currentValue != null ? JToken.FromObject(currentValue) : null,
+                ["canWrite"] = canWrite && !attr.ReadOnly,
+                ["category"] = attr.Category ?? "General"
+            };
+            
+            // Add optional fields if they have values
+            if (!string.IsNullOrEmpty(description))
+                metadata["description"] = description;
+                
+            if (min.HasValue)
+                metadata["min"] = min.Value;
+                
+            if (max.HasValue)
+                metadata["max"] = max.Value;
+                
+            if (attr.Step != 0.01f)
+                metadata["step"] = attr.Step;
+                
+            if (!string.IsNullOrEmpty(attr.Unit))
+                metadata["unit"] = attr.Unit;
+                
+            metadataArray.Add(metadata);
+        }
+    }
+    
+    /// <summary>
+    /// Convert C# type to a string representation for JavaScript
+    /// </summary>
+    private string GetTypeString(Type type)
+    {
+        if (type == typeof(float) || type == typeof(double) || type == typeof(decimal))
+            return "float";
+        if (type == typeof(int) || type == typeof(long) || type == typeof(short) || type == typeof(byte))
+            return "int";
+        if (type == typeof(bool))
+            return "bool";
+        if (type == typeof(string))
+            return "string";
+        if (type == typeof(Vector2))
+            return "vector2";
+        if (type == typeof(Vector3))
+            return "vector3";
+        if (type == typeof(Color))
+            return "color";
+        if (type.IsEnum)
+            return "enum";
+        
+        return type.Name.ToLower();
+    }
 
     // RENAMED: Event name for when content is processed
     private const string ContentLoadedEvent = "ContentLoaded";
@@ -134,6 +310,7 @@ public class SpaceCraft : BridgeObject
         
         if (collectionsView == null)
             Debug.LogError("SpaceCraft: CollectionsView reference not found!");
+            
     }
     
     private void FixedUpdate()
@@ -175,8 +352,7 @@ public class SpaceCraft : BridgeObject
                 // Update call to pass default controller info
                 SelectItem("auto_select", "System", firstItemId);
                 
-                // Also highlight the first item
-                HighlightItem("auto_select", "System", firstItemId);
+                // SelectItem now automatically highlights the selected item, no need for separate highlight
             }
             else
             {
@@ -187,14 +363,12 @@ public class SpaceCraft : BridgeObject
 
         // Notify JS that the content has been loaded and processed
         SendEventName(ContentLoadedEvent);
-    }
-    
-    private void Update()
-    {
-        // Forward search string updates to InputManager
-        if (inputManager != null && inputManager.searchString != searchString)
+        
+        // Clear the title display after loading
+        if (collectionsView?.itemInfoPanel != null)
         {
-            inputManager.searchString = searchString;
+            collectionsView.itemInfoPanel.ClearInfo();
+            collectionsView.itemInfoPanel.gameObject.SetActive(true); // Keep it active but empty
         }
     }
     
@@ -230,6 +404,9 @@ public class SpaceCraft : BridgeObject
         }
         // Assign the new list to the property to trigger setter logic
         SelectedItemIds = newList;
+        
+        // When selecting an item, also set it as the only highlighted item
+        HighlightedItemIds = new List<string> { itemId };
     }
     
     /// <summary>
@@ -246,6 +423,20 @@ public class SpaceCraft : BridgeObject
         newList.Remove(itemId);
         // Assign the new list to the property
         SelectedItemIds = newList;
+        
+        // Also remove from highlights if it's there
+        if (_highlightedItemIds.Contains(itemId))
+        {
+            List<string> newHighlights = new List<string>(_highlightedItemIds);
+            newHighlights.Remove(itemId);
+            HighlightedItemIds = newHighlights;
+        }
+        
+        // If we still have selected items, highlight the first one
+        if (newList.Count > 0)
+        {
+            HighlightedItemIds = new List<string> { newList[0] };
+        }
     }
     
     /// <summary>
@@ -258,6 +449,8 @@ public class SpaceCraft : BridgeObject
         {
             // Assign an empty list to the property
             SelectedItemIds = new List<string>();
+            // Also clear highlights
+            HighlightedItemIds = new List<string>();
         }
     }
     
@@ -330,6 +523,20 @@ public class SpaceCraft : BridgeObject
         }
         // Assign the potentially modified list back to the property
         SelectedItemIds = newList;
+        
+        // Sync highlight with selection
+        if (newList.Contains(itemId))
+        {
+            // Item is now selected, make it the only highlighted item
+            HighlightedItemIds = new List<string> { itemId };
+        }
+        else if (HighlightedItemIds.Contains(itemId))
+        {
+            // Item was deselected, remove it from highlights too
+            List<string> newHighlights = new List<string>(HighlightedItemIds);
+            newHighlights.Remove(itemId);
+            HighlightedItemIds = newHighlights;
+        }
     }
     
     /// <summary>
@@ -350,6 +557,16 @@ public class SpaceCraft : BridgeObject
         
         // Assign the validated list to the property
         SelectedItemIds = newList;
+        
+        // Sync highlight with selection - highlight the first selected item if any
+        if (newList.Count > 0)
+        {
+            HighlightedItemIds = new List<string> { newList[0] };
+        }
+        else
+        {
+            HighlightedItemIds = new List<string>();
+        }
     }
     
     /// <summary>
@@ -364,7 +581,7 @@ public class SpaceCraft : BridgeObject
         // Handle single select mode separately
         if (!multiSelectEnabled)
         {
-            // Call the primary SelectItem method
+            // Call the primary SelectItem method (which will handle highlight sync)
             SelectItem(clientId, clientName, itemIds.LastOrDefault());
             return;
         }
@@ -384,6 +601,12 @@ public class SpaceCraft : BridgeObject
         if (changed)
         {
             SelectedItemIds = newList; // Assign if changes were made
+            
+            // Highlight the first selected item
+            if (newList.Count > 0)
+            {
+                HighlightedItemIds = new List<string> { newList[0] };
+            }
         }
     }
     
@@ -409,6 +632,16 @@ public class SpaceCraft : BridgeObject
         if (changed)
         {
             SelectedItemIds = newList; // Assign if changes were made
+            
+            // Update highlights - if we still have selected items, highlight the first one
+            if (newList.Count > 0)
+            {
+                HighlightedItemIds = new List<string> { newList[0] };
+            }
+            else
+            {
+                HighlightedItemIds = new List<string>();
+            }
         }
     }
     
@@ -600,6 +833,72 @@ public class SpaceCraft : BridgeObject
     }
 
     /// <summary>
+    /// Applies a scale impulse to the first highlighted item.
+    /// This scales the item's instantaneous size (not target size) by the selectionTapScale factor.
+    /// </summary>
+    public void ApplyTapScaleToHighlightedItem(string clientId, string clientName, string screenId)
+    {
+        string logPrefix = "[SpaceCraft ApplyTapScaleToHighlightedItem]";
+        Debug.Log($"{logPrefix} Called by {clientName}({clientId}) for screen {screenId}.");
+
+        if (HighlightedItemIds.Count > 0)
+        {
+            string targetItemId = HighlightedItemIds[0];
+            ItemView itemView = FindItemViewById(targetItemId);
+            
+            if (itemView != null && inputManager != null)
+            {
+                // Apply scale impulse by directly modifying the item's current scale
+                float tapScale = inputManager.SelectionTapScale;
+                float newScale = itemView.CurrentScale * tapScale;
+                
+                Debug.Log($"{logPrefix} Applying tap scale {tapScale} to item {targetItemId}. Current: {itemView.CurrentScale} → New: {newScale}");
+                
+                // Set the current scale directly (this will smoothly animate back to target scale)
+                itemView.SetCurrentScale(newScale);
+            }
+            else
+            {
+                Debug.LogWarning($"{logPrefix} Could not find ItemView for highlighted item: {targetItemId}");
+            }
+        }
+        else
+        {
+            Debug.Log($"{logPrefix} No items highlighted. Attempting to highlight first item and apply scale.");
+            
+            if (collectionsView != null)
+            {
+                string targetItemId = collectionsView.GetFirstDisplayedItemId();
+                if (!string.IsNullOrEmpty(targetItemId))
+                {
+                    Debug.Log($"{logPrefix} Found first item: {targetItemId}. Highlighting and applying scale.");
+                    
+                    // First highlight the item
+                    HighlightItem(clientId, clientName, targetItemId);
+                    
+                    // Then apply scale to it
+                    ItemView itemView = FindItemViewById(targetItemId);
+                    if (itemView != null && inputManager != null)
+                    {
+                        float tapScale = inputManager.SelectionTapScale;
+                        float newScale = itemView.CurrentScale * tapScale;
+                        Debug.Log($"{logPrefix} Applying tap scale {tapScale} to item {targetItemId}. Current: {itemView.CurrentScale} → New: {newScale}");
+                        itemView.SetCurrentScale(newScale);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"{logPrefix} No first item found to highlight and scale.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"{logPrefix} Cannot highlight and scale because CollectionsView is null.");
+            }
+        }
+    }
+
+    /// <summary>
     /// Find an ItemView by its ID, handling null cases gracefully
     /// </summary>
     private ItemView FindItemSafe(string itemId)
@@ -741,6 +1040,38 @@ public class SpaceCraft : BridgeObject
             {
                  view.SetSelected(shouldBeSelected); 
             }
+        }
+    }
+
+    /// <summary>
+    /// Updates the title display to show the first selected item's title
+    /// </summary>
+    private void UpdateTitleDisplay()
+    {
+        if (collectionsView?.itemInfoPanel == null) return;
+        
+        string titleToDisplay = "";
+        
+        // Show the title of the first selected item
+        if (SelectedItemIds.Count > 0)
+        {
+            string selectedId = SelectedItemIds[0];
+            ItemView itemView = FindItemViewById(selectedId);
+            if (itemView?.Model != null)
+            {
+                titleToDisplay = itemView.Model.Title;
+            }
+        }
+        
+        // Update the info panel
+        if (string.IsNullOrEmpty(titleToDisplay))
+        {
+            collectionsView.itemInfoPanel.ClearInfo();
+        }
+        else
+        {
+            collectionsView.itemInfoPanel.gameObject.SetActive(true);
+            collectionsView.itemInfoPanel.ShowInfo(titleToDisplay);
         }
     }
 
@@ -911,12 +1242,13 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Move the selection in a specific direction.
     /// </summary>
-    public void MoveSelection(string controllerId, string controllerName, string screenId, string direction)
+    public void MoveSelection(string controllerId, string controllerName, string screenId, string direction, float dx = 0f, float dy = 0f)
     {
         // Expects "north", "south", "east", "west" from controller
-        Debug.Log($"[SpaceCraft] MoveSelection called with controllerId: {controllerId}, controllerName: {controllerName}, screenId: {screenId}, direction: {direction}");
-        // Pass direction directly to CollectionsView
-        collectionsView?.MoveSelection(controllerId, controllerName, direction);
+        Debug.Log($"[SpaceCraft] MoveSelection called with controllerId: {controllerId}, controllerName: {controllerName}, screenId: {screenId}, direction: {direction}, dx: {dx}, dy: {dy}");
+        // Pass direction and mouse deltas to CollectionsView
+        collectionsView?.MoveSelection(controllerId, controllerName, direction, dx, dy);
+        // Note: CollectionsView will call SelectItem which will sync the highlight
     }
 
     /// <summary>
@@ -929,5 +1261,4 @@ public class SpaceCraft : BridgeObject
         // Pass direction directly to CollectionsView
         collectionsView?.MoveHighlight(controllerId, controllerName, direction);
     }
-
 }

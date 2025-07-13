@@ -19,5 +19,21 @@
   "coverImage": "https://archive.org/services/img/TheMupEncyclopaediaOfAustralianScienceFictionFantasy",
   "coverWidth": 180,
   "coverHeight": 260,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "The MUP Encyclopaedia of Australian Science Fiction & Fantasy",
+  "publicdate": "2011-12-30 22:05:33",
+  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "identifier": "TheMupEncyclopaediaOfAustralianScienceFictionFantasy",
+  "uploader": "erinqschwartz@hotmail.com",
+  "addeddate": "2011-12-30 20:03:36",
+  "language": "English",
+  "identifier-access": "http://www.archive.org/details/TheMupEncyclopaediaOfAustralianScienceFictionFantasy",
+  "identifier-ark": "ark:/13960/t54f2tj74",
+  "ppi": "600",
+  "ocr": "ABBYY FineReader 8.0",
+  "repub_state": "4",
+  "curation": "[curator]malware@archive.org[/curator][date]20140327032924[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia903707_3",
+  "coverImageWidth": 180,
+  "coverImageHeight": 260
 }

@@ -78,13 +78,34 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     public bool IsSelected => isSelected;
     public int CurrentHighlightCount => highlightCount; // Public getter for the count
     
-    // Public accessors for dynamic scaling
+    /// <summary>
+    /// The target view scale set by SpaceCraft (excludes selection multiplier)
+    /// This is the scale the item is animating towards.
+    /// </summary>
     public float ViewScale 
     { 
         get => viewScale; 
         set => viewScale = Mathf.Clamp(value, minViewScale, maxViewScale); 
     }
+    
+    /// <summary>
+    /// The current instantaneous scale of the item
+    /// </summary>
     public float CurrentScale => currentScale;
+    
+    /// <summary>
+    /// Sets the current instantaneous scale directly.
+    /// This is used for scale impulses (like tap scaling) that modify the current scale,
+    /// which will then smoothly animate back to the target scale.
+    /// </summary>
+    public void SetCurrentScale(float scale)
+    {
+        currentScale = scale;
+        transform.localScale = Vector3.one * currentScale;
+        UpdatePhysicsForScale();
+    }
+    
+    // Public accessors for dynamic scaling
     public float ViewScaleSlerpRate 
     { 
         get => viewScaleSlerpRate; 
@@ -124,19 +145,28 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     
     private void Update()
     {
+        // Calculate the target scale based on viewScale and selection state
+        float targetScale = viewScale;
+        
+        // Apply selection scale multiplier if this item is selected
+        if (isSelected && SpaceCraft.Instance?.InputManager != null)
+        {
+            targetScale *= SpaceCraft.Instance.InputManager.SelectionScale;
+        }
+        
         // Handle smooth scaling transitions - the "dirty but sweet" incremental slerp technique!
-        if (!Mathf.Approximately(currentScale, viewScale))
+        if (!Mathf.Approximately(currentScale, targetScale))
         {
             // Get dynamic animation speed from InputManager for real-time control
             float animationSpeed = GetAnimationSpeedFromInputManager();
             
             // Incremental slerp towards target scale - not mathematically pure but aesthetically pleasing
-            currentScale = Mathf.Lerp(currentScale, viewScale, Time.deltaTime * animationSpeed);
+            currentScale = Mathf.Lerp(currentScale, targetScale, Time.deltaTime * animationSpeed);
             
             // Snap to target when very close to prevent infinite tiny movements
-            if (Mathf.Abs(currentScale - viewScale) < 0.001f)
+            if (Mathf.Abs(currentScale - targetScale) < 0.001f)
             {
-                currentScale = viewScale;
+                currentScale = targetScale;
             }
             
             // Apply the current scale to the transform
@@ -171,16 +201,13 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     /// </summary>
     private void SetupPhysicsBehavior()
     {
-
-        
         // Get rigidbody if it exists (configured in prefab) 
         rigidBody = GetComponent<Rigidbody>();
         
         // If no rigidbody, this ItemView doesn't use physics
         if (rigidBody == null) 
         {
-            Debug.Log($"[ItemView] No Rigidbody found on {name} - physics disabled");
-            return;
+            return; // No physics for this item
         }
         
         // Configure initial mass (other settings applied by InputManager.UpdateRigidbodySettings)
@@ -193,7 +220,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
         // Apply current InputManager physics settings
         ApplyInputManagerPhysicsSettings();
         
-        Debug.Log($"[ItemView] Physics behavior configured for {name}");
+        // Materials are already assigned in prefabs - no need to apply them
         
         // Start in kinematic mode to prevent initial jiggling, then enable physics after settling
         StartCoroutine(EnablePhysicsAfterSettling());
@@ -231,6 +258,15 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     }
     
     /// <summary>
+    /// DO NOTHING - Materials are already assigned in prefabs!
+    /// </summary>
+    private void ApplyPhysicsMaterials()
+    {
+        // Materials are ALREADY assigned in the prefabs
+        // The whole point of SHARED materials is we don't reassign them!
+    }
+    
+    /// <summary>
     /// Starts kinematic then enables physics after a brief delay to prevent creation jiggling
     /// </summary>
     private System.Collections.IEnumerator EnablePhysicsAfterSettling()
@@ -258,11 +294,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
             rigidBody.maxAngularVelocity = inputManager.freezeRotation ? 0f : inputManager.maxAngularVelocity;
             rigidBody.angularDamping = inputManager.freezeRotation ? inputManager.extremeAngularDrag : inputManager.rigidbodyAngularDrag;
             rigidBody.angularVelocity = Vector3.zero;
-            
-            Debug.Log($"[ItemView] NUCLEAR ROTATION STOP: freezeRotation={inputManager.freezeRotation}, constraints={(RigidbodyConstraints)inputManager.rotationConstraints}, maxAngular={rigidBody.maxAngularVelocity} for {Model?.Title ?? "Unknown"}");
         }
-        
-        Debug.Log($"[ItemView] Physics enabled for {Model?.Title ?? "Unknown"}");
     }
     
     /// <summary>
@@ -454,7 +486,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     // Apply texture to the mesh renderer
     private void ApplyTexture(Texture2D texture)
     {
-        Debug.Log($"Applying texture to {texture}");
+        // Debug.Log($"Applying texture to {texture}");
         
         if (texture == null || meshRenderer == null) return;
         
@@ -729,7 +761,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
                 // Ensure it's positioned correctly (slightly above the book surface)
                 childBoxCollider.center = new Vector3(0, colliderThickness/2, 0);
                 
-                Debug.Log($"[ItemView] Updated BookCoverBox collider: {bookWidth:F2} x {bookHeight:F2} for {Model?.Title ?? "Unknown"}");
+                // Debug.Log($"[ItemView] Updated BookCoverBox collider: {bookWidth:F2} x {bookHeight:F2} for {Model?.Title ?? "Unknown"}");
             }
             else
             {

@@ -30,10 +30,6 @@
 *.yaml text
 *.yml text
 
-# Large text files should use LFS
-*.txt filter=lfs diff=lfs merge=lfs -text size=">1M"
-*.json filter=lfs diff=lfs merge=lfs -text size=">1M"
-
 # Image files (always use LFS)
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text
@@ -88,4 +84,4 @@
 *.data filter=lfs diff=lfs merge=lfs -text
 *.wasm filter=lfs diff=lfs merge=lfs -text
 *.framework.js filter=lfs diff=lfs merge=lfs -text
-*.loader.js filter=lfs diff=lfs merge=lfs -text size=">1M" 
+*.loader.js filter=lfs diff=lfs merge=lfs -text 

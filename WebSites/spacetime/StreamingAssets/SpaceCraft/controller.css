@@ -29,9 +29,29 @@ html, body {
    2. Layout Containers
    ----------------------------- */
 .container {
-    padding: 20px 10px 60px;
+    padding: 20px 10px 20px;
     padding-top: 60px;
     text-align: center;
+    position: relative;
+    z-index: 100; /* Above target layer */
+    pointer-events: none; /* Let clicks pass through except on actual UI elements */
+}
+
+/* For inspector, NO container exists - ensure nothing blocks iframe */
+.inspector-container .container {
+    display: none !important;
+}
+
+.container > * {
+    pointer-events: auto; /* But UI elements should receive clicks */
+}
+
+/* Text labels should not interfere with navigation */
+.container > .page-title,
+.container > .instructions,
+.container > .status {
+    pointer-events: none !important;
+    cursor: inherit !important;
 }
 
 /* Target area for all pointer interactions */
@@ -54,6 +74,8 @@ html, body {
     margin-top: 20px;
     margin-bottom: 10px;
     font-weight: bold;
+    pointer-events: none; /* Let mouse events pass through */
+    cursor: inherit; /* Don't change cursor on hover */
 }
 
 .instructions {
@@ -62,6 +84,8 @@ html, body {
     text-align: center;
     margin: 20px 0;
     padding: 10px;
+    pointer-events: none; /* Let mouse events pass through */
+    cursor: inherit; /* Don't change cursor on hover */
 }
 
 /* -----------------------------
@@ -91,63 +115,18 @@ html, body {
     padding: 5px;
     margin: 5px 0;
     background-color: #333;
+    pointer-events: none; /* Let mouse events pass through */
+    cursor: inherit; /* Don't change cursor on hover */
 }
+
+
 
 /* -----------------------------
-   5. Controls Bar
-   ----------------------------- */
-#controls-bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    padding: 5px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    box-sizing: border-box;
-    z-index: 1000;
-}
-
-#controls-bar button {
-    flex: 1;
-    margin: 0 2px;
-    box-sizing: border-box;
-    padding: 10px 5px; 
-    height: 50px;
-    min-width: 60px;
-    font-size: 0.8em;
-    font-weight: bold;
-    font-family: "Mulish", Helvetica, sans-serif;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    text-align: center;
-    line-height: 1.2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#controls-bar button:active {
-    background-color: #555;
-}
-
-/* Button order in the flex container */
-#rename-button { order: 1; }
-#vibration-toggle, #sound-toggle { order: 2; }
-#speech-toggle { order: 3; }
-#tilt-toggle { order: 4; }
-
-/* -----------------------------
-   6. Debug Panel
+   5. Debug Panel
    ----------------------------- */
 #debug-panel {
     position: fixed;
-    bottom: 60px; /* Position above the controls bar */
+    bottom: 70px; /* Above search field which is at bottom: 10px */
     left: 0;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.7);
@@ -174,6 +153,113 @@ html, body {
 }
 
 /* -----------------------------
+   6. Search Field Styles
+   ----------------------------- */
+.search-container {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    z-index: 1000; /* Well above everything */
+    pointer-events: auto !important;
+}
+
+.search-wrapper {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-family: 'Mulish', 'Roboto', sans-serif;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 30px;
+    color: #fff;
+    box-sizing: border-box;
+    cursor: text !important; /* Force text cursor */
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+}
+
+/* Keyword menu button */
+.keyword-menu-button {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 25px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Keyword menu */
+.keyword-menu {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.keyword-menu-header {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.keyword-menu-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.keyword-menu-item {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.keyword-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.keyword-menu-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+}
+
+/* -----------------------------
    7. Controller-Specific Styles
    ----------------------------- */
 /* Navigator cursor style */
@@ -184,4 +270,83 @@ html, body {
 /* Selector cursor style */
 .selector-container #target {
     cursor: pointer;
+}
+
+/* Ensure selector text labels don't interfere with gestures */
+.selector-container .page-title,
+.selector-container .instructions,
+.selector-container .status {
+    pointer-events: none !important;
+    cursor: inherit !important;
+}
+
+/* -----------------------------
+   8. Inspector-Specific Styles
+   ----------------------------- */
+/* Inspector iframe styling */
+#inspector-iframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 1; /* Always on top - no container to block it */
+    background-color: white;
+    pointer-events: auto !important; /* FORCE iframe to accept mouse input */
+    touch-action: auto !important; /* ALLOW touch/mouse actions */
+    -webkit-touch-callout: default !important; /* ALLOW default touch behaviors */
+    -webkit-user-select: auto !important; /* ALLOW text selection */
+    user-select: auto !important; /* ALLOW text selection */
+}
+
+/* Inspector container - minimal styling since no UI elements exist */
+.inspector-container {
+    overflow: hidden;
+    background-color: #1a1a1a;
+    pointer-events: none; /* Body doesn't block */
+    touch-action: none; /* Keep body from interfering */
+}
+
+/* Ensure inspector body and all elements let iframe work */
+.inspector-container * {
+    pointer-events: none !important;
+    touch-action: none !important;
+}
+
+/* Except the iframe itself - it MUST accept input */
+.inspector-container #inspector-iframe {
+    pointer-events: auto !important;
+    touch-action: auto !important;
+}
+
+/* Override ALL restrictive styles when body has inspector-container class */
+body.inspector-container {
+    pointer-events: none !important;
+    touch-action: none !important;
+}
+
+/* Inspector JSON output */
+#inspector-json-output {
+    position: fixed;
+    top: 120px;
+    left: 10px;
+    right: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #0F0;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 11px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border-radius: 5px;
+    z-index: 100;
+    display: none; /* Hidden by default */
+}
+
+/* Show JSON output on debug mode */
+body.debug-mode #inspector-json-output {
+    display: block;
 } 

@@ -96,7 +96,7 @@ public class BridgeObject : MonoBehaviour {
 
             case "Update": {
                 JObject update = (JObject)data;
-                Debug.Log($"Bridge: Update event with data: {update}");
+                // Debug.Log($"Bridge: Update event with data: {update}");
                 LoadUpdate(update);
                 break;
             }

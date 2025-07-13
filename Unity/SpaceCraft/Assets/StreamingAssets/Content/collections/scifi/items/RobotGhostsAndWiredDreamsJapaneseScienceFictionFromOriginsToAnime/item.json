@@ -16,5 +16,24 @@
   "coverImage": "https://archive.org/services/img/RobotGhostsAndWiredDreamsJapaneseScienceFictionFromOriginsToAnime",
   "coverWidth": 180,
   "coverHeight": 259,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "Robot Ghosts And Wired Dreams Japanese Science Fiction From Origins To Anime",
+  "publicdate": "2018-05-26 02:25:08",
+  "identifier": "RobotGhostsAndWiredDreamsJapaneseScienceFictionFromOriginsToAnime",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
+  "uploader": "thehorrorhiro@gmail.com",
+  "addeddate": "2018-05-26 02:25:08",
+  "curation": "[curator]validator@archive.org[/curator][date]20180526023102[/date][comment]checked for malware[/comment]",
+  "language": "English",
+  "identifier-access": "http://archive.org/details/RobotGhostsAndWiredDreamsJapaneseScienceFictionFromOriginsToAnime",
+  "identifier-ark": "ark:/13960/t7mq1vh9b",
+  "ppi": "300",
+  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
+  "backup_location": "ia906705_28",
+  "collection_added": [
+    "folkscanomy",
+    "additional_collections"
+  ],
+  "coverImageWidth": 180,
+  "coverImageHeight": 259
 }
