@@ -54,24 +54,24 @@ This document tracks the development progress of SpaceCraft, documenting complet
 
 ## Remaining Tasks (Priority Order)
 
-### 1. Search System Enhancement
+### 1. Metadata Integration
+- [ ] Integrate custom metadata pipeline improvements
+- [ ] Include clean keyword list in index-deep.json
+- [ ] Make spacecraft simulator.js read keywords and share via Supabase
+- [ ] Implement keyword menu presentation in controllers
+
+### 2. Search System Enhancement
 - [ ] Join multiple controller search strings together with spaces
 - [ ] Implement fuzzy search to handle combined queries
 - [ ] Support `#keyword` prefix for direct keyword matches
 - [ ] Add magic search commands for hidden features (sound, shake, tilt, speech)
 
-### 2. Settings Controller Implementation
+### 3. Settings Controller Implementation
 - [ ] Create Settings controller UI that reads ParameterMetaData
 - [ ] Make spacecraft simulator put ParameterMetaData into Supabase state
 - [ ] Enable all controllers to see parameter metadata
 - [ ] Implement bridge.update() message passing for parameter changes
 - [ ] Add parameter querying support
-
-### 3. Metadata Integration
-- [ ] Integrate custom metadata pipeline improvements
-- [ ] Include clean keyword list in index-deep.json
-- [ ] Make spacecraft simulator.js read keywords and share via Supabase
-- [ ] Implement keyword menu presentation in controllers
 
 ### 4. Gesture Improvements
 - [ ] Real-time gesture tracking preview (hop-pie menus concept)
