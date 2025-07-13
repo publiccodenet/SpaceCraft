@@ -37,6 +37,11 @@ html, body {
     pointer-events: none; /* Let clicks pass through except on actual UI elements */
 }
 
+/* For inspector, NO container exists - ensure nothing blocks iframe */
+.inspector-container .container {
+    display: none !important;
+}
+
 .container > * {
     pointer-events: auto; /* But UI elements should receive clicks */
 }
@@ -159,8 +164,14 @@ html, body {
     pointer-events: auto !important;
 }
 
+.search-wrapper {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
 .search-input {
-    width: 100%;
+    flex: 1;
     padding: 15px 20px;
     font-size: 18px;
     font-family: 'Mulish', 'Roboto', sans-serif;
@@ -185,6 +196,67 @@ html, body {
 .search-input::placeholder {
     color: rgba(255, 255, 255, 0.6);
     font-style: italic;
+}
+
+/* Keyword menu button */
+.keyword-menu-button {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 25px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Keyword menu */
+.keyword-menu {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.keyword-menu-header {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.keyword-menu-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.keyword-menu-item {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.keyword-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.keyword-menu-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
 }
 
 /* -----------------------------
@@ -213,26 +285,45 @@ html, body {
    ----------------------------- */
 /* Inspector iframe styling */
 #inspector-iframe {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     border: none;
-    z-index: 0; /* Behind UI elements */
+    z-index: 1; /* Always on top - no container to block it */
+    background-color: white;
+    pointer-events: auto !important; /* FORCE iframe to accept mouse input */
+    touch-action: auto !important; /* ALLOW touch/mouse actions */
+    -webkit-touch-callout: default !important; /* ALLOW default touch behaviors */
+    -webkit-user-select: auto !important; /* ALLOW text selection */
+    user-select: auto !important; /* ALLOW text selection */
 }
 
-/* Inspector container positioning */
+/* Inspector container - minimal styling since no UI elements exist */
 .inspector-container {
-    position: relative;
-    z-index: 10; /* Above iframe */
-    background-color: rgba(0, 0, 0, 0.8);
-    pointer-events: none; /* Allow clicks through to iframe */
+    overflow: hidden;
+    background-color: #1a1a1a;
+    pointer-events: none; /* Body doesn't block */
+    touch-action: none; /* Keep body from interfering */
 }
 
-.inspector-container .page-title,
-.inspector-container .status {
-    pointer-events: auto; /* But allow clicks on these elements */
+/* Ensure inspector body and all elements let iframe work */
+.inspector-container * {
+    pointer-events: none !important;
+    touch-action: none !important;
+}
+
+/* Except the iframe itself - it MUST accept input */
+.inspector-container #inspector-iframe {
+    pointer-events: auto !important;
+    touch-action: auto !important;
+}
+
+/* Override ALL restrictive styles when body has inspector-container class */
+body.inspector-container {
+    pointer-events: none !important;
+    touch-action: none !important;
 }
 
 /* Inspector JSON output */

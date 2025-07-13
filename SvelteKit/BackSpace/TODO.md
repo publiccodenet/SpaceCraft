@@ -2,18 +2,20 @@
 
 ## Overview
 
-This document tracks the development progress of SpaceCraft, documenting completed features from PR #24 and outlining remaining work. The Unity app is now fun to play with, especially with the improved mouse and keyboard controls. Initial layout thrashing has been reduced (except for one corner item), and these issues can be tweaked once the settings controller is implemented.
+This document tracks the development progress of SpaceCraft. The Unity app is now fun to play with, especially with the improved mouse and keyboard controls. Initial layout thrashing has been reduced (except for one corner item), and these issues can be tweaked once the settings controller is implemented.
 
-## PR #24 Accomplishments
+## Completed Work
 
-### Controller Unification
+### PR #24 Features
+
+#### Controller Unification
 - ✅ Unified three controllers (navigator, selector, inspector) into one HTML file
 - ✅ Controllers now configured by `type` query parameter
 - ✅ HTML files are empty with all content dynamically generated
 - ✅ Search input can be optionally enabled by any controller
 - ✅ Added search input fields to both selector and navigator
 
-### Physics and Interaction Improvements
+#### Physics and Interaction Improvements
 - ✅ Overhauled physics system
 - ✅ Added tap animation - items pop bigger then smoothly return
 - ✅ Tap effect kicks surrounding items creating space
@@ -22,150 +24,178 @@ This document tracks the development progress of SpaceCraft, documenting complet
 - ✅ Shift+arrows thrust currently selected item in arrow direction
 - ✅ Items can be flown around and smashed into others to scatter them
 
-### Unity Keyboard Controls
+#### Unity Keyboard Controls
 - ✅ WASD still pans the camera
 - ✅ Q and E now zoom out and in
 - ✅ Arrow keys perform selector gestures (north/south/east/west)
 - ✅ Space key performs tap action
 - ✅ Shift modifier (or caps-lock toggle) enables thrust mode
 
-### Smart Navigation
+#### Smart Navigation
 - ✅ Smart selector navigation finds nearest item in direction
 - ✅ Prefers big items but selects closest small one if no big items in direction
 - ✅ Sends gesture dx,dy along with north/south/east/west direction
 
-### Settings Foundation
+#### Settings Foundation
 - ✅ Organized InputManager properties into categories by tweakability
-- ✅ Categories: physics simulation, physic materials, rigidbody physics, rotation control, magnetic force physics, search scaling physics, remote control UI parameters, navigator pan/zoom, item interaction, tilt controls, search string, Unity UI desktop controls, mouse controls, camera control, item dragging, keyboard/scroll controls, keyboard physics, camera boundaries, UI interaction
+- ✅ Categories include: physics simulation, physic materials, rigidbody physics, rotation control, magnetic force physics, search scaling physics, remote control UI parameters, navigator pan/zoom, item interaction, tilt controls, keyboard/scroll controls, camera boundaries, UI interaction
 - ✅ Added procedural ParameterMetaData property using reflection
 - ✅ ParameterMetaData works in WebGL and generates JSON array of property metadata
 - ✅ Each property has: component, name, displayName, type, currentValue, canWrite, category, description, min, max, etc.
 
-## ✅ Fixed Bug
+### Recent Accomplishments (Chronological Order)
 
-### Inspector Iframe Mouse Input Blocking (FIXED)
-- **Issue**: Inspector was disabling all mouse input to the Internet Archive page iframe
-- **Impact**: Users could not interact with the web page content
-- **Fix Applied**: 
-  - Updated controller.css to properly handle iframe z-index
-  - Modified InspectorController to hide UI elements when iframe loads
-  - Now shows ONLY iframe content when item is selected
-- **See**: Changes in controller.js lines 2260-2317 and controller.css lines 214-228
+#### Git LFS JSON File Recovery
+- ✅ Fixed critical JSON file corruption from Git LFS tracking
+  - 1496 JSON files were being tracked by Git LFS due to invalid .gitattributes rules
+  - Migrated all files out of LFS using `git lfs migrate export`
+  - Removed invalid `size=">1M"` syntax from all .gitattributes
+  - All JSON files successfully converted from LFS pointers to real JSON
 
-## Remaining Tasks (Priority Order)
-
-### 1. Metadata Integration ✅
-- [x] Integrate custom metadata pipeline improvements
-  - Added support for item-custom.json overlays
-  - Added support for cover-custom.jpg
-  - Added custom_item flag support
-- [x] Include clean keyword list in index-deep.json
-  - Pipeline now collects spaceCraftTags into keywords array
-- [x] Make spacecraft simulator.js read keywords and share via Supabase
-  - Keywords extracted and shared in state
-- [x] Implement keyword menu presentation in controllers
+#### Metadata System Implementation
+- ✅ Integrated custom metadata pipeline enhancements
+  - Support for item-custom.json overlay files
+  - Support for cover-custom.jpg custom covers
+  - Support for fully custom items (not from IA) with spacecraft_custom_item flag
+  - Deep merge of custom data over IA metadata
+- ✅ Implemented spacecraft_ prefix convention across entire codebase
+  - Migrated from spaceCraftTags to spacecraft_tags
+  - All LLM-generated content uses spacecraft_ prefix
+  - Updated pipeline to collect spacecraft_tags into keywords array
+- ✅ Added spacecraft_custom_url support - Inspector checks for custom URLs first
+- ✅ Made spacecraft.js read keywords and share via Supabase state
+- ✅ Implemented keyword menu presentation in controllers
   - Added # button with dropdown menu
   - Click to add keywords to search
+- ✅ Created comprehensive CUSTOM-METADATA.md documentation
+- ✅ Created The Dispossessed as example custom item with full metadata
 
-### 2. Search System Enhancement
-- [ ] Join multiple controller search strings together with spaces
-- [ ] Implement fuzzy search to handle combined queries
-- [ ] Support `#keyword` prefix for direct keyword matches
-- [ ] Add magic search commands for hidden features (sound, shake, tilt, speech)
+#### Inspector UI Enhancement
+- ✅ Enabled full mouse interaction with Internet Archive iframe
+  - Resolved issue where inspector was blocking mouse input to IA pages
+  - Updated controller.css to properly handle iframe z-index
+  - Modified InspectorController to hide UI elements when iframe loads
+  - Shows ONLY iframe content when item is selected
 
-### 3. Settings Controller Implementation
-- [ ] Create Settings controller UI that reads ParameterMetaData
-- [ ] Make spacecraft simulator put ParameterMetaData into Supabase state
-- [ ] Enable all controllers to see parameter metadata
-- [ ] Implement bridge.update() message passing for parameter changes
-- [ ] Add parameter querying support
+#### Console Spam Cleanup
+- ✅ Commented out repetitive console logs that were flooding output:
+  - CollectionsView.cs: UpdateDetailPanel spam ("Found highlighted item", "Will display")
+  - ItemView.cs: Texture application and BookCoverBox collider update logs
+  - BridgeObject.cs: Bridge update event spam
+  - spacecraft.js: Presence sync, new client registrations, presences joined/left
+- ✅ Console is now much cleaner and easier to debug
 
-### 4. Gesture Improvements
-- [ ] Real-time gesture tracking preview (hop-pie menus concept)
-- [ ] Show target item while dragging gesture
-- [ ] Allow drag around to reselect different items before release
-- [ ] Base selection on nearest item in precise dx,dy direction
+#### UI/UX Improvements
+- ✅ Fixed detail panel to show SELECTED items only (was incorrectly prioritizing highlighted)
+- ✅ Implemented clever debouncing for inspector iframe URL changes:
+  - First load happens immediately
+  - Rate limiting prevents loading more than once per second
+  - Trailing edge debounce waits for 1 second of silence after rapid changes
+  - Prevents iframe thrashing while navigating quickly through items
 
-### 5. Motion Controls
-- [ ] Hook up tilt controls to selector/other controllers
-- [ ] Implement shake-to-tweak functionality
-- [ ] Add tilt-to-thrust feature
+#### Custom Metadata Migration from don-searcher
+- ✅ Migrated and properly formatted custom metadata files from don-searcher branch
+  - doandroidsdreamo00dick_0 (Do Androids Dream of Electric Sheep?) - converted to spacecraft_custom_item
+  - fulgrim_202211 (Fulgrim: The Palatine Phoenix) - converted to spacecraft_custom_item
+  - gigant-manga (GIGANT manga) - converted to spacecraft_custom_item
+  - thedispossessed0000legu (The Dispossessed) - verified already correctly formatted
+  - All items now follow documented pattern: item.json with spacecraft_custom_item + item-custom.json overlay
 
-### 6. Layout and Polish
-- [ ] Fix remaining layout thrashing for corner items
-- [ ] Fine-tune physics parameters once settings controller works
-- [ ] Optimize initial item placement
+## Remaining Work
 
-## Migration from don-searcher Branch
+### High Priority
 
-### Phase 1: Custom Metadata System (High Priority)
-- [ ] Integrate pipeline.js enhancements
-  - [ ] Support for item-custom.json overlay files
-  - [ ] Support for cover-custom.jpg custom covers
-  - [ ] Support for fully custom items (not from IA)
-  - [ ] Deep merge of custom data over IA metadata
-- [ ] Copy existing custom metadata files:
-  - [ ] doandroidsdreamo00dick_0/item-custom.json
-  - [ ] fulgrim_202211/item-custom.json
-  - [ ] gigant-manga/item-custom.json
-- [ ] Copy existing custom cover:
-  - [ ] thedispossessed0000legu/cover.jpg
-- [ ] Create custom metadata for top 20 sci-fi books
-- [ ] Test pipeline with custom content
-- [ ] **See**: CUSTOM-METADATA-GUIDE.md for implementation details
+#### Create Custom Metadata for Top Sci-Fi Books
+- [ ] Create custom metadata for top 20 sci-fi books (4 done, 16 to go)
+- [ ] Follow established pattern: item.json with spacecraft_custom_item + item-custom.json overlay
+- [ ] Add spacecraft_tags for genre classification
+- [ ] Keep descriptions concise and engaging
+- [ ] Add spacecraft_custom_url for items with good external resources
 
-### Phase 2: Tab System Architecture (High Priority)
+#### Tab System Architecture
 - [ ] Migrate from type-based to tab-based controller architecture
 - [ ] Implement base Tab class
 - [ ] Create tab implementations:
   - [ ] AboutTab - Welcome and help
   - [ ] NavigateTab - Pan and zoom
   - [ ] SelectTab - Item selection
-  - [ ] InspectTab - Item details (fix mouse input!)
+  - [ ] InspectTab - Item details
   - [ ] AdjustTab - Settings
 - [ ] Update controller.html for tabbed interface
 - [ ] Update controller.css for tab styling
 - [ ] **See**: TAB-ARCHITECTURE.md for migration guide
 
-### Phase 3: Unity Search Panel (Medium Priority)
+#### Settings Controller Implementation
+- [ ] Create Settings controller UI that reads ParameterMetaData
+- [ ] Make spacecraft simulator put ParameterMetaData into Supabase state
+- [ ] Enable all controllers to see parameter metadata
+- [ ] Implement bridge.update() message passing for parameter changes
+- [ ] Add parameter querying support
+
+### Medium Priority
+
+#### Search System Enhancement
+- [ ] Join multiple controller search strings together with spaces
+- [ ] Implement fuzzy search to handle combined queries
+- [ ] Support `#keyword` prefix for direct keyword matches
+- [ ] Add magic search commands for hidden features (sound, shake, tilt, speech)
+- [ ] Port anonymous name generation improvements
+
+#### Unity Search Panel
 - [ ] Integrate SearchPanel.cs component
 - [ ] Add search UI to Unity scene
 - [ ] Wire up to existing search system
 - [ ] Sync search state with controllers
 - [ ] Test prefab changes carefully
 
-### Phase 4: Controller Features (Medium Priority)
-- [ ] Port anonymous name generation improvements
-- [ ] Enhance search query handling (integrates with task #1)
-- [ ] Add keyword prefix support (#keyword)
-- [ ] Implement magic search commands
-- [ ] Join multiple controller search strings
+#### Gesture Improvements
+- [ ] Real-time gesture tracking preview (hop-pie menus concept)
+- [ ] Show target item while dragging gesture
+- [ ] Allow drag around to reselect different items before release
+- [ ] Base selection on nearest item in precise dx,dy direction
 
-### Phase 5: Build System (Low Priority)
+#### Motion Controls
+- [ ] Hook up tilt controls to selector/other controllers
+- [ ] Implement shake-to-tweak functionality
+- [ ] Add tilt-to-thrust feature
+
+### Low Priority
+
+#### Layout and Polish
+- [ ] Fix remaining layout thrashing for corner items
+- [ ] Fine-tune physics parameters once settings controller works
+- [ ] Optimize initial item placement
+
+#### Build System
 - [ ] Apply Build.cs debug logging improvements
 - [ ] Add BUILD_NOTES.md to Unity directory
 - [ ] Test symlink removal messages
 
-## Implementation Notes
+## Technical Documentation
 
-### DO NOT CHANGE
+### Implementation Guidelines
+
+#### DO NOT CHANGE
 - ❌ Physics system (keep don-demo physics as-is - do not apply don-searcher physics changes)
-- ❌ InputManager.cs (preserve ALL don-demo improvements - don-searcher simplified it too much)
+- ❌ InputManager.cs (preserve ALL don-demo improvements)
 - ❌ WebSites directory (read-only, ignore completely)
 
-### PRESERVE CAREFULLY
+#### PRESERVE CAREFULLY
 - ✅ All InputManager.cs reorganization and improvements
 - ✅ Current physics behavior and feel
 - ✅ Existing controller connection logic
 - ✅ ParameterMetaData system
 
-## Architecture Notes
+### Architecture Notes
 
-### Controller Communication
-The system now uses a unified controller.html file with dynamic content generation based on the `type` parameter. Controllers communicate with the Unity app through the spacecraft simulator using Supabase for state synchronization.
+#### Controller Communication
+The system uses a unified controller.html file with dynamic content generation based on the `type` parameter. Controllers communicate with the Unity app through the spacecraft simulator using Supabase for state synchronization.
 
-### Parameter System
-The new ParameterMetaData system provides a complete reflection-based interface to Unity's InputManager properties. This enables dynamic UI generation and runtime parameter tweaking without hardcoding property names or types.
+#### Parameter System
+The ParameterMetaData system provides a complete reflection-based interface to Unity's InputManager properties. This enables dynamic UI generation and runtime parameter tweaking without hardcoding property names or types.
 
-### Search Architecture
-The planned search system will aggregate queries from multiple controllers, supporting both freeform text and structured keyword searches. The fuzzy search will handle the combined input intelligently, allowing different users to search for different aspects simultaneously. 
+#### Search Architecture
+The planned search system will aggregate queries from multiple controllers, supporting both freeform text and structured keyword searches. The fuzzy search will handle the combined input intelligently, allowing different users to search for different aspects simultaneously.
+
+#### Custom Metadata System
+All custom metadata uses the spacecraft_ prefix convention to avoid namespace collisions. LLM-generated content goes in item-custom.json files which are merged with base metadata at pipeline time. The UI prefers spacecraft_ fields when available (e.g., spacecraft_description over description). 

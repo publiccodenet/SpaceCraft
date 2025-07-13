@@ -196,7 +196,7 @@ MonoBehaviour:
   collectionViewPrefab: {fileID: 3293791871657533807, guid: f5adfd9952e35473d9a517d096636994, type: 3}
   collectionsContainer: {fileID: 8982433361578649911}
   collectionGapX: 10
-  itemInfoPanel: {fileID: 0}
+  itemInfoPanel: {fileID: 4087036035030045770}
   lastSelectedItemOrHighlightId: 
 --- !u!1 &3609899945708333503
 GameObject:
@@ -684,6 +684,7 @@ MonoBehaviour:
   useConstantCenterForce: 1
   centerForceMaxStrength: 40
   constantCenterForce: 10
+  centerForceMinFloor: 5
   centerForceMaxDistance: 100
   centerPoint: {x: 0, y: 0, z: 0}
   manualCenterOffset: {x: 0, y: -0.5, z: 0}
@@ -692,6 +693,7 @@ MonoBehaviour:
   maxForceMultiplier: 5
   centerForceMinScale: 0.8
   limitToCurrentCollection: 0
+  maxItemVelocity: 30
   minBookScale: 0.2
   maxBookScale: 3
   neutralBookScale: 1
@@ -727,8 +729,6 @@ MonoBehaviour:
   navigatorPanScaleFactor: 0.1
   navigatorZoomFactor: 0.25
   navigatorVelocityFactor: 0.05
-  selectionNudgeForce: 10
-  selectionThrustForce: 100
   selectionTapScale: 1.5
   selectionScale: 2
   selectionScaleMin: 0.5
@@ -758,6 +758,8 @@ MonoBehaviour:
   pinchZoomSensitivity: 0.04
   wheelZoomSensitivity: 0.008
   trackpadZoomSensitivity: 0.016
+  selectionNudgeForce: 10
+  selectionThrustForce: 100
   minZoom: 0.01
   maxZoom: 200
   minX: -30

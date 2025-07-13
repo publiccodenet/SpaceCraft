@@ -311,8 +311,6 @@ public class SpaceCraft : BridgeObject
         if (collectionsView == null)
             Debug.LogError("SpaceCraft: CollectionsView reference not found!");
             
-        // Initialize title display
-        UpdateTitleDisplay();
     }
     
     private void FixedUpdate()
@@ -1043,9 +1041,6 @@ public class SpaceCraft : BridgeObject
                  view.SetSelected(shouldBeSelected); 
             }
         }
-        
-        // Update the title display whenever selection changes
-        UpdateTitleDisplay();
     }
 
     /// <summary>

@@ -1581,6 +1581,10 @@ window.BaseController = class BaseController {
         const searchContainer = document.createElement('div');
         searchContainer.className = 'search-container';
         
+        // Create search input wrapper
+        const searchWrapper = document.createElement('div');
+        searchWrapper.className = 'search-wrapper';
+        
         // Create search input
         const searchInput = document.createElement('input');
         searchInput.type = 'text';
@@ -1592,9 +1596,45 @@ window.BaseController = class BaseController {
         searchInput.autocapitalize = 'off';
         searchInput.spellcheck = 'false';
         searchInput.value = this.currentSearchQuery || '';
-        searchContainer.appendChild(searchInput);
+        searchWrapper.appendChild(searchInput);
+        
+        // Create keyword menu button
+        const keywordButton = document.createElement('button');
+        keywordButton.id = 'keyword-menu-button';
+        keywordButton.className = 'keyword-menu-button';
+        keywordButton.innerHTML = '#';
+        keywordButton.title = 'Browse keywords';
+        searchWrapper.appendChild(keywordButton);
+        
+        searchContainer.appendChild(searchWrapper);
+        
+        // Create keyword menu (initially hidden)
+        const keywordMenu = this.createKeywordMenu();
+        searchContainer.appendChild(keywordMenu);
         
         return searchContainer;
+    }
+    
+    /**
+     * Create keyword menu for tag selection
+     */
+    createKeywordMenu() {
+        const menu = document.createElement('div');
+        menu.id = 'keyword-menu';
+        menu.className = 'keyword-menu';
+        menu.style.display = 'none';
+        
+        const menuHeader = document.createElement('div');
+        menuHeader.className = 'keyword-menu-header';
+        menuHeader.textContent = 'Select Keywords:';
+        menu.appendChild(menuHeader);
+        
+        const menuList = document.createElement('div');
+        menuList.id = 'keyword-menu-list';
+        menuList.className = 'keyword-menu-list';
+        menu.appendChild(menuList);
+        
+        return menu;
     }
     
     /**
@@ -1640,6 +1680,82 @@ window.BaseController = class BaseController {
         } else {
             this.logEvent('Error', 'Search input field not found!');
         }
+        
+        // Set up keyword menu button
+        const keywordButton = document.getElementById('keyword-menu-button');
+        const keywordMenu = document.getElementById('keyword-menu');
+        
+        if (keywordButton && keywordMenu) {
+            keywordButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                // Toggle menu visibility
+                if (keywordMenu.style.display === 'none' || !keywordMenu.style.display) {
+                    keywordMenu.style.display = 'block';
+                    this.updateKeywordMenu(); // Populate with latest keywords
+                } else {
+                    keywordMenu.style.display = 'none';
+                }
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!keywordButton.contains(e.target) && !keywordMenu.contains(e.target)) {
+                    keywordMenu.style.display = 'none';
+                }
+            });
+        }
+    }
+    
+    /**
+     * Update keyword menu with available keywords from simulator
+     */
+    updateKeywordMenu() {
+        const menuList = document.getElementById('keyword-menu-list');
+        if (!menuList) return;
+        
+        // Clear existing items
+        menuList.innerHTML = '';
+        
+        // Get keywords from simulator state
+        const keywords = this.simulatorState?.keywords || [];
+        
+        if (keywords.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'keyword-menu-empty';
+            emptyMessage.textContent = 'No keywords available';
+            menuList.appendChild(emptyMessage);
+            return;
+        }
+        
+        // Create keyword items
+        keywords.forEach(keyword => {
+            const item = document.createElement('div');
+            item.className = 'keyword-menu-item';
+            item.textContent = `#${keyword}`;
+            
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Add keyword to search
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) {
+                    const currentValue = searchInput.value.trim();
+                    const newValue = currentValue ? `${currentValue} #${keyword}` : `#${keyword}`;
+                    searchInput.value = newValue;
+                    this.updateSearchQuery(newValue);
+                }
+                
+                // Hide menu
+                const keywordMenu = document.getElementById('keyword-menu');
+                if (keywordMenu) {
+                    keywordMenu.style.display = 'none';
+                }
+            });
+            
+            menuList.appendChild(item);
+        });
     }
 };
 
@@ -1681,7 +1797,7 @@ window.NavigatorController = class NavigatorController extends BaseController {
         // Create instructions
         const instructions = document.createElement('p');
         instructions.className = 'instructions';
-        instructions.innerHTML = '<strong>DRAG to move, PINCH or SCROLL to zoom</strong>';
+        instructions.innerHTML = '<strong>DRAG to move, PINCH to zoom</strong>';
         container.appendChild(instructions);
         
         // Create search container
@@ -2175,6 +2291,9 @@ window.InspectorController = class InspectorController extends BaseController {
         this.currentSelectedItemId = null;
         this.iframeDebounceTimer = null; // Timer for debouncing iframe changes
         this.pendingIframeUrl = null; // Store pending URL during debounce
+        this.lastLoadTime = 0; // Track when we last loaded an iframe
+        this.isFirstLoad = true; // Track if this is the first load
+        this.trailingDebounceTimer = null; // For trailing edge debouncing
     }
     
     /**
@@ -2189,7 +2308,7 @@ window.InspectorController = class InspectorController extends BaseController {
         // Add body class
         document.body.classList.add('inspector-container');
         
-        // Create iframe first (background element)
+        // Create iframe ONLY - no container div blocking it!
         const iframe = document.createElement('iframe');
         iframe.id = 'inspector-iframe';
         iframe.src = 'about:blank';
@@ -2197,29 +2316,12 @@ window.InspectorController = class InspectorController extends BaseController {
         iframe.height = '100%';
         document.body.appendChild(iframe);
         
-        // Create main container
-        const container = document.createElement('div');
-        container.className = 'container';
-        
-        // Create title
-        const title = document.createElement('h1');
-        title.className = 'page-title';
-        title.textContent = 'Inspector';
-        container.appendChild(title);
-        
-        // Create status
-        const status = document.createElement('div');
-        status.id = 'status';
-        status.className = 'status';
-        status.textContent = 'Connecting...';
-        container.appendChild(status);
-        
-        document.body.appendChild(container);
-        
-        // Create JSON output (for debug mode)
+        // Create JSON output (for debug mode) - hidden by default
         const jsonOutput = document.createElement('div');
         jsonOutput.id = 'inspector-json-output';
         document.body.appendChild(jsonOutput);
+        
+        // NO CONTAINER DIV - just iframe and debug output
     }
     
     setupControllerSpecificUI() {
@@ -2260,39 +2362,65 @@ window.InspectorController = class InspectorController extends BaseController {
     selectedItemChanged(selectedItemJSON) {
         this.logEvent('Inspector', 'Received new selected item JSON:', selectedItemJSON);
         
-        // Clear any existing debounce timer
-        if (this.iframeDebounceTimer) {
-            clearTimeout(this.iframeDebounceTimer);
-            this.iframeDebounceTimer = null;
-            this.logEvent('Inspector', 'Cleared existing iframe debounce timer');
+        // Clear any existing trailing debounce timer
+        if (this.trailingDebounceTimer) {
+            clearTimeout(this.trailingDebounceTimer);
+            this.trailingDebounceTimer = null;
+            this.logEvent('Inspector', 'Cleared trailing debounce timer');
         }
         
         // Determine the URL to load
         let targetUrl = 'about:blank';
         if (selectedItemJSON) {
-            // Use 'identifier' field as that's the archive.org ID
-            const archiveId = selectedItemJSON.identifier || selectedItemJSON.id;
-            if (archiveId) {
-                targetUrl = `https://archive.org/details/${archiveId}`;
-                this.logEvent('Inspector', `Preparing to load archive.org page (after debounce): ${targetUrl}`);
+            // Check for custom URL first (spacecraft_custom_url)
+            if (selectedItemJSON.spacecraft_custom_url) {
+                targetUrl = selectedItemJSON.spacecraft_custom_url;
+                this.logEvent('Inspector', `Using custom URL: ${targetUrl}`);
             } else {
-                this.logEvent('Error', 'Selected item has no identifier field', selectedItemJSON);
+                // Fall back to archive.org URL
+                const archiveId = selectedItemJSON.identifier || selectedItemJSON.id;
+                if (archiveId) {
+                    targetUrl = `https://archive.org/details/${archiveId}`;
+                    this.logEvent('Inspector', `Preparing to load archive.org page: ${targetUrl}`);
+                } else {
+                    this.logEvent('Error', 'Selected item has no identifier field', selectedItemJSON);
+                }
             }
         }
         
         // Store the pending URL
         this.pendingIframeUrl = targetUrl;
         
-        // Set up debounce timer
-        this.iframeDebounceTimer = setTimeout(() => {
-            // Load the iframe after debounce time
+        const now = Date.now();
+        const timeSinceLastLoad = now - this.lastLoadTime;
+        
+        // Clever debouncing logic
+        if (this.isFirstLoad || timeSinceLastLoad >= InspectorController.IFRAME_DEBOUNCE_TIME) {
+            // IMMEDIATE load: First load OR enough time has passed since last load
+            this.logEvent('Inspector', `Loading iframe immediately (first load: ${this.isFirstLoad}, time since last: ${timeSinceLastLoad}ms)`);
+            
             if (this.iframeElement && this.pendingIframeUrl !== null) {
                 this.logEvent('Inspector', `Loading iframe with URL: ${this.pendingIframeUrl}`);
                 this.iframeElement.src = this.pendingIframeUrl;
+                this.lastLoadTime = now;
+                this.isFirstLoad = false;
                 this.pendingIframeUrl = null;
             }
-            this.iframeDebounceTimer = null;
-        }, InspectorController.IFRAME_DEBOUNCE_TIME);
+        } else {
+            // RATE LIMITED: Too soon since last load, set up trailing edge debounce
+            this.logEvent('Inspector', `Rate limited (only ${timeSinceLastLoad}ms since last load). Setting up trailing edge debounce.`);
+            
+            // Set up trailing edge debounce - wait for 1 second of no changes
+            this.trailingDebounceTimer = setTimeout(() => {
+                if (this.iframeElement && this.pendingIframeUrl !== null) {
+                    this.logEvent('Inspector', `Loading iframe after trailing debounce: ${this.pendingIframeUrl}`);
+                    this.iframeElement.src = this.pendingIframeUrl;
+                    this.lastLoadTime = Date.now();
+                    this.pendingIframeUrl = null;
+                }
+                this.trailingDebounceTimer = null;
+            }, InspectorController.IFRAME_DEBOUNCE_TIME);
+        }
         
         // Update JSON output immediately (no debounce for debug info)
         if (this.jsonOutputElement) {

@@ -19,5 +19,29 @@
   "coverImage": "https://archive.org/services/img/DumbMartian",
   "coverWidth": 180,
   "coverHeight": 249,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "Dumb Martian",
+  "publicdate": "2012-02-21 23:32:22",
+  "identifier": "DumbMartian",
+  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
+  "addeddate": "2012-02-21 23:27:39",
+  "uploader": "maddycarrollcarse@gmail.com",
+  "updater": [
+    "maddycarrollcarse",
+    "maddycarrollcarse"
+  ],
+  "updatedate": [
+    "2012-02-21 23:36:48",
+    "2012-02-21 23:49:45"
+  ],
+  "language": "English",
+  "identifier-access": "http://www.archive.org/details/DumbMartian",
+  "identifier-ark": "ark:/13960/t9863kj5k",
+  "ppi": "72",
+  "ocr": "ABBYY FineReader 8.0",
+  "repub_state": "4",
+  "curation": "[curator]malware@archive.org[/curator][date]20140321155916[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia903709_8",
+  "coverImageWidth": 180,
+  "coverImageHeight": 249
 }

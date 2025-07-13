@@ -14,5 +14,20 @@
   "coverImage": "https://archive.org/services/img/RusselEricFrankWasp",
   "coverWidth": 180,
   "coverHeight": 268,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "Russel Eric Frank Wasp",
+  "publicdate": "2014-02-15 16:48:49",
+  "identifier": "RusselEricFrankWasp",
+  "scanner": "Internet Archive HTML5 Uploader 1.5.1",
+  "uploader": "annette.appreciation.association@gmail.com",
+  "addeddate": "2014-02-15 16:48:49",
+  "identifier-access": "http://archive.org/details/RusselEricFrankWasp",
+  "identifier-ark": "ark:/13960/t8qc2kr4w",
+  "ppi": "300",
+  "ocr": "ABBYY FineReader 9.0",
+  "repub_state": "4",
+  "curation": "[curator]malware@archive.org[/curator][date]20140311102951[/date][comment]checked for malware[/comment]",
+  "backup_location": "ia905804_12",
+  "coverImageWidth": 180,
+  "coverImageHeight": 268
 }

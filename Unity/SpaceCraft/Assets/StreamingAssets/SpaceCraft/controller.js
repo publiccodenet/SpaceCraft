@@ -1797,7 +1797,7 @@ window.NavigatorController = class NavigatorController extends BaseController {
         // Create instructions
         const instructions = document.createElement('p');
         instructions.className = 'instructions';
-        instructions.innerHTML = '<strong>DRAG to move, PINCH or SCROLL to zoom</strong>';
+        instructions.innerHTML = '<strong>DRAG to move, PINCH to zoom</strong>';
         container.appendChild(instructions);
         
         // Create search container
@@ -2291,6 +2291,9 @@ window.InspectorController = class InspectorController extends BaseController {
         this.currentSelectedItemId = null;
         this.iframeDebounceTimer = null; // Timer for debouncing iframe changes
         this.pendingIframeUrl = null; // Store pending URL during debounce
+        this.lastLoadTime = 0; // Track when we last loaded an iframe
+        this.isFirstLoad = true; // Track if this is the first load
+        this.trailingDebounceTimer = null; // For trailing edge debouncing
     }
     
     /**
@@ -2305,7 +2308,7 @@ window.InspectorController = class InspectorController extends BaseController {
         // Add body class
         document.body.classList.add('inspector-container');
         
-        // Create iframe first (background element)
+        // Create iframe ONLY - no container div blocking it!
         const iframe = document.createElement('iframe');
         iframe.id = 'inspector-iframe';
         iframe.src = 'about:blank';
@@ -2313,29 +2316,12 @@ window.InspectorController = class InspectorController extends BaseController {
         iframe.height = '100%';
         document.body.appendChild(iframe);
         
-        // Create main container
-        const container = document.createElement('div');
-        container.className = 'container';
-        
-        // Create title
-        const title = document.createElement('h1');
-        title.className = 'page-title';
-        title.textContent = 'Inspector';
-        container.appendChild(title);
-        
-        // Create status
-        const status = document.createElement('div');
-        status.id = 'status';
-        status.className = 'status';
-        status.textContent = 'Connecting...';
-        container.appendChild(status);
-        
-        document.body.appendChild(container);
-        
-        // Create JSON output (for debug mode)
+        // Create JSON output (for debug mode) - hidden by default
         const jsonOutput = document.createElement('div');
         jsonOutput.id = 'inspector-json-output';
         document.body.appendChild(jsonOutput);
+        
+        // NO CONTAINER DIV - just iframe and debug output
     }
     
     setupControllerSpecificUI() {
@@ -2376,15 +2362,12 @@ window.InspectorController = class InspectorController extends BaseController {
     selectedItemChanged(selectedItemJSON) {
         this.logEvent('Inspector', 'Received new selected item JSON:', selectedItemJSON);
         
-        // Clear any existing debounce timer
-        if (this.iframeDebounceTimer) {
-            clearTimeout(this.iframeDebounceTimer);
-            this.iframeDebounceTimer = null;
-            this.logEvent('Inspector', 'Cleared existing iframe debounce timer');
+        // Clear any existing trailing debounce timer
+        if (this.trailingDebounceTimer) {
+            clearTimeout(this.trailingDebounceTimer);
+            this.trailingDebounceTimer = null;
+            this.logEvent('Inspector', 'Cleared trailing debounce timer');
         }
-        
-        // Get the container element
-        const container = document.querySelector('.container');
         
         // Determine the URL to load
         let targetUrl = 'about:blank';
@@ -2398,7 +2381,7 @@ window.InspectorController = class InspectorController extends BaseController {
                 const archiveId = selectedItemJSON.identifier || selectedItemJSON.id;
                 if (archiveId) {
                     targetUrl = `https://archive.org/details/${archiveId}`;
-                    this.logEvent('Inspector', `Preparing to load archive.org page (after debounce): ${targetUrl}`);
+                    this.logEvent('Inspector', `Preparing to load archive.org page: ${targetUrl}`);
                 } else {
                     this.logEvent('Error', 'Selected item has no identifier field', selectedItemJSON);
                 }
@@ -2408,28 +2391,35 @@ window.InspectorController = class InspectorController extends BaseController {
         // Store the pending URL
         this.pendingIframeUrl = targetUrl;
         
-        // Set up debounce timer
-        this.iframeDebounceTimer = setTimeout(() => {
-            // Load the iframe after debounce time
+        const now = Date.now();
+        const timeSinceLastLoad = now - this.lastLoadTime;
+        
+        // Clever debouncing logic
+        if (this.isFirstLoad || timeSinceLastLoad >= InspectorController.IFRAME_DEBOUNCE_TIME) {
+            // IMMEDIATE load: First load OR enough time has passed since last load
+            this.logEvent('Inspector', `Loading iframe immediately (first load: ${this.isFirstLoad}, time since last: ${timeSinceLastLoad}ms)`);
+            
             if (this.iframeElement && this.pendingIframeUrl !== null) {
                 this.logEvent('Inspector', `Loading iframe with URL: ${this.pendingIframeUrl}`);
-                const urlToLoad = this.pendingIframeUrl;
-                this.iframeElement.src = urlToLoad;
+                this.iframeElement.src = this.pendingIframeUrl;
+                this.lastLoadTime = now;
+                this.isFirstLoad = false;
                 this.pendingIframeUrl = null;
-                
-                // Hide ALL UI elements when loading content
-                if (container && urlToLoad !== 'about:blank') {
-                    container.style.display = 'none';
-                    this.logEvent('Inspector', 'Hiding UI elements - showing only iframe');
-                }
             }
-            this.iframeDebounceTimer = null;
-        }, InspectorController.IFRAME_DEBOUNCE_TIME);
-        
-        // Show UI elements again when going back to blank
-        if (targetUrl === 'about:blank' && container) {
-            container.style.display = 'block';
-            this.logEvent('Inspector', 'Showing UI elements - no content loaded');
+        } else {
+            // RATE LIMITED: Too soon since last load, set up trailing edge debounce
+            this.logEvent('Inspector', `Rate limited (only ${timeSinceLastLoad}ms since last load). Setting up trailing edge debounce.`);
+            
+            // Set up trailing edge debounce - wait for 1 second of no changes
+            this.trailingDebounceTimer = setTimeout(() => {
+                if (this.iframeElement && this.pendingIframeUrl !== null) {
+                    this.logEvent('Inspector', `Loading iframe after trailing debounce: ${this.pendingIframeUrl}`);
+                    this.iframeElement.src = this.pendingIframeUrl;
+                    this.lastLoadTime = Date.now();
+                    this.pendingIframeUrl = null;
+                }
+                this.trailingDebounceTimer = null;
+            }, InspectorController.IFRAME_DEBOUNCE_TIME);
         }
         
         // Update JSON output immediately (no debounce for debug info)

@@ -486,7 +486,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     // Apply texture to the mesh renderer
     private void ApplyTexture(Texture2D texture)
     {
-        Debug.Log($"Applying texture to {texture}");
+        // Debug.Log($"Applying texture to {texture}");
         
         if (texture == null || meshRenderer == null) return;
         
@@ -761,7 +761,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
                 // Ensure it's positioned correctly (slightly above the book surface)
                 childBoxCollider.center = new Vector3(0, colliderThickness/2, 0);
                 
-                Debug.Log($"[ItemView] Updated BookCoverBox collider: {bookWidth:F2} x {bookHeight:F2} for {Model?.Title ?? "Unknown"}");
+                // Debug.Log($"[ItemView] Updated BookCoverBox collider: {bookWidth:F2} x {bookHeight:F2} for {Model?.Title ?? "Unknown"}");
             }
             else
             {

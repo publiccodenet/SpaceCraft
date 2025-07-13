@@ -37,6 +37,11 @@ html, body {
     pointer-events: none; /* Let clicks pass through except on actual UI elements */
 }
 
+/* For inspector, NO container exists - ensure nothing blocks iframe */
+.inspector-container .container {
+    display: none !important;
+}
+
 .container > * {
     pointer-events: auto; /* But UI elements should receive clicks */
 }
@@ -286,26 +291,39 @@ html, body {
     width: 100%;
     height: 100%;
     border: none;
-    z-index: 0; /* Behind UI elements normally */
+    z-index: 1; /* Always on top - no container to block it */
     background-color: white;
+    pointer-events: auto !important; /* FORCE iframe to accept mouse input */
+    touch-action: auto !important; /* ALLOW touch/mouse actions */
+    -webkit-touch-callout: default !important; /* ALLOW default touch behaviors */
+    -webkit-user-select: auto !important; /* ALLOW text selection */
+    user-select: auto !important; /* ALLOW text selection */
 }
 
-/* When UI is hidden, ensure iframe is on top */
-.inspector-container:has(.container[style*="display: none"]) #inspector-iframe {
-    z-index: 999; /* Bring to top when container is hidden */
-}
-
-/* Inspector container positioning */
+/* Inspector container - minimal styling since no UI elements exist */
 .inspector-container {
-    position: relative;
-    z-index: 10; /* Above iframe */
-    background-color: rgba(0, 0, 0, 0.8);
-    pointer-events: none; /* Allow clicks through to iframe */
+    overflow: hidden;
+    background-color: #1a1a1a;
+    pointer-events: none; /* Body doesn't block */
+    touch-action: none; /* Keep body from interfering */
 }
 
-.inspector-container .page-title,
-.inspector-container .status {
-    pointer-events: auto; /* But allow clicks on these elements */
+/* Ensure inspector body and all elements let iframe work */
+.inspector-container * {
+    pointer-events: none !important;
+    touch-action: none !important;
+}
+
+/* Except the iframe itself - it MUST accept input */
+.inspector-container #inspector-iframe {
+    pointer-events: auto !important;
+    touch-action: auto !important;
+}
+
+/* Override ALL restrictive styles when body has inspector-container class */
+body.inspector-container {
+    pointer-events: none !important;
+    touch-action: none !important;
 }
 
 /* Inspector JSON output */

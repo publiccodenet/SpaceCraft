@@ -896,7 +896,7 @@ class SpaceCraftSim {
             .on('presence', { event: 'sync' }, () => {
                 // Get all current presences in the channel
                 const allPresences = channel.presenceState();
-                console.log("[SpaceCraft] Presence sync event. Current presences:", allPresences);
+                // console.log("[SpaceCraft] Presence sync event. Current presences:", allPresences);
                 
                 // Process connected clients
                 for (const presenceKey in allPresences) {
@@ -920,7 +920,7 @@ class SpaceCraftSim {
                 this.checkForTiltInputs(allPresences);
             })
             .on('presence', { event: 'join' }, ({ newPresences }) => {
-                console.log("[SpaceCraft] New presences joined:", newPresences);
+                // console.log("[SpaceCraft] New presences joined:", newPresences);
                 
                 for (const presence of newPresences) {
                     // Skip our own presence
@@ -948,7 +948,7 @@ class SpaceCraftSim {
                 this.checkForTiltInputs(channel.presenceState());
             })
             .on('presence', { event: 'leave' }, ({ leftPresences }) => {
-                console.log("[SpaceCraft] Presences left:", leftPresences);
+                // console.log("[SpaceCraft] Presences left:", leftPresences);
                 
                 for (const presence of leftPresences) {
                     // Remove from our client registry
@@ -983,7 +983,7 @@ class SpaceCraftSim {
             return;
         }
         
-        console.log(`[SpaceCraft] Sending simulator takeover notification`);
+                        // console.log(`[SpaceCraft] Sending simulator takeover notification`);
         
         this.clientChannel.send({
             type: 'broadcast',
@@ -1143,7 +1143,7 @@ class SpaceCraftSim {
         };
         
         if (isNew) {
-            console.log(`[SpaceCraft] New client registered: ${clientId} (${clientType || 'unknown type'}, ${clientName || 'Unnamed'})`);
+            // console.log(`[SpaceCraft] New client registered: ${clientId} (${clientType || 'unknown type'}, ${clientName || 'Unnamed'})`);
         }
     }
     
