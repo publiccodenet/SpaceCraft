@@ -41,6 +41,14 @@ This document tracks the development progress of SpaceCraft, documenting complet
 - ✅ ParameterMetaData works in WebGL and generates JSON array of property metadata
 - ✅ Each property has: component, name, displayName, type, currentValue, canWrite, category, description, min, max, etc.
 
+## 🐛 Critical Bug to Fix
+
+### Inspector Iframe Mouse Input Blocking
+- **Issue**: Inspector disables all mouse input to the Internet Archive page iframe
+- **Impact**: Users cannot interact with the web page content
+- **Fix**: Remove CSS `pointer-events: none` or similar blocking
+- **See**: INSPECTOR-BUG-FIX.md for detailed solution
+
 ## Remaining Tasks (Priority Order)
 
 ### 1. Search System Enhancement
@@ -77,6 +85,69 @@ This document tracks the development progress of SpaceCraft, documenting complet
 - [ ] Fix remaining layout thrashing for corner items
 - [ ] Fine-tune physics parameters once settings controller works
 - [ ] Optimize initial item placement
+
+## Migration from don-searcher Branch
+
+### Phase 1: Custom Metadata System (High Priority)
+- [ ] Integrate pipeline.js enhancements
+  - [ ] Support for item-custom.json overlay files
+  - [ ] Support for cover-custom.jpg custom covers
+  - [ ] Support for fully custom items (not from IA)
+  - [ ] Deep merge of custom data over IA metadata
+- [ ] Copy existing custom metadata files:
+  - [ ] doandroidsdreamo00dick_0/item-custom.json
+  - [ ] fulgrim_202211/item-custom.json
+  - [ ] gigant-manga/item-custom.json
+- [ ] Copy existing custom cover:
+  - [ ] thedispossessed0000legu/cover.jpg
+- [ ] Create custom metadata for top 20 sci-fi books
+- [ ] Test pipeline with custom content
+- [ ] **See**: CUSTOM-METADATA-GUIDE.md for implementation details
+
+### Phase 2: Tab System Architecture (High Priority)
+- [ ] Migrate from type-based to tab-based controller architecture
+- [ ] Implement base Tab class
+- [ ] Create tab implementations:
+  - [ ] AboutTab - Welcome and help
+  - [ ] NavigateTab - Pan and zoom
+  - [ ] SelectTab - Item selection
+  - [ ] InspectTab - Item details (fix mouse input!)
+  - [ ] AdjustTab - Settings
+- [ ] Update controller.html for tabbed interface
+- [ ] Update controller.css for tab styling
+- [ ] **See**: TAB-ARCHITECTURE.md for migration guide
+
+### Phase 3: Unity Search Panel (Medium Priority)
+- [ ] Integrate SearchPanel.cs component
+- [ ] Add search UI to Unity scene
+- [ ] Wire up to existing search system
+- [ ] Sync search state with controllers
+- [ ] Test prefab changes carefully
+
+### Phase 4: Controller Features (Medium Priority)
+- [ ] Port anonymous name generation improvements
+- [ ] Enhance search query handling (integrates with task #1)
+- [ ] Add keyword prefix support (#keyword)
+- [ ] Implement magic search commands
+- [ ] Join multiple controller search strings
+
+### Phase 5: Build System (Low Priority)
+- [ ] Apply Build.cs debug logging improvements
+- [ ] Add BUILD_NOTES.md to Unity directory
+- [ ] Test symlink removal messages
+
+## Implementation Notes
+
+### DO NOT CHANGE
+- ❌ Physics system (keep don-demo physics as-is - do not apply don-searcher physics changes)
+- ❌ InputManager.cs (preserve ALL don-demo improvements - don-searcher simplified it too much)
+- ❌ WebSites directory (read-only, ignore completely)
+
+### PRESERVE CAREFULLY
+- ✅ All InputManager.cs reorganization and improvements
+- ✅ Current physics behavior and feel
+- ✅ Existing controller connection logic
+- ✅ ParameterMetaData system
 
 ## Architecture Notes
 

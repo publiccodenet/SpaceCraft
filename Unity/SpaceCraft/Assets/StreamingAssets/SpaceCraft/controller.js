@@ -2267,6 +2267,9 @@ window.InspectorController = class InspectorController extends BaseController {
             this.logEvent('Inspector', 'Cleared existing iframe debounce timer');
         }
         
+        // Get the container element
+        const container = document.querySelector('.container');
+        
         // Determine the URL to load
         let targetUrl = 'about:blank';
         if (selectedItemJSON) {
@@ -2288,11 +2291,24 @@ window.InspectorController = class InspectorController extends BaseController {
             // Load the iframe after debounce time
             if (this.iframeElement && this.pendingIframeUrl !== null) {
                 this.logEvent('Inspector', `Loading iframe with URL: ${this.pendingIframeUrl}`);
-                this.iframeElement.src = this.pendingIframeUrl;
+                const urlToLoad = this.pendingIframeUrl;
+                this.iframeElement.src = urlToLoad;
                 this.pendingIframeUrl = null;
+                
+                // Hide ALL UI elements when loading content
+                if (container && urlToLoad !== 'about:blank') {
+                    container.style.display = 'none';
+                    this.logEvent('Inspector', 'Hiding UI elements - showing only iframe');
+                }
             }
             this.iframeDebounceTimer = null;
         }, InspectorController.IFRAME_DEBOUNCE_TIME);
+        
+        // Show UI elements again when going back to blank
+        if (targetUrl === 'about:blank' && container) {
+            container.style.display = 'block';
+            this.logEvent('Inspector', 'Showing UI elements - no content loaded');
+        }
         
         // Update JSON output immediately (no debounce for debug info)
         if (this.jsonOutputElement) {
