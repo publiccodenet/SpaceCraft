@@ -53,8 +53,8 @@
 //    - Moves the camera position based on client input
 // "PushCameraZoom": [clientId, clientName, screenId, zoomDelta]
 //    - Zooms the camera based on client input
-// "ToggleHighlightedItemSelection": [clientId, clientName, screenId]
-//    - Toggles selection state of the currently highlighted item
+// "ApplyTapScaleToHighlightedItem": [clientId, clientName, screenId]
+//    - Applies a scale impulse to the currently highlighted item
 // "MoveHighlight": [clientId, clientName, screenId, direction]
 //    - Moves highlight in specified direction ("north","south","east","west","up","down")
 //
@@ -69,7 +69,7 @@
 // 'broadcast' { event: 'select' }:
 //    - {clientId, clientType, clientName, action, screenId, targetSimulatorId}
 //    - action can be "tap" or directional ("north","south","east","west","up","down")
-//    - "tap" calls ToggleHighlightedItemSelection
+//    - "tap" applies a scale impulse to the highlighted item
 //    - Directions call MoveHighlight
 // 'broadcast' { event: 'simulator_takeover' }:
 //    - {newSimulatorId, newSimulatorName, startTime}
@@ -114,8 +114,7 @@ class SpaceCraftSim {
     static get SUPABASE_URL() { return 'https://gwodhwyvuftyrvbymmvc.supabase.co'; }
     static get SUPABASE_ANON_KEY() { return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc'; }
     static get DEEP_INDEX_PATH() { return 'StreamingAssets/Content/index-deep.json'; }
-    static get NAVIGATOR_HTML_PATH() { return 'StreamingAssets/SpaceCraft/navigator.html'; }
-    static get SELECTOR_HTML_PATH() { return 'StreamingAssets/SpaceCraft/selector.html'; }
+    static get CONTROLLER_HTML_PATH() { return 'StreamingAssets/SpaceCraft/controller.html'; }
     static get CLIENT_CHANNEL_NAME() { return 'clients'; }
     
     /**
@@ -177,19 +176,22 @@ class SpaceCraftSim {
         this.qrCodeDefinitions = [
             {
                 id: "navigator-qr",
-                targetHtml: SpaceCraftSim.NAVIGATOR_HTML_PATH,
+                targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
+                type: "navigator",
                 label: "Navigator",
                 position: "top-left"
             },
             {
                 id: "selector-qr",
-                targetHtml: SpaceCraftSim.SELECTOR_HTML_PATH,
+                targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
+                type: "selector",
                 label: "Selector",
                 position: "top-right"
             },
             {
                 id: "inspector-qr",
-                targetHtml: "StreamingAssets/SpaceCraft/inspector.html",
+                targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
+                type: "inspector",
                 label: "Inspector",
                 position: "bottom-left"
             },
@@ -314,8 +316,19 @@ class SpaceCraftSim {
 
             // Loop through the defined QR codes
             this.qrCodeDefinitions.forEach(definition => {
+                // Clone the search params for each QR code
+                const qrSpecificParams = new URLSearchParams(currentSearchParams);
+                
+                // Add the type parameter if defined
+                if (definition.type) {
+                    qrSpecificParams.set('type', definition.type);
+                }
+                
+                // Build the complete search params string
+                const finalSearchParams = qrSpecificParams.toString() ? '?' + qrSpecificParams.toString() : '';
+                
                 // Construct the target URL for the link, including the query parameters
-                const targetRelativeUrl = definition.targetHtml + currentSearchParams;
+                const targetRelativeUrl = definition.targetHtml + finalSearchParams;
                 // Construct the full absolute URL for the QR code message
                 const fullAbsoluteUrl = new URL(targetRelativeUrl, baseDirectory).toString();
                 
@@ -597,14 +610,21 @@ class SpaceCraftSim {
             interests: {
                 // Listen for when content is processed in Unity
                 "ContentLoaded": {
-                    handler: () => {
+                    query: {
+                        "parameterMetaData": "ParameterMetaData"
+                    },
+                    handler: (obj, results) => {
                         console.log("[SpaceCraft] ContentLoaded event received from Unity");
+                        console.log("[SpaceCraft] parameterMetaData:", results.parameterMetaData);
+                        this.parameterMetaData = results.parameterMetaData;
                     }
                 },
                 
                 // Listen for changes to highlighted items
                 "HighlightedItemsChanged": {
-                    query: { "highlightedItemIds": "HighlightedItemIds" },
+                    query: { 
+                        "highlightedItemIds": "HighlightedItemIds"
+                    },
                     handler: (obj, results) => {
                         console.log("[SpaceCraft JS EVENT HANDLER] HighlightedItemsChanged HANDLER ENTERED"); 
                         console.log("[SpaceCraft JS DEBUG] Raw HighlightedItemsChanged event from Unity. Results:", JSON.parse(JSON.stringify(results)));
@@ -827,16 +847,18 @@ class SpaceCraftSim {
                 const clientName = data.payload.clientName || "";
                 const action = data.payload.action; // 'tap', 'north', 'south', etc.
                 const screenId = data.payload.screenId || "main";
+                const dx = data.payload.dx || 0; // Mouse delta X
+                const dy = data.payload.dy || 0; // Mouse delta Y
                 
                 if (action === 'tap') {
-                    // Handle tap action
+                    // Handle tap action - apply scale impulse to highlighted item
                     bridge.updateObject(this.spaceCraft, {
-                        "method:ToggleHighlightedItemSelection": [clientId, clientName, screenId]
+                        "method:ApplyTapScaleToHighlightedItem": [clientId, clientName, screenId]
                     });
                 } else if (['north', 'south', 'east', 'west', 'up', 'down'].includes(action)) {
-                    // Handle directional actions
+                    // Handle directional actions with dx/dy
                     bridge.updateObject(this.spaceCraft, {
-                        "method:MoveHighlight": [clientId, clientName, screenId, action]
+                        "method:MoveSelection": [clientId, clientName, screenId, action, dx, dy]
                     });
                 }
                 
@@ -1275,14 +1297,14 @@ class SpaceCraftSim {
                 
                 // Send search update to Unity via bridge (simple property update)
                 bridge.updateObject(this.spaceCraft, {
-                    searchString: foundSearchQuery
+                    "inputManager/searchString": foundSearchQuery
                 });
             } else if (foundSearchQuery === '') {
                 // Search was cleared
                 console.log("[SpaceCraft] Search query cleared, notifying Unity");
                 
                 bridge.updateObject(this.spaceCraft, {
-                    searchString: ""
+                    "inputManager/searchString": ""
                 });
             }
         }
