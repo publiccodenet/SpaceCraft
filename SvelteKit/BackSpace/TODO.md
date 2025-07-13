@@ -41,13 +41,16 @@ This document tracks the development progress of SpaceCraft, documenting complet
 - ✅ ParameterMetaData works in WebGL and generates JSON array of property metadata
 - ✅ Each property has: component, name, displayName, type, currentValue, canWrite, category, description, min, max, etc.
 
-## 🐛 Critical Bug to Fix
+## ✅ Fixed Bug
 
-### Inspector Iframe Mouse Input Blocking
-- **Issue**: Inspector disables all mouse input to the Internet Archive page iframe
-- **Impact**: Users cannot interact with the web page content
-- **Fix**: Remove CSS `pointer-events: none` or similar blocking
-- **See**: INSPECTOR-BUG-FIX.md for detailed solution
+### Inspector Iframe Mouse Input Blocking (FIXED)
+- **Issue**: Inspector was disabling all mouse input to the Internet Archive page iframe
+- **Impact**: Users could not interact with the web page content
+- **Fix Applied**: 
+  - Updated controller.css to properly handle iframe z-index
+  - Modified InspectorController to hide UI elements when iframe loads
+  - Now shows ONLY iframe content when item is selected
+- **See**: Changes in controller.js lines 2260-2317 and controller.css lines 214-228
 
 ## Remaining Tasks (Priority Order)
 
