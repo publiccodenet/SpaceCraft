@@ -10,14 +10,22 @@ The custom metadata system enhances SpaceCraft items with additional metadata an
 
 ## Types of Custom Content
 
-### 1. Enhanced IA Items
-Add custom metadata to existing Internet Archive items while preserving the original data through deep merge.
+### 1. Fully Custom Items (Not from Internet Archive)
+Create items that don't exist in the Internet Archive:
+- Use `item.json` directly with `"spacecraft_custom_item": true` flag
+- The importer will NOT replace these items
+- Can still have an `item-custom.json` overlay for additional enhancements
 
-### 2. Custom Cover Images
-Replace low-quality IA thumbnails with high-resolution cover images.
+### 2. Enhanced IA Items
+Add custom metadata to existing Internet Archive items:
+- Use `item-custom.json` to overlay additional data
+- Original IA data is preserved through deep merge
+- Perfect for adding keywords, better descriptions, themes, etc.
 
-### 3. Fully Custom Items
-Create items that don't exist in the Internet Archive with `custom_item: true` flag.
+### 3. Custom Cover Images
+Replace low-quality IA thumbnails with high-resolution cover images:
+- Use `cover-custom.jpg` for any item type
+- Pipeline prioritizes custom covers over IA downloads
 
 ## File Structure
 
@@ -30,53 +38,89 @@ Content/collections/scifi/items/
 │   └── cover-custom.jpg   # Your custom cover (optional)
 ```
 
+## When to Use Which File
+
+### Use `item.json` when:
+- Creating a fully custom item (not from Internet Archive)
+- The item should include `"spacecraft_custom_item": true`
+- You want complete control over all metadata
+- Keep this minimal - just core fields
+
+### Use `item-custom.json` when:
+- Enhancing an existing Internet Archive item
+- Adding keywords, better descriptions, themes to imported items
+- **ALL LLM-generated content should go here**
+- Even works on custom items for additional overlays!
+
+## SpaceCraft Metadata Convention
+
+**Important**: To avoid namespace collisions and make LLM editing easier, we use the `spacecraft_` prefix for all enhanced metadata fields in `item-custom.json`:
+
+- `spacecraft_description` - Enhanced description (UI prefers this over `description`)
+- `spacecraft_tags` - Searchable keywords/tags
+- `spacecraft_themes` - Core themes explored
+- `spacecraft_visual_elements` - Key imagery
+- `spacecraft_cosmic_significance` - Why this matters
+- `spacecraft_custom_url` - Custom URL for inspector (overrides Internet Archive URL)
+- Any other spacecraft_ prefixed fields
+
+This convention ensures:
+1. No collision with Internet Archive metadata
+2. No collision with user's custom metadata
+3. Clear separation of LLM-generated content
+4. Easy for LLMs to create/edit item-custom.json files
+5. UI knows to prefer spacecraft_ fields when available
+
 ## Custom Metadata Format
 
-### item-custom.json (Overlay for IA Items)
+### item-custom.json (LLM-Generated Enhancements)
 
 ```json
 {
-  "title": "Enhanced Title",
-  "author": "Author Name", 
-  "publication_year": 1968,
-  "genre": "Cyberpunk",
-  "description": "A compelling enhanced description that provides more context...",
-  "cosmic_significance": "Why this book matters in the grand scheme",
-  "excitement_level": 9,
-  "reading_experience": "What it's like to read this book",
-  "visual_elements": ["Spaceships", "Alien worlds", "Time portals"],
-  "adventure_rating": 7,
-  "themes": [
+  "spacecraft_description": "A compelling enhanced description that provides more context and excitement about this work...",
+  "spacecraft_cosmic_significance": "Why this book matters in the grand scheme of the universe",
+  "spacecraft_excitement_level": 9,
+  "spacecraft_reading_experience": "What it's like to read this book - the journey you'll take",
+  "spacecraft_visual_elements": ["Spaceships", "Alien worlds", "Time portals"],
+  "spacecraft_adventure_rating": 7,
+  "spacecraft_themes": [
     "Artificial consciousness",
     "Environmental collapse", 
     "Corporate dystopia"
   ],
-  "spaceCraftTags": [
+  "spacecraft_tags": [
     "must-read",
     "cyberpunk",
     "philosophical",
     "award-winner"
-  ]
+  ],
+  "spacecraft_genre": "Cyberpunk",
+  "spacecraft_publication_year": 1968
 }
 ```
 
-### Fully Custom Item
+### Fully Custom Item (item.json)
 
-For items not in Internet Archive, create an item.json with `custom_item: true`:
+For items not in Internet Archive, create an `item.json` with `"spacecraft_custom_item": true`:
 
 ```json
 {
-  "custom_item": true,
-  "id": "custom-book-id",
-  "title": "My Custom Book",
-  "author": "Custom Author",
-  "description": "A book that doesn't exist in IA",
-  "coverImage": "cover-custom.jpg",
+  "spacecraft_custom_item": true,
+  "id": "gigant-manga",
+  "title": "GIGANT",
+  "author": "Oku, Hiroya",
+  "description": "When a porn actress gains the power to grow to enormous size...",
+  "coverImage": "cover.jpg",
   "mediatype": "texts",
-  "subject": ["Science Fiction", "Custom"],
-  "collection": ["scifi"]
+  "subject": ["Science Fiction", "Manga"],
+  "collection": ["scifi"],
+  "genre": "Sci-Fi Manga",
+  "visual_elements": ["Giant woman", "City destruction"],
+  "spacecraft_tags": ["manga", "kaiju", "surreal"]
 }
 ```
+
+**Important**: The `"spacecraft_custom_item": true` flag prevents the importer from replacing this file. You can still add an `item-custom.json` to overlay additional metadata (like LLM-generated keywords) on top of this base definition.
 
 ## Implementation Plan
 
@@ -101,7 +145,7 @@ if (fs.existsSync(customCoverPath)) {
 ```
 
 ### Phase 2: Search System Integration
-- Export aggregated spaceCraftTags to index-deep.json
+- Export aggregated spacecraft_tags to index-deep.json
 - Share tags via Supabase state from spacecraft.js
 - Enable `#tag` prefix searching in controllers
 - Implement tag selection UI in controllers
@@ -134,74 +178,116 @@ Examples from don-searcher branch to migrate:
 - Add compelling context and significance
 - Mention key themes and visual elements
 - Target 2-3 engaging sentences
-- LLM generated high quality spaceCraftDescription
+- LLM generated high quality spacecraft_description
 
-### 2. Metadata Fields
-- **cosmic_significance**: Why this matters in the universe
-- **excitement_level**: 1-10 rating for adventure/action
-- **visual_elements**: Key imagery and scenes
-- **themes**: Core philosophical concepts explored
-- **spaceCraftTags**: Searchable keywords
-- **spaceCraftDescription**: High quality uniform length description
+### 2. Metadata Fields (All in item-custom.json with spacecraft_ prefix)
+- **spacecraft_cosmic_significance**: Why this matters in the universe
+- **spacecraft_excitement_level**: 1-10 rating for adventure/action
+- **spacecraft_visual_elements**: Key imagery and scenes
+- **spacecraft_themes**: Core philosophical concepts explored
+- **spacecraft_tags**: Searchable keywords
+- **spacecraft_description**: High quality uniform length description
+- **spacecraft_genre**: Genre classification
+- **spacecraft_mood**: Emotional tone of the work
+- **spacecraft_pacing**: Story pacing (slow-burn, breakneck, etc.)
+- **spacecraft_custom_url**: Custom URL for inspector (e.g., author's website, Wikipedia, custom reader)
 
-### 3. Tags (spaceCraftTags)
+### 3. Tags (spacecraft_tags)
 - Use lowercase with hyphens (e.g., "hard-sci-fi")
 - Be consistent across the collection
 - Include: genre, themes, awards, mood
 - Limit to 5-10 most relevant tags
 
-## Example Enhancements
+## Using spacecraft_custom_url
 
-### Do Androids Dream of Electric Sheep?
+The `spacecraft_custom_url` field allows you to override the default Internet Archive URL in the inspector:
+
 ```json
 {
-  "title": "Do Androids Dream of Electric Sheep?",
-  "author": "Dick, Philip K.",
-  "publication_year": 1968,
-  "description": "In post-apocalyptic San Francisco, bounty hunter Rick Deckard hunts rogue androids while questioning what it means to be human in a world where empathy is manufactured and electric sheep graze on rooftops.",
-  "cosmic_significance": "The philosophical foundation that spawned Blade Runner and defined our anxieties about artificial consciousness",
-  "excitement_level": 7,
-  "themes": [
+  "spacecraft_custom_url": "https://www.ursulakleguinarchive.com/dispossessed",
+  // ... other spacecraft_ fields
+}
+```
+
+Common use cases:
+- Author's official website
+- Wikipedia article for context
+- Custom web-based reader or viewer
+- Educational resources
+- Video essays or documentaries about the work
+- Interactive experiences related to the content
+
+## Example Enhancements
+
+### Do Androids Dream of Electric Sheep? (item-custom.json)
+```json
+{
+  "spacecraft_description": "In post-apocalyptic San Francisco, bounty hunter Rick Deckard hunts rogue androids while questioning what it means to be human in a world where empathy is manufactured and electric sheep graze on rooftops.",
+  "spacecraft_cosmic_significance": "The philosophical foundation that spawned Blade Runner and defined our anxieties about artificial consciousness",
+  "spacecraft_excitement_level": 7,
+  "spacecraft_themes": [
     "What defines humanity",
     "Artificial empathy",
     "Environmental collapse",
     "Religious simulacra"
   ],
-  "spaceCraftDescription": "Like wow, man, what more is there to say about this book that hasn't been said?",
-  "spaceCraftTags": [
+  "spacecraft_tags": [
     "cyberpunk-origin",
     "philosophical",
     "blade-runner",
     "must-read",
     "empathy-box"
-  ]
+  ],
+  "spacecraft_genre": "Proto-Cyberpunk",
+  "spacecraft_mood": "Existential dread mixed with noir detective",
+  "spacecraft_pacing": "Methodical with bursts of action",
+  "spacecraft_custom_url": "https://en.wikipedia.org/wiki/Do_Androids_Dream_of_Electric_Sheep%3F"
 }
 ```
 
-### Custom Manga Example (Fully Custom)
+### Hybrid Example: Custom Item with Overlay
+
+Base `item.json` (core metadata):
 ```json
 {
-  "custom_item": true,
-  "id": "gigant-manga",
-  "title": "GIGANT",
-  "author": "Oku, Hiroya",
-  "description": "When a porn actress gains the power to grow to enormous size, Tokyo becomes the stage for bizarre kaiju-scale drama mixing size fetishism with existential dread.",
-  "genre": "Sci-Fi Manga",
-  "visual_elements": ["Giant woman", "City destruction", "Size contrast", "Surreal imagery"],
-  "excitement_level": 8,
-  "themes": [
-    "Power and vulnerability",
-    "Public vs private identity",
-    "Scale and perspective"
+  "spacecraft_custom_item": true,
+  "id": "neuromancer-interactive",
+  "title": "Neuromancer: Interactive Edition",
+  "author": "Gibson, William",
+  "description": "A custom interactive version of the cyberpunk classic",
+  "mediatype": "texts",
+  "collection": ["scifi"],
+  "coverImage": "cover.jpg"
+}
+```
+
+Additional `item-custom.json` (LLM-generated enhancements):
+```json
+{
+  "spacecraft_cosmic_significance": "The digital Rosetta Stone that taught us to dream in binary",
+  "spacecraft_excitement_level": 9,
+  "spacecraft_visual_elements": [
+    "Matrix-like digital rain",
+    "Neon-lit Chiba City",
+    "Corporate arcologies",
+    "Cyberspace geometries"
   ],
-  "spaceCraftDescription": "Like wow, man, what more is there to say about this manga that hasn't been said?",
-  "spaceCraftTags": [
-    "manga",
-    "kaiju",
-    "surreal",
-    "size-changing",
-    "oku-hiroya"
-  ]
+  "spacecraft_themes": [
+    "AI consciousness emergence",
+    "Body-mind dualism",
+    "Corporate dystopia",
+    "Digital transcendence"
+  ],
+  "spacecraft_tags": [
+    "cyberpunk-essential",
+    "matrix-inspiration",
+    "interactive-fiction",
+    "ai-awakening",
+    "console-cowboy"
+  ],
+  "spacecraft_description": "Case was the sharpest data-thief in the matrix, until he crossed the wrong people. Now, rebuilt with street surgery and a death wish, he's about to jack into the most dangerous run of his life.",
+  "spacecraft_genre": "Cyberpunk",
+  "spacecraft_mood": "Neon-noir adrenaline"
 }
 ```
 

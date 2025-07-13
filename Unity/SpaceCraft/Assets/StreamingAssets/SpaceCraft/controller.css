@@ -159,8 +159,14 @@ html, body {
     pointer-events: auto !important;
 }
 
+.search-wrapper {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
 .search-input {
-    width: 100%;
+    flex: 1;
     padding: 15px 20px;
     font-size: 18px;
     font-family: 'Mulish', 'Roboto', sans-serif;
@@ -185,6 +191,67 @@ html, body {
 .search-input::placeholder {
     color: rgba(255, 255, 255, 0.6);
     font-style: italic;
+}
+
+/* Keyword menu button */
+.keyword-menu-button {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 25px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Keyword menu */
+.keyword-menu {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.keyword-menu-header {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.keyword-menu-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.keyword-menu-item {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.keyword-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.keyword-menu-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
 }
 
 /* -----------------------------

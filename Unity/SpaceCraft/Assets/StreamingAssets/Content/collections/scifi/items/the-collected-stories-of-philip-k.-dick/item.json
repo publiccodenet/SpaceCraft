@@ -25,5 +25,20 @@
   "coverImage": "https://archive.org/services/img/the-collected-stories-of-philip-k.-dick",
   "coverWidth": 180,
   "coverHeight": 273,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "The Collected Stories Of Philip K. Dick",
+  "publicdate": "2020-08-11 15:30:14",
+  "identifier": "the-collected-stories-of-philip-k.-dick",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
+  "uploader": "agent.oll.er@gmail.com",
+  "addeddate": "2020-08-11 15:30:14",
+  "curation": "[curator]validator@archive.org[/curator][date]20200811153237[/date][comment]checked for malware[/comment]",
+  "language": "English",
+  "identifier-access": "http://archive.org/details/the-collected-stories-of-philip-k.-dick",
+  "identifier-ark": "ark:/13960/t03009g4n",
+  "ppi": "600",
+  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
+  "page_number_confidence": "76.77",
+  "coverImageWidth": 180,
+  "coverImageHeight": 273
 }

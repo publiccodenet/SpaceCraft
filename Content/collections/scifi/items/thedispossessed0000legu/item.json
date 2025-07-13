@@ -1,0 +1,21 @@
+{
+  "spacecraft_custom_item": true,
+  "id": "thedispossessed0000legu",
+  "identifier": "thedispossessed0000legu",
+  "title": "The Dispossessed",
+  "creator": "Ursula K. Le Guin", 
+  "date": "1974",
+  "description": "A brilliant physicist from the anarchist moon colony of Anarres risks everything to travel to the mother planet Urras, challenging the structures of both societies in this profound exploration of political systems, individual freedom, and the walls we build between worlds.",
+  "subject": [
+    "Science Fiction",
+    "Anarchism",
+    "Utopian Fiction",
+    "Political Philosophy",
+    "Social Commentary"
+  ],
+  "mediatype": "texts",
+  "collection": "scifi",
+  "coverImage": "cover.jpg",
+  "coverImageWidth": 180,
+  "coverImageHeight": 288
+} 

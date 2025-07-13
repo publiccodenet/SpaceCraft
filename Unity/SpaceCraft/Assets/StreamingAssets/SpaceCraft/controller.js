@@ -1581,6 +1581,10 @@ window.BaseController = class BaseController {
         const searchContainer = document.createElement('div');
         searchContainer.className = 'search-container';
         
+        // Create search input wrapper
+        const searchWrapper = document.createElement('div');
+        searchWrapper.className = 'search-wrapper';
+        
         // Create search input
         const searchInput = document.createElement('input');
         searchInput.type = 'text';
@@ -1592,9 +1596,45 @@ window.BaseController = class BaseController {
         searchInput.autocapitalize = 'off';
         searchInput.spellcheck = 'false';
         searchInput.value = this.currentSearchQuery || '';
-        searchContainer.appendChild(searchInput);
+        searchWrapper.appendChild(searchInput);
+        
+        // Create keyword menu button
+        const keywordButton = document.createElement('button');
+        keywordButton.id = 'keyword-menu-button';
+        keywordButton.className = 'keyword-menu-button';
+        keywordButton.innerHTML = '#';
+        keywordButton.title = 'Browse keywords';
+        searchWrapper.appendChild(keywordButton);
+        
+        searchContainer.appendChild(searchWrapper);
+        
+        // Create keyword menu (initially hidden)
+        const keywordMenu = this.createKeywordMenu();
+        searchContainer.appendChild(keywordMenu);
         
         return searchContainer;
+    }
+    
+    /**
+     * Create keyword menu for tag selection
+     */
+    createKeywordMenu() {
+        const menu = document.createElement('div');
+        menu.id = 'keyword-menu';
+        menu.className = 'keyword-menu';
+        menu.style.display = 'none';
+        
+        const menuHeader = document.createElement('div');
+        menuHeader.className = 'keyword-menu-header';
+        menuHeader.textContent = 'Select Keywords:';
+        menu.appendChild(menuHeader);
+        
+        const menuList = document.createElement('div');
+        menuList.id = 'keyword-menu-list';
+        menuList.className = 'keyword-menu-list';
+        menu.appendChild(menuList);
+        
+        return menu;
     }
     
     /**
@@ -1640,6 +1680,82 @@ window.BaseController = class BaseController {
         } else {
             this.logEvent('Error', 'Search input field not found!');
         }
+        
+        // Set up keyword menu button
+        const keywordButton = document.getElementById('keyword-menu-button');
+        const keywordMenu = document.getElementById('keyword-menu');
+        
+        if (keywordButton && keywordMenu) {
+            keywordButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                // Toggle menu visibility
+                if (keywordMenu.style.display === 'none' || !keywordMenu.style.display) {
+                    keywordMenu.style.display = 'block';
+                    this.updateKeywordMenu(); // Populate with latest keywords
+                } else {
+                    keywordMenu.style.display = 'none';
+                }
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!keywordButton.contains(e.target) && !keywordMenu.contains(e.target)) {
+                    keywordMenu.style.display = 'none';
+                }
+            });
+        }
+    }
+    
+    /**
+     * Update keyword menu with available keywords from simulator
+     */
+    updateKeywordMenu() {
+        const menuList = document.getElementById('keyword-menu-list');
+        if (!menuList) return;
+        
+        // Clear existing items
+        menuList.innerHTML = '';
+        
+        // Get keywords from simulator state
+        const keywords = this.simulatorState?.keywords || [];
+        
+        if (keywords.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'keyword-menu-empty';
+            emptyMessage.textContent = 'No keywords available';
+            menuList.appendChild(emptyMessage);
+            return;
+        }
+        
+        // Create keyword items
+        keywords.forEach(keyword => {
+            const item = document.createElement('div');
+            item.className = 'keyword-menu-item';
+            item.textContent = `#${keyword}`;
+            
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Add keyword to search
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) {
+                    const currentValue = searchInput.value.trim();
+                    const newValue = currentValue ? `${currentValue} #${keyword}` : `#${keyword}`;
+                    searchInput.value = newValue;
+                    this.updateSearchQuery(newValue);
+                }
+                
+                // Hide menu
+                const keywordMenu = document.getElementById('keyword-menu');
+                if (keywordMenu) {
+                    keywordMenu.style.display = 'none';
+                }
+            });
+            
+            menuList.appendChild(item);
+        });
     }
 };
 
@@ -2273,13 +2389,19 @@ window.InspectorController = class InspectorController extends BaseController {
         // Determine the URL to load
         let targetUrl = 'about:blank';
         if (selectedItemJSON) {
-            // Use 'identifier' field as that's the archive.org ID
-            const archiveId = selectedItemJSON.identifier || selectedItemJSON.id;
-            if (archiveId) {
-                targetUrl = `https://archive.org/details/${archiveId}`;
-                this.logEvent('Inspector', `Preparing to load archive.org page (after debounce): ${targetUrl}`);
+            // Check for custom URL first (spacecraft_custom_url)
+            if (selectedItemJSON.spacecraft_custom_url) {
+                targetUrl = selectedItemJSON.spacecraft_custom_url;
+                this.logEvent('Inspector', `Using custom URL: ${targetUrl}`);
             } else {
-                this.logEvent('Error', 'Selected item has no identifier field', selectedItemJSON);
+                // Fall back to archive.org URL
+                const archiveId = selectedItemJSON.identifier || selectedItemJSON.id;
+                if (archiveId) {
+                    targetUrl = `https://archive.org/details/${archiveId}`;
+                    this.logEvent('Inspector', `Preparing to load archive.org page (after debounce): ${targetUrl}`);
+                } else {
+                    this.logEvent('Error', 'Selected item has no identifier field', selectedItemJSON);
+                }
             }
         }
         

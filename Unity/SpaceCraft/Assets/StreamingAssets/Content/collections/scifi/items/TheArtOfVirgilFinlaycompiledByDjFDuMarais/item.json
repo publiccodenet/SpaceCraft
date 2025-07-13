@@ -22,5 +22,21 @@
   "coverImage": "https://archive.org/services/img/TheArtOfVirgilFinlaycompiledByDjFDuMarais",
   "coverWidth": 180,
   "coverHeight": 255,
-  "favoriteCount": 0
+  "favoriteCount": 0,
+  "name": "The Art Of Virgil Finlay (compiled by DjF du Marais)",
+  "publicdate": "2019-03-24 18:27:29",
+  "identifier": "TheArtOfVirgilFinlaycompiledByDjFDuMarais",
+  "language": "eng",
+  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
+  "uploader": "cootiebug1952@gmail.com",
+  "addeddate": "2019-03-24 18:27:29",
+  "curation": "[curator]validator@archive.org[/curator][date]20190324182807[/date][comment]checked for malware[/comment]",
+  "identifier-access": "http://archive.org/details/TheArtOfVirgilFinlaycompiledByDjFDuMarais",
+  "identifier-ark": "ark:/13960/t86j2424m",
+  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
+  "date": "2010",
+  "year": "2010",
+  "backup_location": "ia906809_33",
+  "coverImageWidth": 180,
+  "coverImageHeight": 255
 }

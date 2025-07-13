@@ -54,11 +54,18 @@ This document tracks the development progress of SpaceCraft, documenting complet
 
 ## Remaining Tasks (Priority Order)
 
-### 1. Metadata Integration
-- [ ] Integrate custom metadata pipeline improvements
-- [ ] Include clean keyword list in index-deep.json
-- [ ] Make spacecraft simulator.js read keywords and share via Supabase
-- [ ] Implement keyword menu presentation in controllers
+### 1. Metadata Integration ✅
+- [x] Integrate custom metadata pipeline improvements
+  - Added support for item-custom.json overlays
+  - Added support for cover-custom.jpg
+  - Added custom_item flag support
+- [x] Include clean keyword list in index-deep.json
+  - Pipeline now collects spaceCraftTags into keywords array
+- [x] Make spacecraft simulator.js read keywords and share via Supabase
+  - Keywords extracted and shared in state
+- [x] Implement keyword menu presentation in controllers
+  - Added # button with dropdown menu
+  - Click to add keywords to search
 
 ### 2. Search System Enhancement
 - [ ] Join multiple controller search strings together with spaces
