@@ -1,0 +1,246 @@
+# Science Fiction Collection Items TODO List
+# Mark items with 'x' when completed
+#
+# TASK: Create Custom Metadata Overlays for Science Fiction Collection Items
+#
+# PURPOSE:
+# Generate LLM-enhanced metadata for items in the SpaceCraft/Content/collections/scifi/items directory.
+# These overlays augment existing Internet Archive items with high-quality descriptions and tags.
+#
+# INSTRUCTIONS:
+#
+# 1. For each item in the list below:
+#    - Create an item-custom.json file in the item's directory
+#    - The file should contain ONLY these two fields:
+#      * spacecraft_description: A 1-3 paragraph description (see guidelines below)
+#      * spacecraft_tags: An array of keyword tags
+#
+# 2. Description Guidelines:
+#    - Write 1-3 paragraphs of factual, informative content
+#    - Research the book/media via web search if unfamiliar (NO hallucination)
+#    - Include: plot summary, themes, historical context, significance
+#    - Maintain consistent tone and quality across all descriptions
+#    - Focus on what makes the work notable in science fiction
+#
+# 3. Tag Guidelines:
+#    - Use lowercase, space-separated tags (e.g., "time travel" not "TimeTravvel" or "time-travel")
+#    - Keep tags general and reusable - avoid book-specific terms
+#    - Prefer single concepts over compound tags (e.g., "young adult" not "young adult science fiction")
+#    - Include genre classifications (e.g., "hard science fiction", "space opera", "cyberpunk")
+#    - Add thematic tags (e.g., "time travel", "artificial intelligence", "robots")
+#    - Include period/era tags (e.g., "golden age", "new wave", "victorian era", "cold war era")
+#    - Add format tags where relevant (e.g., "manga", "anthology", "poetry", "short stories")
+#    - Include setting tags (e.g., "mars", "dystopian", "post-apocalyptic", "space station")
+#    - Add tone/style tags (e.g., "military science fiction", "psychological thriller", "satire")
+#    - For location/culture, use adjectives (e.g., "japanese", "swedish", "russian")
+#
+# 4. Workflow:
+#    - Work in batches for efficiency
+#    - Research multiple items at once before writing
+#    - Mark items with [x] when item-custom.json is created
+#    - Append new unique tags to taxonomy.yml (DO NOT edit existing tags)
+#
+# 5. IMPORTANT NOTES:
+#    - DO NOT modify item.json files - they contain Internet Archive metadata
+#    - DO NOT include any fields other than spacecraft_description and spacecraft_tags
+#    - DO NOT add spacecraft_custom_item or any other fields
+#    - item-custom.json files are overlays that enhance ANY item type
+#    - Work with source files in Content/collections/scifi/items/
+#    - Ignore StreamingAssets directory (contains machine-generated files)
+#
+# 6. EFFICIENCY RULES:
+#    - ALWAYS read the entire ITEMS-TODO.yml file instead of using shell commands
+#    - NEVER use terminal commands when you can read files directly
+#    - ALWAYS check for existing item-custom.json files first and merge/improve rather than replace
+#    - READ these instructions every time by reading the entire TODO file - do not forget them
+#    - Shell commands require user confirmation and cause delays - avoid them
+#    - Count progress by reading this file and counting [x] entries directly
+#
+# Example item-custom.json structure:
+# {
+#   "spacecraft_description": "Multi-paragraph description here...",
+#   "spacecraft_tags": ["tag1", "tag2", "tag3"]
+# }
+
+items:
+  - [x] 5thwave0000yanc
+  - [x] acrosszodiacstor01greg
+  - [x] aliens-colonial-marines-technical-manual
+  - [x] AliensOmnibusVolume1
+  - [x] AliensOmnibusVolume2
+  - [x] AllWeMarsmen
+  - [x] amonghidden00hadd
+  - [x] angelofrevolutio00grifiala
+  - [x] aniara
+  - [x] annihilation0000vand
+  - [x] aposimz
+  - [x] ArtifactCollectiveNickStokes
+  - [x] atearthscore00burr
+  - [x] avatar-the-last-airbender-the-f.-c.-yee
+  - [x] avatar-the-last-airbender-the-legacy-of-yangchen-f-c-yee-chronicles-of-the-avata
+  - [ ] avatarmanualdesu0000wilh
+  - [ ] axa-01-000
+  - [x] babylonblue00davi
+  - [x] Barsoom
+  - [x] behemoth_rifters
+  - [x] bestofisaacasimo00asim
+  - [x] bfg00roal
+  - [x] bloodchildothers0000butl
+  - [x] bookofnewsun00gene
+  - [x] BraveNewWorld-and-BraveNewWorldRevisited
+  - [x] BuckRogersBigLittleBooksComicStripsAndShortStories
+  - [x] CapekRUR
+  - [x] chapterhousedune00herb
+  - [x] cityofbones00clar
+  - [x] collectedstories00clar
+  - [x] completerobot00asim
+  - [x] contact00saga_1
+  - [x] crownofswordswhe00robe
+  - [x] cyberiadfablesfo0000lems_n6t8
+  - [x] dani-futuro-t-07-le-magicien-de-lespace-gimenez-mora
+  - [x] dark-alliance-the-cia-the-con-gary-webb
+  - [x] darkestminds0000brac
+  - [x] darkforest0000liuc
+  - [x] darklover00jrwa
+  - [x] darkmatternovel0000crou_n9e8
+  - [x] dawn0000butl
+  - [x] deathsend0000liuc_t3q1
+  - [x] discoveryofwitch0000hark_e3i9
+  - [x] divergent_202004
+  - [x] doandroidsdreamo00dick_0
+  - [x] dragonridersofpe00mcca_1
+  - [x] drslumpvol10001tori
+  - [ ] DumbMartian
+  - [x] dune0000herb_a7n1
+  - [ ] duneherb00herb
+  - [x] dunemessiahdunec00fran
+  - [x] earlyasimovorele00asim
+  - [ ] eisenhorn0000abne
+  - [ ] emptyworld00chri
+  - [x] endersgameenderw00orso
+  - [x] excession00bank
+  - [x] ExtraterrestrialCivilizationsIsaacAsimov
+  - [x] fahrenheit4510000brad
+  - [x] feastforcrows0000mart_l6b2
+  - [ ] fitzpatricksward00theo
+  - [x] flowersforalgern2004keye
+  - [x] ForwardTheFoundationIsaacAsimov11
+  - [x] foundationtrilog00isaa
+  - [x] fourdivergentcol0000roth_v2b1
+  - [x] FrankensteinOrTheModernPromeusMaryWollstonecraftShelley
+  - [ ] fulgrim_202211
+  - [x] gideon-the-ninth_202301
+  - [x] gigant-manga
+  - [ ] girlwhoownedcity00nels
+  - [x] giver00lowr
+  - [x] giverlow00lowr
+  - [ ] godzillaofficial0000coxg
+  - [ ] greatbookofamber00zela
+  - [ ] GulliverJonesWarriorOfMars
+  - [x] H.G.WellsCompleteWorks
+  - [ ] Hear_the_Cradle_Song
+  - [ ] hereticsofdune0000herb
+  - [x] hitchhikerssguid00doug
+  - [ ] homelanddarkelft00rasa
+  - [ ] horusrisingtheho00dana
+  - [ ] HowGreatScienceFictionWorks
+  - [ ] huntersofdune00bria
+  - [ ] i-have-no-mouth-and-i-must-scream_202202
+  - [ ] igniteme0000mafi_p3f3
+  - [ ] infinitygauntlet0000star
+  - [ ] InfocomCabinetHitchhikersGuide
+  - [ ] Innenweltlang
+  - [ ] intovoid0000lebb
+  - [ ] invincible-compendiums
+  - [ ] invitationtogame00moni
+  - [x] irobot0000asim
+  - [ ] jodorowsky-dune
+  - [ ] JohnCarterOfMars375
+  - [ ] johndiesatend00wong
+  - [ ] LarryNivenAndJerryPournelleTheMoteInGodsEye
+  - [ ] lifeasweknewit0000pfef_z1l7
+  - [ ] lightningthiefmo00rick_0
+  - [x] LittleBrother
+  - [ ] lordsladies00terr
+  - [ ] lucianstruehisto45858gut
+  - [ ] MachineofDeath
+  - [x] maninhighcastle0000dick
+  - [ ] maskomnibusvolum0000unse
+  - [ ] maximum-ride-the-manga
+  - [x] maximumride20000leen
+  - [ ] michaelveyprison0000evan
+  - [ ] MinisteringAngels
+  - [ ] mirrorshades00bruc
+  - [ ] morningstar0000brow_i0y8
+  - [x] moteingodseye00larr
+  - [ ] mydearboy00rict
+  - [ ] nausicaaofvalley00haya_3
+  - [x] neverfade0000brac_g1l9
+  - [x] nightfall00isaa
+  - [ ] nimona0000stev_y9k0
+  - [ ] ninebillionnames00clar
+  - [ ] odyssey00gare
+  - [ ] officialhandbook0000unse_i8k4
+  - [ ] ombrax241
+  - [ ] onthetrailofthes21092gut
+  - [ ] overclocked
+  - [ ] parableofsower0000butl_p5f6
+  - [ ] pellucidar00burr
+  - [ ] perry-rhodan
+  - [ ] peterpanmyfirstc00jmba_0
+  - [ ] redqueen0000avey
+  - [ ] RedPlanetsMarxismAndScienceFiction
+  - [x] rendezvouswithra0000unse
+  - [ ] renegades0000meye_a0o7
+  - [x] roadsidepicnic00stru
+  - [ ] RobotGhostsAndWiredDreamsJapaneseScienceFictionFromOriginsToAnime
+  - [ ] robotdreams00varo
+  - [ ] RootOfUnity-SLHuang
+  - [ ] RusselEricFrankWasp
+  - [ ] RussellEricFrankDarkTidesPanther1963_201904
+  - [ ] sandsoftimebookiiitheisomerprotocol_202004
+  - [ ] sandsoftimebookiiseandavidmorton
+  - [ ] sandsoftimeseandavidmorton
+  - [ ] scythe0000shus_d0t3
+  - [ ] shatterme0000mafi
+  - [ ] shehercat0000shin
+  - [ ] smokygodorvoyage00emer
+  - [ ] SnowCrashNealStephenson
+  - [x] snowcrash00step
+  - [ ] starwarsdarthban00drew
+  - [x] starwarstrilogye00geor_0
+  - [ ] storiesofyourlif0000chia_u1w4
+  - [ ] sundome-milky-way-v-02-2021-digital-danke-empire
+  - [ ] the-collected-stories-of-philip-k.-dick
+  - [ ] the-complete-asimov-by-isaac-asimov
+  - [ ] the-goblin-02
+  - [ ] the-moon-maid
+  - [ ] the-stars-my-destination
+  - [ ] TheArtOfEarlKulpBergeycompiledByDjFDuMarais
+  - [ ] TheArtOfVirgilFinlaycompiledByDjFDuMarais
+  - [ ] TheArtworkOfAllenAndersoncompiledByDjFDuMarais
+  - [x] thedispossessed0000legu
+  - [ ] TheFaceInTheAbyssFirstEdition1931
+  - [ ] TheKlingonLanguageVersionOfTheWorldEnglishBiblePsalms
+  - [x] TheMartian_201808
+  - [ ] TheMartianWay
+  - [ ] TheMupEncyclopaediaOfAustralianScienceFictionFantasy
+  - [ ] TheMysteryOfTheRhymingRiddle
+  - [ ] TheNextStep_201812
+  - [ ] theone-magazine-23
+  - [ ] TheSexLifeOfTheGods
+  - [ ] thethingintheatt32447gut
+  - [ ] twilight00step
+  - [ ] ultraman-manga
+  - [ ] UnderTheThelianSky
+  - [ ] unravelme0000mafi
+  - [ ] unwind00shus
+  - [ ] uprooted0000novi
+  - [x] WarOfTheWorldsTheH.G.Wells
+  - [x] WeByYevgenyZamyatinv1972
+  - [ ] welcometomonkeyh00vonn
+  - [ ] whisperofdeath00chri
+  - [x] wool0000howe
+  - [ ] woolomnibus0000howe
+  - [x] wrinkleintime0000leng
+  - [ ] x-men-origines
