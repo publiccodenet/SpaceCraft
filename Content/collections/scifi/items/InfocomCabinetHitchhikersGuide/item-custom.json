@@ -1,4 +1,22 @@
 {
   "spacecraft_description": "This collection preserves the development documents and design materials for Infocom's legendary 1984 interactive fiction adaptation of Douglas Adams' The Hitchhiker's Guide to the Galaxy. Created through the collaboration of Adams himself with Infocom designer Steve Meretzky, the game became one of the most celebrated text adventures ever produced, notorious for its humor, creativity, and wickedly difficult puzzles. The documentation includes design notes, internal memos, testing materials, and other behind-the-scenes materials that reveal the creative process behind translating Adams' absurdist science fiction into an interactive medium.\n\nThe game itself follows Arthur Dent through the early events of the Hitchhiker's story, from the destruction of his house and Earth to his adventures aboard the Vogon constructor fleet and beyond. The Infocom version became famous for its faithful adaptation of Adams' distinctive humor while adding new puzzles and scenarios that extended the source material. The documentation provides invaluable insight into early interactive fiction development, the challenges of adapting existing literary works for games, and the collaborative process between an established author and game designers. This collection represents an important piece of both science fiction and gaming history, documenting the intersection of literature and early computer entertainment during the golden age of text adventures.",
-  "spacecraft_tags": ["hitchhikers guide", "douglas adams", "steve meretzky", "infocom", "interactive fiction", "text adventure", "game design", "development documents", "arthur dent", "vogons", "gaming history", "adaptation", "1984 game", "computer entertainment", "design process", "collaboration"]
+  "spacecraft_tags": [
+    "douglas adams",
+    "steve meretzky",
+    "1980s science fiction",
+    "american science fiction",
+    "british",
+    "hitchhikers guide",
+    "infocom",
+    "interactive fiction",
+    "text adventure",
+    "game design",
+    "development documents",
+    "gaming history",
+    "adaptation",
+    "computer entertainment",
+    "design process",
+    "collaboration",
+    "1984 game"
+  ]
 } 

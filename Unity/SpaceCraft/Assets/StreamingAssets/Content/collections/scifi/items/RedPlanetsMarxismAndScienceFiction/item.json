@@ -1,12 +1,34 @@
 {
   "id": "RedPlanetsMarxismAndScienceFiction",
   "title": "Red Planets: Marxism And Science Fiction",
-  "description": "<span style=\"color:rgb(24,24,24);font-family:Georgia, serif;font-size:14px;line-height:19.3199996948242px;background-color:rgb(255,255,255);\">Science fiction and socialism have always had a close relationship. Many science fiction novelists and filmmakers have used the genre to examine explicit or implicit Marxist concerns. Red Planets is an accessible and lively account, which makes an ideal introduction to anyone interested in the politics of science fiction. The volume covers a rich variety of examples from Weimar cinema to mainstream Hollywood films, and novelists from Jules Verne, H. G. Wells, Philip K. Dick, and Thomas Disch to Ursula K. Le Guin, Kim Stanley Robinson, Ken MacLeod, and Charles Stross. Contributors include Matthew Beaumont, William J. Burling, Carl Freedman, Darren Jorgensen, Rob Latham, Iris Luppa, Andrew Milner, John Rieder, Steven Shaviro, Sherryl Vint, and Phillip Wegner.</span>",
+  "description": "Red Planets: Marxism and Science Fiction is an academic anthology that explores the intersection of socialist political theory and science fiction literature. Edited by scholars of both literature and political theory, this collection examines how science fiction has served as a vehicle for exploring Marxist ideas, utopian socialism, and critiques of capitalism. The book analyzes works by authors such as Ursula K. Le Guin, Philip K. Dick, Isaac Asimov, and others who have used speculative fiction to imagine alternative economic and social systems. Essays in the collection examine themes such as class struggle in space, post-capitalist societies, the role of technology in social revolution, and how science fiction can serve as both critique and blueprint for social change. This scholarly work is essential reading for understanding how science fiction literature engages with political and economic theory, particularly from a leftist perspective.",
   "creator": "Mark Bould, China Mieville",
   "subject": [
     "Science Fiction",
     "Marxism",
     "Literary Criticism"
+  ],
+  "tags": [
+    "ursula k le guin",
+    "philip k dick",
+    "isaac asimov",
+    "2000s science fiction",
+    "contemporary science fiction",
+    "anthology",
+    "literary criticism",
+    "academic study",
+    "social science fiction",
+    "utopian",
+    "political science fiction",
+    "marxism",
+    "socialism",
+    "revolution",
+    "class struggle",
+    "political theory",
+    "economic systems",
+    "anti-capitalism",
+    "leftist theory",
+    "post-capitalist societies"
   ],
   "collection": [
     "folkscanomy_politics",

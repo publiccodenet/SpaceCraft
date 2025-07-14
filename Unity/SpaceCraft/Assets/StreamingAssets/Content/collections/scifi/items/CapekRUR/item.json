@@ -1,13 +1,34 @@
 {
   "id": "CapekRUR",
   "title": "Rossum's Universal Robots",
-  "description": "La fameuse pièce de théatre...",
+  "description": "Karel Čapek's groundbreaking 1921 play R.U.R. (Rossum's Universal Robots) stands as one of the most influential works in science fiction history, having introduced the word \"robot\" to the world's vocabulary. This Czech playwright's visionary work explores a future where artificial beings, created by Rossum's Universal Robots company, serve humanity until they develop consciousness and rebel against their creators. The play examines profound themes of artificial intelligence, labor, consciousness, and the relationship between creator and creation, predating modern AI discussions by nearly a century. Čapek's robots are not mechanical beings but biological constructs, making this work a prescient exploration of biotechnology and synthetic life that remains remarkably relevant to contemporary debates about artificial intelligence and automation.",
   "creator": "Karel Čapek",
   "subject": [
     "Karel Čapek",
     "robot",
     "science-fiction",
     "automatisation"
+  ],
+  "tags": [
+    "karel capek",
+    "1920s science fiction",
+    "european science fiction",
+    "classic science fiction",
+    "literary science fiction",
+    "philosophical science fiction",
+    "robot fiction",
+    "artificial intelligence",
+    "robots",
+    "androids",
+    "biotechnology",
+    "synthetic life",
+    "consciousness",
+    "dystopian",
+    "labor automation",
+    "robot rebellion",
+    "creation vs destruction",
+    "evolution",
+    "theater"
   ],
   "collection": [
     "booksbylanguage_french",

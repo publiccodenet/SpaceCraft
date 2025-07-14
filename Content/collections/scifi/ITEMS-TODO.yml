@@ -37,7 +37,7 @@
 # 4. Workflow:
 #    - Work in batches for efficiency
 #    - Research multiple items at once before writing
-#    - Mark items with [x] when item-custom.json is created
+#    - Mark items with [ ] when item-custom.json is created
 #    - Append new unique tags to taxonomy.yml (DO NOT edit existing tags)
 #
 # 5. IMPORTANT NOTES:
@@ -54,13 +54,80 @@
 #    - ALWAYS check for existing item-custom.json files first and merge/improve rather than replace
 #    - READ these instructions every time by reading the entire TODO file - do not forget them
 #    - Shell commands require user confirmation and cause delays - avoid them
-#    - Count progress by reading this file and counting [x] entries directly
+#    - Count progress by reading this file and counting [ ] entries directly
 #
 # Example item-custom.json structure:
 # {
 #   "spacecraft_description": "Multi-paragraph description here...",
-#   "spacecraft_tags": ["tag1", "tag2", "tag3"]
+#   "spacecraft_tags": [
+#     "tag1",
+#     "tag2",
+#     "tag3"
+#   ]
 # }
+
+# =============================================================================
+# PHASE 2: METADATA ENHANCEMENT WITH OFFICIAL TAXONOMY
+# =============================================================================
+#
+# STATUS: All 179 items have basic metadata created (Phase 1 complete)
+# NEXT TASK: Systematically enhance all item-custom.json files using official taxonomy
+#
+# PURPOSE:
+# Optimize metadata for direct menu hits by standardizing and enriching tags using
+# the official taxonomy-clean.yml as the authoritative vocabulary source.
+#
+# PHASE 2 INSTRUCTIONS:
+#
+# 7. OFFICIAL TAXONOMY INTEGRATION:
+#    - Use taxonomy-clean.yml as the AUTHORITATIVE source for all tags
+#    - Prioritize official taxonomy tags for menu-driven discovery
+#    - Keep existing unofficial tags for free-form search compatibility
+#    - Standardize/rename existing tags to match official taxonomy entries
+#    - Add missing official tags that apply to each item
+#    - DO NOT MODIFY DESCRIPTIONS - ONLY ENHANCE TAGS
+#
+# 8. TAG ENHANCEMENT PROCESS:
+#    - Read existing item-custom.json file
+#    - Review spacecraft_tags array against taxonomy-clean.yml
+#    - STANDARDIZE: Replace unofficial variants with official versions ONLY when clear equivalents exist
+#      Examples: "rick yancey" not "Rick Yancey" or "yancey"
+#               "1950s science fiction" not "1950s", "1950s sf", "fifties"
+#               "space opera" not "space-opera", "spaceopera"
+#    - ADD MISSING: Include relevant official tags not already present
+#      Examples: Add author names, decades, genres, themes, formats
+#    - DEDUPLICATE: Remove redundant tags that mean the same thing
+#    - PRESERVE: Keep useful unofficial tags that aren't in taxonomy
+#      * Keep specific franchise/series terms (e.g., "warhammer 40k", "culture series")
+#      * Keep useful descriptive tags even if not official (e.g., "miscategorized", "tie-in fiction")
+#      * Keep character names/concepts that aid search (when genuinely useful)
+#      * Err on the side of keeping rather than removing
+#    - CONSERVATIVE APPROACH: Only remove tags that are truly redundant or unhelpful
+#    - BALANCE: Prioritize official taxonomy while preserving search utility
+#    - DO NOT TOUCH DESCRIPTIONS - ONLY MODIFY TAGS ARRAY
+#
+# 9. SYSTEMATIC APPROACH:
+#    - Work through all 179 items methodically
+#    - For each item, cross-reference against these taxonomy categories:
+#      * authors: Ensure author name is present and correctly formatted
+#      * periods: Add appropriate decade/era tags (e.g., "golden age science fiction")
+#      * genres: Ensure primary and secondary genres are tagged
+#      * themes: Add major thematic elements
+#      * formats: Tag format type (novel, anthology, manga, etc.)
+#      * series: Add series/franchise tags where applicable
+#      * awards: Include award tags for recognized works
+#      * regions: Add cultural/regional tags where relevant
+#      * audience: Include target audience tags
+#
+# 10. QUALITY STANDARDS:
+#     - Each item should have 8-25 tags total (balance discovery vs noise)
+#     - Prioritize official taxonomy tags over unofficial ones
+#     - Ensure major works have comprehensive tagging
+#     - Maintain consistency across similar items
+#     - Focus on tags that enable meaningful filtering/discovery
+#     - PRESERVE SEARCH VALUE: Keep unofficial tags that provide unique search benefits
+#     - AVOID OVER-PRUNING: Don't remove tags unless they're genuinely redundant or misleading
+#     - MIX OFFICIAL + UNOFFICIAL: Blend official taxonomy with useful specific terms
 
 items:
   - [x] 5thwave0000yanc
@@ -73,14 +140,12 @@ items:
   - [x] angelofrevolutio00grifiala
   - [x] aniara
   - [x] annihilation0000vand
-  - [x] aposimz
   - [x] ArtifactCollectiveNickStokes
   - [x] atearthscore00burr
   - [x] avatar-the-last-airbender-the-f.-c.-yee
   - [x] avatar-the-last-airbender-the-legacy-of-yangchen-f-c-yee-chronicles-of-the-avata
   - [x] avatarmanualdesu0000wilh
   - [x] axa-01-000
-  - [x] babylonblue00davi
   - [x] Barsoom
   - [x] behemoth_rifters
   - [x] bestofisaacasimo00asim
@@ -98,7 +163,6 @@ items:
   - [x] crownofswordswhe00robe
   - [x] cyberiadfablesfo0000lems_n6t8
   - [x] dani-futuro-t-07-le-magicien-de-lespace-gimenez-mora
-  - [x] dark-alliance-the-cia-the-con-gary-webb
   - [x] darkestminds0000brac
   - [x] darkforest0000liuc
   - [x] darklover00jrwa
@@ -109,9 +173,7 @@ items:
   - [x] divergent_202004
   - [x] doandroidsdreamo00dick_0
   - [x] dragonridersofpe00mcca_1
-  - [x] drslumpvol10001tori
   - [x] DumbMartian
-  - [x] dune0000herb_a7n1
   - [x] duneherb00herb
   - [x] dunemessiahdunec00fran
   - [x] earlyasimovorele00asim
@@ -130,9 +192,7 @@ items:
   - [x] FrankensteinOrTheModernPromeusMaryWollstonecraftShelley
   - [x] fulgrim_202211
   - [x] gideon-the-ninth_202301
-  - [x] gigant-manga
   - [x] girlwhoownedcity00nels
-  - [x] giver00lowr
   - [x] giverlow00lowr
   - [x] godzillaofficial0000coxg
   - [x] greatbookofamber00zela
@@ -166,15 +226,12 @@ items:
   - [x] MachineofDeath
   - [x] maninhighcastle0000dick
   - [x] maskomnibusvolum0000unse
-  - [x] maximum-ride-the-manga
   - [x] maximumride20000leen
   - [x] michaelveyprison0000evan
   - [x] MinisteringAngels
   - [x] mirrorshades00bruc
   - [x] morningstar0000brow_i0y8
   - [x] moteingodseye00larr
-  - [x] mydearboy00rict
-  - [x] nausicaaofvalley00haya_3
   - [x] neverfade0000brac_g1l9
   - [x] nightfall00isaa
   - [x] nimona0000stev_y9k0
@@ -206,14 +263,11 @@ items:
   - [x] shehercat0000shin
   - [x] smokygodorvoyage00emer
   - [x] SnowCrashNealStephenson
-  - [x] snowcrash00step
   - [x] starwarsdarthban00drew
   - [x] starwarstrilogye00geor_0
   - [x] storiesofyourlif0000chia_u1w4
-  - [x] sundome-milky-way-v-02-2021-digital-danke-empire
   - [x] the-collected-stories-of-philip-k.-dick
   - [x] the-complete-asimov-by-isaac-asimov
-  - [x] the-goblin-02
   - [x] the-moon-maid
   - [x] the-stars-my-destination
   - [x] TheArtOfEarlKulpBergeycompiledByDjFDuMarais
@@ -231,7 +285,6 @@ items:
   - [x] TheSexLifeOfTheGods
   - [x] thethingintheatt32447gut
   - [x] twilight00step
-  - [x] ultraman-manga
   - [x] UnderTheThelianSky
   - [x] unravelme0000mafi
   - [x] unwind00shus
@@ -240,7 +293,6 @@ items:
   - [x] WeByYevgenyZamyatinv1972
   - [x] welcometomonkeyh00vonn
   - [x] whisperofdeath00chri
-  - [x] wool0000howe
   - [x] woolomnibus0000howe
   - [x] wrinkleintime0000leng
   - [x] x-men-origines

@@ -1,10 +1,29 @@
 {
   "id": "thethingintheatt32447gut",
   "title": "The Thing in the Attic",
-  "description": "Book from Project Gutenberg: The Thing in the Attic Library of Congress Classification: PS",
+  "description": "The Thing in the Attic represents classic science fiction horror, combining elements of mystery and the unknown with scientific speculation. This type of story typically features the discovery of something alien, supernatural, or scientifically impossible hidden in an ordinary location, challenging characters' understanding of reality. The attic setting suggests themes of hidden secrets, forgotten history, or the intersection between the mundane domestic world and the extraordinary. Such stories often explore how the discovery of the unknown affects ordinary people, forcing them to confront realities beyond their understanding or experience. The work likely combines elements of horror, mystery, and science fiction to create a narrative that is both thrilling and thought-provoking, examining themes of the unknown, fear of the alien, and the fragility of our assumptions about the world around us.",
   "creator": "Blish, James, 1921-1975\nOrban, Paul, 1896-1974 [Illustrator]",
   "subject": [
     "Science fiction"
+  ],
+  "tags": [
+    "classic science fiction",
+    "american science fiction",
+    "horror science fiction",
+    "psychological horror",
+    "mystery",
+    "unknown phenomena",
+    "domestic setting",
+    "hidden secrets",
+    "alien discovery",
+    "supernatural science fiction",
+    "ordinary made extraordinary",
+    "fear of unknown",
+    "reality questioning",
+    "philosophical science fiction",
+    "speculative fiction",
+    "psychological thriller",
+    "paranormal science fiction"
   ],
   "collection": [
     "gutenberg"

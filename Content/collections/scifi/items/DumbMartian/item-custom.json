@@ -1,4 +1,22 @@
 {
   "spacecraft_description": "John Wyndham's \"Dumb Martian\" is a thought-provoking novelette originally published in Galaxy Science Fiction in July 1952, during the golden age of science fiction magazines. The story follows Duncan, who takes a Martian named Lellie as a companion, initially believing this decision might help preserve his sanity in the harsh conditions of Mars. However, Duncan soon discovers that the real challenge isn't the upkeep of his alien companion, but rather the unexpected costs that arise from their relationship. The story explores themes of companionship, misunderstanding, and the hidden complexities of interspecies relationships.\n\nTypical of Wyndham's work, \"Dumb Martian\" uses the science fiction setting to examine human assumptions and prejudices. The title itself plays with multiple meanings, questioning who exactly is the \"dumb\" one in the relationship between human and Martian. Wyndham, best known for novels like \"The Day of the Triffids\" and \"The Midwich Cuckoos,\" demonstrates his skill at creating stories that appear simple on the surface but contain deeper social commentary. The novelette reflects 1950s anxieties about colonialism, communication barriers, and the dangers of underestimating other intelligences, themes that remain relevant in contemporary discussions about first contact and interplanetary colonization.",
-  "spacecraft_tags": ["john wyndham", "galaxy science fiction", "1952", "golden age science fiction", "mars", "martians", "interspecies relationships", "colonialism", "communication", "companionship", "novelette", "magazine fiction", "first contact", "prejudice", "assumptions", "british science fiction"]
+  "spacecraft_tags": [
+    "john wyndham",
+    "1950s science fiction", 
+    "golden age science fiction",
+    "british",
+    "mars",
+    "martians",
+    "aliens",
+    "interspecies relationships",
+    "colonialism",
+    "first contact",
+    "communication",
+    "companionship",
+    "novelette",
+    "short stories",
+    "magazine fiction",
+    "prejudice",
+    "social commentary"
+  ]
 } 

@@ -1,7 +1,7 @@
 {
   "id": "contact00saga_1",
   "title": "Contact : a novel",
-  "description": "Beautiful astrophysicist Rebecca Blake deciphers long-awaited signals from space, persuades world leaders to construct a machine that many consider a Trojan Horse, and journeys into space for an epochal encounter",
+  "description": "Contact, published in 1985, represents astronomer Carl Sagan's only novel, bringing scientific rigor to the first contact genre. The story follows Dr. Ellie Arroway, a radio astronomer who discovers an alien signal from the star Vega containing plans for a mysterious machine. As humanity grapples with the implications of extraterrestrial intelligence, the novel explores the intersection of science, faith, politics, and human nature. The signal's discovery triggers global upheaval as governments, religions, and scientists debate who should build the machine, who should go, and what it all means for humanity's place in the universe.\n\nSagan crafts a meticulously researched narrative that accurately portrays the scientific process, from the tedium of data analysis to the politics of funding and the peer review process. The novel delves deep into the conflict between scientific rationalism and religious faith, embodied in Ellie's debates with Palmer Joss, a spiritual advisor who challenges her atheistic worldview. As the story progresses toward humanity's first contact with alien intelligence, it raises profound questions about the nature of consciousness, the universality of mathematics, and whether science and spirituality might ultimately seek the same truths.\n\nContact stands apart from typical first contact stories through its emphasis on realistic science and its philosophical depth. Sagan explores how the discovery of extraterrestrial intelligence would actually unfold in our complex world of competing nations, religions, and ideologies. The novel's treatment of science as a human endeavor—complete with ego, politics, and wonder—provides a nuanced view of how we might react to proof that we are not alone. Its influence extends beyond science fiction, inspiring real SETI research and demonstrating how rigorous science can enhance rather than constrain imaginative storytelling.",
   "creator": "Sagan, Carl, 1934-1996",
   "subject": [
     "Science Fiction - General",
@@ -13,6 +13,27 @@
     "Interstellar communication",
     "Radio astronomy",
     "Science fiction"
+  ],
+  "tags": [
+    "carl sagan",
+    "first contact",
+    "hard science fiction",
+    "seti",
+    "astronomy",
+    "science vs religion",
+    "philosophical science fiction",
+    "realistic",
+    "aliens",
+    "communication",
+    "scientific process",
+    "1980s science fiction",
+    "american science fiction",
+    "novel",
+    "ellie arroway",
+    "vega",
+    "extraterrestrial intelligence",
+    "space exploration",
+    "radio astronomy"
   ],
   "collection": [
     "internetarchivebooks",

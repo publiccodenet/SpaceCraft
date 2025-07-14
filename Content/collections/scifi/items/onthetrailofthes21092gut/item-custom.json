@@ -1,4 +1,27 @@
 {
-  "spacecraft_description": "This classic adventure tale by Edgar Rice Burroughs represents the author's contribution to early science fiction and planetary romance. Known for creating Tarzan and the Barsoom series, Burroughs crafts another tale of exploration and adventure that combines elements of science fiction with his signature action-packed storytelling. The narrative follows characters as they pursue mysterious trails that lead them into extraordinary circumstances and unknown territories. Burroughs' work helped establish many of the tropes and conventions of early science fiction adventure, influencing generations of writers in the genre. His stories typically feature brave protagonists, exotic locations, and a sense of wonder about the unknown frontiers of space and other worlds.",
-  "spacecraft_tags": ["edgar rice burroughs", "planetary romance", "adventure fiction", "early science fiction", "classic literature", "exploration", "unknown worlds", "pulp fiction", "golden age"]
+  "spacecraft_description": "\"On the Trail of the Space Pirates\" by Carey Rockwell is a classic juvenile science fiction adventure from the Tom Corbett Space Cadet series, exemplifying the optimistic space opera that captured young readers' imaginations during the 1950s. The story follows Tom Corbett and his fellow space cadets as they investigate and pursue dangerous space pirates threatening interplanetary commerce and safety. Set in a future where space travel is routine and humanity has established colonies throughout the solar system, the narrative combines adventure with educational elements about space science, leadership, and moral responsibility.\n\nThe Tom Corbett series, which spawned from a popular television show, represents an important chapter in science fiction's development, offering young readers visions of humanity's spacefaring future while promoting values of cooperation, scientific inquiry, and ethical behavior. Carey Rockwell was actually a house pseudonym used by various writers working on the series. The books feature detailed descriptions of spacecraft technology, space navigation, and life aboard interplanetary vessels, reflecting the era's fascination with the possibilities of space exploration. While the science may seem dated by contemporary standards, the series maintained an optimistic outlook on humanity's cosmic destiny that influenced generations of science fiction readers and writers. Available through Project Gutenberg, this public domain work continues to be accessible to new readers interested in the history of science fiction and the evolution of space adventure literature.",
+  "spacecraft_tags": [
+    "carey rockwell",
+    "1950s science fiction",
+    "american science fiction",
+    "tom corbett space cadet",
+    "juvenile science fiction",
+    "space pirates",
+    "space adventure",
+    "educational science fiction",
+    "interplanetary commerce",
+    "solar system colonies",
+    "space navigation",
+    "spacecraft technology",
+    "optimistic future",
+    "space exploration",
+    "television tie in",
+    "house pseudonym",
+    "project gutenberg",
+    "public domain",
+    "classic space opera",
+    "moral responsibility",
+    "space cadets",
+    "novel"
+  ]
 } 

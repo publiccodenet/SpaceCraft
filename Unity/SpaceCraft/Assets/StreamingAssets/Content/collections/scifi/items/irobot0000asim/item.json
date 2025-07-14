@@ -1,7 +1,7 @@
 {
   "id": "irobot0000asim",
   "title": "I, robot",
-  "description": "224 pages ; 22 cm\nThe three laws of Robotics: 1) A robot may not injure a human being or, through inaction, allow a human being to come to harm 2) A robot must obey orders given to it by human beings except where such orders would conflict with the First Law. 3) A robot must protect its own existence as long as such protection does not conflict with the First or Second Law. With these three, simple directives, Isaac Asimov changed our perception of robots forever when he formulated the laws governing their behavior. In I, Robot, Asimov chronicles the development of the robot through a series of interlinked stories: from its primitive origins in the present to its ultimate perfection in the not-so-distant future--a future in which humanity itself may be rendered obsolete. Here are stories of robots gone mad, of mind-reading robots, and robots with a sense of humor. Of robot politicians, and robots who secretly run the world--all told with the dramatic blend of science fact and science fiction that has become Asmiov's trademark\nRobbie -- Runaround -- Reason -- Catch that rabbit -- Liar! -- Little lost robot -- Escape! -- Evidence -- The evitable conflict\nAccelerated Reader Grades 9-12 6.1",
+  "description": "I, Robot, published in 1950, is a collection of nine interconnected short stories that established the foundation of robot fiction through Asimov's famous Three Laws of Robotics. Framed as interviews with robopsychologist Dr. Susan Calvin, the stories trace the development of robots from simple nursemaids to complex machines capable of governing humanity. Each tale explores the logical puzzles and ethical dilemmas that arise when the Three Laws—protecting humans, obeying orders, and self-preservation—come into conflict with each other or with human nature itself.\n\nThe stories progress from 'Robbie,' about a child's beloved robot nursemaid, through increasingly sophisticated scenarios including mind-reading robots, robots that lie to spare human feelings, and ultimately to machines that secretly control human society for its own good. Through characters like Calvin and field engineers Powell and Donovan, Asimov examines how artificial intelligence might develop not through malevolence but through the very safeguards designed to protect humanity. The collection demonstrates that the real danger may not be robots breaking their programming but following it too perfectly.\n\nAsimov's Three Laws revolutionized science fiction by providing a rational framework for robot behavior that moved beyond the 'mad robot' clichés of earlier fiction. His explorations of machine logic, ethics, and the unintended consequences of programming remain remarkably prescient as we grapple with real AI development. The stories' focus on problem-solving, logical paradoxes, and the psychology of both humans and machines established templates still used in science fiction today, while raising enduring questions about consciousness, free will, and humanity's relationship with its creations.",
   "creator": "Asimov, Isaac, 1920-1992",
   "subject": [
     "Science fiction",
@@ -10,6 +10,26 @@
     "Short stories, American",
     "Artificial intelligence",
     "Robots"
+  ],
+  "tags": [
+    "isaac asimov",
+    "1950s science fiction",
+    "american science fiction",
+    "golden age science fiction",
+    "classic science fiction",
+    "robots",
+    "artificial intelligence",
+    "three laws of robotics",
+    "hard science fiction",
+    "short stories",
+    "collection",
+    "logic puzzles",
+    "ethics",
+    "scientific ethics",
+    "robopsychology",
+    "philosophy",
+    "consciousness",
+    "machine psychology"
   ],
   "collection": [
     "marygrovecollege",

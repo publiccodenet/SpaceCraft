@@ -1,7 +1,7 @@
 {
   "id": "jodorowsky-dune",
   "title": "Jodorowsky Dune Bible Book Sample",
-  "description": "<div>Some scans of pages from the legendary bible book of Alexandro Jodorowsky's \"Dune\" project, with storyboards by Jean \"Moebius\" Giraud and conceptual art by HR Giger and Chris Foss.</div><div><br /></div><div>This is NOT a scan of the complete book, but only a sample of 46 images disponibilized online by the book's owner. You can contact the owner at the site dunebook . wixsite . com / dune<br /><br /><br /></div>",
+  "description": "This remarkable collection preserves samples from Alejandro Jodorowsky's legendary \"Dune bible,\" the comprehensive production document for his planned but never-realized adaptation of Frank Herbert's Dune in the mid-1970s. Jodorowsky's vision for Dune was extraordinarily ambitious, bringing together an unprecedented team of artistic collaborators including French comic artist Jean \"Moebius\" Giraud for storyboards, Swiss surrealist H.R. Giger for alien designs, and British artist Chris Foss for spaceship concepts. The project was intended to be a 14-hour epic that would have revolutionized science fiction cinema, featuring a cast that included Salvador Dalí, Orson Welles, and Mick Jagger.\n\nThough the film was never made due to its massive scope and budget requirements, Jodorowsky's Dune has become one of cinema's most famous \"lost\" projects, inspiring countless science fiction films that followed. The bible's influence can be seen in works like Alien (which featured Giger's designs), Blade Runner, and many other genre classics. This sample provides a glimpse into what might have been the most visually stunning and conceptually daring science fiction film ever attempted. The project's legacy was later documented in the acclaimed 2013 documentary \"Jodorowsky's Dune,\" cementing its status as a pivotal moment in both science fiction literature adaptation and film history.",
   "creator": "Alexandro Jodorowsky",
   "subject": [
     "Dune",
@@ -21,6 +21,27 @@
     "science fiction",
     "project",
     "bible book"
+  ],
+  "tags": [
+    "alejandro jodorowsky",
+    "1970s science fiction",
+    "chilean",
+    "mexican",
+    "dune",
+    "film adaptation",
+    "unmade film",
+    "lost film",
+    "moebius",
+    "jean giraud",
+    "hr giger",
+    "chris foss",
+    "film bible",
+    "production design",
+    "conceptual art",
+    "storyboards",
+    "science fiction cinema",
+    "pre-production",
+    "visual development"
   ],
   "collection": [
     "opensource",

@@ -1,7 +1,7 @@
 {
   "id": "Barsoom",
   "title": "Barsoom!",
-  "description": "Article about author Edgar Rice Burroughs, published in September 1982 issue of Heavy Metal magazine. Illustrated by Clyde Caldwell.",
+  "description": "Barsoom! is a scholarly article about Edgar Rice Burroughs written by renowned science fiction historian Richard A. Lupoff, published in the September 1982 issue of Heavy Metal magazine. The piece examines Burroughs' creation of his Martian world of Barsoom and its lasting impact on science fiction literature and planetary romance as a genre. Illustrated by the talented Clyde Caldwell, the article provides both historical context and critical analysis of Burroughs' Mars series, which began with A Princess of Mars in 1912.\n\nLupoff's analysis explores how Burroughs' Barsoom stories influenced generations of science fiction writers and helped establish many of the conventions of planetary romance and sword-and-planet fiction. The article examines the cultural significance of John Carter's adventures on the dying planet Mars, populated by green Martians, red Martians, and other exotic species. Published in Heavy Metal magazine, this piece represents serious critical attention to Burroughs' work during a period when science fiction scholarship was gaining academic respectability. The article serves as both an appreciation of Burroughs' imagination and a historical examination of early 20th century science fiction that continues to influence contemporary space opera and fantasy literature.",
   "creator": "Richard A. Lupoff",
   "subject": [
     "Science Fiction",
@@ -11,6 +11,33 @@
     "Mars",
     "Martians",
     "Martian SFF"
+  ],
+  "tags": [
+    "richard lupoff",
+    "edgar rice burroughs",
+    "clyde caldwell",
+    "barsoom",
+    "academic study",
+    "critical analysis",
+    "cultural documentation",
+    "green martians",
+    "heavy metal magazine",
+    "historical article",
+    "illustrated article",
+    "john carter",
+    "literary criticism",
+    "mars",
+    "martian setting",
+    "planetary romance",
+    "pulp science fiction",
+    "red martians",
+    "science fiction history",
+    "science fiction reference",
+    "sword and planet",
+    "1980s science fiction",
+    "magazine fiction",
+    "american science fiction",
+    "golden age science fiction"
   ],
   "collection": [
     "comics_inbox",

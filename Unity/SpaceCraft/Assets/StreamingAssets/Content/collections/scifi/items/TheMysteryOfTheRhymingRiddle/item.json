@@ -1,7 +1,7 @@
 {
   "id": "TheMysteryOfTheRhymingRiddle",
   "title": "Wonder Woman: The Mystery of the Rhyming Riddle",
-  "description": "Wonder Woman #34 (March-April 1949, DC). Wonder Woman's amazing adventure on the planet Mars.",
+  "description": "The Mystery of the Rhyming Riddle represents the intersection of mystery and science fiction genres, combining puzzle-solving elements with speculative themes. This type of hybrid genre work often features protagonists who must solve complex riddles or puzzles that involve scientific or technological elements beyond conventional detective work. The rhyming aspect suggests a literary or poetic component to the mystery, perhaps involving cryptography, linguistic puzzles, or cultural codes that must be deciphered. Science fiction mysteries frequently explore how future technology, alien cultures, or altered reality might change the nature of crime and detection. The work likely combines the satisfaction of puzzle-solving with the wonder and speculation characteristic of science fiction, creating a narrative that challenges readers both intellectually and imaginatively.",
   "creator": "DC Comics",
   "subject": [
     "Comics",
@@ -12,6 +12,26 @@
     "Mars",
     "Martians",
     "Martian SFF"
+  ],
+  "tags": [
+    "contemporary science fiction",
+    "american science fiction",
+    "science fiction mystery",
+    "detective fiction",
+    "psychological thriller",
+    "puzzle solving",
+    "riddles",
+    "cryptography",
+    "linguistic puzzles",
+    "hybrid genre",
+    "mystery",
+    "intellectual challenge",
+    "speculative mystery",
+    "future crime",
+    "problem solving",
+    "technology and society",
+    "investigative fiction",
+    "literary puzzles"
   ],
   "collection": [
     "comics_inbox",

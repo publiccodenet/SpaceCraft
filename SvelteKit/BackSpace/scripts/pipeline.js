@@ -37,7 +37,7 @@ const LOG_LEVELS = {
 };
 
 // Default paths
-const DEFAULT_CONFIG_DIR = path.resolve(PATHS.ROOT_DIR, 'Content/Configs');
+const DEFAULT_CONFIG_DIR = path.resolve(PATHS.ROOT_DIR, 'Content/configs');
 const DEFAULT_CONTENT_CACHE = path.resolve(PATHS.ROOT_DIR, 'Content/collections');
 const DEFAULT_UNITY_DIR = PATHS.UNITY_DIR;
 
@@ -280,8 +280,8 @@ class ContentPipeline {
     
     // Ensure directories exist
     this.ensureDirectoryExists(this.configPath);
-    this.ensureDirectoryExists(path.join(this.configPath, 'Importers'));
-    this.ensureDirectoryExists(path.join(this.configPath, 'Exporters'));
+    this.ensureDirectoryExists(path.join(this.configPath, 'importers'));
+    this.ensureDirectoryExists(path.join(this.configPath, 'exporters'));
     this.ensureDirectoryExists(this.contentCache);
   }
   
@@ -318,7 +318,7 @@ class ContentPipeline {
     }
     
     // Base configs directory
-    const basePath = path.join(this.configPath, 'Importers');
+    const basePath = path.join(this.configPath, 'importers');
     
     // Check if it's a directory path or includes a config name
     if (fs.existsSync(path.join(basePath, importerPath)) && 
@@ -352,7 +352,7 @@ class ContentPipeline {
     }
     
     // Base configs directory
-    const basePath = path.join(this.configPath, 'Exporters');
+    const basePath = path.join(this.configPath, 'exporters');
     
     // Check if it's a directory path or includes a config name
     if (fs.existsSync(path.join(basePath, exporterPath)) && 
@@ -899,33 +899,44 @@ class ContentPipeline {
         // Check for custom metadata overlay
         if (fs.existsSync(itemCustomPath)) {
           const customData = await fs.readJSON(itemCustomPath);
-          // Merge custom data over base data
-          Object.assign(itemData, customData);
+          
+          // Process custom data: strip spacecraft_ prefix and merge
+          for (const [key, value] of Object.entries(customData)) {
+            if (key.startsWith('spacecraft_')) {
+              // Strip spacecraft_ prefix for these keys
+              const newKey = key.replace('spacecraft_', '');
+              itemData[newKey] = value;
+            } else {
+              // Copy non-prefixed keys literally
+              itemData[key] = value;
+            }
+          }
+          
           this.logger.info(`Applied custom metadata for ${collectionId}/${itemId}`, null, context);
         }
         
         // Collect keywords/tags if collector provided
-        if (keywordCollector && itemData.spacecraft_tags) {
-          itemData.spacecraft_tags.forEach(tag => {
-            keywordCollector.add(tag);
+        if (keywordCollector && itemData.tags && Array.isArray(itemData.tags)) {
+          itemData.tags.forEach(tag => {
+            if (tag && typeof tag === 'string') {
+              keywordCollector.add(tag);
+            }
           });
         }
         
-        // Create filtered item with base fields plus any custom data
+        // Create filtered item with ONLY official schema keys
         const filteredItem = {
           id: itemData.id,
           title: itemData.title,
           description: itemData.description,
           creator: itemData.creator,
           subject: itemData.subject,
+          tags: itemData.tags || [], // Always include tags, default to empty array
           collection: itemData.collection,
           mediatype: itemData.mediatype,
           coverImage: itemData.coverImage,
           coverWidth: itemData.coverImageWidth,
-          coverHeight: itemData.coverImageHeight,
-          favoriteCount: itemData.favoriteCount,
-          // Spread any additional fields from custom metadata
-          ...itemData
+          coverHeight: itemData.coverImageHeight
         };
         
         // Set ONLY the item key - no coverImage or any other keys

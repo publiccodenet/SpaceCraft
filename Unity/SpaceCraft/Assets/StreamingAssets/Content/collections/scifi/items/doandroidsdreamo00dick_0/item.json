@@ -1,36 +1,44 @@
 {
+  "id": "doandroidsdreamo00dick_0",
   "title": "Do Androids Dream of Electric Sheep?",
-  "description": "In post-apocalyptic San Francisco, bounty hunter Rick Deckard hunts rogue androids while questioning what it means to be human in a world where empathy is manufactured and electric sheep graze on rooftops.",
-  "spacecraft_custom_item": true,
-  "author": "Dick, Philip K.",
-  "publication_year": 1968,
-  "genre": "Cyberpunk / Philosophical SF",
-  "cosmic_significance": "The philosophical foundation that spawned Blade Runner and defined our anxieties about artificial consciousness",
-  "excitement_level": 7,
-  "reading_experience": "A paranoid meditation on authenticity that makes you question the nature of your own emotions",
-  "visual_elements": [
-    "Dust-covered cityscapes",
-    "Electric animals",
-    "Empathy boxes",
-    "Voigt-Kampff machines",
-    "Abandoned apartment buildings"
-  ],
-  "adventure_rating": 6,
-  "themes": [
-    "What defines humanity",
-    "Artificial empathy",
-    "Environmental collapse",
-    "Religious simulacra",
-    "The nature of consciousness"
-  ],
-  "spaceCraftTags": [
-    "cyberpunk-origin",
+  "description": "Do Androids Dream of Electric Sheep?, published in 1968, is set in a post-apocalyptic San Francisco where Earth's ecosystem has collapsed following nuclear war. Most humans have emigrated to off-world colonies, leaving behind a radioactive planet where owning real animals is a status symbol and most people make do with electric replicas. Rick Deckard, a bounty hunter tasked with 'retiring' rogue androids, accepts a lucrative assignment to hunt six Nexus-6 models who have escaped from Mars and hidden among Earth's remaining population.\n\nAs Deckard pursues the androids, the line between human and artificial life becomes increasingly blurred. The novel's central question—what defines humanity—is explored through empathy tests used to identify androids, the religious movement of Mercerism that connects humans through shared suffering, and Deckard's growing uncertainty about the morality of his profession. His encounters with the android Rachael Rosen and the discovery of androids who believe themselves human force him to confront uncomfortable questions about consciousness, empathy, and authenticity.\n\nDick's novel transcends typical android-hunter narratives to examine themes of identity, reality, and what it means to be human in a technologically mediated world. The book's influence extends far beyond its famous film adaptation Blade Runner, establishing many cyberpunk themes and reflecting Cold War anxieties about nuclear destruction and the loss of authentic experience. Its exploration of artificial life, empathy as the defining human characteristic, and the commodification of nature in a dying world remains profoundly relevant to contemporary debates about AI, consciousness, and environmental collapse.",
+  "creator": "Dick, Philip K.",
+  "subject": [
+    "cyberpunk",
     "philosophical",
     "blade-runner",
-    "must-read",
-    "empathy-box",
     "android-hunting",
     "post-apocalyptic",
     "pkd-classic"
-  ]
+  ],
+  "tags": [
+    "philip k dick",
+    "post apocalyptic",
+    "androids",
+    "bounty hunter",
+    "identity",
+    "empathy",
+    "artificial life",
+    "cyberpunk",
+    "nuclear war",
+    "classic science fiction",
+    "philosophical science fiction",
+    "rick deckard",
+    "nexus 6",
+    "rachel rosen",
+    "mercerism",
+    "electric sheep",
+    "blade runner",
+    "1960s science fiction",
+    "american science fiction",
+    "novel",
+    "android fiction",
+    "consciousness",
+    "reality vs illusion"
+  ],
+  "collection": [
+    "scifi"
+  ],
+  "mediatype": "texts",
+  "spacecraft_custom_item": true
 }

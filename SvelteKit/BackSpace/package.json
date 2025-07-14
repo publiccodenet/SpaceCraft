@@ -23,7 +23,7 @@
     "pipeline": "tsx scripts/pipeline.js",
     "pipeline:run": "tsx scripts/pipeline.js run",
     "pipeline:import": "tsx scripts/pipeline.js import",
-    "pipeline:export": "tsx scripts/pipeline.js export",
+    "pipeline:export": "tsx scripts/pipeline.js export --clean",
     "pipeline:bootstrap": "tsx scripts/pipeline.js bootstrap",
     
     "# Internet Archive": "Internet Archive specific commands",

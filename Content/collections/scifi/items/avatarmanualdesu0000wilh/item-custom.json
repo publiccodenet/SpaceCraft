@@ -1,4 +1,24 @@
 {
   "spacecraft_description": "This Spanish-language companion guide to James Cameron's 2009 science fiction blockbuster Avatar provides an immersive exploration of the alien world of Pandora. Framed as a confidential survival manual, the book details the moon's exotic ecosystem, dangerous flora and fauna, and the complex culture of the indigenous Na'vi people. The guide covers Pandora's unique biology including the neural network connections between all living things, the floating Hallelujah Mountains, and deadly predators like the thanator and viperwolves. It also examines the Na'vi's hunter-gatherer society, their spiritual connection to Eywa (the planetary consciousness), and their ongoing conflict with the human mining corporation RDA. \n\nThe manual includes detailed descriptions of RDA technology and weapons systems deployed on Pandora, from the heavily armed mech suits to the massive gunships used in military operations. A Na'vi-Spanish dictionary provides linguistic insights into the constructed language created for the film. As both a film tie-in and a standalone work of speculative world-building, this survival guide expands the Avatar universe beyond the movie, offering readers a comprehensive look at one of cinema's most detailed alien worlds.",
-  "spacecraft_tags": ["alien worlds", "film tie-in", "world building", "alien ecology", "spanish language", "james cameron", "pandora", "navi culture", "military science fiction", "environmental themes", "companion guide", "alien linguistics", "corporate colonialism", "survival guide"]
+  "spacecraft_tags": [
+    "james cameron",
+    "alien worlds",
+    "film adaptation",
+    "world building",
+    "alien ecology",
+    "spanish language",
+    "pandora",
+    "navi culture",
+    "military science fiction",
+    "environmental themes",
+    "companion guide",
+    "alien linguistics",
+    "corporate colonialism",
+    "survival guide",
+    "2000s science fiction",
+    "contemporary science fiction",
+    "first contact",
+    "space exploration",
+    "reference guide"
+  ]
 } 

@@ -1,10 +1,37 @@
 {
   "id": "H.G.WellsCompleteWorks",
   "title": "H. G. Wells Complete Works",
-  "description": "H. G. Wells Complete Works",
+  "description": "This comprehensive collection showcases the complete works of H.G. Wells, the father of science fiction who profoundly shaped the genre with his visionary scientific romances. Wells pioneered countless concepts that remain central to science fiction today: time travel in The Time Machine, alien invasion in The War of the Worlds, genetic experimentation in The Island of Dr. Moreau, and invisibility in The Invisible Man. His novels combine rigorous scientific speculation with social commentary, exploring themes of evolution, technology's impact on society, and humanity's place in the universe. Wells's influence extends far beyond literature, having predicted many technological developments including atomic energy, space travel, and biological warfare. This collection represents the foundational texts of modern science fiction, establishing conventions and exploring philosophical questions that continue to resonate with contemporary readers and writers.",
   "creator": "rey",
   "subject": [
     "science fiction"
+  ],
+  "tags": [
+    "h g wells",
+    "1890s science fiction",
+    "1900s science fiction",
+    "british",
+    "victorian science fiction",
+    "classic science fiction",
+    "foundational science fiction",
+    "complete works",
+    "collection",
+    "scientific romance",
+    "father of science fiction",
+    "time travel",
+    "alien invasion",
+    "invisibility",
+    "genetic experimentation",
+    "the time machine",
+    "war of the worlds",
+    "invisible man",
+    "island of dr moreau",
+    "scientific speculation",
+    "social commentary",
+    "evolution",
+    "technology and society",
+    "visionary fiction",
+    "genre defining"
   ],
   "collection": [
     "opensource",

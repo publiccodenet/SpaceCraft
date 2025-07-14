@@ -1,15 +1,23 @@
 {
   "spacecraft_description": "The Martian, self-published in 2011 and traditionally published in 2014, follows astronaut Mark Watney after he's accidentally left behind on Mars when his crew evacuates during a dust storm. Presumed dead, Watney must use his knowledge of botany, engineering, and chemistry to survive on a planet utterly hostile to human life. With limited supplies, no communication with Earth, and the next mission years away, he faces challenge after challenge with ingenuity, humor, and an indomitable will to live, famously declaring he's going to 'science the shit out of this.'\n\nWeir's meticulous attention to scientific accuracy sets The Martian apart from typical survival stories. Every solution Watney devises—from growing potatoes in Martian soil fertilized with human waste to creating water from rocket fuel—is grounded in real science and explained with enough detail to be educational while remaining entertaining. The novel alternates between Watney's irreverent log entries, NASA's frantic efforts to mount a rescue mission, and his crewmates' agonizing decision about whether to risk their lives returning for him. This structure creates multiple layers of tension while exploring how individuals and institutions respond to crisis.\n\nThe Martian revitalized hard science fiction for a mainstream audience, proving that scientifically accurate problem-solving could be as thrilling as any action sequence. Weir's background as a programmer shines through in Watney's methodical approach to survival and his gallows humor in the face of death. The novel celebrates human ingenuity, international cooperation, and the spirit of exploration while acknowledging the dangers of space travel. Its success helped spark renewed public interest in Mars exploration and demonstrated that science fiction rooted in real science could achieve both critical acclaim and popular success.",
   "spacecraft_tags": [
+    "andy weir",
+    "2010s science fiction",
+    "contemporary science fiction",
+    "american science fiction",
     "hard science fiction",
+    "novel",
     "mars",
     "survival",
-    "near future",
-    "problem solving",
-    "humor",
     "space exploration",
-    "nasa",
+    "astronaut",
+    "problem solving",
     "scientific accuracy",
-    "contemporary"
+    "humor",
+    "mark watney",
+    "the martian",
+    "botany",
+    "engineering",
+    "nasa"
   ]
 } 

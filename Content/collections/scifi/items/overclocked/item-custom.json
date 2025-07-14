@@ -1,4 +1,27 @@
 {
-  "spacecraft_description": "Overclocked represents contemporary science fiction that explores the intersection of technology, human consciousness, and digital reality. The work examines themes of technological acceleration, artificial intelligence, and the blurring boundaries between virtual and physical existence. Set in a near-future world where computational power and digital integration have fundamentally altered human experience, the narrative delves into questions of identity, reality, and what it means to be human in an increasingly digitized world. The title itself suggests the concept of pushing systems beyond their intended limits, a metaphor that extends to both technology and human potential. This type of modern science fiction often serves as both entertainment and commentary on our rapidly evolving technological landscape.",
-  "spacecraft_tags": ["cyberpunk", "artificial intelligence", "digital reality", "near future", "technology", "virtual reality", "consciousness", "contemporary science fiction", "computer science"]
+  "spacecraft_description": "Cory Doctorow's \"Overclocked\" collects six novellas that showcase his signature blend of technological speculation, political activism, and accessible science fiction storytelling. The collection includes \"Printcrime,\" which explores a future where 3D printing technology threatens traditional manufacturing and economic systems; \"When Sysadmins Ruled the Earth,\" a post-apocalyptic tale about system administrators who become the last hope for maintaining civilization's digital infrastructure; and \"Anda's Game,\" which examines the emerging phenomenon of \"gold farming\" in online games and its connection to global labor exploitation.\n\nOther stories in the collection tackle themes ranging from bioweapons and pandemic response to artificial intelligence and the nature of consciousness. \"I, Robot\" (not to be confused with Asimov's work) presents a different take on AI development, while \"I, Row-Boat\" offers a humorous yet thoughtful exploration of machine consciousness. \"After the Siege\" rounds out the collection with a story about rebuilding and recovery in the aftermath of catastrophe. Throughout these works, Doctorow demonstrates his ability to ground speculative technology in real-world concerns about economics, politics, and social justice. His writing often serves as both entertainment and activism, using science fiction scenarios to illuminate contemporary issues around technology, privacy, and corporate power. The collection reflects Doctorow's background as both a novelist and digital rights activist, offering stories that are simultaneously thrilling adventures and thoughtful examinations of how technology shapes human relationships and social structures.",
+  "spacecraft_tags": [
+    "cory doctorow",
+    "2000s science fiction",
+    "american science fiction",
+    "novellas",
+    "collection",
+    "printcrime",
+    "3d printing",
+    "when sysadmins ruled the earth",
+    "system administrators",
+    "andas game",
+    "gold farming",
+    "online games",
+    "labor exploitation",
+    "bioweapons",
+    "artificial intelligence",
+    "machine consciousness",
+    "post apocalyptic",
+    "digital infrastructure",
+    "technological speculation",
+    "political activism",
+    "digital rights",
+    "economic systems"
+  ]
 } 

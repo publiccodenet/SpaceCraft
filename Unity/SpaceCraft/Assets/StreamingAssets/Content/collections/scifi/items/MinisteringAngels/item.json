@@ -1,7 +1,7 @@
 {
   "id": "MinisteringAngels",
   "title": "Ministering Angels",
-  "description": "1958 science fiction short story reprinted in 1959 anthology The Best from Fantasy and Science Fiction, Eighth Series, edited by Anthony Boucher.\nSynopsis: Two women volunteer to bring sexual solace to a team of male scientists on Mars.",
+  "description": "C.S. Lewis's \"Ministering Angels\" presents a provocative 1958 short story that explores themes of sexuality, morality, and human nature through a science fiction premise. Set on Mars, the story follows a team of male scientists who have been working in isolation on the red planet when two women volunteer to travel there to provide \"sexual solace\" to the lonely researchers. What begins as a seemingly straightforward premise quickly develops into a complex examination of desire, dignity, and the commodification of intimate relationships, as Lewis explores the psychological and moral implications of treating human sexuality as a service to be provided.\n\nThe story reflects Lewis's interests in Christian morality and human psychology, using the science fiction setting to examine questions about the nature of love, lust, and genuine human connection. Unlike much of Lewis's better-known fantasy work, \"Ministering Angels\" directly confronts adult themes while maintaining his characteristic focus on moral philosophy. The Martian setting allows Lewis to create a laboratory-like environment where social conventions are stripped away, forcing characters and readers to confront basic questions about human relationships and what constitutes meaningful intimacy. Published in \"The Best from Fantasy and Science Fiction\" anthology series, the story demonstrates Lewis's versatility as a writer and his willingness to use speculative fiction as a vehicle for exploring complex ethical and psychological territory.",
   "creator": "C. S. Lewis",
   "subject": [
     "Science Fiction",
@@ -10,6 +10,28 @@
     "Mars",
     "Martians",
     "Martian SFF"
+  ],
+  "tags": [
+    "c s lewis",
+    "1950s science fiction",
+    "british",
+    "mars",
+    "short story",
+    "sexuality",
+    "morality",
+    "isolation",
+    "human nature",
+    "christian themes",
+    "ethical questions",
+    "intimacy",
+    "science fiction setting",
+    "psychological exploration",
+    "dignity",
+    "male scientists",
+    "social conventions",
+    "moral philosophy",
+    "speculative ethics",
+    "anthology"
   ],
   "collection": [
     "opensource",
