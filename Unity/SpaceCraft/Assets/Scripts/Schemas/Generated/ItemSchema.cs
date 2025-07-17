@@ -72,12 +72,20 @@ public class ItemSchema : SchemaGeneratedObject
     public string Creator { get { return _creator; } set { _creator = value; } }
 
     /// <summary>
-    /// Subject tags for this item.
+    /// Subjects for this item.
     /// Schema Path: subject
     /// UnitySchemaConverter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
     /// </summary>
     [SerializeField] private string[] _subject = null;
     public string[] Subject { get { return _subject; } set { _subject = value; } }
+
+    /// <summary>
+    /// Tags for this item.
+    /// Schema Path: tags
+    /// UnitySchemaConverter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
+    /// </summary>
+    [SerializeField] private string[] _tags = null;
+    public string[] Tags { get { return _tags; } set { _tags = value; } }
 
     /// <summary>
     /// Collections this item belongs to.
@@ -194,6 +202,21 @@ public class ItemSchema : SchemaGeneratedObject
             catch (Exception ex) { Debug.LogError($"Error converting 'subject' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
         } else {
             Debug.Log($"ItemSchema: subject is null" );
+        }
+
+        // Use converter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
+        if (json["tags"] != null)
+        {
+            try
+            {
+                var converter = new SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter();
+                var reader = json["tags"].CreateReader();
+                reader.Read(); // Move to the first token - important for WebGL compatibility
+                _tags = (string[])converter.ReadJson(reader, typeof(string[]), null, null);
+            }
+            catch (Exception ex) { Debug.LogError($"Error converting 'tags' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
+        } else {
+            Debug.Log($"ItemSchema: tags is null" );
         }
 
         // Use converter: StringArrayOrStringOrNullToStringArrayConverter
@@ -336,6 +359,18 @@ public class ItemSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'subject' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
         }
+        // Use converter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
+        if (_tags != null)
+        {
+            try
+            {
+                var tempWriter = new JTokenWriter();
+                var converter = new SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter();
+                converter.WriteJson(tempWriter, _tags, null);
+                json["tags"] = tempWriter.Token;
+            }
+            catch (Exception ex) { Debug.LogError($"Error converting 'tags' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
+        }
         // Use converter: StringArrayOrStringOrNullToStringArrayConverter
         if (_collection != null)
         {
@@ -403,6 +438,7 @@ public class ItemSchema : SchemaGeneratedObject
             case "description":
             case "creator":
             case "subject":
+            case "tags":
             case "collection":
             case "mediatype":
             case "coverImage":

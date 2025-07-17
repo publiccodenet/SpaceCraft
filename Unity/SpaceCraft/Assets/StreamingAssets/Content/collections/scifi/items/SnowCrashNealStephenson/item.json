@@ -31,21 +31,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/SnowCrashNealStephenson",
   "coverWidth": 180,
-  "coverHeight": 298,
-  "favoriteCount": 0,
-  "name": "Snow Crash Neal Stephenson",
-  "publicdate": "2017-08-21 09:08:30",
-  "identifier": "SnowCrashNealStephenson",
-  "date": "1992",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
-  "uploader": "kat@ga-yi.com",
-  "addeddate": "2017-08-21 09:08:30",
-  "curation": "[curator]validator@archive.org[/curator][date]20170821090851[/date][comment]checked for malware[/comment]",
-  "language": "English",
-  "identifier-access": "http://archive.org/details/SnowCrashNealStephenson",
-  "identifier-ark": "ark:/13960/t87h7nw4f",
-  "repub_state": "4",
-  "backup_location": "ia906502_16",
-  "coverImageWidth": 180,
-  "coverImageHeight": 298
+  "coverHeight": 298
 }

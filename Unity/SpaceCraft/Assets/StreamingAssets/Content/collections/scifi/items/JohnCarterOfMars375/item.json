@@ -40,32 +40,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/JohnCarterOfMars375",
   "coverWidth": 180,
-  "coverHeight": 254,
-  "favoriteCount": 0,
-  "name": "John Carter of Mars #375 (1952)",
-  "publicdate": "2011-10-21 05:53:22",
-  "identifier": "JohnCarterOfMars375",
-  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
-  "addeddate": "2011-10-21 05:35:11",
-  "uploader": "lyndawwcarter@hotmail.com",
-  "updater": [
-    "Lynda Carter",
-    "Lynda Carter",
-    "Lynda Carter"
-  ],
-  "updatedate": [
-    "2011-10-21 19:39:58",
-    "2011-10-26 17:32:08",
-    "2011-11-11 02:28:01"
-  ],
-  "identifier-access": "http://www.archive.org/details/JohnCarterOfMars375",
-  "identifier-ark": "ark:/13960/t02z2769r",
-  "ppi": "72",
-  "ocr": "ABBYY FineReader 8.0",
-  "repub_state": "4",
-  "curation": "[curator]malware@archive.org[/curator][date]20140327105534[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903704_17",
-  "coverleaf": "0",
-  "coverImageWidth": 180,
-  "coverImageHeight": 254
+  "coverHeight": 254
 }

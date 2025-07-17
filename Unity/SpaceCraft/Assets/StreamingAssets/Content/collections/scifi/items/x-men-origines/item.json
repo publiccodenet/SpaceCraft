@@ -40,21 +40,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/x-men-origines",
   "coverWidth": 180,
-  "coverHeight": 255,
-  "favoriteCount": 0,
-  "name": "X MEN ORIGINES",
-  "publicdate": "2020-05-17 12:29:54",
-  "identifier": "x-men-origines",
-  "language": "fre",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "hullajump@yahoo.fr",
-  "addeddate": "2020-05-17 12:29:54",
-  "curation": "[curator]validator@archive.org[/curator][date]20200517123325[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/x-men-origines",
-  "identifier-ark": "ark:/13960/t1ck75d9s",
-  "ppi": "600",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "coverleaf": "0",
-  "coverImageWidth": 180,
-  "coverImageHeight": 255
+  "coverHeight": 255
 }

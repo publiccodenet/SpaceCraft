@@ -38,10 +38,5 @@
   "mediatype": "texts",
   "coverImage": "cover.jpg",
   "coverWidth": 180,
-  "coverHeight": 288,
-  "spacecraft_custom_item": true,
-  "identifier": "thedispossessed0000legu",
-  "date": "1974",
-  "coverImageWidth": 180,
-  "coverImageHeight": 288
+  "coverHeight": 288
 }

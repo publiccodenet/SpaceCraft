@@ -46,42 +46,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/LittleBrother",
   "coverWidth": 180,
-  "coverHeight": 190,
-  "favoriteCount": 0,
-  "name": "Little Brother von Cory Doctorow (ebook-deutsch)",
-  "publicdate": "2009-04-11 09:38:15",
-  "identifier": "LittleBrother",
-  "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/de/",
-  "addeddate": "2009-04-11 09:37:37",
-  "uploader": "rollmops@mail.ru",
-  "updater": [
-    "Rollmops im Kanzlerbunker",
-    "Rollmops im Kanzlerbunker",
-    "Rollmops im Kanzlerbunker",
-    "Rollmops im Kanzlerbunker",
-    "Rollmops im Kanzlerbunker"
-  ],
-  "updatedate": [
-    "2009-04-11 09:46:00",
-    "2009-04-11 09:49:43",
-    "2009-04-11 09:52:57",
-    "2009-04-11 12:00:49",
-    "2009-04-11 12:01:15"
-  ],
-  "contributor": "Christian Woehrl",
-  "publisher": "Cory Doctorow",
-  "language": "German",
-  "coverage": "USA, San Francisco",
-  "identifier-access": "http://www.archive.org/details/LittleBrother",
-  "identifier-ark": "ark:/13960/t6vx0qn0q",
-  "repub_state": "4",
-  "filesxml": [
-    "Wed Sep 2 1:25:14 UTC 2009",
-    "Wed Sep 2 5:36:42 UTC 2009",
-    "Mon Dec 6 0:42:07 UTC 2010"
-  ],
-  "curation": "[curator]malware@archive.org[/curator][date]20140311011740[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903602_35",
-  "coverImageWidth": 180,
-  "coverImageHeight": 190
+  "coverHeight": 190
 }

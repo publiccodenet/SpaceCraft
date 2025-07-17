@@ -38,20 +38,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/TheSexLifeOfTheGods",
   "coverWidth": 180,
-  "coverHeight": 270,
-  "favoriteCount": 0,
-  "name": "The Sex Life of the Gods",
-  "publicdate": "2012-05-26 14:15:03",
-  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
-  "identifier": "TheSexLifeOfTheGods",
-  "uploader": "greg@durendal.org",
-  "addeddate": "2012-05-26 14:05:30",
-  "identifier-access": "http://archive.org/details/TheSexLifeOfTheGods",
-  "identifier-ark": "ark:/13960/t3127145w",
-  "ocr": "ABBYY FineReader 8.0",
-  "repub_state": "4",
-  "curation": "[curator]malware@archive.org[/curator][date]20140322175803[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903804_2",
-  "coverImageWidth": 180,
-  "coverImageHeight": 270
+  "coverHeight": 270
 }

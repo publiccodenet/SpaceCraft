@@ -50,19 +50,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/jodorowsky-dune",
   "coverWidth": 180,
-  "coverHeight": 125,
-  "favoriteCount": 0,
-  "name": "Jodorowsky Dune Bible Book Sample",
-  "publicdate": "2021-04-12 03:02:07",
-  "identifier": "jodorowsky-dune",
-  "date": "1973",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "famalheiros@gmail.com",
-  "addeddate": "2021-04-12 03:02:07",
-  "curation": "[curator]validator@archive.org[/curator][date]20210412030242[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/jodorowsky-dune",
-  "identifier-ark": "ark:/13960/t0qs5ck5q",
-  "year": "1973",
-  "coverImageWidth": 180,
-  "coverImageHeight": 125
+  "coverHeight": 125
 }

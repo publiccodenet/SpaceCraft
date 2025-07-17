@@ -44,22 +44,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/TheFaceInTheAbyssFirstEdition1931",
   "coverWidth": 180,
-  "coverHeight": 204,
-  "favoriteCount": 0,
-  "name": "The Face In The Abyss - A. Merritt (1931 First Edition)",
-  "publicdate": "2019-03-08 17:40:55",
-  "identifier": "TheFaceInTheAbyssFirstEdition1931",
-  "date": "1931",
-  "language": "eng",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "cootiebug1952@gmail.com",
-  "addeddate": "2019-03-08 17:40:55",
-  "curation": "[curator]validator@archive.org[/curator][date]20190308174153[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/TheFaceInTheAbyssFirstEdition1931",
-  "identifier-ark": "ark:/13960/t1pg96q3v",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "year": "1931",
-  "backup_location": "ia906808_24",
-  "coverImageWidth": 180,
-  "coverImageHeight": 204
+  "coverHeight": 204
 }

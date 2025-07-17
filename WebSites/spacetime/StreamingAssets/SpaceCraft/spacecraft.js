@@ -36,17 +36,19 @@
 //
 // --- STATE PROPERTIES (synchronized via presence) ---
 // Simulator shares these properties in its presence state:
-// - selectedItemIds: Array of all currently selected item IDs
-// - highlightedItemIds: Array of all currently highlighted item IDs
-// - selectedItemId: First item from selectedItemIds array
-// - highlightedItemId: First item from highlightedItemIds array
+// - selectedItemId: ID of the currently selected item (singular, first from Unity array)
 // - selectedItem: Metadata for current selected item (without nested tree)
-// - highlightedItem: Metadata for highlighted item (without nested tree)
-// - currentCollectionId: ID of the currently active collection
-// - currentCollection: Metadata for the current collection (without items array)
-// - currentCollectionItems: Array of item IDs in the current collection
 // - screenIds: Array of available screen IDs
 // - currentScreenId: Current active screen ID
+// - tags: Dynamically calculated alphabetized deduplicated list of all tags from all items
+// - connectedClients: Array of connected client info
+// - updateCounter: Increments on each state change
+// - lastUpdated: ISO timestamp of last state update
+//
+// NOTE: The following are NOT shared with Supabase (Unity bridge protocol only):
+// - selectedItemIds, highlightedItemIds arrays
+// - highlightedItemId, highlightedItem
+// - currentCollectionId, currentCollection, currentCollectionItems
 //
 // --- BRIDGE METHODS (Called from JS to Unity) ---
 // "PushCameraPosition": [clientId, clientName, screenId, panXDelta, panYDelta]
@@ -150,7 +152,7 @@ class SpaceCraftSim {
         this.isInitialized = false; // Flag to track if basic init (like QR code check) is done
         this.domContentLoaded = false; // Flag to track if DOM is ready
         this.loadedContent = null; // Store the loaded content data here (private to simulator)
-        this.availableKeywords = []; // Store keywords from index-deep.json
+
         
         // Search state
         this.currentSearchQuery = ''; // Track current search query for change detection
@@ -573,14 +575,7 @@ class SpaceCraftSim {
                 console.warn(`[SpaceCraft] Collection with ID '${this.state.currentCollectionId}' not found in content.`);
             }
 
-            // Extract keywords from loaded content if available
-            if (this.loadedContent && this.loadedContent.keywords) {
-                this.availableKeywords = this.loadedContent.keywords;
-                this.state.keywords = this.availableKeywords;
-                console.log(`[SpaceCraft] Loaded ${this.availableKeywords.length} keywords from content`);
-            } else {
-                console.log("[SpaceCraft] No keywords found in content");
-            }
+
             
             // Create the SpaceCraft object via Bridge - pass content exactly as received
             const success = this.createSpaceCraftObject(this.loadedContent);
@@ -690,44 +685,41 @@ class SpaceCraftSim {
     initializeState() {
         // Default state for simulator
         this.state = {
-            // Client identity
-            clientType: 'simulator',
-            clientId: this.clientId,
-            clientName: 'Spacecraft Simulator',
-            
-            // Collection/screen state
+            // Screen state
             currentScreenId: 'main',
             screenIds: ['main'],
+            
+            // Collection state (NOT shared with Supabase)
             currentCollectionId: 'scifi',  // Default collection
             currentCollection: null,
             currentCollectionItems: [],
             
-            // Selection state
+            // Selection state (plural arrays for Unity bridge protocol, NOT shared)
             selectedItemIds: [],
+            
+            // Selected item state (singular, shared with Supabase)
             selectedItemId: null,
             selectedItem: null,
             
-            // Highlight state
+            // Highlight state (plural arrays for Unity bridge protocol, NOT shared)
             highlightedItemIds: [],
+            
+            // Highlighted item state (singular, shared with Supabase)
             highlightedItemId: null,
             highlightedItem: null,
             
             // Connected clients tracking
             connectedClients: [],
             
-            // Available keywords from content
-            keywords: [],
-            
-            updateCounter: 0, // Add update counter
-            
-            // Last updated timestamp
+            // System state
+            updateCounter: 0,
             lastUpdated: new Date().toISOString()
         };
     }
     
     /**
      * Updates the currently selected item based on selected items
-     * Sets selectedItemId and selectedItem in the state
+     * Sets selectedItemId and selectedItem in the state (singular, only first item)
      */
     updateSelectedItem() {
         console.log("[SpaceCraft DEBUG] updateSelectedItem called. Current selectedItemIds:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
@@ -761,12 +753,27 @@ class SpaceCraftSim {
             return;
         }
         
+        // Create filtered state for Supabase - exclude Unity bridge arrays and collection data
+        const { 
+            selectedItemIds, 
+            highlightedItemIds, 
+            highlightedItemId,
+            highlightedItem,
+            currentCollectionId,
+            currentCollection,
+            currentCollectionItems,
+            ...filteredState 
+        } = this.state;
+        
+        // Add dynamically calculated unified tags
+        filteredState.tags = this.createUnifiedTagsList();
+        
         // Log exactly what is being synced, especially selectedItem
         console.log("[SpaceCraft] Syncing state to presence. Current selectedItem:", JSON.parse(JSON.stringify(this.state.selectedItem))); 
         
         this.clientChannel.track({
             ...this.identity,
-            shared: { ...this.state } 
+            shared: filteredState 
         }).catch(error => {
             console.error("[SpaceCraft] Error tracking presence:", error);
         });
@@ -1098,6 +1105,43 @@ class SpaceCraftSim {
             }
         }
         return null;
+    }
+
+    /**
+     * Creates a unified, alphabetized, deduplicated list of all tags from all items in all collections
+     * @returns {Array<string>} Array of unique tags in alphabetical order
+     */
+    createUnifiedTagsList() {
+        if (!this.loadedContent || !this.loadedContent.collections) {
+            return [];
+        }
+
+        const allTags = new Set();
+
+        // Iterate through all collections
+        for (const collectionId in this.loadedContent.collections) {
+            const collection = this.loadedContent.collections[collectionId];
+            
+            // Iterate through all items in the collection
+            if (collection.items) {
+                for (const itemId in collection.items) {
+                    const itemData = collection.items[itemId];
+                    const item = itemData.item;
+                    
+                    // Add tags from the item if they exist
+                    if (item && item.tags && Array.isArray(item.tags)) {
+                        item.tags.forEach(tag => {
+                            if (tag && typeof tag === 'string' && tag.trim()) {
+                                allTags.add(tag.toLowerCase().trim());
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        // Convert Set to Array and sort alphabetically
+        return Array.from(allTags).sort();
     }
     
     /**

@@ -31,17 +31,19 @@
  * 
  * --- SHARED STATE PROPERTIES (synchronized via presence) ---
  * Simulator shares these properties in its presence state:
- * - selectedItemIds: Array of all currently selected item IDs
- * - highlightedItemIds: Array of all currently highlighted item IDs  
- * - selectedItemId: First item from selectedItemIds array
- * - highlightedItemId: First item from highlightedItemIds array
+ * - selectedItemId: ID of the currently selected item (singular, first from Unity array)
  * - selectedItem: Metadata for current selected item (without nested tree)
- * - highlightedItem: Metadata for highlighted item (without nested tree)
- * - currentCollectionId: ID of the currently active collection
- * - currentCollection: Metadata for the current collection (without items array)
- * - currentCollectionItems: Array of item IDs in the current collection
  * - screenIds: Array of available screen IDs
  * - currentScreenId: Current active screen ID
+ * - tags: Dynamically calculated alphabetized deduplicated list of all tags from all items
+ * - connectedClients: Array of connected client info
+ * - updateCounter: Increments on each state change
+ * - lastUpdated: ISO timestamp of last state update
+ *
+ * NOTE: The following are NOT shared with Supabase (Unity bridge protocol only):
+ * - selectedItemIds, highlightedItemIds arrays
+ * - highlightedItemId, highlightedItem
+ * - currentCollectionId, currentCollection, currentCollectionItems
  *
  * --- PRESENCE IDENTITY PROPERTIES ---
  * All clients track identity with:
@@ -1598,12 +1600,12 @@ window.BaseController = class BaseController {
         searchInput.value = this.currentSearchQuery || '';
         searchWrapper.appendChild(searchInput);
         
-        // Create keyword menu button
+        // Create tag menu button
         const keywordButton = document.createElement('button');
         keywordButton.id = 'keyword-menu-button';
         keywordButton.className = 'keyword-menu-button';
         keywordButton.innerHTML = '#';
-        keywordButton.title = 'Browse keywords';
+        keywordButton.title = 'Browse tags';
         searchWrapper.appendChild(keywordButton);
         
         searchContainer.appendChild(searchWrapper);
@@ -1626,7 +1628,7 @@ window.BaseController = class BaseController {
         
         const menuHeader = document.createElement('div');
         menuHeader.className = 'keyword-menu-header';
-        menuHeader.textContent = 'Select Keywords:';
+        menuHeader.textContent = 'Select Tags:';
         menu.appendChild(menuHeader);
         
         const menuList = document.createElement('div');
@@ -1709,7 +1711,7 @@ window.BaseController = class BaseController {
     }
     
     /**
-     * Update keyword menu with available keywords from simulator
+     * Update keyword menu with available tags from simulator
      */
     updateKeywordMenu() {
         const menuList = document.getElementById('keyword-menu-list');
@@ -1718,31 +1720,31 @@ window.BaseController = class BaseController {
         // Clear existing items
         menuList.innerHTML = '';
         
-        // Get keywords from simulator state
-        const keywords = this.simulatorState?.keywords || [];
+        // Get tags from simulator state
+        const tags = this.simulatorState?.tags || [];
         
-        if (keywords.length === 0) {
+        if (tags.length === 0) {
             const emptyMessage = document.createElement('div');
             emptyMessage.className = 'keyword-menu-empty';
-            emptyMessage.textContent = 'No keywords available';
+            emptyMessage.textContent = 'No tags available';
             menuList.appendChild(emptyMessage);
             return;
         }
         
-        // Create keyword items
-        keywords.forEach(keyword => {
+        // Create tag items - one per line
+        tags.forEach(tag => {
             const item = document.createElement('div');
             item.className = 'keyword-menu-item';
-            item.textContent = `#${keyword}`;
+            item.textContent = `#${tag}`;
             
             item.addEventListener('click', (e) => {
                 e.stopPropagation();
                 
-                // Add keyword to search
+                // Add tag to search
                 const searchInput = document.getElementById('search-input');
                 if (searchInput) {
                     const currentValue = searchInput.value.trim();
-                    const newValue = currentValue ? `${currentValue} #${keyword}` : `#${keyword}`;
+                    const newValue = currentValue ? `${currentValue} #${tag}` : `#${tag}`;
                     searchInput.value = newValue;
                     this.updateSearchQuery(newValue);
                 }

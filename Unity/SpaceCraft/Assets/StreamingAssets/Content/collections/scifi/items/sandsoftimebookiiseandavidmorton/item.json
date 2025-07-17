@@ -34,21 +34,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/sandsoftimebookiiseandavidmorton",
   "coverWidth": 180,
-  "coverHeight": 304,
-  "favoriteCount": 0,
-  "name": "Sands Of Time Book II Sean David Morton",
-  "publicdate": "2020-04-10 19:17:18",
-  "identifier": "sandsoftimebookiiseandavidmorton",
-  "date": "2011",
-  "language": "eng",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "russrunge@yahoo.com",
-  "addeddate": "2020-04-10 19:17:18",
-  "curation": "[curator]validator@archive.org[/curator][date]20200410192237[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/sandsoftimebookiiseandavidmorton",
-  "identifier-ark": "ark:/13960/t5r87115p",
-  "ppi": "300",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "coverImageWidth": 180,
-  "coverImageHeight": 304
+  "coverHeight": 304
 }

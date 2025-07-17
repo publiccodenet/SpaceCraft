@@ -62,7 +62,24 @@
           }
         }
       ],
-      "description": "Subject tags for this item.",
+      "description": "Subjects for this item.",
+      "x_meta": {
+        "UnitySchemaConverter": "SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter"
+      }
+    },
+    "tags": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ],
+      "description": "Tags for this item.",
       "x_meta": {
         "UnitySchemaConverter": "SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter"
       }

@@ -39,28 +39,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/TheKlingonLanguageVersionOfTheWorldEnglishBiblePsalms",
   "coverWidth": 180,
-  "coverHeight": 133,
-  "favoriteCount": 0,
-  "name": "The Klingon Language Version of the World English Bible Psalms",
-  "publicdate": "2010-07-01 02:49:50",
-  "identifier": "TheKlingonLanguageVersionOfTheWorldEnglishBiblePsalms",
-  "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
-  "addeddate": "2010-07-01 02:48:24",
-  "uploader": "joel@mrklingon.org",
-  "updater": [
-    "mrklingon",
-    "mrklingon"
-  ],
-  "updatedate": [
-    "2010-07-01 02:57:28",
-    "2010-07-01 03:03:36"
-  ],
-  "language": "English",
-  "identifier-access": "http://www.archive.org/details/TheKlingonLanguageVersionOfTheWorldEnglishBiblePsalms",
-  "identifier-ark": "ark:/13960/t6qz2zf0s",
-  "repub_state": "4",
-  "curation": "[curator]validator@archive.org[/curator][date]20140401021208[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903605_27",
-  "coverImageWidth": 180,
-  "coverImageHeight": 133
+  "coverHeight": 133
 }

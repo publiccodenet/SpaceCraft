@@ -36,6 +36,5 @@
   "collection": [
     "scifi"
   ],
-  "mediatype": "texts",
-  "spacecraft_custom_item": true
+  "mediatype": "texts"
 }

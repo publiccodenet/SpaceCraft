@@ -36,22 +36,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/UnderTheThelianSky",
   "coverWidth": 180,
-  "coverHeight": 270,
-  "favoriteCount": 0,
-  "name": "Under The Thelian Sky",
-  "publicdate": "2014-01-23 15:13:24",
-  "identifier": "UnderTheThelianSky",
-  "date": "2013-11-21",
-  "language": "eng",
-  "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
-  "scanner": "Internet Archive HTML5 Uploader 1.4.2",
-  "uploader": "franko@juno.com",
-  "addeddate": "2014-01-23 15:13:24",
-  "identifier-access": "http://archive.org/details/UnderTheThelianSky",
-  "identifier-ark": "ark:/13960/t7mp7hm9g",
-  "repub_state": "4",
-  "curation": "[curator]malware@archive.org[/curator][date]20140312000846[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia905803_13",
-  "coverImageWidth": 180,
-  "coverImageHeight": 270
+  "coverHeight": 270
 }

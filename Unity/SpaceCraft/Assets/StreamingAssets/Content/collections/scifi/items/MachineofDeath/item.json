@@ -40,41 +40,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/MachineofDeath",
   "coverWidth": 180,
-  "coverHeight": 276,
-  "favoriteCount": 0,
-  "name": "Machine of death : a collection of stories about people who know how they will die",
-  "publicdate": "2014-08-15 18:13:19",
-  "identifier": "MachineofDeath",
-  "date": "2010",
-  "isbn": [
-    "0982167121",
-    "9780982167120"
-  ],
-  "language": "eng",
-  "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
-  "scanner": "Internet Archive HTML5 Uploader 1.5.2",
-  "uploader": "eric@hellman.net",
-  "addeddate": "2014-08-15 18:13:19",
-  "curation": "[curator]validator@archive.org[/curator][date]20140815181351[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/MachineofDeath",
-  "identifier-ark": "ark:/13960/t4tj18w3n",
-  "imagecount": "469",
-  "ppi": "300",
-  "ocr": "ABBYY FineReader 9.0",
-  "repub_state": "4",
-  "publisher": "Venice, CA : Bearstache Books",
-  "foldoutcount": "0",
-  "city": "Venice, CA",
-  "edition": "1st ed.",
-  "oclc-id": [
-    "678476546",
-    "682928159"
-  ],
-  "related-external-id": [
-    "urn:isbn:1451765975",
-    "urn:oclc:794038347"
-  ],
-  "backup_location": "ia905902_12",
-  "coverImageWidth": 180,
-  "coverImageHeight": 276
+  "coverHeight": 276
 }

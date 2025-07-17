@@ -41,21 +41,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/AllWeMarsmen",
   "coverWidth": 180,
-  "coverHeight": 230,
-  "favoriteCount": 0,
-  "name": "All We Marsmen",
-  "publicdate": "2011-11-28 02:00:23",
-  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
-  "identifier": "AllWeMarsmen",
-  "uploader": "clydestapledon@hotmail.com",
-  "addeddate": "2011-11-27 23:01:10",
-  "identifier-access": "http://www.archive.org/details/AllWeMarsmen",
-  "identifier-ark": "ark:/13960/t50g4pd7j",
-  "ppi": "144",
-  "ocr": "ABBYY FineReader 8.0",
-  "repub_state": "4",
-  "curation": "[curator]malware@archive.org[/curator][date]20140327081814[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903706_2",
-  "coverImageWidth": 180,
-  "coverImageHeight": 230
+  "coverHeight": 230
 }

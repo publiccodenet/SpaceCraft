@@ -42,26 +42,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/aliens-colonial-marines-technical-manual",
   "coverWidth": 180,
-  "coverHeight": 236,
-  "favoriteCount": 0,
-  "name": "Aliens Colonial Marines Technical Manual",
-  "publicdate": "2020-06-02 04:43:55",
-  "identifier": "aliens-colonial-marines-technical-manual",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "harizotoh7@gmail.com",
-  "addeddate": "2020-06-02 04:43:55",
-  "curation": "[curator]kaplan@archive.org[/curator][date]20201206000107[/date][state]un-dark[/state]",
-  "language": "English",
-  "identifier-access": "http://archive.org/details/aliens-colonial-marines-technical-manual",
-  "identifier-ark": "ark:/13960/t1dk47q6c",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "coverleaf": "0",
-  "noarchivetorrent": "true",
-  "collection_added": [
-    "folkscanomy_games",
-    "folkscanomy",
-    "additional_collections"
-  ],
-  "coverImageWidth": 180,
-  "coverImageHeight": 236
+  "coverHeight": 236
 }

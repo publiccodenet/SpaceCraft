@@ -35,26 +35,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/RussellEricFrankDarkTidesPanther1963_201904",
   "coverWidth": 180,
-  "coverHeight": 282,
-  "favoriteCount": 0,
-  "name": "Dark Tides - Eric Frank Russell (1963)",
-  "publicdate": "2019-04-21 22:42:13",
-  "identifier": "RussellEricFrankDarkTidesPanther1963_201904",
-  "date": "1963",
-  "language": "eng",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "cootiebug1952@gmail.com",
-  "addeddate": "2019-04-21 22:42:13",
-  "curation": "[curator]validator@archive.org[/curator][date]20190421224322[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/RussellEricFrankDarkTidesPanther1963_201904",
-  "identifier-ark": "ark:/13960/t10p8np8p",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "year": "1963",
-  "backup_location": "ia906902_22",
-  "collection_added": [
-    "pulpmagazinearchive",
-    "additional_collections"
-  ],
-  "coverImageWidth": 180,
-  "coverImageHeight": 282
+  "coverHeight": 282
 }

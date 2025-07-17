@@ -150,7 +150,7 @@ class SpaceCraftSim {
         this.isInitialized = false; // Flag to track if basic init (like QR code check) is done
         this.domContentLoaded = false; // Flag to track if DOM is ready
         this.loadedContent = null; // Store the loaded content data here (private to simulator)
-        this.availableKeywords = []; // Store keywords from index-deep.json
+        this.availableTags = []; // Store tags from all items
         
         // Search state
         this.currentSearchQuery = ''; // Track current search query for change detection
@@ -573,14 +573,18 @@ class SpaceCraftSim {
                 console.warn(`[SpaceCraft] Collection with ID '${this.state.currentCollectionId}' not found in content.`);
             }
 
-            // Extract keywords from loaded content if available
-            if (this.loadedContent && this.loadedContent.keywords) {
-                this.availableKeywords = this.loadedContent.keywords;
-                this.state.keywords = this.availableKeywords;
-                console.log(`[SpaceCraft] Loaded ${this.availableKeywords.length} keywords from content`);
+            // Extract tags from loaded content items
+            this.availableTags = this.createUnifiedTagsList();
+            this.state.tags = this.availableTags;
+            console.log(`[SpaceCraft] Loaded ${this.availableTags.length} tags from content items`);
+            if (this.availableTags.length > 0) {
+                console.log("[SpaceCraft] Available tags:", this.availableTags.slice(0, 10).join(", ") + (this.availableTags.length > 10 ? "..." : ""));
             } else {
-                console.log("[SpaceCraft] No keywords found in content");
+                console.log("[SpaceCraft] No tags found in content items");
             }
+            
+            // Sync tags to presence immediately after loading
+            this.syncStateToPresence();
             
             // Create the SpaceCraft object via Bridge - pass content exactly as received
             const success = this.createSpaceCraftObject(this.loadedContent);
@@ -591,6 +595,9 @@ class SpaceCraftSim {
                 
                 if (this.clientChannel) {
                     this.setupSupabaseChannel();
+                    
+                    // Sync tags to presence after Supabase channel is set up
+                    this.syncStateToPresence();
                 }
             } else if (!success) {
                 console.warn("[SpaceCraft] Skipping Supabase setup due to SpaceCraft creation failure");
@@ -715,8 +722,8 @@ class SpaceCraftSim {
             // Connected clients tracking
             connectedClients: [],
             
-            // Available keywords from content
-            keywords: [],
+            // Available tags from content items
+            tags: [],
             
             updateCounter: 0, // Add update counter
             
@@ -761,8 +768,9 @@ class SpaceCraftSim {
             return;
         }
         
-        // Log exactly what is being synced, especially selectedItem
+        // Log exactly what is being synced, especially selectedItem and tags
         console.log("[SpaceCraft] Syncing state to presence. Current selectedItem:", JSON.parse(JSON.stringify(this.state.selectedItem))); 
+        console.log("[SpaceCraft] Syncing state to presence. Tags count:", this.state.tags?.length || 0);
         
         this.clientChannel.track({
             ...this.identity,
@@ -1321,6 +1329,42 @@ class SpaceCraftSim {
                 });
             }
         }
+    }
+
+    /**
+     * Creates a unified, alphabetized, deduplicated list of all tags from all items in all collections
+     * @returns {Array<string>} Array of unique tags in alphabetical order
+     */
+    createUnifiedTagsList() {
+        if (!this.loadedContent || !this.loadedContent.collections) {
+            console.log("[SpaceCraft] No collections data available for creating tags list");
+            return [];
+        }
+
+        const allTags = new Set();
+
+        // Iterate through all collections
+        for (const [collectionId, collection] of Object.entries(this.loadedContent.collections)) {
+            if (!collection.items) continue;
+
+            // Iterate through all items in the collection
+            for (const [itemId, itemData] of Object.entries(collection.items)) {
+                const item = itemData.item;
+
+                // Add tags from the item if they exist
+                if (item && item.tags && Array.isArray(item.tags)) {
+                    item.tags.forEach(tag => {
+                        if (typeof tag === 'string' && tag.trim()) {
+                            allTags.add(tag.toLowerCase().trim());
+                        }
+                    });
+                }
+            }
+        }
+
+        const sortedTags = Array.from(allTags).sort();
+        console.log(`[SpaceCraft] Created unified tags list with ${sortedTags.length} unique tags`);
+        return sortedTags;
     }
 }
 

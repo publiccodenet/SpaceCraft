@@ -875,9 +875,8 @@ class ContentPipeline {
    * @param {string} collectionId Collection ID
    * @param {string} itemId Item ID
    * @param {Object} enhancedIndex Enhanced index to update
-   * @param {Object} keywordCollector Object to collect keywords
    */
-  async exportItem(collectionId, itemId, enhancedIndex, keywordCollector = null) {
+  async exportItem(collectionId, itemId, enhancedIndex) {
     const context = { function: 'exportItem', collectionId, itemId };
     const itemCachePath = path.join(this.contentCache, collectionId, 'Items', itemId, 'item.json');
     const itemCustomPath = path.join(this.contentCache, collectionId, 'Items', itemId, 'item-custom.json');
@@ -915,14 +914,7 @@ class ContentPipeline {
           this.logger.info(`Applied custom metadata for ${collectionId}/${itemId}`, null, context);
         }
         
-        // Collect keywords/tags if collector provided
-        if (keywordCollector && itemData.tags && Array.isArray(itemData.tags)) {
-          itemData.tags.forEach(tag => {
-            if (tag && typeof tag === 'string') {
-              keywordCollector.add(tag);
-            }
-          });
-        }
+
         
         // Create filtered item with ONLY official schema keys
         const filteredItem = {
@@ -1001,10 +993,28 @@ class ContentPipeline {
       "Assets/StreamingAssets/Content",
     );
     
-    // Clean Unity content directory if requested
+    // Clean Unity content directory if requested (preserve schemas)
     if (this.clean) {
-      this.logger.info(`Cleaning Unity content directory: ${this.exportContentPath}`, null, { function: 'export' });
-      await fs.emptyDir(this.exportContentPath);
+      this.logger.info(`Cleaning Unity content directory: ${this.exportContentPath} (preserving schemas)`, null, { function: 'export' });
+      
+      // Remove collections directory if it exists
+      const collectionsDir = path.join(this.exportContentPath, 'collections');
+      if (await fs.pathExists(collectionsDir)) {
+        await fs.remove(collectionsDir);
+      }
+      
+      // Remove specific files but preserve schemas directory
+      const filesToRemove = [
+        'collections-index.json',
+        'index-deep.json'
+      ];
+      
+      for (const filename of filesToRemove) {
+        const filepath = path.join(this.exportContentPath, filename);
+        if (await fs.pathExists(filepath)) {
+          await fs.remove(filepath);
+        }
+      }
     }
     
     // Ensure Unity content directory exists
@@ -1024,12 +1034,23 @@ class ContentPipeline {
       version: '1.0',
       exportedAt: new Date().toISOString(),
       collections: {},
-      collectionsIndex: whitelist.collectionsIndex,
-      keywords: [] // Will be populated with unique tags
+      collectionsIndex: whitelist.collectionsIndex
     };
     
-    // Create a Set to collect unique keywords/tags
-    const keywordCollector = new Set();
+    // Preserve existing itemsIndex from whitelist for each collection
+    for (const collectionId of whitelist.collectionsIndex) {
+      const collectionConfig = whitelist.collections[collectionId];
+      if (collectionConfig) {
+        enhancedIndex.collections[collectionId] = {
+          id: collectionId,
+          collection: collectionConfig.collection || {},
+          itemsIndex: collectionConfig.itemsIndex || [],
+          items: {}
+        };
+      }
+    }
+    
+
     
     // Process each collection in the whitelist
     for (const collectionId of whitelist.collectionsIndex) {
@@ -1060,13 +1081,21 @@ class ContentPipeline {
       // Read collection data from cache
       const collectionJson = await fs.readJSON(importCollectionFile);
       
-      // Add to enhanced index
-      enhancedIndex.collections[collectionId] = {
-        id: collectionId,
-        collection: collectionJson,
-        itemsIndex: collectionConfig.itemsIndex || [],
-        items: {}
-      };
+      // Update the collection data in enhanced index (preserve existing itemsIndex)
+      enhancedIndex.collections[collectionId].collection = collectionJson;
+      
+      // Process each item in the collection
+      for (const itemId of collectionConfig.itemsIndex || []) {
+        // Skip if item should be excluded based on filter
+        if (!this.shouldIncludeItem(itemId, collectionFilter)) {
+          this.logger.debug(`Skipping item ${itemId} based on filter`, null, { function: 'export', collectionId, itemId });
+          continue;
+        }
+        
+        // Export item - adds to enhancedIndex and copies cover images
+        await this.exportItem(collectionId, itemId, enhancedIndex);
+        this.logger.increment('item_exported_count', 1, { function: 'export', collectionId, itemId });
+      }
       
       // Write collection.json to the export directory
       const exportCollectionJsonPath = path.join(exportCollectionPath, 'collection.json');
@@ -1086,25 +1115,20 @@ class ContentPipeline {
         { spaces: 2 }
       );
       
-      // Process each item in the collection
-      for (const itemId of collectionConfig.itemsIndex || []) {
-        // Skip if item should be excluded based on filter
-        if (!this.shouldIncludeItem(itemId, collectionFilter)) {
-          this.logger.debug(`Skipping item ${itemId} based on filter`, null, { function: 'export', collectionId, itemId });
-          continue;
-        }
-        
-        // Export item - adds to enhancedIndex and copies cover images
-        await this.exportItem(collectionId, itemId, enhancedIndex, keywordCollector);
-        this.logger.increment('item_exported_count', 1, { function: 'export', collectionId, itemId });
-      }
-      
       this.logger.increment('collection_exported_count', 1, { function: 'export', collectionId });
     }
     
-    // Convert collected keywords to sorted array and add to index
-    enhancedIndex.keywords = Array.from(keywordCollector).sort();
-    this.logger.info(`Collected ${enhancedIndex.keywords.length} unique keywords`, null, { function: 'export' });
+
+    
+    // Export schemas to Unity
+    const schemasSourcePath = path.join(this.configPath, '..', 'schemas');
+    const schemasDestPath = path.join(this.exportContentPath, 'schemas');
+    
+    if (await fs.pathExists(schemasSourcePath)) {
+      await fs.ensureDir(schemasDestPath);
+      await fs.copy(schemasSourcePath, schemasDestPath);
+      this.logger.info(`Exported schemas to ${schemasDestPath}`, null, { function: 'export' });
+    }
     
     // Write enhanced index-deep.json to Unity - this contains all the metadata
     await fs.writeJSON(

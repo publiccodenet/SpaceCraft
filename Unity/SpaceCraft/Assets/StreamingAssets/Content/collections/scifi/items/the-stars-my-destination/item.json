@@ -41,21 +41,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/the-stars-my-destination",
   "coverWidth": 180,
-  "coverHeight": 236,
-  "favoriteCount": 0,
-  "name": "The Stars My Destination",
-  "publicdate": "2020-08-09 11:56:17",
-  "identifier": "the-stars-my-destination",
-  "date": "1992",
-  "language": "eng",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "paoloeffe69@gmail.com",
-  "addeddate": "2020-08-09 11:56:17",
-  "curation": "[curator]validator@archive.org[/curator][date]20200809115708[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/the-stars-my-destination",
-  "identifier-ark": "ark:/13960/t0009619g",
-  "ppi": "600",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "coverImageWidth": 180,
-  "coverImageHeight": 236
+  "coverHeight": 236
 }
