@@ -38,6 +38,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Base class for all schema-generated objects.
@@ -113,6 +114,9 @@ public abstract class SchemaGeneratedObject : ScriptableObject
             Debug.LogWarning($"[{GetType().Name}] Null JObject passed to ImportFromJToken");
             return;
         }
+        
+        // Debug what fields are in the JSON data
+        Debug.Log($"[{GetType().Name}] ImportFromJToken: JSON fields = {string.Join(", ", data.Properties().Select(p => $"{p.Name}={p.Value}"))}");
         
         // Clear existing extra fields before import
         extraFields = new JObject();

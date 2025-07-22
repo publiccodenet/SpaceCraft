@@ -647,7 +647,7 @@ class SpaceCraftSim {
                         console.log("[SpaceCraft JS DEBUG] Raw HighlightedItemsChanged event from Unity. Results:", JSON.parse(JSON.stringify(results)));
                         if (results && results.highlightedItemIds) {
                             this.state.highlightedItemIds = results.highlightedItemIds;
-                            console.log("[SpaceCraft JS DEBUG] Calling updateHighlightedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
+                            // console.log("[SpaceCraft JS DEBUG] Calling updateHighlightedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
                             this.updateHighlightedItem();
                         } else {
                             console.warn("[SpaceCraft JS DEBUG] HighlightedItemsChanged event: results or results.highlightedItemIds is missing.", results);
@@ -663,7 +663,7 @@ class SpaceCraftSim {
                         console.log("[SpaceCraft JS DEBUG] Raw SelectedItemsChanged event from Unity. Results:", JSON.parse(JSON.stringify(results)));
                         if (results && results.selectedItemIds) {
                             this.state.selectedItemIds = results.selectedItemIds;
-                            console.log("[SpaceCraft JS DEBUG] Calling updateSelectedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
+                            // console.log("[SpaceCraft JS DEBUG] Calling updateSelectedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
                             this.updateSelectedItem();
                         } else {
                             console.warn("[SpaceCraft JS DEBUG] SelectedItemsChanged event: results or results.selectedItemIds is missing.", results);
@@ -737,7 +737,7 @@ class SpaceCraftSim {
      * Sets selectedItemId and selectedItem in the state
      */
     updateSelectedItem() {
-        console.log("[SpaceCraft DEBUG] updateSelectedItem called. Current selectedItemIds:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
+        // console.log("[SpaceCraft DEBUG] updateSelectedItem called. Current selectedItemIds:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
         if (this.state.selectedItemIds && this.state.selectedItemIds.length > 0) {
             const newSelectedItemId = this.state.selectedItemIds[0];
             
@@ -902,30 +902,9 @@ class SpaceCraftSim {
                 }
             })
             .on('presence', { event: 'sync' }, () => {
-                // Get all current presences in the channel
                 const allPresences = channel.presenceState();
-                // console.log("[SpaceCraft] Presence sync event. Current presences:", allPresences);
-                
-                // Process connected clients
-                for (const presenceKey in allPresences) {
-                    const presences = allPresences[presenceKey];
-                    for (const presence of presences) {
-                        // Skip our own presence
-                        if (presence.clientId === this.identity.clientId) continue;
-                        
-                        this.updateClientInfo(
-                            presence.clientId,
-                            presence.clientType,
-                            presence.clientName || "Unknown Client"
-                        );
-                    }
-                }
-                
                 // Check for search queries from controllers
                 this.checkForSearchQueries(allPresences);
-                
-                // Check for cooperative tilt inputs from controllers
-                this.checkForTiltInputs(allPresences);
             })
             .on('presence', { event: 'join' }, ({ newPresences }) => {
                 // console.log("[SpaceCraft] New presences joined:", newPresences);
@@ -951,9 +930,6 @@ class SpaceCraftSim {
                 
                 // Check for search queries from the new presences
                 this.checkForSearchQueries(channel.presenceState());
-                
-                // Check for cooperative tilt inputs from new presences
-                this.checkForTiltInputs(channel.presenceState());
             })
             .on('presence', { event: 'leave' }, ({ leftPresences }) => {
                 // console.log("[SpaceCraft] Presences left:", leftPresences);
@@ -1169,7 +1145,7 @@ class SpaceCraftSim {
         // Sync the updated state
         this.syncStateToPresence(); // This will now send the incremented counter
         
-        console.log("[SpaceCraft] State updated (counter: " + this.state.updateCounter + "):", stateChanges);
+        // console.log("[SpaceCraft] State updated (counter: " + this.state.updateCounter + "):", stateChanges);
     }
 
     /**
@@ -1177,7 +1153,7 @@ class SpaceCraftSim {
      * Sets highlightedItemId and highlightedItem in the state
      */
     updateHighlightedItem() {
-        console.log("[SpaceCraft DEBUG] updateHighlightedItem called. Current highlightedItemIds:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
+        // console.log("[SpaceCraft DEBUG] updateHighlightedItem called. Current highlightedItemIds:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
         if (this.state.highlightedItemIds && this.state.highlightedItemIds.length > 0) {
             const newHighlightedItemId = this.state.highlightedItemIds[0];
             
@@ -1204,76 +1180,6 @@ class SpaceCraftSim {
      * Finds the first non-empty search query and sends it to Unity
      * @param {Object} presences - The presence state object
      */
-    /**
-     * Check all controller presence states for tilt inputs and combine them cooperatively
-     * Multiple controllers can tilt/shake together for combined physics control!
-     * @param {Object} presences - Current presence states from all clients
-     */
-    checkForTiltInputs(presences) {
-        const tiltInputs = [];
-        let activeTiltControllers = 0;
-        
-        // Collect tilt data from all connected controllers
-        for (const [clientId, presence] of Object.entries(presences)) {
-            if (presence && presence.tiltEnabled === true) {
-                // Only process controllers that have tilting explicitly enabled
-                const tiltX = presence.tiltX || 0;
-                const tiltZ = presence.tiltZ || 0;
-                
-                // Include all enabled controllers, even if neutral (for cooperative averaging)
-                tiltInputs.push({
-                    clientId: clientId,
-                    clientName: presence.clientName || 'Unknown',
-                    tiltX: tiltX,
-                    tiltZ: tiltZ
-                });
-                
-                // Count as active if actually tilting (not just enabled)
-                if (Math.abs(tiltX) > 1.0 || Math.abs(tiltZ) > 1.0) { // 1 degree threshold
-                    activeTiltControllers++;
-                }
-            }
-        }
-        
-        // Combine all tilt inputs (average for smooth cooperative control)
-        let combinedTiltX = 0;
-        let combinedTiltZ = 0;
-        
-        if (tiltInputs.length > 0) {
-            for (const tilt of tiltInputs) {
-                combinedTiltX += tilt.tiltX;
-                combinedTiltZ += tilt.tiltZ;
-            }
-            
-            // Average the tilts for smooth cooperative control
-            combinedTiltX /= tiltInputs.length;
-            combinedTiltZ /= tiltInputs.length;
-            
-            // Log cooperative tilt status
-            if (activeTiltControllers > 0) {
-                console.log(`[SpaceCraft] Cooperative tilt: ${activeTiltControllers}/${tiltInputs.length} controllers active, combined: (${combinedTiltX.toFixed(1)}°, ${combinedTiltZ.toFixed(1)}°)`);
-            }
-            
-            // Convert tilt angles to normalized values for Unity (-1 to +1)
-            const normalizedTiltX = Math.max(-1, Math.min(1, combinedTiltX / 45)); // 45° = full tilt
-            const normalizedTiltZ = Math.max(-1, Math.min(1, combinedTiltZ / 45)); // 45° = full tilt
-            
-            // Send combined tilt to Unity via bridge
-            if (this.spaceCraft && window.bridge) {
-                window.bridge.updateObject(this.spaceCraft, {
-                    "method:PushTiltInput": ['simulator', 'Spacecraft Simulator', normalizedTiltX, normalizedTiltZ]
-                });
-            }
-        } else {
-            // No controllers have tilting enabled - send neutral state
-            if (this.spaceCraft && window.bridge) {
-                window.bridge.updateObject(this.spaceCraft, {
-                    "method:PushTiltInput": ['simulator', 'Spacecraft Simulator', 0, 0]
-                });
-            }
-        }
-    }
-
     checkForSearchQueries(presences) {
         if (!this.spaceCraft) {
             // SpaceCraft bridge object not ready yet

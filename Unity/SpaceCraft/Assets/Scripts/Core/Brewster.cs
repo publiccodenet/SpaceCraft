@@ -143,8 +143,14 @@ public class Brewster : MonoBehaviour
 
             Collection collection = ScriptableObject.CreateInstance<Collection>();
             
+            // Debug the JSON before import
+            Debug.Log($"Brewster: About to import collection '{collectionId}' from JSON: {collectionJson}");
+            
             // Import from the nested collection object
             collection.ImportFromJToken(collectionJson);
+            
+            // Debug the collection after import
+            Debug.Log($"Brewster: After import - collection ID='{collection.Id}', Title='{collection.Title}'");
             
             // Collection should already have ID from ImportFromJToken,
             // but if not, use the collection ID from the JSON key

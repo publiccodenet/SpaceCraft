@@ -1421,9 +1421,11 @@ window.BaseController = class BaseController {
                 // Try to display a more informative status if possible
                 let statusText = `Connected to: ${this.simulatorState.clientName || 'Simulator'}`;
                 if (this.simulatorState.selectedItem && this.simulatorState.selectedItem.title) {
-                    statusText += ` (Selected: ${this.simulatorState.selectedItem.title})`;
+                    const collectionTitle = this.simulatorState.currentCollection?.title || 'Unknown Collection';
+                    statusText += ` (Selected: ${collectionTitle}\n${this.simulatorState.selectedItem.title})`;
                 } else if (this.simulatorState.highlightedItem && this.simulatorState.highlightedItem.title) {
-                    statusText += ` (Highlighted: ${this.simulatorState.highlightedItem.title})`;
+                    const collectionTitle = this.simulatorState.currentCollection?.title || 'Unknown Collection';
+                    statusText += ` (Highlighted: ${collectionTitle}\n${this.simulatorState.highlightedItem.title})`;
                 }
                 statusElement.textContent = statusText;
             } else {
@@ -1575,7 +1577,7 @@ window.BaseController = class BaseController {
     }
     
     /**
-     * Create search field UI - shared between navigator and selector
+     * Create search field UI - for navigator only
      * @returns {HTMLElement} The search container element
      */
     createSearchField() {
@@ -1586,6 +1588,14 @@ window.BaseController = class BaseController {
         // Create search input wrapper
         const searchWrapper = document.createElement('div');
         searchWrapper.className = 'search-wrapper';
+        
+        // Create tag menu button (moved to LEFT of text field)
+        const tagButton = document.createElement('button');
+        tagButton.id = 'tag-menu-button';
+        tagButton.className = 'tag-menu-button';
+        tagButton.innerHTML = '?';
+        tagButton.title = 'Browse tags';
+        searchWrapper.appendChild(tagButton);
         
         // Create search input
         const searchInput = document.createElement('input');
@@ -1599,14 +1609,6 @@ window.BaseController = class BaseController {
         searchInput.spellcheck = 'false';
         searchInput.value = this.currentSearchQuery || '';
         searchWrapper.appendChild(searchInput);
-        
-        // Create tag menu button
-        const tagButton = document.createElement('button');
-        tagButton.id = 'tag-menu-button';
-        tagButton.className = 'tag-menu-button';
-        tagButton.innerHTML = '#';
-        tagButton.title = 'Browse tags';
-        searchWrapper.appendChild(tagButton);
         
         searchContainer.appendChild(searchWrapper);
         
@@ -1740,17 +1742,34 @@ window.BaseController = class BaseController {
         tags.forEach(tag => {
             const item = document.createElement('div');
             item.className = 'tag-menu-item';
-            item.textContent = `#${tag}`;
+            item.textContent = tag; // Remove # prefix from display
             
             item.addEventListener('click', (e) => {
                 e.stopPropagation();
                 
-                // Add tag to search
+                // Add tag to search with smart spacing
                 const searchInput = document.getElementById('search-input');
                 if (searchInput) {
-                    const currentValue = searchInput.value.trim();
-                    const newValue = currentValue ? `${currentValue} #${tag}` : `#${tag}`;
+                    const currentValue = searchInput.value;
+                    let newValue;
+                    
+                    if (currentValue === '') {
+                        // Empty field: just set tag plus space
+                        newValue = `${tag} `;
+                    } else {
+                        // Not empty: add space if needed, then tag plus space
+                        if (currentValue.endsWith(' ')) {
+                            newValue = `${currentValue}${tag} `;
+                        } else {
+                            newValue = `${currentValue} ${tag} `;
+                        }
+                    }
+                    
                     searchInput.value = newValue;
+                    // Move cursor to end and focus
+                    searchInput.setSelectionRange(newValue.length, newValue.length);
+                    searchInput.focus();
+                    
                     this.updateSearchQuery(newValue);
                 }
                 
@@ -2101,10 +2120,6 @@ window.SelectorController = class SelectorController extends BaseController {
         instructions.className = 'instructions';
         instructions.innerHTML = '<strong>TAP or SWIPE left/right/up/down</strong>';
         container.appendChild(instructions);
-        
-        // Create search container
-        const searchContainer = this.createSearchField();
-        container.appendChild(searchContainer);
         
         // Create status
         const status = document.createElement('div');

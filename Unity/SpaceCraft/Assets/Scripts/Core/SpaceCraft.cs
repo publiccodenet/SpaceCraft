@@ -1063,7 +1063,7 @@ public class SpaceCraft : BridgeObject
             }
         }
         
-        // Update the info panel
+        // Update the info panelimage.pngimage.png
         if (string.IsNullOrEmpty(titleToDisplay))
         {
             collectionsView.itemInfoPanel.ClearInfo();
@@ -1155,17 +1155,7 @@ public class SpaceCraft : BridgeObject
     /// <summary>
     /// Forward tilt input to InputManager (Bridge compatibility)
     /// </summary>
-    public void PushTiltInput(string controllerId, string controllerName, float normalizedTiltX, float normalizedTiltZ)
-    {
-        if (inputManager != null)
-        {
-            inputManager.PushTiltInput(controllerId, controllerName, normalizedTiltX, normalizedTiltZ);
-        }
-        else
-        {
-            Debug.LogWarning("[SpaceCraft] Cannot forward PushTiltInput - InputManager is null");
-        }
-    }
+    // Tilt input removed - was causing excessive message spam and is not currently used
 
     /// <summary>
     /// Send events only when changes have occurred - reduce bridge traffic

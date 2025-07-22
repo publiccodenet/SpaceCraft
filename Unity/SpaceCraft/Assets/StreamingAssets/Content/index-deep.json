@@ -6,7 +6,7 @@
       "id": "scifi",
       "collection": {
         "id": "scifi",
-        "name": "Science Fiction",
+        "title": "Science Fiction",
         "description": "",
         "query": "subject:science fiction mediatype:texts",
         "sort": "downloads desc",
