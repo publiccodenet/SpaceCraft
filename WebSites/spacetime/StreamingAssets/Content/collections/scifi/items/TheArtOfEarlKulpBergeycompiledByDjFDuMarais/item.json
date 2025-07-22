@@ -1,7 +1,7 @@
 {
   "id": "TheArtOfEarlKulpBergeycompiledByDjFDuMarais",
   "title": "The Art Of Earle Kulp Bergey (compiled by DjF du Marais)",
-  "description": "The Art Of Earle Kulp Bergey.",
+  "description": "The Art of Earle K. Bergey showcases the work of one of the most distinctive and influential illustrators of the pulp science fiction era. Bergey was renowned for his dramatic cover paintings that appeared on magazines like Startling Stories and Thrilling Wonder Stories during the 1940s and 1950s. His artwork epitomized the classic pulp aesthetic with its bold colors, dynamic compositions, and iconic imagery of rocket ships, alien worlds, and futuristic technology. Bergey's covers often featured the classic elements of pulp science fiction: heroic protagonists, exotic alien landscapes, gleaming cities of the future, and dramatic space battles. His artistic style helped define the visual language of science fiction for an entire generation of readers and continues to influence science fiction art today. This collection compiled by DJ F. Du Marais preserves an important piece of science fiction's visual heritage, documenting how these powerful images shaped readers' imaginations and contributed to the genre's cultural impact.",
   "creator": "",
   "subject": [
     "Pulps",
@@ -17,6 +17,28 @@
     "Art",
     "Artists"
   ],
+  "tags": [
+    "earle k bergey",
+    "1940s science fiction",
+    "1950s science fiction",
+    "american science fiction",
+    "pulp era",
+    "golden age science fiction",
+    "science fiction illustration",
+    "pulp art",
+    "magazine covers",
+    "art collection",
+    "visual heritage",
+    "pulp aesthetic",
+    "startling stories",
+    "thrilling wonder stories",
+    "rocket ships",
+    "magazine fiction",
+    "pulp fiction",
+    "artistic influence",
+    "science fiction history",
+    "cultural documentation"
+  ],
   "collection": [
     "pulp_fiction_misc",
     "pulpmagazinearchive",
@@ -25,22 +47,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/TheArtOfEarlKulpBergeycompiledByDjFDuMarais",
   "coverWidth": 180,
-  "coverHeight": 255,
-  "favoriteCount": 0,
-  "name": "The Art Of Earle Kulp Bergey (compiled by DjF du Marais)",
-  "publicdate": "2019-03-24 23:29:06",
-  "identifier": "TheArtOfEarlKulpBergeycompiledByDjFDuMarais",
-  "language": "eng",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "cootiebug1952@gmail.com",
-  "addeddate": "2019-03-24 23:29:06",
-  "curation": "[curator]validator@archive.org[/curator][date]20190324233511[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/TheArtOfEarlKulpBergeycompiledByDjFDuMarais",
-  "identifier-ark": "ark:/13960/t0104qq6m",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "date": "2010",
-  "year": "2010",
-  "backup_location": "ia906809_34",
-  "coverImageWidth": 180,
-  "coverImageHeight": 255
+  "coverHeight": 255
 }

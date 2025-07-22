@@ -1,7 +1,7 @@
 {
   "id": "LittleBrother",
   "title": "Little Brother von Cory Doctorow (ebook-deutsch)",
-  "description": "Science Fiction Novelle von Cory Doctorow in der deutschen Uebersetzung von Christian Woehrl. Diverse eBook-Formate (epub, prc, pdb, mobi).\n\nWebseite des Autors: http://craphound.com/littlebrother\nWebseite des Uebersetzers: http://cwoehrl.de/?q=node/425",
+  "description": "Little Brother, published in 2008, is Cory Doctorow's young adult thriller about teenage hacker Marcus Yallow fighting against a surveillance state in near-future San Francisco. When terrorists bomb the Bay Bridge and BART tunnels, the Department of Homeland Security responds with extreme security measures that transform the city into a police state. Marcus and his friends are detained and interrogated as suspected terrorists simply for being in the wrong place at the wrong time. Released but traumatized, Marcus discovers that the DHS has deployed a comprehensive surveillance network monitoring citizens' every move through transportation cards, cell phones, and behavioral analysis.\n\nUsing the handle 'M1k3y,' Marcus organizes a tech-savvy resistance movement, teaching teenagers how to evade and confuse the surveillance apparatus through cryptography, mesh networks, and countermeasures like gait-changing techniques and RFID-blocking wallets. As the DHS tightens its grip on the city, Marcus must navigate increasing danger while building a movement that can restore constitutional rights. His relationship with Ange, both romantic and political, deepens as they work together to expose the abuses of power, ultimately risking everything to take their evidence to the media.\n\nDoctorow's novel operates as both entertaining thriller and educational manifesto about digital privacy and civil liberties. Written in response to post-9/11 security measures, the book serves as a primer on cryptography, network security, and resistance tactics while exploring how fear can lead societies to surrender freedom for the illusion of safety. Little Brother's influence extends beyond literature: it has been used in classrooms to teach digital literacy and has inspired real-world activism around surveillance and privacy rights. The novel demonstrates how technology can serve both oppression and liberation, depending on who controls it.",
   "creator": "Cory Doctorow",
   "subject": [
     "Little Brother",
@@ -16,6 +16,29 @@
     "pdb",
     "prc"
   ],
+  "tags": [
+    "cory doctorow",
+    "2000s science fiction",
+    "american science fiction",
+    "young adult science fiction",
+    "surveillance",
+    "hacker",
+    "civil liberties",
+    "cryptography",
+    "resistance",
+    "dystopian",
+    "terrorism",
+    "digital privacy",
+    "near future",
+    "surveillance state",
+    "department of homeland security",
+    "technology",
+    "mesh networks",
+    "privacy rights",
+    "constitutional rights",
+    "san francisco",
+    "novel"
+  ],
   "collection": [
     "opensource",
     "community"
@@ -23,42 +46,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/LittleBrother",
   "coverWidth": 180,
-  "coverHeight": 190,
-  "favoriteCount": 0,
-  "name": "Little Brother von Cory Doctorow (ebook-deutsch)",
-  "publicdate": "2009-04-11 09:38:15",
-  "identifier": "LittleBrother",
-  "licenseurl": "http://creativecommons.org/licenses/by-nc-sa/3.0/de/",
-  "addeddate": "2009-04-11 09:37:37",
-  "uploader": "rollmops@mail.ru",
-  "updater": [
-    "Rollmops im Kanzlerbunker",
-    "Rollmops im Kanzlerbunker",
-    "Rollmops im Kanzlerbunker",
-    "Rollmops im Kanzlerbunker",
-    "Rollmops im Kanzlerbunker"
-  ],
-  "updatedate": [
-    "2009-04-11 09:46:00",
-    "2009-04-11 09:49:43",
-    "2009-04-11 09:52:57",
-    "2009-04-11 12:00:49",
-    "2009-04-11 12:01:15"
-  ],
-  "contributor": "Christian Woehrl",
-  "publisher": "Cory Doctorow",
-  "language": "German",
-  "coverage": "USA, San Francisco",
-  "identifier-access": "http://www.archive.org/details/LittleBrother",
-  "identifier-ark": "ark:/13960/t6vx0qn0q",
-  "repub_state": "4",
-  "filesxml": [
-    "Wed Sep 2 1:25:14 UTC 2009",
-    "Wed Sep 2 5:36:42 UTC 2009",
-    "Mon Dec 6 0:42:07 UTC 2010"
-  ],
-  "curation": "[curator]malware@archive.org[/curator][date]20140311011740[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903602_35",
-  "coverImageWidth": 180,
-  "coverImageHeight": 190
+  "coverHeight": 190
 }

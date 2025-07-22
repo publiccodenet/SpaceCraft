@@ -1,7 +1,7 @@
 {
   "id": "TheMartianWay",
   "title": "The Martian Way",
-  "description": "Novella published in Galaxy Science Fiction (November 1952).\nBlurb: \"It was junk they hunted, but enormously valuable and urgently needed junk that cost only bravery and the cheapest fuel ... yet they were kept from collecting it by an even cheaper lie!\"",
+  "description": "The Martian Way by Isaac Asimov is a classic science fiction novella that explores themes of frontier independence, resource scarcity, and the development of distinct colonial cultures. Set in Asimov's future history, the story follows the inhabitants of Mars as they face a crisis when Earth threatens to cut off their water supply. The Martians must find a creative solution that will ensure their survival and independence, leading them to undertake a dangerous mission to the asteroid belt. The novella exemplifies Asimov's skill at combining hard science fiction concepts with compelling human drama and social commentary. It explores how isolated human communities might develop their own cultures and values different from their parent civilization, while also examining themes of self-reliance, innovation, and the pioneer spirit. The story is notable for its realistic portrayal of space travel and orbital mechanics, as well as its thoughtful consideration of how humans might adapt to life in space colonies.",
   "creator": "Isaac Asimov",
   "subject": [
     "Science Fiction",
@@ -11,6 +11,30 @@
     "Martians",
     "Martian SFF"
   ],
+  "tags": [
+    "isaac asimov",
+    "1950s science fiction",
+    "american science fiction",
+    "golden age science fiction",
+    "hard science fiction",
+    "classic science fiction",
+    "novella",
+    "adult fiction",
+    "mars",
+    "space colonies",
+    "colonial independence",
+    "water scarcity",
+    "asteroid belt",
+    "frontier spirit",
+    "orbital mechanics",
+    "resource management",
+    "cultural evolution",
+    "social science fiction",
+    "space exploration",
+    "pioneer themes",
+    "self-reliance",
+    "innovation"
+  ],
   "collection": [
     "opensource",
     "community"
@@ -18,22 +42,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/TheMartianWay",
   "coverWidth": 180,
-  "coverHeight": 249,
-  "favoriteCount": 0,
-  "name": "The Martian Way",
-  "publicdate": "2012-01-18 07:14:11",
-  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
-  "identifier": "TheMartianWay",
-  "uploader": "geoffgconklin@gmail.com",
-  "addeddate": "2012-01-18 07:06:41",
-  "language": "English",
-  "identifier-access": "http://www.archive.org/details/TheMartianWay",
-  "identifier-ark": "ark:/13960/t7mp6315k",
-  "ppi": "72",
-  "ocr": "ABBYY FineReader 8.0",
-  "repub_state": "4",
-  "curation": "[curator]malware@archive.org[/curator][date]20140321115425[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903707_27",
-  "coverImageWidth": 180,
-  "coverImageHeight": 249
+  "coverHeight": 249
 }

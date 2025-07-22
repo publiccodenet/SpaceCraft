@@ -36,19 +36,17 @@
 //
 // --- STATE PROPERTIES (synchronized via presence) ---
 // Simulator shares these properties in its presence state:
-// - selectedItemId: ID of the currently selected item (singular, first from Unity array)
+// - selectedItemIds: Array of all currently selected item IDs
+// - highlightedItemIds: Array of all currently highlighted item IDs
+// - selectedItemId: First item from selectedItemIds array
+// - highlightedItemId: First item from highlightedItemIds array
 // - selectedItem: Metadata for current selected item (without nested tree)
+// - highlightedItem: Metadata for highlighted item (without nested tree)
+// - currentCollectionId: ID of the currently active collection
+// - currentCollection: Metadata for the current collection (without items array)
+// - currentCollectionItems: Array of item IDs in the current collection
 // - screenIds: Array of available screen IDs
 // - currentScreenId: Current active screen ID
-// - tags: Dynamically calculated alphabetized deduplicated list of all tags from all items
-// - connectedClients: Array of connected client info
-// - updateCounter: Increments on each state change
-// - lastUpdated: ISO timestamp of last state update
-//
-// NOTE: The following are NOT shared with Supabase (Unity bridge protocol only):
-// - selectedItemIds, highlightedItemIds arrays
-// - highlightedItemId, highlightedItem
-// - currentCollectionId, currentCollection, currentCollectionItems
 //
 // --- BRIDGE METHODS (Called from JS to Unity) ---
 // "PushCameraPosition": [clientId, clientName, screenId, panXDelta, panYDelta]
@@ -152,7 +150,7 @@ class SpaceCraftSim {
         this.isInitialized = false; // Flag to track if basic init (like QR code check) is done
         this.domContentLoaded = false; // Flag to track if DOM is ready
         this.loadedContent = null; // Store the loaded content data here (private to simulator)
-
+        this.availableTags = []; // Store tags from all items
         
         // Search state
         this.currentSearchQuery = ''; // Track current search query for change detection
@@ -575,7 +573,18 @@ class SpaceCraftSim {
                 console.warn(`[SpaceCraft] Collection with ID '${this.state.currentCollectionId}' not found in content.`);
             }
 
-
+            // Extract tags from loaded content items
+            this.availableTags = this.createUnifiedTagsList();
+            this.state.tags = this.availableTags;
+            console.log(`[SpaceCraft] Loaded ${this.availableTags.length} tags from content items`);
+            if (this.availableTags.length > 0) {
+                console.log("[SpaceCraft] Available tags:", this.availableTags.slice(0, 10).join(", ") + (this.availableTags.length > 10 ? "..." : ""));
+            } else {
+                console.log("[SpaceCraft] No tags found in content items");
+            }
+            
+            // Sync tags to presence immediately after loading
+            this.syncStateToPresence();
             
             // Create the SpaceCraft object via Bridge - pass content exactly as received
             const success = this.createSpaceCraftObject(this.loadedContent);
@@ -586,6 +595,9 @@ class SpaceCraftSim {
                 
                 if (this.clientChannel) {
                     this.setupSupabaseChannel();
+                    
+                    // Sync tags to presence after Supabase channel is set up
+                    this.syncStateToPresence();
                 }
             } else if (!success) {
                 console.warn("[SpaceCraft] Skipping Supabase setup due to SpaceCraft creation failure");
@@ -635,7 +647,7 @@ class SpaceCraftSim {
                         console.log("[SpaceCraft JS DEBUG] Raw HighlightedItemsChanged event from Unity. Results:", JSON.parse(JSON.stringify(results)));
                         if (results && results.highlightedItemIds) {
                             this.state.highlightedItemIds = results.highlightedItemIds;
-                            console.log("[SpaceCraft JS DEBUG] Calling updateHighlightedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
+                            // console.log("[SpaceCraft JS DEBUG] Calling updateHighlightedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
                             this.updateHighlightedItem();
                         } else {
                             console.warn("[SpaceCraft JS DEBUG] HighlightedItemsChanged event: results or results.highlightedItemIds is missing.", results);
@@ -651,7 +663,7 @@ class SpaceCraftSim {
                         console.log("[SpaceCraft JS DEBUG] Raw SelectedItemsChanged event from Unity. Results:", JSON.parse(JSON.stringify(results)));
                         if (results && results.selectedItemIds) {
                             this.state.selectedItemIds = results.selectedItemIds;
-                            console.log("[SpaceCraft JS DEBUG] Calling updateSelectedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
+                            // console.log("[SpaceCraft JS DEBUG] Calling updateSelectedItem(). New IDs:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
                             this.updateSelectedItem();
                         } else {
                             console.warn("[SpaceCraft JS DEBUG] SelectedItemsChanged event: results or results.selectedItemIds is missing.", results);
@@ -685,44 +697,47 @@ class SpaceCraftSim {
     initializeState() {
         // Default state for simulator
         this.state = {
-            // Screen state
+            // Client identity
+            clientType: 'simulator',
+            clientId: this.clientId,
+            clientName: 'Spacecraft Simulator',
+            
+            // Collection/screen state
             currentScreenId: 'main',
             screenIds: ['main'],
-            
-            // Collection state (NOT shared with Supabase)
             currentCollectionId: 'scifi',  // Default collection
             currentCollection: null,
             currentCollectionItems: [],
             
-            // Selection state (plural arrays for Unity bridge protocol, NOT shared)
+            // Selection state
             selectedItemIds: [],
-            
-            // Selected item state (singular, shared with Supabase)
             selectedItemId: null,
             selectedItem: null,
             
-            // Highlight state (plural arrays for Unity bridge protocol, NOT shared)
+            // Highlight state
             highlightedItemIds: [],
-            
-            // Highlighted item state (singular, shared with Supabase)
             highlightedItemId: null,
             highlightedItem: null,
             
             // Connected clients tracking
             connectedClients: [],
             
-            // System state
-            updateCounter: 0,
+            // Available tags from content items
+            tags: [],
+            
+            updateCounter: 0, // Add update counter
+            
+            // Last updated timestamp
             lastUpdated: new Date().toISOString()
         };
     }
     
     /**
      * Updates the currently selected item based on selected items
-     * Sets selectedItemId and selectedItem in the state (singular, only first item)
+     * Sets selectedItemId and selectedItem in the state
      */
     updateSelectedItem() {
-        console.log("[SpaceCraft DEBUG] updateSelectedItem called. Current selectedItemIds:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
+        // console.log("[SpaceCraft DEBUG] updateSelectedItem called. Current selectedItemIds:", JSON.parse(JSON.stringify(this.state.selectedItemIds)));
         if (this.state.selectedItemIds && this.state.selectedItemIds.length > 0) {
             const newSelectedItemId = this.state.selectedItemIds[0];
             
@@ -753,27 +768,13 @@ class SpaceCraftSim {
             return;
         }
         
-        // Create filtered state for Supabase - exclude Unity bridge arrays and collection data
-        const { 
-            selectedItemIds, 
-            highlightedItemIds, 
-            highlightedItemId,
-            highlightedItem,
-            currentCollectionId,
-            currentCollection,
-            currentCollectionItems,
-            ...filteredState 
-        } = this.state;
-        
-        // Add dynamically calculated unified tags
-        filteredState.tags = this.createUnifiedTagsList();
-        
-        // Log exactly what is being synced, especially selectedItem
+        // Log exactly what is being synced, especially selectedItem and tags
         console.log("[SpaceCraft] Syncing state to presence. Current selectedItem:", JSON.parse(JSON.stringify(this.state.selectedItem))); 
+        console.log("[SpaceCraft] Syncing state to presence. Tags count:", this.state.tags?.length || 0);
         
         this.clientChannel.track({
             ...this.identity,
-            shared: filteredState 
+            shared: { ...this.state } 
         }).catch(error => {
             console.error("[SpaceCraft] Error tracking presence:", error);
         });
@@ -901,30 +902,9 @@ class SpaceCraftSim {
                 }
             })
             .on('presence', { event: 'sync' }, () => {
-                // Get all current presences in the channel
                 const allPresences = channel.presenceState();
-                // console.log("[SpaceCraft] Presence sync event. Current presences:", allPresences);
-                
-                // Process connected clients
-                for (const presenceKey in allPresences) {
-                    const presences = allPresences[presenceKey];
-                    for (const presence of presences) {
-                        // Skip our own presence
-                        if (presence.clientId === this.identity.clientId) continue;
-                        
-                        this.updateClientInfo(
-                            presence.clientId,
-                            presence.clientType,
-                            presence.clientName || "Unknown Client"
-                        );
-                    }
-                }
-                
                 // Check for search queries from controllers
                 this.checkForSearchQueries(allPresences);
-                
-                // Check for cooperative tilt inputs from controllers
-                this.checkForTiltInputs(allPresences);
             })
             .on('presence', { event: 'join' }, ({ newPresences }) => {
                 // console.log("[SpaceCraft] New presences joined:", newPresences);
@@ -950,9 +930,6 @@ class SpaceCraftSim {
                 
                 // Check for search queries from the new presences
                 this.checkForSearchQueries(channel.presenceState());
-                
-                // Check for cooperative tilt inputs from new presences
-                this.checkForTiltInputs(channel.presenceState());
             })
             .on('presence', { event: 'leave' }, ({ leftPresences }) => {
                 // console.log("[SpaceCraft] Presences left:", leftPresences);
@@ -1106,43 +1083,6 @@ class SpaceCraftSim {
         }
         return null;
     }
-
-    /**
-     * Creates a unified, alphabetized, deduplicated list of all tags from all items in all collections
-     * @returns {Array<string>} Array of unique tags in alphabetical order
-     */
-    createUnifiedTagsList() {
-        if (!this.loadedContent || !this.loadedContent.collections) {
-            return [];
-        }
-
-        const allTags = new Set();
-
-        // Iterate through all collections
-        for (const collectionId in this.loadedContent.collections) {
-            const collection = this.loadedContent.collections[collectionId];
-            
-            // Iterate through all items in the collection
-            if (collection.items) {
-                for (const itemId in collection.items) {
-                    const itemData = collection.items[itemId];
-                    const item = itemData.item;
-                    
-                    // Add tags from the item if they exist
-                    if (item && item.tags && Array.isArray(item.tags)) {
-                        item.tags.forEach(tag => {
-                            if (tag && typeof tag === 'string' && tag.trim()) {
-                                allTags.add(tag.toLowerCase().trim());
-                            }
-                        });
-                    }
-                }
-            }
-        }
-
-        // Convert Set to Array and sort alphabetically
-        return Array.from(allTags).sort();
-    }
     
     /**
      * Get placeholder content in case real content fails to load
@@ -1205,7 +1145,7 @@ class SpaceCraftSim {
         // Sync the updated state
         this.syncStateToPresence(); // This will now send the incremented counter
         
-        console.log("[SpaceCraft] State updated (counter: " + this.state.updateCounter + "):", stateChanges);
+        // console.log("[SpaceCraft] State updated (counter: " + this.state.updateCounter + "):", stateChanges);
     }
 
     /**
@@ -1213,7 +1153,7 @@ class SpaceCraftSim {
      * Sets highlightedItemId and highlightedItem in the state
      */
     updateHighlightedItem() {
-        console.log("[SpaceCraft DEBUG] updateHighlightedItem called. Current highlightedItemIds:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
+        // console.log("[SpaceCraft DEBUG] updateHighlightedItem called. Current highlightedItemIds:", JSON.parse(JSON.stringify(this.state.highlightedItemIds)));
         if (this.state.highlightedItemIds && this.state.highlightedItemIds.length > 0) {
             const newHighlightedItemId = this.state.highlightedItemIds[0];
             
@@ -1240,76 +1180,6 @@ class SpaceCraftSim {
      * Finds the first non-empty search query and sends it to Unity
      * @param {Object} presences - The presence state object
      */
-    /**
-     * Check all controller presence states for tilt inputs and combine them cooperatively
-     * Multiple controllers can tilt/shake together for combined physics control!
-     * @param {Object} presences - Current presence states from all clients
-     */
-    checkForTiltInputs(presences) {
-        const tiltInputs = [];
-        let activeTiltControllers = 0;
-        
-        // Collect tilt data from all connected controllers
-        for (const [clientId, presence] of Object.entries(presences)) {
-            if (presence && presence.tiltEnabled === true) {
-                // Only process controllers that have tilting explicitly enabled
-                const tiltX = presence.tiltX || 0;
-                const tiltZ = presence.tiltZ || 0;
-                
-                // Include all enabled controllers, even if neutral (for cooperative averaging)
-                tiltInputs.push({
-                    clientId: clientId,
-                    clientName: presence.clientName || 'Unknown',
-                    tiltX: tiltX,
-                    tiltZ: tiltZ
-                });
-                
-                // Count as active if actually tilting (not just enabled)
-                if (Math.abs(tiltX) > 1.0 || Math.abs(tiltZ) > 1.0) { // 1 degree threshold
-                    activeTiltControllers++;
-                }
-            }
-        }
-        
-        // Combine all tilt inputs (average for smooth cooperative control)
-        let combinedTiltX = 0;
-        let combinedTiltZ = 0;
-        
-        if (tiltInputs.length > 0) {
-            for (const tilt of tiltInputs) {
-                combinedTiltX += tilt.tiltX;
-                combinedTiltZ += tilt.tiltZ;
-            }
-            
-            // Average the tilts for smooth cooperative control
-            combinedTiltX /= tiltInputs.length;
-            combinedTiltZ /= tiltInputs.length;
-            
-            // Log cooperative tilt status
-            if (activeTiltControllers > 0) {
-                console.log(`[SpaceCraft] Cooperative tilt: ${activeTiltControllers}/${tiltInputs.length} controllers active, combined: (${combinedTiltX.toFixed(1)}°, ${combinedTiltZ.toFixed(1)}°)`);
-            }
-            
-            // Convert tilt angles to normalized values for Unity (-1 to +1)
-            const normalizedTiltX = Math.max(-1, Math.min(1, combinedTiltX / 45)); // 45° = full tilt
-            const normalizedTiltZ = Math.max(-1, Math.min(1, combinedTiltZ / 45)); // 45° = full tilt
-            
-            // Send combined tilt to Unity via bridge
-            if (this.spaceCraft && window.bridge) {
-                window.bridge.updateObject(this.spaceCraft, {
-                    "method:PushTiltInput": ['simulator', 'Spacecraft Simulator', normalizedTiltX, normalizedTiltZ]
-                });
-            }
-        } else {
-            // No controllers have tilting enabled - send neutral state
-            if (this.spaceCraft && window.bridge) {
-                window.bridge.updateObject(this.spaceCraft, {
-                    "method:PushTiltInput": ['simulator', 'Spacecraft Simulator', 0, 0]
-                });
-            }
-        }
-    }
-
     checkForSearchQueries(presences) {
         if (!this.spaceCraft) {
             // SpaceCraft bridge object not ready yet
@@ -1365,6 +1235,42 @@ class SpaceCraftSim {
                 });
             }
         }
+    }
+
+    /**
+     * Creates a unified, alphabetized, deduplicated list of all tags from all items in all collections
+     * @returns {Array<string>} Array of unique tags in alphabetical order
+     */
+    createUnifiedTagsList() {
+        if (!this.loadedContent || !this.loadedContent.collections) {
+            console.log("[SpaceCraft] No collections data available for creating tags list");
+            return [];
+        }
+
+        const allTags = new Set();
+
+        // Iterate through all collections
+        for (const [collectionId, collection] of Object.entries(this.loadedContent.collections)) {
+            if (!collection.items) continue;
+
+            // Iterate through all items in the collection
+            for (const [itemId, itemData] of Object.entries(collection.items)) {
+                const item = itemData.item;
+
+                // Add tags from the item if they exist
+                if (item && item.tags && Array.isArray(item.tags)) {
+                    item.tags.forEach(tag => {
+                        if (typeof tag === 'string' && tag.trim()) {
+                            allTags.add(tag.toLowerCase().trim());
+                        }
+                    });
+                }
+            }
+        }
+
+        const sortedTags = Array.from(allTags).sort();
+        console.log(`[SpaceCraft] Created unified tags list with ${sortedTags.length} unique tags`);
+        return sortedTags;
     }
 }
 

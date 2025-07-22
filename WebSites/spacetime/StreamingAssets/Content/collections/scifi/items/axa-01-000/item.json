@@ -1,7 +1,7 @@
 {
   "id": "axa-01-000",
   "title": "Axa - Collection complète",
-  "description": "<div>AXA<br /></div><div><br /></div><div>Scénario : Avenell, Donne</div>Dessin : Romero<br />Couleurs : N&amp;B<br /><div>Dépot légal : 04/1981 <br /></div><div><br /></div><div><span>Axa est un comic strip britannique qui se \nsitue sur la terre en 2080. Axa, qui a la tête (et le corps) de Brigitte \nBardot est une jeune qui décide de quitter le havre de paix du \"Dome\" \npour vivre libre dans l'atmosphère.<br />\nC'est sans doute pour profiter de cette liberté qu'elle se balade les seins nus au fil des pages.<br />\nCette Conan en jupons (mais sans jupon) vit des aventures de pure héroïc\n fantasy avec ici et là des éléments science-fictionnels.<br />\nLe dessin n'est pas désagréable mais les histoires sont assez nazes et \nl'album ne respecte pas le format original ce qui ne facilite pas la \nlecture (les bandes sont réduites).<br />\nUne curiosité.                                                        </span></div>",
+  "description": "Axa is a British comic strip created by Donne Avenell and artist Romero, set in the year 2080 on a post-apocalyptic Earth. The story follows Axa, a young woman who chooses to leave the safety of \"the Dome\" - a protected sanctuary - to live freely in the dangerous outside world. With her striking appearance modeled after Brigitte Bardot, Axa represents a female warrior archetype who adventures through a landscape that blends science fiction elements with heroic fantasy themes. The strip was notable for its adult content and unconventional approach to the post-apocalyptic genre.\n\nThis French collection presents the complete Axa comic strips, offering readers a glimpse into European comic book sensibilities of the early 1980s. The series combines elements of sword-and-sorcery adventure with futuristic settings, creating a unique hybrid genre that was popular in European comics during this period. While the artwork and storytelling reflect the aesthetic preferences of its time, Axa remains an interesting cultural artifact that demonstrates how different regions approached science fiction comics, particularly in their treatment of female protagonists and post-apocalyptic themes. The series stands as an example of how European creators were experimenting with mature content in comics during the late 20th century.",
   "creator": "Donne Avenell",
   "subject": [
     "Bande dessinée",
@@ -19,6 +19,26 @@
     "nude",
     "nudity"
   ],
+  "tags": [
+    "donne avenell",
+    "french comics",
+    "post apocalyptic",
+    "dome society",
+    "female protagonist",
+    "european science fiction",
+    "british science fiction",
+    "science fantasy",
+    "adult fiction",
+    "1980s science fiction",
+    "comic book",
+    "heroic fantasy",
+    "future earth",
+    "survival",
+    "freedom",
+    "dystopian",
+    "sword and sorcery",
+    "adventure science fiction"
+  ],
   "collection": [
     "adultcomics",
     "deemphasize",
@@ -27,34 +47,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/axa-01-000",
   "coverWidth": 180,
-  "coverHeight": 244,
-  "favoriteCount": 0,
-  "name": "Axa - Collection complète",
-  "publicdate": "2024-01-07 11:43:01",
-  "identifier": "axa-01-000",
-  "date": "1981",
-  "language": "fre",
-  "scanner": "Internet Archive HTML5 Uploader 1.7.0",
-  "uploader": "iboja.borte@gmail.com",
-  "addeddate": "2024-01-07 11:43:01",
-  "curation": "[curator]jscott@archive.org[/curator][date]20240107070620[/date][state][/state][comment]Moved automatically by CHARM Script Setting.[/comment]",
-  "identifier-access": "http://archive.org/details/axa-01-000",
-  "identifier-ark": "ark:/13960/s2wqfjssbvb",
-  "ppi": "96",
-  "ocr": "tesseract 5.3.0-6-g76ae",
-  "ocr_parameters": "-l fra",
-  "ocr_module_version": "0.0.21",
-  "ocr_detected_script": "Latin",
-  "ocr_detected_script_conf": "0.3419",
-  "ocr_detected_lang": "am",
-  "ocr_detected_lang_conf": "1.0000",
-  "page_number_confidence": "0",
-  "page_number_module_version": "1.0.3",
-  "pdf_module_version": "0.0.23",
-  "collection_added": [
-    "deemphasize",
-    "no-preview"
-  ],
-  "coverImageWidth": 180,
-  "coverImageHeight": 244
+  "coverHeight": 244
 }

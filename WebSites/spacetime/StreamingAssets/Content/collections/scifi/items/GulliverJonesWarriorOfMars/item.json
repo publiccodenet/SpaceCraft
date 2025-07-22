@@ -1,7 +1,7 @@
 {
   "id": "GulliverJonesWarriorOfMars",
   "title": "Gullivar Jones, Warrior of Mars",
-  "description": "Creatures on the Loose (1970's)",
+  "description": "This Marvel Comics adaptation from the 1970s brings Edwin Lester Arnold's classic 1905 novel \"Gulliver of Mars\" (also known as \"Lieutenant Gullivar Jones: His Vacation\") to the comic book medium during the height of Marvel's cosmic and sword-and-planet stories. Originally published in \"Creatures on the Loose,\" the comic follows Lieutenant Gulliver Jones, an American military officer who is mysteriously transported to Mars through a magical carpet. Once on the red planet, he discovers a dying civilization populated by various Martian races and becomes embroiled in their conflicts while searching for a way home.\n\nThe Marvel adaptation updated Arnold's early planetary romance for a 1970s audience, emphasizing action and adventure while maintaining the exotic Mars setting that influenced later works like Edgar Rice Burroughs' John Carter series. In fact, Arnold's novel predates Burroughs' \"A Princess of Mars\" by six years and is considered one of the earliest examples of the sword-and-planet subgenre. The comic format allowed for vivid visualization of the alien landscapes and creatures that Arnold described in his original work, bringing the fantastic elements to life for a new generation of readers. This adaptation represents an important link between early 20th-century scientific romance and the cosmic superhero stories that Marvel was pioneering in the 1970s, demonstrating how classic science fiction themes continued to evolve through different media.",
   "creator": "Marvel Comics",
   "subject": [
     "Comics",
@@ -14,6 +14,27 @@
     "Martians",
     "Martian SFF"
   ],
+  "tags": [
+    "edwin lester arnold",
+    "1970s science fiction",
+    "british",
+    "american science fiction",
+    "mars",
+    "planetary romance",
+    "sword and planet",
+    "comic adaptation",
+    "marvel comics",
+    "gulliver jones",
+    "martian civilizations",
+    "interplanetary travel",
+    "alien worlds",
+    "cosmic adventure",
+    "scientific romance",
+    "early science fiction",
+    "dying civilization",
+    "creatures on the loose",
+    "precursor to john carter"
+  ],
   "collection": [
     "comics_inbox",
     "comics",
@@ -22,40 +43,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/GulliverJonesWarriorOfMars",
   "coverWidth": 180,
-  "coverHeight": 269,
-  "favoriteCount": 0,
-  "name": "Gullivar Jones, Warrior of Mars",
-  "publicdate": "2011-08-08 20:02:54",
-  "identifier": "GulliverJonesWarriorOfMars",
-  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
-  "addeddate": "2011-08-08 18:14:52",
-  "uploader": "lyndawwcarter@hotmail.com",
-  "updater": [
-    "Lynda Carter",
-    "Lynda Carter",
-    "Lynda Carter",
-    "Lynda Carter",
-    "Lynda Carter",
-    "Lynda Carter",
-    "Lynda Carter"
-  ],
-  "updatedate": [
-    "2011-08-22 07:05:59",
-    "2011-08-31 05:31:47",
-    "2011-09-11 04:04:55",
-    "2011-09-24 04:07:48",
-    "2011-09-28 06:45:54",
-    "2011-10-15 01:33:58",
-    "2011-10-26 17:33:41"
-  ],
-  "identifier-access": "http://www.archive.org/details/GulliverJonesWarriorOfMars",
-  "identifier-ark": "ark:/13960/t6ww8b52v",
-  "ppi": "72",
-  "ocr": "ABBYY FineReader 8.0",
-  "repub_state": "4",
-  "curation": "[curator]malware@archive.org[/curator][date]20140327131634[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903702_13",
-  "coverleaf": "0",
-  "coverImageWidth": 180,
-  "coverImageHeight": 269
+  "coverHeight": 269
 }

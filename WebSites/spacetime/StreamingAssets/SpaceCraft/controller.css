@@ -198,8 +198,8 @@ html, body {
     font-style: italic;
 }
 
-/* Keyword menu button */
-.keyword-menu-button {
+/* Tag menu button */
+.tag-menu-button {
     width: 50px;
     height: 50px;
     padding: 0;
@@ -212,8 +212,8 @@ html, body {
     cursor: pointer;
 }
 
-/* Keyword menu */
-.keyword-menu {
+/* Tag menu */
+.tag-menu {
     position: absolute;
     bottom: 60px;
     left: 0;
@@ -224,68 +224,39 @@ html, body {
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     padding: 10px;
-    /* Enable touch scrolling on mobile */
-    -webkit-overflow-scrolling: touch;
-    /* Smooth scrolling */
-    scroll-behavior: smooth;
 }
 
-.keyword-menu-header {
+.tag-menu-header {
     font-size: 14px;
     font-weight: bold;
     color: #fff;
     margin-bottom: 10px;
-    /* Sticky header */
-    position: sticky;
-    top: 0;
-    background-color: rgba(0, 0, 0, 0.9);
-    padding: 5px 0;
-    z-index: 1;
 }
 
-.keyword-menu-list {
-    /* Remove flex layout - use block for vertical list */
-    display: block;
-    /* Allow touch events for scrolling */
-    touch-action: pan-y;
+.tag-menu-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 
-.keyword-menu-item {
-    /* Full width items - one per line */
-    display: block;
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 2px;
-    font-size: 16px;
+.tag-menu-item {
+    padding: 5px 10px;
+    font-size: 14px;
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
+    border-radius: 15px;
     color: #fff;
     cursor: pointer;
-    text-align: left;
-    /* Smooth transitions */
-    transition: background-color 0.2s ease;
-    /* Ensure touch targets are large enough */
-    min-height: 44px;
-    box-sizing: border-box;
-    /* Enable text selection if needed */
-    user-select: none;
 }
 
-.keyword-menu-item:hover {
+.tag-menu-item:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.keyword-menu-item:active {
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(0.98);
-}
-
-.keyword-menu-empty {
+.tag-menu-empty {
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
-    padding: 20px;
-    font-style: italic;
+    padding: 10px;
 }
 
 /* -----------------------------
