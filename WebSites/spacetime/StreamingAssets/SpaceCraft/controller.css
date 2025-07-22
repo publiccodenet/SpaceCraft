@@ -198,8 +198,8 @@ html, body {
     font-style: italic;
 }
 
-/* Keyword menu button */
-.keyword-menu-button {
+/* Tag menu button */
+.tag-menu-button {
     width: 50px;
     height: 50px;
     padding: 0;
@@ -212,8 +212,8 @@ html, body {
     cursor: pointer;
 }
 
-/* Keyword menu */
-.keyword-menu {
+/* Tag menu */
+.tag-menu {
     position: absolute;
     bottom: 60px;
     left: 0;
@@ -226,20 +226,20 @@ html, body {
     padding: 10px;
 }
 
-.keyword-menu-header {
+.tag-menu-header {
     font-size: 14px;
     font-weight: bold;
     color: #fff;
     margin-bottom: 10px;
 }
 
-.keyword-menu-list {
+.tag-menu-list {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
 }
 
-.keyword-menu-item {
+.tag-menu-item {
     padding: 5px 10px;
     font-size: 14px;
     background-color: rgba(255, 255, 255, 0.1);
@@ -249,11 +249,11 @@ html, body {
     cursor: pointer;
 }
 
-.keyword-menu-item:hover {
+.tag-menu-item:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.keyword-menu-empty {
+.tag-menu-empty {
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
     padding: 10px;

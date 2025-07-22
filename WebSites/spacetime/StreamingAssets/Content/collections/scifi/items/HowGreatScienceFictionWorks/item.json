@@ -1,10 +1,30 @@
 {
   "id": "HowGreatScienceFictionWorks",
   "title": "How Great Science Fiction Works",
-  "description": "How Great Science Fiction Works",
+  "description": "\"How Great Science Fiction Works\" serves as an academic exploration and analysis of the science fiction genre, examining the elements that make certain works endure and resonate across generations. This study delves into the craft and artistry behind science fiction's most influential stories, analyzing how authors construct compelling narratives that blend scientific speculation with human drama. The work examines the techniques used by master practitioners of the genre to create believable future worlds, develop complex characters, and explore profound themes about technology, society, and human nature.\n\nThe analysis covers the evolution of science fiction from its pulp magazine origins through its development into a sophisticated literary genre capable of serious social and philosophical commentary. The study explores how great science fiction works function on multiple levels - as entertainment, as thought experiments, and as reflections of contemporary concerns projected into imagined futures. It examines the role of scientific accuracy versus narrative necessity, the importance of world-building and internal consistency, and how the best science fiction stories manage to remain relevant even as the specific technologies they depict become outdated. This academic approach provides readers with tools for understanding and appreciating the complexity and artistry involved in creating effective science fiction literature.",
   "creator": "",
   "subject": [
     "Science Fiction"
+  ],
+  "tags": [
+    "2000s science fiction",
+    "american science fiction",
+    "non-fiction",
+    "academic study",
+    "literary criticism",
+    "genre studies",
+    "science fiction analysis",
+    "craft of writing",
+    "worldbuilding",
+    "narrative techniques",
+    "genre evolution",
+    "scientific speculation",
+    "social commentary",
+    "technological themes",
+    "thought experiments",
+    "critical analysis",
+    "pulp magazines",
+    "literary development"
   ],
   "collection": [
     "folkscanomy_sf",
@@ -14,21 +34,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/HowGreatScienceFictionWorks",
   "coverWidth": 180,
-  "coverHeight": 257,
-  "favoriteCount": 0,
-  "name": "How Great Science Fiction Works",
-  "publicdate": "2018-10-31 18:54:50",
-  "identifier": "HowGreatScienceFictionWorks",
-  "uploader": "munderground@outlook.com",
-  "addeddate": "2018-10-31 18:54:35",
-  "curation": "[curator]validator@archive.org[/curator][date]20181031190028[/date][comment]checked for malware[/comment]",
-  "language": "English",
-  "identifier-access": "http://archive.org/details/HowGreatScienceFictionWorks",
-  "identifier-ark": "ark:/13960/t9q31779k",
-  "imagecount": "215",
-  "ppi": "300",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "backup_location": "ia906803_23",
-  "coverImageWidth": 180,
-  "coverImageHeight": 257
+  "coverHeight": 257
 }

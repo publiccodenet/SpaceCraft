@@ -1,7 +1,7 @@
 {
   "id": "JohnCarterOfMars375",
   "title": "John Carter of Mars #375 (1952)",
-  "description": "Dell Four Color Comic #375 (1952, Dell)",
+  "description": "Dell Four Color Comic #375 from 1952 presents an early comic book adaptation of Edgar Rice Burroughs' John Carter of Mars stories, bringing the adventures of the Confederate Civil War veteran turned Martian hero to the visual medium. The comic follows John Carter's fantastic journey to the red planet Barsoom, where he discovers a dying world filled with warring civilizations, ancient cities, and exotic creatures. With his superior strength due to Mars' lower gravity, Carter becomes embroiled in the conflicts between the various Martian races, including the towering green Martians and the human-like red Martians.\n\nThis Dell adaptation represents an important piece of science fiction publishing history, translating Burroughs' influential planetary romance stories for a new generation of readers during the golden age of American comics. The John Carter stories pioneered many concepts that would become staples of science fiction, including detailed alien civilizations, interplanetary adventure, and the fish-out-of-water protagonist transported to an exotic world. The comic format allowed for vivid visual interpretation of Burroughs' imaginative world-building, from the towering cities of Helium to the fierce Martian creatures like the white apes and tharks. As both entertainment and historical artifact, this comic demonstrates how classic science fiction literature was adapted and disseminated through popular media in the mid-20th century.",
   "creator": "Dell Comics",
   "subject": [
     "Comics",
@@ -13,6 +13,25 @@
     "Martians",
     "Martian SFF"
   ],
+  "tags": [
+    "edgar rice burroughs",
+    "1950s science fiction",
+    "american science fiction",
+    "john carter",
+    "mars",
+    "barsoom",
+    "planetary romance",
+    "comic adaptation",
+    "dell comics",
+    "four color comics",
+    "1952 comic",
+    "golden age comics",
+    "science fiction comics",
+    "classic science fiction",
+    "martian civilizations",
+    "interplanetary adventure",
+    "comic book history"
+  ],
   "collection": [
     "comics_inbox",
     "comics",
@@ -21,32 +40,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/JohnCarterOfMars375",
   "coverWidth": 180,
-  "coverHeight": 254,
-  "favoriteCount": 0,
-  "name": "John Carter of Mars #375 (1952)",
-  "publicdate": "2011-10-21 05:53:22",
-  "identifier": "JohnCarterOfMars375",
-  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
-  "addeddate": "2011-10-21 05:35:11",
-  "uploader": "lyndawwcarter@hotmail.com",
-  "updater": [
-    "Lynda Carter",
-    "Lynda Carter",
-    "Lynda Carter"
-  ],
-  "updatedate": [
-    "2011-10-21 19:39:58",
-    "2011-10-26 17:32:08",
-    "2011-11-11 02:28:01"
-  ],
-  "identifier-access": "http://www.archive.org/details/JohnCarterOfMars375",
-  "identifier-ark": "ark:/13960/t02z2769r",
-  "ppi": "72",
-  "ocr": "ABBYY FineReader 8.0",
-  "repub_state": "4",
-  "curation": "[curator]malware@archive.org[/curator][date]20140327105534[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903704_17",
-  "coverleaf": "0",
-  "coverImageWidth": 180,
-  "coverImageHeight": 254
+  "coverHeight": 254
 }

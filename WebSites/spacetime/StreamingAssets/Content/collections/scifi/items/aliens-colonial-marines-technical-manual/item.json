@@ -1,7 +1,7 @@
 {
   "id": "aliens-colonial-marines-technical-manual",
   "title": "Aliens Colonial Marines Technical Manual",
-  "description": "Guidebook for the marines from the Alien universe. <br />",
+  "description": "The Aliens Colonial Marines Technical Manual serves as a comprehensive guidebook for the United States Colonial Marines, the elite military force featured in the Aliens franchise. This technical manual provides detailed information about the equipment, weapons, vehicles, and tactical procedures used by Colonial Marines in their encounters with Xenomorph threats. Originally created as supplementary material for the Aliens universe, the manual covers everything from pulse rifle specifications to dropship operations and survival protocols on hostile alien worlds.\n\nThe manual represents an important piece of expanded universe material that helps flesh out the military science fiction aspects of the Aliens franchise. It provides readers with detailed technical specifications, organizational charts, and operational procedures that enhance understanding of the Colonial Marines' role in the larger Aliens mythology. The work appeals to both science fiction enthusiasts and military hardware aficionados, offering a blend of fictional technology and realistic military organization and tactics.\n\nAs a technical reference work, this manual exemplifies how science fiction franchises can expand their universes through detailed world-building materials. It serves both as entertainment for fans and as a reference guide for writers, game designers, and other creators working within the Aliens universe. The manual's attention to detail and military authenticity helps maintain the gritty, realistic tone that made the original Aliens film so compelling.",
   "creator": "",
   "subject": [
     "Ridley Scott",
@@ -12,6 +12,27 @@
     "marines",
     "military science fiction"
   ],
+  "tags": [
+    "aliens franchise",
+    "military science fiction",
+    "space marines",
+    "xenomorphs",
+    "1980s science fiction",
+    "american science fiction",
+    "technical manual",
+    "reference guide",
+    "space warfare",
+    "survival horror",
+    "horror science fiction",
+    "expanded universe",
+    "tactical procedures",
+    "weapons technology",
+    "colonial marines",
+    "hostile aliens",
+    "franchise media",
+    "film adaptation",
+    "world building"
+  ],
   "collection": [
     "strategyguides",
     "folkscanomy_games",
@@ -21,26 +42,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/aliens-colonial-marines-technical-manual",
   "coverWidth": 180,
-  "coverHeight": 236,
-  "favoriteCount": 0,
-  "name": "Aliens Colonial Marines Technical Manual",
-  "publicdate": "2020-06-02 04:43:55",
-  "identifier": "aliens-colonial-marines-technical-manual",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "harizotoh7@gmail.com",
-  "addeddate": "2020-06-02 04:43:55",
-  "curation": "[curator]kaplan@archive.org[/curator][date]20201206000107[/date][state]un-dark[/state]",
-  "language": "English",
-  "identifier-access": "http://archive.org/details/aliens-colonial-marines-technical-manual",
-  "identifier-ark": "ark:/13960/t1dk47q6c",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "coverleaf": "0",
-  "noarchivetorrent": "true",
-  "collection_added": [
-    "folkscanomy_games",
-    "folkscanomy",
-    "additional_collections"
-  ],
-  "coverImageWidth": 180,
-  "coverImageHeight": 236
+  "coverHeight": 236
 }

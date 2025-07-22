@@ -1,7 +1,7 @@
 {
   "id": "WarOfTheWorldsTheH.G.Wells",
   "title": "The War of the Worlds - H. G. Wells",
-  "description": "The War of the Worlds - H. G. Wells\nProject Gutenberg 36",
+  "description": "The War of the Worlds, serialized in 1897 and published as a novel in 1898, established the alien invasion narrative that would become a science fiction staple. H.G. Wells sets his Martian invasion in contemporary Surrey and London, bringing cosmic horror to the familiar English countryside. The unnamed narrator witnesses the arrival of cylinders from Mars, from which emerge tentacled beings in towering tripod fighting machines equipped with heat rays and poisonous black smoke. Against these weapons, Earth's mightiest military powers prove helpless, and civilization collapses in days.\n\nWells crafts his invasion as both thrilling adventure and sharp social commentary. The Martians treat humans as humans treat animals—as resources to be harvested or pests to be exterminated. The narrator's journey through the devastated landscape reveals how quickly social order breaks down and how the British Empire's assumed superiority crumbles when faced with a more advanced civilization. The novel's most powerful passages describe not the Martian technology but human responses to disaster: panic, selfishness, religious mania, and occasional heroism.\n\nThe novel's influence on science fiction cannot be overstated. Wells established conventions from alien physiology to advanced weaponry while grounding his fantastic premise in contemporary science, including evolutionary theory and astronomical observations of Mars. His invasion's resolution—the Martians succumbing to Earth's bacteria—reflects both scientific understanding of disease and ironic commentary on imperialism, as the would-be conquerors are defeated by the same biological forces that devastated indigenous populations during European colonization. The novel remains a masterpiece of scientific imagination wedded to social criticism.",
   "creator": "H. G. Wells",
   "subject": [
     "Science Fiction",
@@ -12,6 +12,25 @@
     "Imaginary wars and battles",
     "Life on other planets"
   ],
+  "tags": [
+    "h g wells",
+    "1890s science fiction",
+    "early science fiction",
+    "british science fiction",
+    "classic science fiction",
+    "victorian science fiction",
+    "novel",
+    "alien invasion",
+    "first contact",
+    "martians",
+    "mars",
+    "tripods",
+    "social commentary",
+    "imperialism",
+    "war of the worlds",
+    "foundational work",
+    "scientific romance"
+  ],
   "collection": [
     "opensource",
     "community"
@@ -19,24 +38,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/WarOfTheWorldsTheH.G.Wells",
   "coverWidth": 180,
-  "coverHeight": 233,
-  "favoriteCount": 0,
-  "name": "The War of the Worlds - H. G. Wells",
-  "publicdate": "2017-11-09 06:27:51",
-  "identifier": "WarOfTheWorldsTheH.G.Wells",
-  "date": "1898",
-  "language": "eng",
-  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
-  "uploader": "migranero@gmail.com",
-  "addeddate": "2017-11-09 06:27:51",
-  "curation": "[curator]validator@archive.org[/curator][date]20171109062816[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/WarOfTheWorldsTheH.G.Wells",
-  "identifier-ark": "ark:/13960/t59d38p9v",
-  "repub_state": "4",
-  "ppi": "300",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "backup_location": "ia906600_2",
-  "coverImageWidth": 180,
-  "coverImageHeight": 233
+  "coverHeight": 233
 }

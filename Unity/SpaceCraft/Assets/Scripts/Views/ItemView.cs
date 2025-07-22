@@ -57,7 +57,7 @@ public class ItemView : MonoBehaviour, IModelView<Item>
     private Rigidbody rigidBody; // Physics body for movement (if present)
     
     // Collection context
-    [SerializeField] private string collectionId;
+    [SerializeField] public string collectionId;
     
     // Unity event for item changes
     [SerializeField] private UnityEvent<Item> onItemChanged = new UnityEvent<Item>();

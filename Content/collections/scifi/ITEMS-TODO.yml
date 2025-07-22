@@ -1,0 +1,298 @@
+# Science Fiction Collection Items TODO List
+# Mark items with 'x' when completed
+#
+# TASK: Create Custom Metadata Overlays for Science Fiction Collection Items
+#
+# PURPOSE:
+# Generate LLM-enhanced metadata for items in the SpaceCraft/Content/collections/scifi/items directory.
+# These overlays augment existing Internet Archive items with high-quality descriptions and tags.
+#
+# INSTRUCTIONS:
+#
+# 1. For each item in the list below:
+#    - Create an item-custom.json file in the item's directory
+#    - The file should contain ONLY these two fields:
+#      * spacecraft_description: A 1-3 paragraph description (see guidelines below)
+#      * spacecraft_tags: An array of keyword tags
+#
+# 2. Description Guidelines:
+#    - Write 1-3 paragraphs of factual, informative content
+#    - Research the book/media via web search if unfamiliar (NO hallucination)
+#    - Include: plot summary, themes, historical context, significance
+#    - Maintain consistent tone and quality across all descriptions
+#    - Focus on what makes the work notable in science fiction
+#
+# 3. Tag Guidelines:
+#    - Use lowercase, space-separated tags (e.g., "time travel" not "TimeTravvel" or "time-travel")
+#    - Keep tags general and reusable - avoid book-specific terms
+#    - Prefer single concepts over compound tags (e.g., "young adult" not "young adult science fiction")
+#    - Include genre classifications (e.g., "hard science fiction", "space opera", "cyberpunk")
+#    - Add thematic tags (e.g., "time travel", "artificial intelligence", "robots")
+#    - Include period/era tags (e.g., "golden age", "new wave", "victorian era", "cold war era")
+#    - Add format tags where relevant (e.g., "manga", "anthology", "poetry", "short stories")
+#    - Include setting tags (e.g., "mars", "dystopian", "post-apocalyptic", "space station")
+#    - Add tone/style tags (e.g., "military science fiction", "psychological thriller", "satire")
+#    - For location/culture, use adjectives (e.g., "japanese", "swedish", "russian")
+#
+# 4. Workflow:
+#    - Work in batches for efficiency
+#    - Research multiple items at once before writing
+#    - Mark items with [ ] when item-custom.json is created
+#    - Append new unique tags to taxonomy.yml (DO NOT edit existing tags)
+#
+# 5. IMPORTANT NOTES:
+#    - DO NOT modify item.json files - they contain Internet Archive metadata
+#    - DO NOT include any fields other than spacecraft_description and spacecraft_tags
+#    - DO NOT add spacecraft_custom_item or any other fields
+#    - item-custom.json files are overlays that enhance ANY item type
+#    - Work with source files in Content/collections/scifi/items/
+#    - Ignore StreamingAssets directory (contains machine-generated files)
+#
+# 6. EFFICIENCY RULES:
+#    - ALWAYS read the entire ITEMS-TODO.yml file instead of using shell commands
+#    - NEVER use terminal commands when you can read files directly
+#    - ALWAYS check for existing item-custom.json files first and merge/improve rather than replace
+#    - READ these instructions every time by reading the entire TODO file - do not forget them
+#    - Shell commands require user confirmation and cause delays - avoid them
+#    - Count progress by reading this file and counting [ ] entries directly
+#
+# Example item-custom.json structure:
+# {
+#   "spacecraft_description": "Multi-paragraph description here...",
+#   "spacecraft_tags": [
+#     "tag1",
+#     "tag2",
+#     "tag3"
+#   ]
+# }
+
+# =============================================================================
+# PHASE 2: METADATA ENHANCEMENT WITH OFFICIAL TAXONOMY
+# =============================================================================
+#
+# STATUS: All 179 items have basic metadata created (Phase 1 complete)
+# NEXT TASK: Systematically enhance all item-custom.json files using official taxonomy
+#
+# PURPOSE:
+# Optimize metadata for direct menu hits by standardizing and enriching tags using
+# the official taxonomy-clean.yml as the authoritative vocabulary source.
+#
+# PHASE 2 INSTRUCTIONS:
+#
+# 7. OFFICIAL TAXONOMY INTEGRATION:
+#    - Use taxonomy-clean.yml as the AUTHORITATIVE source for all tags
+#    - Prioritize official taxonomy tags for menu-driven discovery
+#    - Keep existing unofficial tags for free-form search compatibility
+#    - Standardize/rename existing tags to match official taxonomy entries
+#    - Add missing official tags that apply to each item
+#    - DO NOT MODIFY DESCRIPTIONS - ONLY ENHANCE TAGS
+#
+# 8. TAG ENHANCEMENT PROCESS:
+#    - Read existing item-custom.json file
+#    - Review spacecraft_tags array against taxonomy-clean.yml
+#    - STANDARDIZE: Replace unofficial variants with official versions ONLY when clear equivalents exist
+#      Examples: "rick yancey" not "Rick Yancey" or "yancey"
+#               "1950s science fiction" not "1950s", "1950s sf", "fifties"
+#               "space opera" not "space-opera", "spaceopera"
+#    - ADD MISSING: Include relevant official tags not already present
+#      Examples: Add author names, decades, genres, themes, formats
+#    - DEDUPLICATE: Remove redundant tags that mean the same thing
+#    - PRESERVE: Keep useful unofficial tags that aren't in taxonomy
+#      * Keep specific franchise/series terms (e.g., "warhammer 40k", "culture series")
+#      * Keep useful descriptive tags even if not official (e.g., "miscategorized", "tie-in fiction")
+#      * Keep character names/concepts that aid search (when genuinely useful)
+#      * Err on the side of keeping rather than removing
+#    - CONSERVATIVE APPROACH: Only remove tags that are truly redundant or unhelpful
+#    - BALANCE: Prioritize official taxonomy while preserving search utility
+#    - DO NOT TOUCH DESCRIPTIONS - ONLY MODIFY TAGS ARRAY
+#
+# 9. SYSTEMATIC APPROACH:
+#    - Work through all 179 items methodically
+#    - For each item, cross-reference against these taxonomy categories:
+#      * authors: Ensure author name is present and correctly formatted
+#      * periods: Add appropriate decade/era tags (e.g., "golden age science fiction")
+#      * genres: Ensure primary and secondary genres are tagged
+#      * themes: Add major thematic elements
+#      * formats: Tag format type (novel, anthology, manga, etc.)
+#      * series: Add series/franchise tags where applicable
+#      * awards: Include award tags for recognized works
+#      * regions: Add cultural/regional tags where relevant
+#      * audience: Include target audience tags
+#
+# 10. QUALITY STANDARDS:
+#     - Each item should have 8-25 tags total (balance discovery vs noise)
+#     - Prioritize official taxonomy tags over unofficial ones
+#     - Ensure major works have comprehensive tagging
+#     - Maintain consistency across similar items
+#     - Focus on tags that enable meaningful filtering/discovery
+#     - PRESERVE SEARCH VALUE: Keep unofficial tags that provide unique search benefits
+#     - AVOID OVER-PRUNING: Don't remove tags unless they're genuinely redundant or misleading
+#     - MIX OFFICIAL + UNOFFICIAL: Blend official taxonomy with useful specific terms
+
+items:
+  - [x] 5thwave0000yanc
+  - [x] acrosszodiacstor01greg
+  - [x] aliens-colonial-marines-technical-manual
+  - [x] AliensOmnibusVolume1
+  - [x] AliensOmnibusVolume2
+  - [x] AllWeMarsmen
+  - [x] amonghidden00hadd
+  - [x] angelofrevolutio00grifiala
+  - [x] aniara
+  - [x] annihilation0000vand
+  - [x] ArtifactCollectiveNickStokes
+  - [x] atearthscore00burr
+  - [x] avatar-the-last-airbender-the-f.-c.-yee
+  - [x] avatar-the-last-airbender-the-legacy-of-yangchen-f-c-yee-chronicles-of-the-avata
+  - [x] avatarmanualdesu0000wilh
+  - [x] axa-01-000
+  - [x] Barsoom
+  - [x] behemoth_rifters
+  - [x] bestofisaacasimo00asim
+  - [x] bfg00roal
+  - [x] bloodchildothers0000butl
+  - [x] bookofnewsun00gene
+  - [x] BraveNewWorld-and-BraveNewWorldRevisited
+  - [x] BuckRogersBigLittleBooksComicStripsAndShortStories
+  - [x] CapekRUR
+  - [x] chapterhousedune00herb
+  - [x] cityofbones00clar
+  - [x] collectedstories00clar
+  - [x] completerobot00asim
+  - [x] contact00saga_1
+  - [x] crownofswordswhe00robe
+  - [x] cyberiadfablesfo0000lems_n6t8
+  - [x] dani-futuro-t-07-le-magicien-de-lespace-gimenez-mora
+  - [x] darkestminds0000brac
+  - [x] darkforest0000liuc
+  - [x] darklover00jrwa
+  - [x] darkmatternovel0000crou_n9e8
+  - [x] dawn0000butl
+  - [x] deathsend0000liuc_t3q1
+  - [x] discoveryofwitch0000hark_e3i9
+  - [x] divergent_202004
+  - [x] doandroidsdreamo00dick_0
+  - [x] dragonridersofpe00mcca_1
+  - [x] DumbMartian
+  - [x] duneherb00herb
+  - [x] dunemessiahdunec00fran
+  - [x] earlyasimovorele00asim
+  - [x] eisenhorn0000abne
+  - [x] emptyworld00chri
+  - [x] endersgameenderw00orso
+  - [x] excession00bank
+  - [x] ExtraterrestrialCivilizationsIsaacAsimov
+  - [x] fahrenheit4510000brad
+  - [x] feastforcrows0000mart_l6b2
+  - [x] fitzpatricksward00theo
+  - [x] flowersforalgern2004keye
+  - [x] ForwardTheFoundationIsaacAsimov11
+  - [x] foundationtrilog00isaa
+  - [x] fourdivergentcol0000roth_v2b1
+  - [x] FrankensteinOrTheModernPromeusMaryWollstonecraftShelley
+  - [x] fulgrim_202211
+  - [x] gideon-the-ninth_202301
+  - [x] girlwhoownedcity00nels
+  - [x] giverlow00lowr
+  - [x] godzillaofficial0000coxg
+  - [x] greatbookofamber00zela
+  - [x] GulliverJonesWarriorOfMars
+  - [x] H.G.WellsCompleteWorks
+  - [x] Hear_the_Cradle_Song
+  - [x] hereticsofdune0000herb
+  - [x] hitchhikerssguid00doug
+  - [x] homelanddarkelft00rasa
+  - [x] horusrisingtheho00dana
+  - [x] HowGreatScienceFictionWorks
+  - [x] huntersofdune00bria
+  - [x] i-have-no-mouth-and-i-must-scream_202202
+  - [x] igniteme0000mafi_p3f3
+  - [x] infinitygauntlet0000star
+  - [x] InfocomCabinetHitchhikersGuide
+  - [x] Innenweltlang
+  - [x] intovoid0000lebb
+  - [x] invincible-compendiums
+  - [x] invitationtogame00moni
+  - [x] irobot0000asim
+  - [x] jodorowsky-dune
+  - [x] JohnCarterOfMars375
+  - [x] johndiesatend00wong
+  - [x] LarryNivenAndJerryPournelleTheMoteInGodsEye
+  - [x] lifeasweknewit0000pfef_z1l7
+  - [x] lightningthiefmo00rick_0
+  - [x] LittleBrother
+  - [x] lordsladies00terr
+  - [x] lucianstruehisto45858gut
+  - [x] MachineofDeath
+  - [x] maninhighcastle0000dick
+  - [x] maskomnibusvolum0000unse
+  - [x] maximumride20000leen
+  - [x] michaelveyprison0000evan
+  - [x] MinisteringAngels
+  - [x] mirrorshades00bruc
+  - [x] morningstar0000brow_i0y8
+  - [x] moteingodseye00larr
+  - [x] neverfade0000brac_g1l9
+  - [x] nightfall00isaa
+  - [x] nimona0000stev_y9k0
+  - [x] ninebillionnames00clar
+  - [x] odyssey00gare
+  - [x] officialhandbook0000unse_i8k4
+  - [x] ombrax241
+  - [x] onthetrailofthes21092gut
+  - [x] overclocked
+  - [x] parableofsower0000butl_p5f6
+  - [x] pellucidar00burr
+  - [x] perry-rhodan
+  - [x] peterpanmyfirstc00jmba_0
+  - [x] redqueen0000avey
+  - [x] RedPlanetsMarxismAndScienceFiction
+  - [x] rendezvouswithra0000unse
+  - [x] renegades0000meye_a0o7
+  - [x] roadsidepicnic00stru
+  - [x] RobotGhostsAndWiredDreamsJapaneseScienceFictionFromOriginsToAnime
+  - [x] robotdreams00varo
+  - [x] RootOfUnity-SLHuang
+  - [x] RusselEricFrankWasp
+  - [x] RussellEricFrankDarkTidesPanther1963_201904
+  - [x] sandsoftimebookiiitheisomerprotocol_202004
+  - [x] sandsoftimebookiiseandavidmorton
+  - [x] sandsoftimeseandavidmorton
+  - [x] scythe0000shus_d0t3
+  - [x] shatterme0000mafi
+  - [x] shehercat0000shin
+  - [x] smokygodorvoyage00emer
+  - [x] SnowCrashNealStephenson
+  - [x] starwarsdarthban00drew
+  - [x] starwarstrilogye00geor_0
+  - [x] storiesofyourlif0000chia_u1w4
+  - [x] the-collected-stories-of-philip-k.-dick
+  - [x] the-complete-asimov-by-isaac-asimov
+  - [x] the-moon-maid
+  - [x] the-stars-my-destination
+  - [x] TheArtOfEarlKulpBergeycompiledByDjFDuMarais
+  - [x] TheArtOfVirgilFinlaycompiledByDjFDuMarais
+  - [x] TheArtworkOfAllenAndersoncompiledByDjFDuMarais
+  - [x] thedispossessed0000legu
+  - [x] TheFaceInTheAbyssFirstEdition1931
+  - [x] TheKlingonLanguageVersionOfTheWorldEnglishBiblePsalms
+  - [x] TheMartian_201808
+  - [x] TheMartianWay
+  - [x] TheMupEncyclopaediaOfAustralianScienceFictionFantasy
+  - [x] TheMysteryOfTheRhymingRiddle
+  - [x] TheNextStep_201812
+  - [x] theone-magazine-23
+  - [x] TheSexLifeOfTheGods
+  - [x] thethingintheatt32447gut
+  - [x] twilight00step
+  - [x] UnderTheThelianSky
+  - [x] unravelme0000mafi
+  - [x] unwind00shus
+  - [x] uprooted0000novi
+  - [x] WarOfTheWorldsTheH.G.Wells
+  - [x] WeByYevgenyZamyatinv1972
+  - [x] welcometomonkeyh00vonn
+  - [x] whisperofdeath00chri
+  - [x] woolomnibus0000howe
+  - [x] wrinkleintime0000leng
+  - [x] x-men-origines

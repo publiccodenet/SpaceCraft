@@ -31,15 +31,14 @@
  * 
  * --- SHARED STATE PROPERTIES (synchronized via presence) ---
  * Simulator shares these properties in its presence state:
- * - selectedItemIds: Array of all currently selected item IDs
- * - highlightedItemIds: Array of all currently highlighted item IDs  
- * - selectedItemId: First item from selectedItemIds array
- * - highlightedItemId: First item from highlightedItemIds array
+ * - selectedItemId: Currently selected item ID (string or null)
+ * - highlightedItemId: Currently highlighted item ID (string or null)
  * - selectedItem: Metadata for current selected item (without nested tree)
  * - highlightedItem: Metadata for highlighted item (without nested tree)
  * - currentCollectionId: ID of the currently active collection
  * - currentCollection: Metadata for the current collection (without items array)
  * - currentCollectionItems: Array of item IDs in the current collection
+ * - tags: Array of all available tags from all collections combined
  * - screenIds: Array of available screen IDs
  * - currentScreenId: Current active screen ID
  *
@@ -1397,6 +1396,9 @@ window.BaseController = class BaseController {
         // Update the local simulatorState with all new shared data
         this.simulatorState = { ...newSharedState };
 
+        // Debug log to see what state is being received
+        console.log("[Controller] Received simulator state update. Tags count:", this.simulatorState.tags?.length || 0);
+
         // MAX: Log new selected item JSON if its ID has changed
         if (this.simulatorState.selectedItemId !== previousSelectedItemId) {
             this.logEvent('MAX', 'New selected item json (ID changed):', this.simulatorState.selectedItem);
@@ -1419,9 +1421,11 @@ window.BaseController = class BaseController {
                 // Try to display a more informative status if possible
                 let statusText = `Connected to: ${this.simulatorState.clientName || 'Simulator'}`;
                 if (this.simulatorState.selectedItem && this.simulatorState.selectedItem.title) {
-                    statusText += ` (Selected: ${this.simulatorState.selectedItem.title})`;
+                    const collectionTitle = this.simulatorState.currentCollection?.title || 'Unknown Collection';
+                    statusText += ` (Selected: ${collectionTitle}\n${this.simulatorState.selectedItem.title})`;
                 } else if (this.simulatorState.highlightedItem && this.simulatorState.highlightedItem.title) {
-                    statusText += ` (Highlighted: ${this.simulatorState.highlightedItem.title})`;
+                    const collectionTitle = this.simulatorState.currentCollection?.title || 'Unknown Collection';
+                    statusText += ` (Highlighted: ${collectionTitle}\n${this.simulatorState.highlightedItem.title})`;
                 }
                 statusElement.textContent = statusText;
             } else {
@@ -1573,7 +1577,7 @@ window.BaseController = class BaseController {
     }
     
     /**
-     * Create search field UI - shared between navigator and selector
+     * Create search field UI - for navigator only
      * @returns {HTMLElement} The search container element
      */
     createSearchField() {
@@ -1584,6 +1588,14 @@ window.BaseController = class BaseController {
         // Create search input wrapper
         const searchWrapper = document.createElement('div');
         searchWrapper.className = 'search-wrapper';
+        
+        // Create tag menu button (moved to LEFT of text field)
+        const tagButton = document.createElement('button');
+        tagButton.id = 'tag-menu-button';
+        tagButton.className = 'tag-menu-button';
+        tagButton.innerHTML = '?';
+        tagButton.title = 'Browse tags';
+        searchWrapper.appendChild(tagButton);
         
         // Create search input
         const searchInput = document.createElement('input');
@@ -1598,40 +1610,32 @@ window.BaseController = class BaseController {
         searchInput.value = this.currentSearchQuery || '';
         searchWrapper.appendChild(searchInput);
         
-        // Create keyword menu button
-        const keywordButton = document.createElement('button');
-        keywordButton.id = 'keyword-menu-button';
-        keywordButton.className = 'keyword-menu-button';
-        keywordButton.innerHTML = '#';
-        keywordButton.title = 'Browse keywords';
-        searchWrapper.appendChild(keywordButton);
-        
         searchContainer.appendChild(searchWrapper);
         
-        // Create keyword menu (initially hidden)
-        const keywordMenu = this.createKeywordMenu();
-        searchContainer.appendChild(keywordMenu);
+        // Create tag menu (initially hidden)
+        const tagMenu = this.createTagMenu();
+        searchContainer.appendChild(tagMenu);
         
         return searchContainer;
     }
     
     /**
-     * Create keyword menu for tag selection
+     * Create tag menu for tag selection
      */
-    createKeywordMenu() {
+    createTagMenu() {
         const menu = document.createElement('div');
-        menu.id = 'keyword-menu';
-        menu.className = 'keyword-menu';
+        menu.id = 'tag-menu';
+        menu.className = 'tag-menu';
         menu.style.display = 'none';
         
         const menuHeader = document.createElement('div');
-        menuHeader.className = 'keyword-menu-header';
-        menuHeader.textContent = 'Select Keywords:';
+        menuHeader.className = 'tag-menu-header';
+        menuHeader.textContent = 'Select Tags:';
         menu.appendChild(menuHeader);
         
         const menuList = document.createElement('div');
-        menuList.id = 'keyword-menu-list';
-        menuList.className = 'keyword-menu-list';
+        menuList.id = 'tag-menu-list';
+        menuList.className = 'tag-menu-list';
         menu.appendChild(menuList);
         
         return menu;
@@ -1681,76 +1685,98 @@ window.BaseController = class BaseController {
             this.logEvent('Error', 'Search input field not found!');
         }
         
-        // Set up keyword menu button
-        const keywordButton = document.getElementById('keyword-menu-button');
-        const keywordMenu = document.getElementById('keyword-menu');
+        // Set up tag menu button
+        const tagButton = document.getElementById('tag-menu-button');
+        const tagMenu = document.getElementById('tag-menu');
         
-        if (keywordButton && keywordMenu) {
-            keywordButton.addEventListener('click', (e) => {
+        if (tagButton && tagMenu) {
+            tagButton.addEventListener('click', (e) => {
                 e.stopPropagation();
                 e.preventDefault();
                 
                 // Toggle menu visibility
-                if (keywordMenu.style.display === 'none' || !keywordMenu.style.display) {
-                    keywordMenu.style.display = 'block';
-                    this.updateKeywordMenu(); // Populate with latest keywords
+                if (tagMenu.style.display === 'none' || !tagMenu.style.display) {
+                    tagMenu.style.display = 'block';
+                    this.updateTagMenu(); // Populate with latest tags
                 } else {
-                    keywordMenu.style.display = 'none';
+                    tagMenu.style.display = 'none';
                 }
             });
             
             // Close menu when clicking outside
             document.addEventListener('click', (e) => {
-                if (!keywordButton.contains(e.target) && !keywordMenu.contains(e.target)) {
-                    keywordMenu.style.display = 'none';
+                if (!tagButton.contains(e.target) && !tagMenu.contains(e.target)) {
+                    tagMenu.style.display = 'none';
                 }
             });
         }
     }
     
     /**
-     * Update keyword menu with available keywords from simulator
+     * Update tag menu with available tags from simulator
      */
-    updateKeywordMenu() {
-        const menuList = document.getElementById('keyword-menu-list');
+    updateTagMenu() {
+        const menuList = document.getElementById('tag-menu-list');
         if (!menuList) return;
         
         // Clear existing items
         menuList.innerHTML = '';
         
-        // Get keywords from simulator state
-        const keywords = this.simulatorState?.keywords || [];
+        // Get tags from simulator state
+        const tags = this.simulatorState?.tags || [];
         
-        if (keywords.length === 0) {
+        console.log("[Controller] updateTagMenu called. Tags available:", tags.length);
+        if (tags.length > 0) {
+            console.log("[Controller] First 5 tags:", tags.slice(0, 5));
+        }
+        
+        if (tags.length === 0) {
             const emptyMessage = document.createElement('div');
-            emptyMessage.className = 'keyword-menu-empty';
-            emptyMessage.textContent = 'No keywords available';
+            emptyMessage.className = 'tag-menu-empty';
+            emptyMessage.textContent = 'No tags available';
             menuList.appendChild(emptyMessage);
             return;
         }
         
-        // Create keyword items
-        keywords.forEach(keyword => {
+        // Create tag items
+        tags.forEach(tag => {
             const item = document.createElement('div');
-            item.className = 'keyword-menu-item';
-            item.textContent = `#${keyword}`;
+            item.className = 'tag-menu-item';
+            item.textContent = tag; // Remove # prefix from display
             
             item.addEventListener('click', (e) => {
                 e.stopPropagation();
                 
-                // Add keyword to search
+                // Add tag to search with smart spacing
                 const searchInput = document.getElementById('search-input');
                 if (searchInput) {
-                    const currentValue = searchInput.value.trim();
-                    const newValue = currentValue ? `${currentValue} #${keyword}` : `#${keyword}`;
+                    const currentValue = searchInput.value;
+                    let newValue;
+                    
+                    if (currentValue === '') {
+                        // Empty field: just set tag plus space
+                        newValue = `${tag} `;
+                    } else {
+                        // Not empty: add space if needed, then tag plus space
+                        if (currentValue.endsWith(' ')) {
+                            newValue = `${currentValue}${tag} `;
+                        } else {
+                            newValue = `${currentValue} ${tag} `;
+                        }
+                    }
+                    
                     searchInput.value = newValue;
+                    // Move cursor to end and focus
+                    searchInput.setSelectionRange(newValue.length, newValue.length);
+                    searchInput.focus();
+                    
                     this.updateSearchQuery(newValue);
                 }
                 
                 // Hide menu
-                const keywordMenu = document.getElementById('keyword-menu');
-                if (keywordMenu) {
-                    keywordMenu.style.display = 'none';
+                const tagMenu = document.getElementById('tag-menu');
+                if (tagMenu) {
+                    tagMenu.style.display = 'none';
                 }
             });
             
@@ -2094,10 +2120,6 @@ window.SelectorController = class SelectorController extends BaseController {
         instructions.className = 'instructions';
         instructions.innerHTML = '<strong>TAP or SWIPE left/right/up/down</strong>';
         container.appendChild(instructions);
-        
-        // Create search container
-        const searchContainer = this.createSearchField();
-        container.appendChild(searchContainer);
         
         // Create status
         const status = document.createElement('div');

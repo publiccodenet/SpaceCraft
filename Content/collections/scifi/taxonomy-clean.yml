@@ -1,0 +1,420 @@
+# Science Fiction Collection Taxonomy - Detailed
+# Based on actual tags found in collection metadata
+
+authors:
+  - isaac asimov
+  - arthur c clarke
+  - h g wells
+  - frank herbert
+  - philip k dick
+  - ursula k le guin
+  - edgar rice burroughs
+  - stanislaw lem
+  - kurt vonnegut
+  - octavia butler
+  - william gibson
+  - bruce sterling
+  - neal stephenson
+  - carl sagan
+  - douglas adams
+  - orson scott card
+  - dan abnett
+  - roger zelazny
+  - gene wolfe
+  - harlan ellison
+  - ted chiang
+  - liu cixin
+  - neal shusterman
+  - veronica roth
+  - alexandra bracken
+  - tahereh mafi
+  - marissa meyer
+  - rick riordan
+  - james patterson
+  - pierce brown
+  - blake crouch
+  - andy weir
+  - john wyndham
+  - eric frank russell
+  - larry niven
+  - jerry pournelle
+  - robert heinlein
+  - ray bradbury
+  - aldous huxley
+  - george orwell
+  - mary shelley
+  - jules verne
+  - karel capek
+  - yevgeny zamyatin
+  - akira toriyama
+  - hayao miyazaki
+  - hiroya oku
+
+periods:
+  - 1890s science fiction
+  - 1920s science fiction
+  - 1930s science fiction
+  - 1940s science fiction
+  - 1950s science fiction
+  - 1960s science fiction
+  - 1970s science fiction
+  - 1980s science fiction
+  - 1990s science fiction
+  - 2000s science fiction
+  - 2010s science fiction
+  - golden age science fiction
+  - new wave science fiction
+  - contemporary science fiction
+  - victorian science fiction
+  - pulp era
+  - cyberpunk era
+
+genres:
+  - hard science fiction
+  - soft science fiction
+  - space opera
+  - cyberpunk
+  - dystopian
+  - utopian
+  - post apocalyptic
+  - military science fiction
+  - time travel
+  - alternate history
+  - first contact
+  - robot fiction
+  - artificial intelligence
+  - genetic engineering
+  - space exploration
+  - alien invasion
+  - planetary romance
+  - science fantasy
+  - new weird
+  - cli fi
+  - steampunk
+  - biopunk
+  - social science fiction
+  - psychological science fiction
+  - philosophical science fiction
+  - satirical science fiction
+  - adventure science fiction
+
+specific_concepts:
+  - three laws of robotics
+  - psychohistory
+  - ansible
+  - spice melange
+  - the force
+  - tesseract
+  - multiverse
+  - parallel dimensions
+  - time paradox
+  - faster than light travel
+  - generation ships
+  - terraforming
+  - cryogenics
+  - mind upload
+  - consciousness transfer
+  - genetic modification
+  - bioengineering
+  - nanotechnology
+  - virtual reality
+  - augmented reality
+  - cybernetics
+  - neural interface
+  - artificial gravity
+  - force fields
+  - energy weapons
+  - teleportation
+  - precognition
+  - telepathy
+  - shapeshifting
+
+aliens_and_creatures:
+  - martians
+  - xenomorphs
+  - moties
+  - vulcans
+  - klingons
+  - elves
+  - dragons
+  - robots
+  - androids
+  - cyborgs
+  - mutants
+  - zombies
+  - vampires
+  - werewolves
+  - angels
+  - demons
+  - ancient aliens
+  - artificial life
+  - hive minds
+  - energy beings
+  - machine intelligence
+
+settings_and_places:
+  - mars
+  - venus
+  - jupiter
+  - moon
+  - space stations
+  - generation ships
+  - alien worlds
+  - arrakis
+  - tatooine
+  - pandora
+  - earth future
+  - post apocalyptic earth
+  - dystopian society
+  - utopian society
+  - underground cities
+  - underwater cities
+  - floating cities
+  - space colonies
+  - galactic empire
+  - solar system
+  - interstellar space
+  - parallel universes
+  - virtual worlds
+  - cyberspace
+  - matrix
+  - simulated reality
+
+characters_and_entities:
+  - hal 9000
+  - r2d2
+  - c3po
+  - data
+  - spock
+  - kirk
+  - picard
+  - vader
+  - luke skywalker
+  - princess leia
+  - han solo
+  - ender wiggin
+  - paul atreides
+  - gully foyle
+  - winston smith
+  - john carter
+  - tarzan
+  - conan
+  - elric
+  - gandalf
+  - frodo
+
+technologies:
+  - lightsabers
+  - phasers
+  - blasters
+  - death star
+  - enterprise
+  - millennium falcon
+  - tardis
+  - transporter
+  - replicator
+  - holodeck
+  - tricorder
+  - communicator
+  - jetpack
+  - flying car
+  - robot suit
+  - power armor
+  - mech suit
+  - stargate
+  - time machine
+  - portal gun
+
+themes:
+  - consciousness
+  - identity
+  - reality vs illusion
+  - human vs machine
+  - nature vs technology
+  - individual vs society
+  - freedom vs security
+  - order vs chaos
+  - good vs evil
+  - creation vs destruction
+  - evolution
+  - survival
+  - exploration
+  - discovery
+  - contact
+  - war
+  - peace
+  - love
+  - death
+  - immortality
+  - power
+  - corruption
+  - justice
+  - revenge
+  - redemption
+  - sacrifice
+  - heroism
+  - coming of age
+  - family
+  - friendship
+  - betrayal
+  - loyalty
+  - hope
+  - despair
+
+social_themes:
+  - corporate dystopia
+  - government oppression
+  - totalitarianism
+  - surveillance state
+  - mind control
+  - thought police
+  - rebellion
+  - resistance
+  - revolution
+  - civil rights
+  - discrimination
+  - racism
+  - sexism
+  - classism
+  - colonialism
+  - imperialism
+  - environmentalism
+  - climate change
+  - resource depletion
+  - overpopulation
+  - genetic discrimination
+  - technological unemployment
+  - digital divide
+  - privacy rights
+  - free speech
+  - censorship
+
+formats:
+  - novel
+  - novella
+  - short story
+  - short story collection
+  - anthology
+  - graphic novel
+  - comic book
+  - manga
+  - webcomic
+  - omnibus
+  - trilogy
+  - series
+  - standalone
+  - magazine fiction
+  - pulp fiction
+  - literary fiction
+  - popular fiction
+  - film adaptation
+  - tv adaptation
+  - radio adaptation
+  - game adaptation
+
+awards:
+  - hugo award
+  - nebula award
+  - philip k dick award
+  - arthur c clarke award
+  - locus award
+  - world fantasy award
+  - newbery medal
+  - caldecott medal
+  - prometheus award
+  - john w campbell award
+  - british science fiction award
+  - edgar award
+
+major_series:
+  - foundation series
+  - robot series
+  - galactic empire series
+  - dune series
+  - culture series
+  - hyperion cantos
+  - mars trilogy
+  - expanse series
+  - honor harrington series
+  - ender series
+  - star wars expanded universe
+  - star trek universe
+  - warhammer 40k
+  - doctor who universe
+  - x men universe
+  - marvel universe
+  - dc universe
+  - aliens franchise
+  - predator franchise
+  - terminator franchise
+  - matrix franchise
+  - blade runner universe
+  - mad max universe
+  - planet of apes franchise
+
+young_adult_series:
+  - hunger games series
+  - divergent series
+  - maze runner series
+  - shatter me series
+  - darkest minds series
+  - red queen series
+  - legend series
+  - matched series
+  - uglies series
+  - giver series
+  - percy jackson series
+  - harry potter series
+  - twilight series
+  - vampire academy series
+  - mortal instruments series
+
+publishers_and_origins:
+  - ace books
+  - del rey
+  - tor books
+  - bantam spectra
+  - daw books
+  - orbit
+  - gollancz
+  - baen books
+  - analog magazine
+  - asimov's magazine
+  - fantasy and science fiction
+  - galaxy magazine
+  - amazing stories
+  - astounding stories
+  - weird tales
+  - dark horse comics
+  - marvel comics
+  - dc comics
+  - image comics
+  - vertigo comics
+  - self published
+  - indie published
+  - webfirst
+  - magazine serial
+
+regions:
+  - american science fiction
+  - british science fiction
+  - european science fiction
+  - japanese science fiction
+  - chinese science fiction
+  - soviet science fiction
+  - russian science fiction
+  - canadian science fiction
+  - australian science fiction
+  - latin american science fiction
+
+audience:
+  - adult fiction
+  - young adult
+  - middle grade
+  - children's fiction
+  - literary science fiction
+  - popular science fiction
+  - academic science fiction
+  - mass market
+  - literary mainstream
+  - crossover fiction 

@@ -1,7 +1,7 @@
 {
   "id": "TheKlingonLanguageVersionOfTheWorldEnglishBiblePsalms",
   "title": "The Klingon Language Version of the World English Bible Psalms",
-  "description": "The KLV is an experimental relexification of the World English Bible Psalms.\n\nWhy A Klingon Bible?\n\nOnce anyone hears of a project to make a Klingon Bible, the question that comes up is \"why?\" Certainly there is no need for such a version, as there is a need for a Bible in English, Spanish, German, or any other \"real\" language. There is no person who would only be able to access the scriptures in Klingon.\n\nBut in the study of artificial languages, translating standard works of literature like the Bible is often done, and for two reasons. First, it is a way to exercise and develop the language, and second, it helps to develop a body of literature in that language. This literature can then be used and referred to by people learning and using the language.\n\nFor some, there can be other benefits. Though this kind of translation might seem frivolous, the work of producing such a translation can have devotional value even if the translation is never used. The effort of reading the scriptures and considering their meaning for a translation cannot fail to benefit the translator by helping him or her develop a deeper understanding of the text.\n\nThe Klingon language community has produced at least three efforts in this direction. The Klingon Language Institute (http://www.kli.org) organized a long-term project to translate the Bible. Currently on hiatus, this project has yielded only a few books, for example, the Gospel of Mark. In addition, the Rev. Glen Prochel published a book, Good News for the Warrior Race, which presents the gospels and other selected scriptures in parallel with a \"Star Trek\" English paraphrase.\n\nLastly, the project presented here, the Klingon Language Version, is actually a relexification of the World English Bible and serves as a demonstration of what a complete Klingon Bible would look like. A table of the most frequently occurring words (used more than 100 times) was translated, word by word, into Klingon. This table was used to transform the WEB into Klingon. Though it is not a grammatical Klingon text (actually it is more of a pidgin-Klingon, mixing English vocabulary and grammar with Klingon) it does provide vocabulary which can be used in doing a proper Klingon translation.\n\nThe Klingon Language Version, MrKlingon.org and the Universal Translator Assistant Project are in no way affiliated with Paramount Pictures, Inc. Star Trek (c), in all its various forms, is a trademark of Paramount Pictures.",
+  "description": "The Klingon Language Version of the World English Bible Psalms represents a fascinating intersection of constructed language, religious text, and science fiction culture. Klingon, originally created by linguist Marc Okrand for the Star Trek franchise, has become one of the most developed and studied constructed languages in popular culture. This translation project demonstrates the linguistic completeness and cultural depth that the Klingon language has achieved, moving beyond its fictional origins to become a vehicle for serious linguistic and literary work. The translation of biblical psalms into Klingon requires not only linguistic skill but also cultural adaptation, as translators must find ways to express human spiritual concepts through the linguistic and cultural framework of a warrior species. This work serves as both a testament to the dedication of Star Trek fans and a serious example of how fictional languages can develop their own literary traditions and cultural significance.",
   "creator": "Joel Peter Anderson",
   "subject": [
     "Klingon",
@@ -10,6 +10,28 @@
     "World English Bible",
     "Star Trek Science Fiction"
   ],
+  "tags": [
+    "marc okrand",
+    "1990s science fiction",
+    "american science fiction",
+    "star trek universe",
+    "klingon language",
+    "constructed language",
+    "conlang",
+    "biblical translation",
+    "psalms",
+    "linguistic experiment",
+    "fan culture",
+    "artificial language",
+    "translation studies",
+    "science fiction linguistics",
+    "star trek",
+    "cultural adaptation",
+    "literary tradition",
+    "franchise media",
+    "linguistics",
+    "religious text"
+  ],
   "collection": [
     "opensource",
     "community"
@@ -17,28 +39,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/TheKlingonLanguageVersionOfTheWorldEnglishBiblePsalms",
   "coverWidth": 180,
-  "coverHeight": 133,
-  "favoriteCount": 0,
-  "name": "The Klingon Language Version of the World English Bible Psalms",
-  "publicdate": "2010-07-01 02:49:50",
-  "identifier": "TheKlingonLanguageVersionOfTheWorldEnglishBiblePsalms",
-  "licenseurl": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
-  "addeddate": "2010-07-01 02:48:24",
-  "uploader": "joel@mrklingon.org",
-  "updater": [
-    "mrklingon",
-    "mrklingon"
-  ],
-  "updatedate": [
-    "2010-07-01 02:57:28",
-    "2010-07-01 03:03:36"
-  ],
-  "language": "English",
-  "identifier-access": "http://www.archive.org/details/TheKlingonLanguageVersionOfTheWorldEnglishBiblePsalms",
-  "identifier-ark": "ark:/13960/t6qz2zf0s",
-  "repub_state": "4",
-  "curation": "[curator]validator@archive.org[/curator][date]20140401021208[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903605_27",
-  "coverImageWidth": 180,
-  "coverImageHeight": 133
+  "coverHeight": 133
 }

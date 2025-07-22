@@ -1,10 +1,28 @@
 {
   "id": "SnowCrashNealStephenson",
   "title": "Snow Crash Neal Stephenson",
-  "description": "<span style=\"color:rgb(51,51,51);font-family:Arial, sans-serif;font-size:14px;background-color:rgb(255,255,255);\">Enter the Metaverse - cyberspace home to avatars and software daemons, where anything and just about everything goes. Newly available on the Street - the Metaverse's main drag - is Snow Crash, a cyberdrug. Trouble is Snow Crash is also a computer virus - and something more. Because once taken it infects the person behind the avatar. Snow Crash bleeds into reality.</span><br style=\"color:rgb(51,51,51);font-family:Arial, sans-serif;font-size:14px;background-color:rgb(255,255,255);\" /><span style=\"color:rgb(51,51,51);font-family:Arial, sans-serif;font-size:14px;background-color:rgb(255,255,255);\">Which is really bad news for Hiro - freelance hacker and the Metaverse's best swordfighter (he wrote the code) - and Y. T. - skateboard kourier, street imp and mouthy teenage girl - because reality was shitty enough before someone started messing with it . . .</span><br style=\"color:rgb(51,51,51);font-family:Arial, sans-serif;font-size:14px;background-color:rgb(255,255,255);\" /><span style=\"color:rgb(51,51,51);font-family:Arial, sans-serif;font-size:14px;background-color:rgb(255,255,255);\">Exploring linguistics, religion, computer science, politics, philosophy, cryptography and the future of pizza delivery, Snow Crash is a riveting, brake-neck adventure into the fast-approaching future</span>",
+  "description": "Snow Crash by Neal Stephenson is a groundbreaking cyberpunk novel that helped define the genre and introduced concepts that would prove remarkably prescient about the development of the internet and virtual reality. Set in a near-future America where the federal government has largely collapsed and been replaced by corporate entities, the story follows Hiro Protagonist, a hacker and pizza delivery driver, as he investigates a new drug called Snow Crash that affects both computers and human minds. The novel popularized the term 'avatar' for virtual representations and explored the concept of the Metaverse, a virtual reality space that predated and influenced real-world developments in VR and online worlds. Stephenson weaves together elements of Sumerian mythology, computer science, linguistics, and anarcho-capitalist politics to create a complex narrative that examines the intersection of technology, language, and consciousness. The book is notable for its blend of high-tech concepts with ancient history and its satirical take on American consumer culture.",
   "creator": "",
   "subject": [
     "science fiction"
+  ],
+  "tags": [
+    "neal stephenson",
+    "1990s science fiction",
+    "american science fiction",
+    "cyberpunk",
+    "novel",
+    "virtual reality",
+    "metaverse",
+    "hacking",
+    "corporate dystopia",
+    "computer science",
+    "linguistics",
+    "mythology",
+    "anarcho-capitalism",
+    "avatar",
+    "snow crash",
+    "hiro protagonist"
   ],
   "collection": [
     "opensource",
@@ -13,21 +31,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/SnowCrashNealStephenson",
   "coverWidth": 180,
-  "coverHeight": 298,
-  "favoriteCount": 0,
-  "name": "Snow Crash Neal Stephenson",
-  "publicdate": "2017-08-21 09:08:30",
-  "identifier": "SnowCrashNealStephenson",
-  "date": "1992",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
-  "uploader": "kat@ga-yi.com",
-  "addeddate": "2017-08-21 09:08:30",
-  "curation": "[curator]validator@archive.org[/curator][date]20170821090851[/date][comment]checked for malware[/comment]",
-  "language": "English",
-  "identifier-access": "http://archive.org/details/SnowCrashNealStephenson",
-  "identifier-ark": "ark:/13960/t87h7nw4f",
-  "repub_state": "4",
-  "backup_location": "ia906502_16",
-  "coverImageWidth": 180,
-  "coverImageHeight": 298
+  "coverHeight": 298
 }

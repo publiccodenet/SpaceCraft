@@ -1,7 +1,7 @@
 {
   "id": "thedispossessed0000legu",
   "title": "The Dispossessed",
-  "description": "A brilliant physicist from the anarchist moon colony of Anarres risks everything to travel to the mother planet Urras, challenging the structures of both societies in this profound exploration of political systems, individual freedom, and the walls we build between worlds.",
+  "description": "The Dispossessed is a political science fiction novel that explores two contrasting societies through the journey of Shevek, a brilliant physicist from the anarchist moon Anarres. Anarres was settled by followers of the philosopher Odo, who created a society without government, private property, or hierarchies, based on mutual aid and collective decision-making. When Shevek travels to the wealthy capitalist planet Urras to share his scientific theories and bridge the gap between the two worlds, he encounters a society of extreme inequality, gender oppression, and political manipulation. The novel alternates between Shevek's life on Anarres and his experiences on Urras, contrasting the limitations of both systems. Through Shevek's development of ansible technology for instantaneous communication across space, Le Guin examines themes of individual creativity versus collective conformity, the nature of true freedom, and the possibility of creating just societies.",
   "creator": "Ursula K. Le Guin",
   "subject": [
     "Science Fiction",
@@ -10,26 +10,33 @@
     "Political Philosophy",
     "Social Commentary"
   ],
+  "tags": [
+    "ursula k le guin",
+    "1970s science fiction",
+    "american science fiction",
+    "classic science fiction",
+    "political science fiction",
+    "philosophical science fiction",
+    "novel",
+    "hugo award",
+    "nebula award",
+    "utopian",
+    "anarchist society",
+    "physics",
+    "ansible",
+    "shevek",
+    "anarres",
+    "urras",
+    "mutual aid",
+    "collective society",
+    "capitalism versus anarchism",
+    "individual vs society",
+    "ambiguous utopia",
+    "simultaneity theory"
+  ],
   "collection": "scifi",
   "mediatype": "texts",
   "coverImage": "cover.jpg",
   "coverWidth": 180,
-  "coverHeight": 288,
-  "spacecraft_custom_item": true,
-  "identifier": "thedispossessed0000legu",
-  "date": "1974",
-  "coverImageWidth": 180,
-  "coverImageHeight": 288,
-  "spacecraft_description": "Shevek, a brilliant physicist from the anarchist moon Anarres, risks everything to bridge two worlds separated by ideology and fear. His journey to the capitalist planet Urras becomes a profound meditation on freedom, belonging, and the walls we build between ourselves.",
-  "spacecraft_tags": [
-    "anarchist-theory",
-    "hugo-winner",
-    "nebula-winner",
-    "feminist-sf",
-    "physics-as-philosophy",
-    "utopia-ambiguous",
-    "must-read",
-    "le-guin-masterpiece"
-  ],
-  "spacecraft_custom_url": "https://en.wikipedia.org/wiki/The_Dispossessed"
+  "coverHeight": 288
 }

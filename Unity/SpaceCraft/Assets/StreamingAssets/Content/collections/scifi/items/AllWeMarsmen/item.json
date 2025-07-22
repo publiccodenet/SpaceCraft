@@ -1,7 +1,7 @@
 {
   "id": "AllWeMarsmen",
   "title": "All We Marsmen",
-  "description": "Science Fiction serial novel published in the August, October and December 1963 issues of Worlds of Tomorrow magazine.",
+  "description": "\"All We Marsmen\" is a three-part serial novel by Philip K. Dick published in Worlds of Tomorrow magazine in August, October, and December 1963. This work represents an early version of what would later become Dick's acclaimed novel \"Martian Time-Slip\" (1964), showcasing the author's developing themes about reality, perception, and human alienation in an extraterrestrial setting. Originally titled \"Goodmember Arnie Kott of Mars\" in manuscript form, the story explores the psychological and social complexities of human colonization on Mars.\n\nThe narrative follows the interconnected lives of various characters on Mars, including autistic children, union officials, and settlers struggling with the harsh realities of colonial life. Dick uses the Martian setting to examine themes of mental illness, corporate exploitation, and the fragmentation of human experience that would become central to his later masterworks. The story demonstrates Dick's early mastery of using science fiction scenarios to explore deeply human psychological and philosophical questions. As with much of Dick's work, the Martian environment serves not just as an exotic backdrop but as a crucible that reveals the fundamental anxieties and contradictions of human nature.",
   "creator": "Philip K. Dick",
   "subject": [
     "Science Fiction",
@@ -11,6 +11,28 @@
     "Martians",
     "Martian SFF"
   ],
+  "tags": [
+    "philip k dick",
+    "mars",
+    "space colonies",
+    "psychological science fiction",
+    "philosophical science fiction",
+    "1960s science fiction",
+    "golden age science fiction",
+    "american science fiction",
+    "reality vs illusion",
+    "human alienation",
+    "corporate dystopia",
+    "mental illness",
+    "magazine serial",
+    "magazine fiction",
+    "social commentary",
+    "identity",
+    "consciousness",
+    "novel",
+    "autistic characters",
+    "disability representation"
+  ],
   "collection": [
     "pulp_misc_sf",
     "pulpmagazinearchive",
@@ -19,21 +41,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/AllWeMarsmen",
   "coverWidth": 180,
-  "coverHeight": 230,
-  "favoriteCount": 0,
-  "name": "All We Marsmen",
-  "publicdate": "2011-11-28 02:00:23",
-  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
-  "identifier": "AllWeMarsmen",
-  "uploader": "clydestapledon@hotmail.com",
-  "addeddate": "2011-11-27 23:01:10",
-  "identifier-access": "http://www.archive.org/details/AllWeMarsmen",
-  "identifier-ark": "ark:/13960/t50g4pd7j",
-  "ppi": "144",
-  "ocr": "ABBYY FineReader 8.0",
-  "repub_state": "4",
-  "curation": "[curator]malware@archive.org[/curator][date]20140327081814[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903706_2",
-  "coverImageWidth": 180,
-  "coverImageHeight": 230
+  "coverHeight": 230
 }

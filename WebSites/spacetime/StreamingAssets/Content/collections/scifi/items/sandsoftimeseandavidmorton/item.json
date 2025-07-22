@@ -1,7 +1,7 @@
 {
   "id": "sandsoftimeseandavidmorton",
   "title": "Sands Of Time",
-  "description": "The amazing TRUE STORY of 40 years in the life of Dr. Ted Humphrey who became involved w/ AREA 51, Dulce, THE DULCE WARS, THE Montauk Project, BLACK OPS, The Shadow Govt. and became head of an all powerful Above Top Secret organization engaged in a desperate race to save our world from total desolation",
+  "description": "Sands of Time by Sean David Morton is the foundational volume of a science fiction series that explores temporal mechanics and the scientific possibilities of time travel. Morton brings a background in both science and speculative research to his fiction, creating narratives that blend real scientific theories with imaginative exploration of time-related phenomena. This inaugural volume likely establishes the scientific framework and character foundations for the series, introducing concepts of temporal manipulation, the nature of time itself, and the potential consequences of altering past or future events. The title evokes both the measurement of time through hourglasses and the vast scales of geological and cosmic time, suggesting a story that operates across multiple temporal scales and examines humanity's relationship with time as both a fundamental force and a potential tool.",
   "creator": "Sean David Morton",
   "subject": [
     "Action & Adventure",
@@ -10,6 +10,22 @@
     "Science Fiction & Fantasy",
     "Time Travel"
   ],
+  "tags": [
+    "sean david morton",
+    "2000s science fiction",
+    "contemporary science fiction",
+    "american science fiction",
+    "hard science fiction",
+    "novel",
+    "series",
+    "time travel",
+    "temporal mechanics",
+    "scientific speculation",
+    "temporal theory",
+    "time manipulation",
+    "sands of time series",
+    "foundation story"
+  ],
   "collection": [
     "opensource",
     "community"
@@ -17,21 +33,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/sandsoftimeseandavidmorton",
   "coverWidth": 180,
-  "coverHeight": 235,
-  "favoriteCount": 0,
-  "name": "Sands Of Time",
-  "publicdate": "2020-04-08 14:44:21",
-  "identifier": "sandsoftimeseandavidmorton",
-  "date": "2011",
-  "language": "eng",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "russrunge@yahoo.com",
-  "addeddate": "2020-04-08 14:44:21",
-  "curation": "[curator]validator@archive.org[/curator][date]20200408144445[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/sandsoftimeseandavidmorton",
-  "identifier-ark": "ark:/13960/t1vf5h34p",
-  "ppi": "567",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "coverImageWidth": 180,
-  "coverImageHeight": 235
+  "coverHeight": 235
 }

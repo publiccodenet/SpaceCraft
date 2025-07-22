@@ -48,8 +48,8 @@ The pipeline is designed to support multiple use cases:
 
 ```
 Content/
-├── Configs/
-│   └── Exporters/
+├── configs/
+│   └── exporters/
 │       └── Unity/
 │           └── SpaceCraft/
 │               ├── collections-filter.json  # Additional filtering rules

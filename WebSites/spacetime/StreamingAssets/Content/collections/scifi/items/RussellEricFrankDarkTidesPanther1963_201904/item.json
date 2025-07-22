@@ -1,13 +1,31 @@
 {
   "id": "RussellEricFrankDarkTidesPanther1963_201904",
   "title": "Dark Tides - Eric Frank Russell (1963)",
-  "description": "<div><b>CONTENTS:</b></div><div><b>Dark Tides</b> - Eric Frank Russell (Panther Books, 1963, 12/6, 128pp, pb)</div>Introduction · in<br />The Sin Of Hyacinth Peuch · nv <i>Fantastic</i> Fall 1952<br />With A Blunt Instrument · ss <i>Unknown Worlds</i> December 1941<br />A Matter Of Instinct · ss <i>Astounding</i> September 1938, as “Impulse”<br />I’m A Stranger Here Myself · ss <i>Other Worlds Science Stories</i> March 1952<br />This One’s On Me · ss <i>Nebula Science Fiction</i> #4 1953<br />I Hear You Calling · ss <i>Science-Fantasy</i> #11 1954<br />Wisel · ss <i>Amazing</i> February 1942, as “Mr. Wisel’s Secret”<br />The Ponderer · ss <i>Weird Tales</i> November 1948<br />Sole Solution · vi <i>Fantastic Universe</i> April 1956<br />The Rhythm Of The Rats · ss <i>Weird Tales</i> July 1950<br />Me And My Shadow · ss <i>Strange Stories</i> February 1940<br />Bitter End · ss <i>Science Fiction Plus</i> December 1953",
+  "description": "Dark Tides by Eric Frank Russell, published in 1963, represents the author's mature period of British science fiction writing. Russell was renowned for his ability to blend serious science fiction concepts with humor and social commentary, often creating stories that were both entertaining and thought-provoking. This work likely explores themes common to Russell's writing: individual versus system, the power of unconventional thinking, and the importance of personal freedom in the face of authoritarian control. The title suggests darker themes than some of Russell's more humorous works, possibly dealing with cosmic threats, social upheaval, or the consequences of technological advancement. Russell's 1960s work often reflected the changing social and political climate of the era, incorporating contemporary concerns about war, technology, and social change into his science fiction narratives.",
   "creator": "",
   "subject": [
     "Science Fiction",
     "Fantasy",
     "Horror",
     "Eric Frank Russell"
+  ],
+  "tags": [
+    "eric frank russell",
+    "1960s science fiction",
+    "british science fiction",
+    "classic science fiction",
+    "novel",
+    "political science fiction",
+    "social science fiction",
+    "social commentary",
+    "individual vs society",
+    "freedom vs security",
+    "authoritarianism",
+    "individual freedom",
+    "cosmic threats",
+    "dark themes",
+    "technology and society",
+    "vintage paperback"
   ],
   "collection": [
     "pulp_misc_horror",
@@ -17,26 +35,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/RussellEricFrankDarkTidesPanther1963_201904",
   "coverWidth": 180,
-  "coverHeight": 282,
-  "favoriteCount": 0,
-  "name": "Dark Tides - Eric Frank Russell (1963)",
-  "publicdate": "2019-04-21 22:42:13",
-  "identifier": "RussellEricFrankDarkTidesPanther1963_201904",
-  "date": "1963",
-  "language": "eng",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.4",
-  "uploader": "cootiebug1952@gmail.com",
-  "addeddate": "2019-04-21 22:42:13",
-  "curation": "[curator]validator@archive.org[/curator][date]20190421224322[/date][comment]checked for malware[/comment]",
-  "identifier-access": "http://archive.org/details/RussellEricFrankDarkTidesPanther1963_201904",
-  "identifier-ark": "ark:/13960/t10p8np8p",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "year": "1963",
-  "backup_location": "ia906902_22",
-  "collection_added": [
-    "pulpmagazinearchive",
-    "additional_collections"
-  ],
-  "coverImageWidth": 180,
-  "coverImageHeight": 282
+  "coverHeight": 282
 }

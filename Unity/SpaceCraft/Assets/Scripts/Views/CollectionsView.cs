@@ -248,11 +248,8 @@ public class CollectionsView : MonoBehaviour
     /// </summary>
     public void DisplayItemDetails(Item item)
     {
-        Debug.Log($"CollectionsView: DisplayItemDetails called for item: {item?.Title}");
-        
         if (item == null)
         {
-            Debug.LogWarning("CollectionsView: DisplayItemDetails - item is null");
             HideItemDetails();
             return;
         }
@@ -260,9 +257,46 @@ public class CollectionsView : MonoBehaviour
         // Show title in the InfoText component
         if (itemInfoPanel != null)
         {
-            Debug.Log($"CollectionsView: DisplayItemDetails - Activating panel and showing title: {item.Title}");
+            // Get collection title
+            string displayTitle = item.Title;
+            
+            // Find the ItemView to get collection information
+            if (spaceCraft != null && spaceCraft.SelectedItemIds.Count > 0)
+            {
+                string selectedId = spaceCraft.SelectedItemIds[0];
+                ItemView itemView = spaceCraft.FindItemViewById(selectedId);
+                
+                if (itemView != null && !string.IsNullOrEmpty(itemView.collectionId))
+                {
+                    Collection collection = Brewster.Instance.GetCollection(itemView.collectionId);
+                    Debug.Log($"CollectionsView: Retrieved collection with ID='{collection?.Id}', Title='{collection?.Title}', Type={collection?.GetType().Name}");
+                    if (collection != null)
+                    {
+                        Debug.Log($"CollectionsView: About to format title - collection.Title='{collection.Title}', item.Title='{item.Title}'");
+                        displayTitle = $"{collection.Title}\n{item.Title}";
+                        Debug.Log($"CollectionsView: Final formatted displayTitle='{displayTitle}'");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"CollectionsView: GetCollection('{itemView.collectionId}') returned null!");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("CollectionsView: itemView.collectionId is null or empty!");
+                }
+            }
+            else
+            {
+                if (spaceCraft == null)
+                    Debug.LogWarning("CollectionsView: spaceCraft is null!");
+                else
+                    Debug.LogWarning($"CollectionsView: SelectedItemIds.Count = {spaceCraft.SelectedItemIds.Count}");
+            }
+            
+            Debug.Log($"CollectionsView: DisplayItemDetails - Activating panel and showing title: {displayTitle}");
             itemInfoPanel.gameObject.SetActive(true);
-            itemInfoPanel.ShowInfo(item.Title);
+            itemInfoPanel.ShowInfo(displayTitle);
         }
         else
         {

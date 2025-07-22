@@ -1,7 +1,7 @@
 {
   "id": "TheMupEncyclopaediaOfAustralianScienceFictionFantasy",
   "title": "The MUP Encyclopaedia of Australian Science Fiction & Fantasy",
-  "description": "Reference book published in 1998 by Melbourne University Press.",
+  "description": "The MUP Encyclopaedia of Australian Science Fiction & Fantasy is a comprehensive reference work that documents the rich tradition of speculative fiction in Australia. Published by Melbourne University Press (MUP), this encyclopedia serves as an essential resource for understanding the unique contributions of Australian authors, editors, publishers, and fans to the global science fiction and fantasy community. The work covers the history of Australian science fiction from its early beginnings through contemporary works, highlighting the distinctive Australian perspective that has emerged in the genre. It includes entries on major Australian science fiction authors like A. Bertram Chandler, Damien Broderick, and Sean McMullen, as well as important Australian science fiction magazines, conventions, and publishing houses. The encyclopedia demonstrates how Australian science fiction has developed its own character, often incorporating elements of the Australian landscape, history, and cultural identity while contributing innovative concepts to the global genre.",
   "creator": "",
   "subject": [
     "Science Fiction",
@@ -9,6 +9,28 @@
     "SF",
     "Encyclopedias",
     "Encyclopaedias"
+  ],
+  "tags": [
+    "damien broderick",
+    "sean mcmullen",
+    "2000s science fiction",
+    "australian science fiction",
+    "encyclopedia",
+    "reference work",
+    "academic study",
+    "literary reference",
+    "speculative fiction",
+    "australian literature",
+    "melbourne university press",
+    "australian fantasy",
+    "cultural identity",
+    "regional science fiction",
+    "science fiction history",
+    "non fiction",
+    "literary criticism",
+    "genre studies",
+    "comprehensive reference",
+    "cultural documentation"
   ],
   "collection": [
     "folkscanomy_fiction",
@@ -18,22 +40,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/TheMupEncyclopaediaOfAustralianScienceFictionFantasy",
   "coverWidth": 180,
-  "coverHeight": 260,
-  "favoriteCount": 0,
-  "name": "The MUP Encyclopaedia of Australian Science Fiction & Fantasy",
-  "publicdate": "2011-12-30 22:05:33",
-  "licenseurl": "http://creativecommons.org/publicdomain/mark/1.0/",
-  "identifier": "TheMupEncyclopaediaOfAustralianScienceFictionFantasy",
-  "uploader": "erinqschwartz@hotmail.com",
-  "addeddate": "2011-12-30 20:03:36",
-  "language": "English",
-  "identifier-access": "http://www.archive.org/details/TheMupEncyclopaediaOfAustralianScienceFictionFantasy",
-  "identifier-ark": "ark:/13960/t54f2tj74",
-  "ppi": "600",
-  "ocr": "ABBYY FineReader 8.0",
-  "repub_state": "4",
-  "curation": "[curator]malware@archive.org[/curator][date]20140327032924[/date][comment]checked for malware[/comment]",
-  "backup_location": "ia903707_3",
-  "coverImageWidth": 180,
-  "coverImageHeight": 260
+  "coverHeight": 260
 }

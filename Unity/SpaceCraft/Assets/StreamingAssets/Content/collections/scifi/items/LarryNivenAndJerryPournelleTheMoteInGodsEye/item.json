@@ -1,10 +1,34 @@
 {
   "id": "LarryNivenAndJerryPournelleTheMoteInGodsEye",
   "title": "Larry Niven And Jerry Pournelle The Mote In Gods Eye",
-  "description": "The Mote In Gods Eye - Larry Niven And Jerry Pournelle",
+  "description": "Larry Niven and Jerry Pournelle's \"The Mote in God's Eye\" stands as one of the finest examples of hard science fiction's golden age, particularly in its treatment of first contact between humans and an alien species. Set in Pournelle's CoDominium universe, the novel follows humanity's first encounter with the Moties, aliens discovered in a star system near the red giant Murcheson's Eye. When human explorers make contact, they discover a seemingly peaceful and technologically advanced civilization, but gradually uncover a dark secret that threatens both species' survival. The Moties are trapped in an endless cycle of population explosion and civilizational collapse, driven by biological imperatives that make peaceful coexistence seemingly impossible.\n\nThe novel excels in its rigorous scientific speculation and complex political framework, examining themes of overpopulation, resource depletion, and the challenges of communication between fundamentally different species. Niven and Pournelle create one of science fiction's most memorable alien races, with the Moties' asymmetrical bodies, specialized castes, and tragic evolutionary history serving as both fascinating world-building and pointed social commentary. The book's exploration of whether two intelligent species can coexist despite incompatible biological drives makes it a landmark work in both anthropological science fiction and first contact literature. The collaboration between Niven's hard science background and Pournelle's military and political expertise results in a novel that combines rigorous scientific speculation with compelling human drama.",
   "creator": "",
   "subject": [
     "Science Fiction"
+  ],
+  "tags": [
+    "larry niven",
+    "jerry pournelle",
+    "1970s science fiction",
+    "american science fiction",
+    "hard science fiction",
+    "first contact",
+    "space opera",
+    "moties",
+    "alien species",
+    "codominium universe",
+    "murchesons eye",
+    "population cycles",
+    "biological imperative",
+    "overpopulation",
+    "resource depletion",
+    "asymmetrical aliens",
+    "caste system",
+    "scientific speculation",
+    "anthropological science fiction",
+    "golden age science fiction",
+    "collaboration",
+    "novel"
   ],
   "collection": [
     "folkscanomy_fiction",
@@ -14,21 +38,5 @@
   "mediatype": "texts",
   "coverImage": "https://archive.org/services/img/LarryNivenAndJerryPournelleTheMoteInGodsEye",
   "coverWidth": 180,
-  "coverHeight": 233,
-  "favoriteCount": 0,
-  "name": "Larry Niven And Jerry Pournelle The Mote In Gods Eye",
-  "publicdate": "2018-10-25 19:13:58",
-  "identifier": "LarryNivenAndJerryPournelleTheMoteInGodsEye",
-  "scanner": "Internet Archive HTML5 Uploader 1.6.3",
-  "uploader": "ilscuro@hotmail.com",
-  "addeddate": "2018-10-25 19:13:58",
-  "curation": "[curator]validator@archive.org[/curator][date]20181025191948[/date][comment]checked for malware[/comment]",
-  "language": "English",
-  "identifier-access": "http://archive.org/details/LarryNivenAndJerryPournelleTheMoteInGodsEye",
-  "identifier-ark": "ark:/13960/t2x423783",
-  "ppi": "300",
-  "ocr": "ABBYY FineReader 11.0 (Extended OCR)",
-  "backup_location": "ia906803_16",
-  "coverImageWidth": 180,
-  "coverImageHeight": 233
+  "coverHeight": 233
 }
