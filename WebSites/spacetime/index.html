@@ -1,47 +1,40 @@
 <!DOCTYPE html>
 <html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>SpaceCraft Controller</title>
+    <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Mulish:400italic,400,600italic,600,700italic,700" rel="stylesheet">
+    
+    <!-- Shared Controller Styles -->
+    <link rel="stylesheet" href="controller.css">
+    <!-- Supabase library (Local Copy) -->
+    <script src="supabase.min.js"></script>
+    <script src="qrcode.min.js"></script>
+  </head>
+  <body>
+    <h2>Attractors</h2>
+    <p>A visualization of the Internet Archive's Science Fiction book collection.</p>
+    <p>Choose a role to interact with the visualization: navigators move the camera, selectors highlight and search for items and inspectors show details about selections.</p>
+    <p>Click or scan the qr code to get started:</p>
+    <a id="biglink"></a>
+    <script>
+      const href = window.location.href;
+      const path = href.substring(0, href.lastIndexOf('/'));
+      const url = `${path}/attractors.html`;
+      const svgNode = QRCode({
+        msg: url,
+        pal: ["#000000", "#f2f4f8"],
+      });
+      svgNode.style.height = svgNode.style.width = '100px';
 
-    <head>
-
-        <title>SpaceCraft</title>
-
-        <meta charset="utf-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-        <link rel="shortcut icon" href="favicon.ico">
-        <link rel="icon" href="StreamingAssets/SpaceCraft/mark-128w128h.png">
-
-        <!-- External Libraries -->
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-        <!-- Stylesheet -->
-        <link rel="stylesheet" href="StreamingAssets/SpaceCraft/spacecraft.css">
-
-        <!-- Core Bridge scripts - load BEFORE the application scripts -->
-        <script src="StreamingAssets/Bridge/bridge.js"></script>
-        <script src="StreamingAssets/Bridge/unity.js"></script>
-
-        <!-- SpaceCraft specific scripts -->
-        <script src="StreamingAssets/SpaceCraft/qrcode.min.js"></script>
-        <!-- spacecraft.js contains the main initialization and app logic -->
-        <script src="StreamingAssets/SpaceCraft/spacecraft.js"></script>
-
-    </head>
-
-    <body>
-
-        <!-- Main Unity container -->
-        <div id="unity-container" class="unity-desktop">
-            <canvas id="unity-canvas"></canvas>
-            <div id="unity-fullscreen-button"></div>
-        </div>
-
-        <!-- QR codes container - positioned over Unity canvas -->
-        <div id="qrcodes-container">
-            <!-- QR codes will be dynamically generated and inserted here by spacecraft.js -->
-        </div>
-
-    </body>
-
-</html>
+      const link = document.getElementById('biglink');
+      link.appendChild(svgNode);
+      link.href = url;
+    </script>
+  </body>
+</html> 
