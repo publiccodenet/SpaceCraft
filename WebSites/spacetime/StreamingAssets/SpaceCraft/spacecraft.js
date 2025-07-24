@@ -176,26 +176,33 @@ class SpaceCraftSim {
         // Define all QR codes to be generated
         this.qrCodeDefinitions = [
             {
-                id: "navigator-qr",
+                id: "role-qr",
                 targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
-                type: "navigator",
-                label: "Navigator",
+                type: "role",
+                label: "Controls",
                 position: "top-left"
             },
-            {
-                id: "selector-qr",
-                targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
-                type: "selector",
-                label: "Selector",
-                position: "top-right"
-            },
-            {
-                id: "inspector-qr",
-                targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
-                type: "inspector",
-                label: "Inspector",
-                position: "bottom-left"
-            },
+            // {
+            //     id: "navigator-qr",
+            //     targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
+            //     type: "navigator",
+            //     label: "Navigator",
+            //     position: "top-left"
+            // },
+            // {
+            //     id: "selector-qr",
+            //     targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
+            //     type: "selector",
+            //     label: "Selector",
+            //     position: "top-right"
+            // },
+            // {
+            //     id: "inspector-qr",
+            //     targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
+            //     type: "inspector",
+            //     label: "Inspector",
+            //     position: "bottom-left"
+            // },
         ];
         
         // Initialize content promise

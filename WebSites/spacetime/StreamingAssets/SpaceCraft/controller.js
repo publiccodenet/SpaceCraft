@@ -2455,12 +2455,50 @@ window.InspectorController = class InspectorController extends BaseController {
     }
 };
 
+/**
+ * Role Controller - specializes in selecting roles
+ */
+window.RoleController = class RoleController extends BaseController {
+    constructor() {
+        super('role'); // Client type
+    }
+
+    /**
+     * Create Inspector-specific DOM elements
+     */
+    createDOM() {
+        this.logEvent('Init', 'Creating Role DOM');
+
+        // Set page title
+        document.title = 'SpaceCraft Roles';
+
+
+
+        // Create JSON output (for debug mode) - hidden by default
+        const jsonOutput = document.createElement('div');
+        jsonOutput.id = 'inspector-json-output';
+        document.body.appendChild(jsonOutput);
+    }
+
+    setupControllerSpecificUI() {
+        document.body.innerHTML = `
+        <h1>Welcome to SpaceCraft</h1>
+
+        <p>Please choose a role:</p>
+
+        <a href="controller.html?type=navigator">Navigators control the camera</a><br/>
+        <a href="controller.html?type=selector">Selectors highlight specific items</a><br/>
+        <a href="controller.html?type=inspector">Inspectors show details about selected items</a><br/>
+        `
+    }
+};
+
 // Simple initialization on DOM ready - directly instantiates the right controller
 document.addEventListener('DOMContentLoaded', function() {
     
     // Get controller type from URL parameter, default to 'navigator'
     const urlParams = new URLSearchParams(window.location.search);
-    const controllerType = urlParams.get('type') || 'navigator';
+    const controllerType = urlParams.get('type') || 'role';
     
     console.log(`Initializing controller type: ${controllerType}`);
     
@@ -2476,6 +2514,10 @@ document.addEventListener('DOMContentLoaded', function() {
         controller.initialize();
     } else if (controllerType === 'inspector') {
         controller = new InspectorController();
+        controller.createDOM();
+        controller.initialize(true);
+    } else if (controllerType === 'role') {
+        controller = new RoleController();
         controller.createDOM();
         controller.initialize(true);
     } else {
