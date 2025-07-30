@@ -288,7 +288,7 @@ public class Bridge : MonoBehaviour {
 
     public void SendEvent(JObject ev)
     {
-        Debug.Log("Bridge: SendEvent: ev: " + ev);
+        //Debug.Log("Bridge: SendEvent: ev: " + ev);
 
         string evString = ev.ToString();
 

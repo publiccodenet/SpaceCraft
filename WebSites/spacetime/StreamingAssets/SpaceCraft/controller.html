@@ -14,8 +14,39 @@
     <link rel="stylesheet" href="controller.css">
     <!-- Supabase library (Local Copy) -->
     <script src="supabase.min.js"></script>
-    <!-- Shared Controller Logic -->
-    <script src="controller.js"></script>
+    <!-- Controller Logic -->
+    <script type="module">
+        import { Controller } from './controller.js';
+        import { 
+            BaseTab, 
+            AboutTab, 
+            NavigateTab, 
+            SelectTab, 
+            InspectTab, 
+            MagnetTab, 
+            AdjustTab 
+        } from './tabs.js';
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create controller instance
+            const controller = new Controller();
+            
+            // Register all tabs
+            controller.registerTab(AboutTab);
+            controller.registerTab(NavigateTab);
+            controller.registerTab(SelectTab);
+            controller.registerTab(InspectTab);
+            controller.registerTab(MagnetTab);
+            controller.registerTab(AdjustTab);
+            
+            // Initialize the controller
+            controller.initialize();
+            
+            // Make controller globally accessible
+            window.controller = controller;
+        });
+    </script>
   </head>
   <body>
     <!-- Controller content will be dynamically created by JavaScript -->

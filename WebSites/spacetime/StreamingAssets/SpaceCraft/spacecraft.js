@@ -7,7 +7,7 @@
 // 1. HTML Loads: Basic HTML structure is present.
 // 2. Early JSON Fetch: `index-deep.json` fetch is initiated immediately (see below).
 // 3. Dependencies Check: Wait for the DOM to be fully loaded.
-// 4. QR Code Generation: Generate QR codes for navigator/selector (requires QRCode lib).
+// 4. QR Code Generation: Generate QR code for controller (requires QRCode lib).
 // 5. Unity Configuration: Prepare Unity loader configuration.
 // 6. Unity Loading: Load the Unity engine (Build/SpaceCraft.loader.js).
 // 7. Unity Instance Creation: Create the Unity instance.
@@ -60,8 +60,8 @@
 //
 // --- SUPABASE EVENTS (From clients to simulator) ---
 // 'broadcast' { event: 'pan' }: 
-//    - From navigator: {clientId, clientType, clientName, panXDelta, panYDelta, screenId, targetSimulatorId}
-//    - From selector: {clientId, clientType, clientName, selectXDelta, selectYDelta, screenId, targetSimulatorId}
+//    - From controller: {clientId, clientType, clientName, panXDelta, panYDelta, screenId, targetSimulatorId} (navigate tab)
+//    - From controller: {clientId, clientType, clientName, selectXDelta, selectYDelta, screenId, targetSimulatorId} (select tab)
 //    - Used for continuous movement input
 // 'broadcast' { event: 'zoom' }:
 //    - {clientId, clientType, clientName, zoomDelta, screenId, targetSimulatorId}
@@ -93,7 +93,7 @@
 // =============================================================================
 //                                  Dependencies
 // =============================================================================
-// - HTML Elements: #unity-container, #unity-canvas, #unity-fullscreen-button, #navigator (svg), #selector (svg)
+// - HTML Elements: #unity-container, #unity-canvas, #unity-fullscreen-button, #qrcodes-container
 // - Libraries:
 //   - bridge.js (core communication)
 //   - unity.js (Unity specific Bridge functions)
@@ -111,11 +111,11 @@ class SpaceCraftSim {
     /**
      * Static constants
      */
-    static get SUPABASE_URL() { return 'https://gwodhwyvuftyrvbymmvc.supabase.co'; }
-    static get SUPABASE_ANON_KEY() { return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc'; }
-    static get DEEP_INDEX_PATH() { return 'StreamingAssets/Content/index-deep.json'; }
-    static get CONTROLLER_HTML_PATH() { return 'StreamingAssets/SpaceCraft/controller.html'; }
-    static get CLIENT_CHANNEL_NAME() { return 'clients'; }
+    static supabaseUrl = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
+    static supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc';
+    static deepIndexPath = 'StreamingAssets/Content/index-deep.json';
+    static controllerHtmlPath = 'StreamingAssets/SpaceCraft/controller.html';
+    static clientChannelName = 'spacecraft';
     
     /**
      * Get the channel name from URL query parameter or use default
@@ -124,7 +124,7 @@ class SpaceCraftSim {
     static getChannelName() {
         const urlParams = new URLSearchParams(window.location.search);
         const channelFromUrl = urlParams.get('channel');
-        return channelFromUrl || this.CLIENT_CHANNEL_NAME;
+        return channelFromUrl || this.clientChannelName;
     }
 
     /**
@@ -173,29 +173,15 @@ class SpaceCraftSim {
       pal: ['#000', '#fff'] // Color palette [background, foreground]
         };
         
-        // Define all QR codes to be generated
+        // Define QR code to be generated
         this.qrCodeDefinitions = [
             {
-                id: "navigator-qr",
-                targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
-                type: "navigator",
-                label: "Navigator",
-                position: "top-left"
-            },
-            {
-                id: "selector-qr",
-                targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
-                type: "selector",
-                label: "Selector",
-                position: "top-right"
-            },
-            {
-                id: "inspector-qr",
-                targetHtml: SpaceCraftSim.CONTROLLER_HTML_PATH,
-                type: "inspector",
-                label: "Inspector",
-                position: "bottom-left"
-            },
+                id: "controller-qr",
+                targetHtml: SpaceCraftSim.controllerHtmlPath,
+                // No type parameter - will default to about tab
+                label: "Controller",
+                position: "center"
+            }
         ];
         
         // Initialize content promise
@@ -215,7 +201,7 @@ class SpaceCraftSim {
     initContentPromise() {
         console.log("[SpaceCraft] Initiating early fetch for index-deep.json");
         
-        window.contentPromise = fetch(SpaceCraftSim.DEEP_INDEX_PATH)
+        window.contentPromise = fetch(SpaceCraftSim.deepIndexPath)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -229,36 +215,36 @@ class SpaceCraftSim {
     }
     
     /**
-     * Called when the DOM is fully loaded. Checks dependencies and generates QR codes.
+     * Called when the DOM is fully loaded. Checks dependencies and generates QR code.
      */
     initializeDOMAndQRCodes() {
         if (this.domContentLoaded) return; // Prevent double execution
 
         this.domContentLoaded = true;
-        console.log("[SpaceCraft] DOM loaded. Initializing QR Codes.");
+        console.log("[SpaceCraft] DOM loaded. Initializing QR code.");
 
         // Check for QR Code library dependency
         if (typeof QRCode === 'undefined') {
-            console.error("[SpaceCraft] QRCode library (qrcode.min.js) not found! Cannot generate QR codes.");
-            return; // Stop further initialization if QR codes can't be generated
+            console.error("[SpaceCraft] QRCode library (qrcode.min.js) not found! Cannot generate QR code.");
+            return; // Stop further initialization if QR code can't be generated
         }
         
-        // Generate QR codes
+        // Generate QR code
         this.generateQRCodes();
 
         // Basic initialization is considered complete after DOM/QR setup
         this.isInitialized = true; 
-        console.log("[SpaceCraft] DOM and QR Code initialization complete.");
+        console.log("[SpaceCraft] DOM and QR code initialization complete.");
         
         // Now that the DOM is ready, proceed to configure and load Unity
         this.configureAndLoadUnity();
     }
     
     /**
-     * Generate QR codes for navigator and selector based on qrCodeDefinitions.
+     * Generate QR code for controller based on qrCodeDefinitions.
      */
     generateQRCodes() {
-        console.log("[SpaceCraft] Generating QR codes based on definitions...");
+        console.log("[SpaceCraft] Generating QR code based on definitions...");
         
         const qrContainer = document.getElementById('qrcodes-container');
         if (!qrContainer) {
@@ -267,7 +253,7 @@ class SpaceCraftSim {
             return;
         }
 
-        // Clear any existing QR codes in the container (optional, good for updates)
+        // Clear any existing QR code in the container (optional, good for updates)
         qrContainer.innerHTML = ''; 
 
         try {
@@ -287,7 +273,7 @@ class SpaceCraftSim {
             
             // Ensure channel parameter is included (use current channel or default)
             const currentChannel = SpaceCraftSim.getChannelName();
-            if (currentChannel !== SpaceCraftSim.CLIENT_CHANNEL_NAME) {
+            if (currentChannel !== SpaceCraftSim.clientChannelName) {
                 qrParams.set('channel', currentChannel);
             }
             
@@ -381,10 +367,10 @@ class SpaceCraftSim {
                 qrContainer.appendChild(linkElement);
             });
 
-            console.log("[SpaceCraft] QR codes generated successfully.");
+            console.log("[SpaceCraft] QR code generated successfully.");
 
         } catch (error) {
-            console.error("[SpaceCraft] Error generating QR codes:", error);
+            console.error("[SpaceCraft] Error generating QR code:", error);
              this.isInitialized = false; // Mark initialization as failed
         }
     }
@@ -513,8 +499,8 @@ class SpaceCraftSim {
             }
             
             // Direct fetch if early fetch failed or wasn't available
-            console.log(`[SpaceCraft] Fetching content from ${SpaceCraftSim.DEEP_INDEX_PATH}`);
-            const response = await fetch(SpaceCraftSim.DEEP_INDEX_PATH);
+                    console.log(`[SpaceCraft] Fetching content from ${SpaceCraftSim.deepIndexPath}`);
+        const response = await fetch(SpaceCraftSim.deepIndexPath);
             
             if (!response.ok) {
                 throw new Error(`Failed to fetch content: ${response.status} ${response.statusText}`);
@@ -540,7 +526,7 @@ class SpaceCraftSim {
     async loadCollectionsAndCreateSpaceCraft() {
         console.log("[SpaceCraft] 'StartedUnity' event received. Loading content and creating SpaceCraft object...");
 
-        // Ensure basic initialization (DOM, QR codes) happened. It should have by now.
+        // Ensure basic initialization (DOM, QR code) happened. It should have by now.
         if (!this.isInitialized) {
             console.warn("[SpaceCraft] loadCollectionsAndCreateSpaceCraft called before basic initialization was complete. This might indicate a timing issue.");
             // Attempt to initialize now, though it might be too late for some steps
@@ -623,6 +609,64 @@ class SpaceCraftSim {
         // Create the actual SpaceCraft object via Bridge with content data
         this.spaceCraft = window.bridge.createObject({
             prefab: "Prefabs/SpaceCraft",
+            obj: {
+                // Map of magnet name => Unity bridge object (kept within the bridge object)
+                magnetViews: new Map(),
+                
+                createMagnetView: function (magnetName, mass = 10.0, magnetStrength = 1.0, staticFriction = 25.0, dynamicFriction = 20.0, magnetRadius = 100.0, magnetSoftness = 0.5, viewScale = 2.0) {
+                    console.log(`[Bridge] this: ${this} createMagnetView called with: "${magnetName}" mass: ${mass} strength: ${magnetStrength} staticFriction: ${staticFriction} dynamicFriction: ${dynamicFriction} radius: ${magnetRadius} softness: ${magnetSoftness} viewScale: ${viewScale}`);
+                    const magnetBridge = window.bridge.createObject({
+                            prefab: "Prefabs/MagnetView",
+                            parent: this,
+                            update: {
+                                "magnetName": magnetName,
+                                "mass": mass,
+                                "magnetStrength": magnetStrength,
+                                "staticFriction": staticFriction,
+                                "dynamicFriction": dynamicFriction,
+                                "magnetRadius": magnetRadius,
+                                "magnetSoftness": magnetSoftness,
+                                "viewScale": viewScale,
+                                "method:MoveToPanCenter": [],
+                            }
+                        });
+                    
+                    // Store in our magnetViews map
+                    this.magnetViews.set(magnetName, magnetBridge);
+                    console.log(`[Bridge] Created and stored magnet: "${magnetName}". Total magnets: ${this.magnetViews.size}`);
+                    
+                    return magnetBridge;
+               },
+                
+                getMagnetView: function (magnetName) {
+                    console.log(`[Bridge] getMagnetView called with: "${magnetName}"`);
+                    return this.magnetViews.get(magnetName) || null;
+                },
+                
+                                 deleteMagnetView: function (magnetName) {
+                     console.log(`[Bridge] deleteMagnetView called with: "${magnetName}"`);
+                     
+                     const magnetBridge = this.magnetViews.get(magnetName);
+                     if (!magnetBridge) {
+                         console.warn(`[Bridge] No magnet found to delete: "${magnetName}"`);
+                         return false;
+                     }
+                     
+                     try {
+                         // Destroy the Unity bridge object (this will destroy the prefab)
+                         window.bridge.destroyObject(magnetBridge);
+                         
+                         // Remove from our map
+                         this.magnetViews.delete(magnetName);
+                         console.log(`[Bridge] Deleted magnet: "${magnetName}". Total magnets: ${this.magnetViews.size}`);
+                         
+                         return true;
+                     } catch (error) {
+                         console.error(`[Bridge] Error deleting magnet "${magnetName}":`, error);
+                         return false;
+                     }
+                 }               
+            },
             // Register all necessary Unity event interests with proper query structure
             interests: {
                 // Listen for when content is processed in Unity
@@ -725,6 +769,9 @@ class SpaceCraftSim {
             // Available tags from content items
             tags: [],
             
+            // Magnet system
+            magnets: [],
+            
             updateCounter: 0, // Add update counter
             
             // Last updated timestamp
@@ -789,8 +836,8 @@ class SpaceCraftSim {
         
         // Create a Supabase client
         const client = window.supabase.createClient(
-            SpaceCraftSim.SUPABASE_URL, 
-            SpaceCraftSim.SUPABASE_ANON_KEY
+                        SpaceCraftSim.supabaseUrl,
+            SpaceCraftSim.supabaseAnonKey
         );
         
         // Create a channel for client communication
@@ -814,6 +861,15 @@ class SpaceCraftSim {
      */
     subscribeToClientChannel(channel) {
         console.log(`[SpaceCraft] Subscribing to Supabase '${SpaceCraftSim.getChannelName()}' channel`);
+        console.log(`[SpaceCraft] My simulator identity:`, this.identity);
+
+        // DEBUG: Log ALL broadcast events
+        channel.on('broadcast', {}, (data) => {
+            console.log(`[SpaceCraft] RECEIVED BROADCAST EVENT: ${data.event}`, data);
+            if (data.payload && data.payload.targetSimulatorId) {
+                console.log(`[SpaceCraft] Event targeted at simulator: ${data.payload.targetSimulatorId}, my ID: ${this.identity.clientId}`);
+            }
+        });
 
         channel
             .on('broadcast', { event: 'pan' }, (data) => { 
@@ -881,6 +937,146 @@ class SpaceCraftSim {
                     bridge.updateObject(this.spaceCraft, {
                         "method:MoveSelection": [clientId, clientName, screenId, action, dx, dy]
                     });
+                }
+                
+                // Track client info for presence
+                this.updateClientInfo(clientId, data.payload.clientType, clientName);
+            })
+            .on('broadcast', { event: 'AddMagnet' }, (data) => {
+                console.log(`[SpaceCraft] AddMagnet event handler triggered!`, data);
+                
+                // Skip messages targeted at other simulators
+                if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
+                    console.log(`[SpaceCraft] AddMagnet skipped - wrong target simulator (${data.payload.targetSimulatorId} vs ${this.identity.clientId})`);
+                    return;
+                }
+                
+                const clientId = data.payload.clientId;
+                const clientName = data.payload.clientName || "";
+                const magnetName = data.payload.magnetName;
+                
+                console.log(`[SpaceCraft] AddMagnet event received from client ${clientId} (${clientName}): "${magnetName}"`);
+                
+                if (!magnetName || typeof magnetName !== 'string') {
+                    console.warn(`[SpaceCraft] Invalid magnet name received: ${magnetName}`);
+                    return;
+                }
+                
+                const trimmedName = magnetName.trim();
+                if (!trimmedName) {
+                    console.warn(`[SpaceCraft] Empty magnet name received after trimming`);
+                    return;
+                }
+                
+                // Check if magnet already exists (case-insensitive)
+                const existingMagnet = this.state.magnets.find(m => 
+                    m.toLowerCase() === trimmedName.toLowerCase()
+                );
+                
+                if (existingMagnet) {
+                    console.log(`[SpaceCraft] Magnet "${trimmedName}" already exists as "${existingMagnet}", ignoring duplicate`);
+                    return;
+                }
+                
+                // Add magnet to state (case-preserved)
+                this.state.magnets.push(trimmedName);
+                console.log(`[SpaceCraft] Added magnet "${trimmedName}" to state. Total magnets: ${this.state.magnets.length}`);
+                console.log(`[SpaceCraft] Current magnets: [${this.state.magnets.join(', ')}]`);
+                
+                // Create Unity magnet prefab
+                this.createUnityMagnet(trimmedName);
+                
+                // Update presence to sync with controllers
+                this.syncStateToPresence();
+                
+                // Track client info for presence
+                this.updateClientInfo(clientId, data.payload.clientType, clientName);
+            })
+            .on('broadcast', { event: 'DeleteMagnet' }, (data) => {
+                console.log(`[SpaceCraft] DeleteMagnet event handler triggered!`, data);
+                
+                // Skip messages targeted at other simulators
+                if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
+                    console.log(`[SpaceCraft] DeleteMagnet skipped - wrong target simulator (${data.payload.targetSimulatorId} vs ${this.identity.clientId})`);
+                    return;
+                }
+                
+                const clientId = data.payload.clientId;
+                const clientName = data.payload.clientName || "";
+                const magnetName = data.payload.magnetName;
+                
+                console.log(`[SpaceCraft] DeleteMagnet event received from client ${clientId} (${clientName}): "${magnetName}"`);
+                
+                if (!magnetName || typeof magnetName !== 'string') {
+                    console.warn(`[SpaceCraft] Invalid magnet name received: ${magnetName}`);
+                    return;
+                }
+                
+                const trimmedName = magnetName.trim();
+                if (!trimmedName) {
+                    console.warn(`[SpaceCraft] Empty magnet name received after trimming`);
+                    return;
+                }
+                
+                // Find the exact magnet name to delete (case-insensitive match)
+                const magnetToDelete = this.state.magnets.find(m => 
+                    m.toLowerCase() === trimmedName.toLowerCase()
+                );
+                
+                if (magnetToDelete) {
+                    // Destroy Unity magnet prefab first
+                    this.destroyUnityMagnet(magnetToDelete);
+                    
+                    // Remove from state
+                    this.state.magnets = this.state.magnets.filter(m => 
+                        m.toLowerCase() !== trimmedName.toLowerCase()
+                    );
+                    
+                    console.log(`[SpaceCraft] Removed magnet "${magnetToDelete}". Total magnets: ${this.state.magnets.length}`);
+                    console.log(`[SpaceCraft] Current magnets: [${this.state.magnets.join(', ')}]`);
+                    
+                    // Update presence to sync with controllers
+                    this.syncStateToPresence();
+                } else {
+                    console.log(`[SpaceCraft] No magnet found matching "${trimmedName}" to delete`);
+                }
+                
+                // Track client info for presence
+                this.updateClientInfo(clientId, data.payload.clientType, clientName);
+            })
+            .on('broadcast', { event: 'PushMagnet' }, (data) => {
+                console.log(`[SpaceCraft] PushMagnet event handler triggered!`, data);
+                
+                // Skip messages targeted at other simulators
+                if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
+                    console.log(`[SpaceCraft] PushMagnet skipped - wrong target simulator (${data.payload.targetSimulatorId} vs ${this.identity.clientId})`);
+                    return;
+                }
+                
+                const clientId = data.payload.clientId;
+                const clientName = data.payload.clientName || "";
+                const magnetName = data.payload.magnetName;
+                const deltaX = data.payload.deltaX;
+                const deltaZ = data.payload.deltaZ;
+                
+                console.log(`[SpaceCraft] PushMagnet event received from client ${clientId} (${clientName}): "${magnetName}" by (${deltaX}, ${deltaZ})`);
+                
+                if (!magnetName || typeof magnetName !== 'string') {
+                    console.warn(`[SpaceCraft] Invalid magnet name received: ${magnetName}`);
+                    return;
+                }
+                
+                if (typeof deltaX !== 'number' || typeof deltaZ !== 'number') {
+                    console.warn(`[SpaceCraft] Invalid delta values received: deltaX=${deltaX}, deltaZ=${deltaZ}`);
+                    return;
+                }
+                
+                // Push the Unity magnet
+                const success = this.pushUnityMagnet(magnetName, deltaX, deltaZ);
+                if (success) {
+                    console.log(`[SpaceCraft] Successfully pushed magnet "${magnetName}" by (${deltaX}, ${deltaZ})`);
+                } else {
+                    console.warn(`[SpaceCraft] Failed to push magnet "${magnetName}"`);
                 }
                 
                 // Track client info for presence
@@ -1147,6 +1343,104 @@ class SpaceCraftSim {
         
         // console.log("[SpaceCraft] State updated (counter: " + this.state.updateCounter + "):", stateChanges);
     }
+    
+    
+    /**
+     * Creates a Unity magnet prefab at the current view pan location
+     * @param {string} magnetName - The name of the magnet to create
+     */
+    createUnityMagnet(magnetName, mass = 1.0, magnetStrength = 1.0, staticFriction = 10.0, dynamicFriction = 8.0, magnetRadius = 100.0, magnetSoftness = 0.5, viewScale = 4.0) {
+        console.log(`[SpaceCraft] Creating Unity magnet prefab for: "${magnetName}" with mass: ${mass}, strength: ${magnetStrength}, staticFriction: ${staticFriction}, dynamicFriction: ${dynamicFriction}, radius: ${magnetRadius}, softness: ${magnetSoftness}, viewScale: ${viewScale}`);
+        
+        if (!this.spaceCraft) {
+            console.warn(`[SpaceCraft] Cannot create magnet - spaceCraft bridge not available`);
+            return null;
+        }
+        
+        try {
+            // Create magnet prefab via bridge object (magnetViews managed inside bridge)
+            const magnetBridge = this.spaceCraft.createMagnetView(magnetName, mass, magnetStrength, staticFriction, dynamicFriction, magnetRadius, magnetSoftness, viewScale);
+            
+            if (magnetBridge) {
+                console.log(`[SpaceCraft] Successfully created Unity magnet: "${magnetName}" with mass: ${mass}, strength: ${magnetStrength}, staticFriction: ${staticFriction}, dynamicFriction: ${dynamicFriction}, radius: ${magnetRadius}, softness: ${magnetSoftness}, viewScale: ${viewScale}`);
+                return magnetBridge;
+            } else {
+                console.error(`[SpaceCraft] Failed to create Unity magnet: "${magnetName}"`);
+                return null;
+            }
+        } catch (error) {
+            console.error(`[SpaceCraft] Error creating Unity magnet "${magnetName}":`, error);
+            return null;
+        }
+    }
+    
+    
+    /**
+     * Destroys a Unity magnet prefab
+     * @param {string} magnetName - The name of the magnet to destroy
+     */
+    destroyUnityMagnet(magnetName) {
+        console.log(`[SpaceCraft] Destroying Unity magnet prefab for: "${magnetName}"`);
+        
+        if (!this.spaceCraft) {
+            console.warn(`[SpaceCraft] Cannot destroy magnet - spaceCraft bridge not available`);
+            return false;
+        }
+        
+        try {
+            // Delete magnet via bridge object (magnetViews managed inside bridge)
+            const success = this.spaceCraft.deleteMagnetView(magnetName);
+            
+            if (success) {
+                console.log(`[SpaceCraft] Successfully destroyed Unity magnet: "${magnetName}"`);
+                return true;
+            } else {
+                console.warn(`[SpaceCraft] Failed to destroy Unity magnet: "${magnetName}"`);
+                return false;
+            }
+        } catch (error) {
+            console.error(`[SpaceCraft] Error destroying Unity magnet "${magnetName}":`, error);
+            return false;
+        }
+    }
+    
+    
+    /**
+     * Pushes a Unity magnet by world coordinate offset
+     * @param {string} magnetName - The name of the magnet to push
+     * @param {number} deltaX - World coordinate X offset
+     * @param {number} deltaZ - World coordinate Z offset
+     */
+    pushUnityMagnet(magnetName, deltaX, deltaZ) {
+        console.log(`[SpaceCraft] Pushing Unity magnet "${magnetName}" by (${deltaX}, ${deltaZ})`);
+        
+        if (!this.spaceCraft) {
+            console.warn(`[SpaceCraft] Cannot push magnet - spaceCraft bridge not available`);
+            return false;
+        }
+        
+        try {
+            // Get magnet from bridge object
+            const magnetBridge = this.spaceCraft.getMagnetView(magnetName);
+            
+            if (!magnetBridge) {
+                console.warn(`[SpaceCraft] No magnet found to push: "${magnetName}"`);
+                return false;
+            }
+            
+            // Send push command to Unity magnet via bridge update
+            // Note: deltaZ maps to Y coordinate in Unity (Y screen movement -> Z world movement)
+            window.bridge.updateObject(magnetBridge, {
+                "method:PushPosition": [deltaX, deltaZ]
+            });
+            
+            console.log(`[SpaceCraft] Successfully pushed Unity magnet: "${magnetName}"`);
+            return true;
+        } catch (error) {
+            console.error(`[SpaceCraft] Error pushing Unity magnet "${magnetName}":`, error);
+            return false;
+        }
+    }
 
     /**
      * Updates the highlighted item based on highlightedItemIds
@@ -1282,7 +1576,7 @@ class SpaceCraftSim {
 window.SpaceCraft = new SpaceCraftSim();
 
 // Ensure the HTML structure (canvas, buttons, svg placeholders) is ready 
-// before attempting to interact with it or generate QR codes.
+// before attempting to interact with it or generate QR code.
 if (document.readyState === 'loading') {
     // Loading hasn't finished yet
     document.addEventListener('DOMContentLoaded', () => {
@@ -1298,6 +1592,66 @@ if (document.readyState === 'loading') {
 }
 
 console.log("[SpaceCraft] spacecraft.js loaded. Waiting for DOMContentLoaded to initialize...");
+
+// =============================================================================
+//                           Controller Initialization
+// =============================================================================
+// Check if this is a controller page and initialize the Controller if needed
+async function initializeControllerIfNeeded() {
+    // Check if we're on a controller page (has controller-specific elements or URL params)
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasControllerParam = urlParams.has('tab') || window.location.pathname.includes('controller');
+    const hasControllerElements = document.querySelector('.tab-bar') || document.querySelector('#target');
+    
+    if (hasControllerParam || hasControllerElements || window.location.pathname.includes('controller')) {
+        try {
+            console.log("[SpaceCraft] Detected controller page, initializing Controller...");
+            
+            // Import controller and tab modules
+            const { Controller } = await import('./controller.js');
+            const { 
+                BaseTab, 
+                AboutTab, 
+                NavigateTab, 
+                SelectTab, 
+                InspectTab, 
+                MagnetTab, 
+                AdjustTab 
+            } = await import('./tabs.js');
+            
+            // Create controller instance
+            const controller = new Controller();
+            
+            // Register all tabs
+            controller.registerTab(AboutTab);
+            controller.registerTab(NavigateTab);
+            controller.registerTab(SelectTab);
+            controller.registerTab(InspectTab);
+            controller.registerTab(MagnetTab);
+            controller.registerTab(AdjustTab);
+            
+            // Initialize the controller
+            controller.initialize();
+            
+            // Make controller globally accessible
+            window.controller = controller;
+            
+            console.log("[SpaceCraft] Controller initialized successfully");
+            
+        } catch (error) {
+            console.error("[SpaceCraft] Error initializing Controller:", error);
+        }
+    } else {
+        console.log("[SpaceCraft] Not a controller page, skipping Controller initialization");
+    }
+}
+
+// Initialize controller after DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeControllerIfNeeded);
+} else {
+    initializeControllerIfNeeded();
+}
 
 // =============================================================================
 //                      Bridge Event Handling (Implicit)
