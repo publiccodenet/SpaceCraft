@@ -243,7 +243,7 @@ public class Brewster : MonoBehaviour
                     }
 
                     _items[itemId] = item;
-                    Debug.Log($"Brewster: Successfully added item '{itemId}' with ID '{item.Id}' title '{item.Title ?? "NULL"}'");
+                    //Debug.Log($"Brewster: Successfully added item '{itemId}' with ID '{item.Id}' title '{item.Title ?? "NULL"}'");
                 }
                 catch (Exception ex)
                 {

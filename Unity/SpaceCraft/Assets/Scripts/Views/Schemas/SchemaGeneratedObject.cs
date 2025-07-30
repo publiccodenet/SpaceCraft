@@ -116,7 +116,7 @@ public abstract class SchemaGeneratedObject : ScriptableObject
         }
         
         // Debug what fields are in the JSON data
-        Debug.Log($"[{GetType().Name}] ImportFromJToken: JSON fields = {string.Join(", ", data.Properties().Select(p => $"{p.Name}={p.Value}"))}");
+        //Debug.Log($"[{GetType().Name}] ImportFromJToken: JSON fields = {string.Join(", ", data.Properties().Select(p => $"{p.Name}={p.Value}"))}");
         
         // Clear existing extra fields before import
         extraFields = new JObject();

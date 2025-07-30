@@ -509,14 +509,14 @@ public class InputManager : MonoBehaviour
     private Vector3 dragStartPosition;
     private Vector3 dragStartWorldPos;
     private ItemView itemAtDragStart;
-    private ItemView hoveredItem;
+    private BaseView hoveredItem;
     private SpaceCraft spaceCraft;
     private Camera _mainCamera; // Cache the controlled camera
     private string searchStringLast = null; // Track last processed search to detect changes
     
     // Item dragging state
     private bool isDraggingItem = false;
-    private ItemView draggedItem = null;
+    private BaseView draggedItem = null;
     private Vector3 dragLocalOffset = Vector3.zero; // Local offset on the item that was clicked
     private Vector3 dragStartItemPosition = Vector3.zero; // World position of item when drag started
     private Rigidbody draggedRigidbody = null;
@@ -668,43 +668,56 @@ public class InputManager : MonoBehaviour
         // LEFT MOUSE BUTTON - Item Interaction Only
         if (Input.GetMouseButtonDown(0))
         {
-            // Get item under mouse RIGHT NOW (not from hoveredItem which might be stale)
-            ItemView clickedItem = GetItemUnderMouse();
-            Debug.Log($"[LEFT MOUSE] Processing left click - clickedItem: {(clickedItem?.name ?? "null")}");
+            // Get object under mouse RIGHT NOW (Items or Magnets)
+            BaseView clickedObject = GetObjectUnderMouse();
+            Debug.Log($"[LEFT MOUSE] Processing left click - clickedObject: {(clickedObject?.name ?? "null")}");
             
-            if (clickedItem != null)
+            if (clickedObject != null)
             {
                 dragStartPosition = Input.mousePosition;
                 dragStartWorldPos = GetWorldPositionAtScreenPoint(Input.mousePosition);
                 lastDragTime = Time.realtimeSinceStartup;
-                itemAtDragStart = clickedItem;
                 
-                // Check if item is already selected to decide action
-                string itemId = clickedItem.Model?.Id;
-                if (!string.IsNullOrEmpty(itemId))
+                // Handle ItemView selection
+                if (clickedObject is ItemView clickedItem)
                 {
-                    if (spaceCraft.SelectedItemIds.Contains(itemId))
+                    itemAtDragStart = clickedItem;
+                    
+                    // Check if item is already selected to decide action
+                    string itemId = clickedItem.Model?.Id;
+                    if (!string.IsNullOrEmpty(itemId))
                     {
-                        // Item is already selected - apply tap scale IMMEDIATELY
-                        Debug.Log($"[LEFT MOUSE] Item already selected, applying tap scale: {clickedItem.name}");
-                        float tapScale = selectionTapScale;
-                        float newScale = clickedItem.CurrentScale * tapScale;
-                        Debug.Log($"[LEFT MOUSE] Applying tap scale {tapScale} to clicked item. Current: {clickedItem.CurrentScale} → New: {newScale}");
-                        clickedItem.SetCurrentScale(newScale);
-                    }
-                    else
-                    {
-                        // Item is not selected - select it IMMEDIATELY
-                        Debug.Log($"[LEFT MOUSE] Selecting item: {clickedItem.name}");
-                        spaceCraft.SelectItem("mouse_input", "Local Mouse", itemId);
+                        if (spaceCraft.SelectedItemIds.Contains(itemId))
+                        {
+                            // Item is already selected - apply tap scale IMMEDIATELY
+                            Debug.Log($"[LEFT MOUSE] Item already selected, applying tap scale: {clickedItem.name}");
+                            float tapScale = selectionTapScale;
+                            float newScale = clickedItem.CurrentScale * tapScale;
+                            Debug.Log($"[LEFT MOUSE] Applying tap scale {tapScale} to clicked item. Current: {clickedItem.CurrentScale} → New: {newScale}");
+                            clickedItem.SetCurrentScale(newScale);
+                        }
+                        else
+                        {
+                            // Item is not selected - select it IMMEDIATELY
+                            Debug.Log($"[LEFT MOUSE] Selecting item: {clickedItem.name}");
+                            spaceCraft.SelectItem("mouse_input", "Local Mouse", itemId);
+                        }
                     }
                 }
-                
-                // Start item dragging if enabled
-                if (enableItemDragging && clickedItem.GetComponent<Rigidbody>() != null)
+                // Handle MagnetView interaction
+                else if (clickedObject is MagnetView clickedMagnet)
                 {
-                    Debug.Log($"[LEFT MOUSE] Starting item drag on {clickedItem.name}");
-                    StartItemDrag(clickedItem, Input.mousePosition);
+                    itemAtDragStart = null; // Magnets don't use the item selection system
+                    
+                    // For now, clicking on magnet does nothing (later might toggle magnet on/off)
+                    Debug.Log($"[LEFT MOUSE] Clicked on magnet: {clickedMagnet.magnetName} - no action (will enable dragging below)");
+                }
+                
+                // Start object dragging if enabled (works for both items and magnets)
+                if (enableItemDragging && clickedObject.GetComponent<Rigidbody>() != null)
+                {
+                    Debug.Log($"[LEFT MOUSE] Starting object drag on {clickedObject.name}");
+                    StartObjectDrag(clickedObject, Input.mousePosition);
                 }
             }
             else
@@ -724,10 +737,10 @@ public class InputManager : MonoBehaviour
         {
             Debug.Log($"[LEFT MOUSE] Left button up - isDraggingItem: {isDraggingItem}, isDragging: {isDragging}, itemAtDragStart: {(itemAtDragStart?.name ?? "null")}");
             
-            // Handle item drag end
+            // Handle object drag end
             if (isDraggingItem)
             {
-                Debug.Log($"[LEFT MOUSE] Ending item drag");
+                Debug.Log($"[LEFT MOUSE] Ending object drag");
                 EndItemDrag();
             }
             else if (isDragging)
@@ -887,23 +900,23 @@ public class InputManager : MonoBehaviour
     }
     
     /// <summary>
-    /// Start dragging an item with precise local coordinate tracking
+    /// Start dragging an object (item or magnet) with precise local coordinate tracking
     /// </summary>
-    private void StartItemDrag(ItemView item, Vector3 mouseScreenPos)
+    private void StartObjectDrag(BaseView obj, Vector3 mouseScreenPos)
     {
-        if (item == null) return;
+        if (obj == null) return;
         
-        Rigidbody rb = item.GetComponent<Rigidbody>();
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
         if (rb == null) return;
         
-        // Calculate the local offset on the item that was clicked
+        // Calculate the local offset on the object that was clicked
         Vector3 mouseWorldPos = GetWorldPositionAtScreenPoint(mouseScreenPos);
-        Vector3 itemWorldPos = item.transform.position;
+        Vector3 objWorldPos = obj.transform.position;
         
-        // Convert world offset to local item coordinates
-        dragLocalOffset = item.transform.InverseTransformPoint(mouseWorldPos);
+        // Convert world offset to local object coordinates
+        dragLocalOffset = obj.transform.InverseTransformPoint(mouseWorldPos);
         
-        // BULLDOZER MODE: Make item HEAVY to push others out of the way!
+        // BULLDOZER MODE: Make object HEAVY to push others out of the way!
         originalMass = rb.mass;
         rb.mass = originalMass * dragMassMultiplier;
         
@@ -911,21 +924,21 @@ public class InputManager : MonoBehaviour
         velocityBuffer.Clear();
         mouseVelocity = Vector3.zero;
         
-        // Set up item drag state
+        // Set up object drag state
         isDraggingItem = true;
-        draggedItem = item;
+        draggedItem = obj;
         draggedRigidbody = rb;
-        dragStartItemPosition = itemWorldPos;
+        dragStartItemPosition = objWorldPos;
         
-        // Don't lock highlight on dragged item - it interferes with selection visuals
-        // item.SetHighlighted(true); // REMOVED - let normal highlight/selection system work
+        // Don't lock highlight on dragged object - it interferes with selection visuals
+        // obj.SetHighlighted(true); // REMOVED - let normal highlight/selection system work
         
-        // Disable camera dragging while dragging an item
+        // Disable camera dragging while dragging an object
         isDragging = false;
         physicsEnabled = false;
         cameraVelocity = Vector3.zero;
         
-        Debug.Log($"[ItemDrag] Started SUPER-HEAVY dragging {item.name} - mass: {originalMass:F1} → {rb.mass:F1} (x{dragMassMultiplier}) + VELOCITY!");
+        Debug.Log($"[ObjectDrag] Started SUPER-HEAVY dragging {obj.name} - mass: {originalMass:F1} → {rb.mass:F1} (x{dragMassMultiplier}) + VELOCITY!");
     }
     
     /// <summary>
@@ -1017,11 +1030,11 @@ public class InputManager : MonoBehaviour
             
             // RESTORE NORMAL WEIGHT: Return to lightweight physics
             draggedRigidbody.mass = originalMass;
-            Debug.Log($"[ItemDrag] Ended HEAVY dragging {draggedItem.name} - restored mass: {draggedRigidbody.mass:F1}, throw velocity: {throwVelocity.magnitude:F2}, filtered from {velocityBuffer.Count} samples");
+            Debug.Log($"[ObjectDrag] Ended HEAVY dragging {draggedItem.name} - restored mass: {draggedRigidbody.mass:F1}, throw velocity: {throwVelocity.magnitude:F2}, filtered from {velocityBuffer.Count} samples");
         }
         
-        // Reset item drag state
-        ItemView draggedItemRef = draggedItem; // Store reference before clearing
+        // Reset object drag state
+        BaseView draggedItemRef = draggedItem; // Store reference before clearing
         isDraggingItem = false;
         draggedItem = null;
         draggedRigidbody = null;
@@ -1404,7 +1417,8 @@ public class InputManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[Thrust] Combined thrust too small: {combinedThrust.magnitude}");
+            // Combined thrust too small - this is normal when no keys are pressed
+            // Debug.LogWarning($"[Thrust] Combined thrust too small: {combinedThrust.magnitude}");
         }
     }
 
@@ -1740,6 +1754,11 @@ public class InputManager : MonoBehaviour
         EnforceBoundaries(); // Extra check
     }
 
+    public Vector2 GetPanCenter()
+    {
+        return new Vector2(cameraController.cameraRig.position.x, cameraController.cameraRig.position.z);
+    }
+
     /// <summary>
     /// Applies zoom change and adjusts camera position to keep a world point stationary on screen.
     /// </summary>
@@ -1824,24 +1843,43 @@ public class InputManager : MonoBehaviour
     // --- Utility Methods ---
     
     /// <summary>
-    /// Get the item directly under the mouse cursor using raycasting
+    /// Get the object directly under the mouse cursor using raycasting (Items or Magnets)
     /// </summary>
-    private ItemView GetItemUnderMouse()
+    private BaseView GetObjectUnderMouse()
     {
         Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         
         if (Physics.Raycast(ray, out hit, maxSelectionDistance, itemLayer))
         {
-            ItemView itemView = hit.collider.GetComponentInParent<ItemView>();
-            if (itemView != null)
+            BaseView baseView = hit.collider.GetComponentInParent<BaseView>();
+            if (baseView != null)
             {
-                Debug.Log($"[GetItemUnderMouse] Found item: {itemView.name}");
-                return itemView;
+                string objectName = "Unknown";
+                if (baseView is ItemView itemView && itemView.Model != null)
+                {
+                    objectName = $"Item: {itemView.Model.Title}";
+                }
+                else if (baseView is MagnetView magnetView)
+                {
+                    objectName = $"Magnet: {magnetView.magnetName}";
+                }
+                
+                Debug.Log($"[GetObjectUnderMouse] Found object: {objectName}");
+                return baseView;
             }
         }
         
         return null;
+    }
+    
+    /// <summary>
+    /// Get the item directly under the mouse cursor using raycasting (legacy method for ItemView only)
+    /// </summary>
+    private ItemView GetItemUnderMouse()
+    {
+        BaseView baseView = GetObjectUnderMouse();
+        return baseView as ItemView;
     }
 
     private Vector3 GetWorldPositionAtScreenPoint(Vector3 screenPos)
@@ -1876,14 +1914,14 @@ public class InputManager : MonoBehaviour
         if (_mainCamera == null || spaceCraft == null) return;
         
         Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-        ItemView newlyHovered = null;
+        BaseView newlyHovered = null;
         
         // Use SphereCast for slightly more forgiving hover detection
         // NOTE: Only detect TRIGGER colliders on itemLayer (box colliders for mouse detection)
         // Physics colliders (sphere colliders) are on child objects and excluded from detection
         if (Physics.SphereCast(ray, 0.05f, out RaycastHit hit, maxSelectionDistance, itemLayer, QueryTriggerInteraction.Collide))
         {
-            newlyHovered = hit.collider.GetComponentInParent<ItemView>();
+            newlyHovered = hit.collider.GetComponentInParent<BaseView>();
             
             // Debug: Show exactly what type of collider was detected
             string colliderInfo = $"Detected {hit.collider.GetType().Name}";
@@ -1891,26 +1929,53 @@ public class InputManager : MonoBehaviour
             else colliderInfo += " (physics)";
             colliderInfo += $" on layer {hit.collider.gameObject.layer}";
             
-            Debug.Log($"[Mouse Detection] {colliderInfo} - Item: {newlyHovered?.Model?.Title ?? "Unknown"}");
+            // Display object name based on type
+            string objectName = "Unknown";
+            if (newlyHovered is ItemView itemView && itemView.Model != null)
+            {
+                objectName = itemView.Model.Title;
+            }
+            else if (newlyHovered is MagnetView magnetView)
+            {
+                objectName = $"Magnet: {magnetView.magnetName}";
+            }
+            
+            Debug.Log($"[Mouse Detection] {colliderInfo} - Object: {objectName}");
         }
 
         // Check if hover state changed
         if (newlyHovered != hoveredItem)
         {
             // End previous hover
-            if (hoveredItem != null && hoveredItem.Model != null)
+            if (hoveredItem != null)
             {
-                // Pass default controller info for mouse hover
-                spaceCraft.UnhighlightItem("mouse_input", "Local Mouse", hoveredItem.Model.Id); 
+                // For ItemViews with models, use SpaceCraft highlighting system
+                if (hoveredItem is ItemView itemView && itemView.Model != null)
+                {
+                    spaceCraft.UnhighlightItem("mouse_input", "Local Mouse", itemView.Model.Id); 
+                }
+                // For other BaseView objects (like magnets), use direct highlighting
+                else
+                {
+                    hoveredItem.SetHighlighted(false);
+                }
             }
 
             hoveredItem = newlyHovered;
 
             // Start new hover
-            if (hoveredItem != null && hoveredItem.Model != null)
+            if (hoveredItem != null)
             {
-                 // Pass default controller info for mouse hover
-                spaceCraft.HighlightItem("mouse_input", "Local Mouse", hoveredItem.Model.Id); 
+                // For ItemViews with models, use SpaceCraft highlighting system
+                if (hoveredItem is ItemView itemView && itemView.Model != null)
+                {
+                    spaceCraft.HighlightItem("mouse_input", "Local Mouse", itemView.Model.Id); 
+                }
+                // For other BaseView objects (like magnets), use direct highlighting
+                else
+                {
+                    hoveredItem.SetHighlighted(true);
+                }
             }
         }
     }

@@ -229,7 +229,9 @@ public class SpaceCraft : BridgeObject
                 ["type"] = GetTypeString(memberType),
                 ["currentValue"] = currentValue != null ? JToken.FromObject(currentValue) : null,
                 ["canWrite"] = canWrite && !attr.ReadOnly,
-                ["category"] = attr.Category ?? "General"
+                ["category"] = attr.Category ?? "General",
+                ["unityType"] = "unity",
+                ["path"] = memberName
             };
             
             // Add optional fields if they have values
@@ -924,6 +926,35 @@ public class SpaceCraft : BridgeObject
     {
         return collectionsView?.FindItemViewById(id);
     }
+    
+    /// <summary>
+    /// Finds a MagnetView by its name by searching all MagnetView components in the scene.
+    /// </summary>
+    public MagnetView FindMagnetViewByName(string magnetName)
+    {
+        if (string.IsNullOrEmpty(magnetName)) return null;
+        
+        // Find all MagnetView components in the scene
+        MagnetView[] allMagnets = FindObjectsByType<MagnetView>(FindObjectsSortMode.None);
+        
+        foreach (MagnetView magnet in allMagnets)
+        {
+            if (magnet.magnetName == magnetName)
+            {
+                return magnet;
+            }
+        }
+        
+        return null;
+    }
+    
+    /// <summary>
+    /// Gets all MagnetView components currently in the scene.
+    /// </summary>
+    public MagnetView[] GetAllMagnetViews()
+    {
+        return FindObjectsByType<MagnetView>(FindObjectsSortMode.None);
+    }
 
     // ================== CAMERA VIBRATION ======================
     
@@ -1036,7 +1067,7 @@ public class SpaceCraft : BridgeObject
             if (view == null || view.Model == null) continue;
             
             bool shouldBeSelected = SelectedItemIds.Contains(view.Model.Id);
-            if (view.IsSelected != shouldBeSelected)
+            if (view.isSelected != shouldBeSelected)
             {
                  view.SetSelected(shouldBeSelected); 
             }
@@ -1098,7 +1129,7 @@ public class SpaceCraft : BridgeObject
             if (view == null || view.Model == null) continue;
             
             int newCount = highlightCounts.ContainsKey(view.Model.Id) ? highlightCounts[view.Model.Id] : 0;
-            if (view.CurrentHighlightCount != newCount) 
+            if (view.highlightCount != newCount) 
             {
                 view.SetHighlightCount(newCount);
             }
