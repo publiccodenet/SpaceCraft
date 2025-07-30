@@ -1277,10 +1277,10 @@ function dbg(text) {
 // === Body ===
 
 var ASM_CONSTS = {
-  5885296: () => { Module['emscripten_get_now_backup'] = performance.now; },  
- 5885351: ($0) => { performance.now = function() { return $0; }; },  
- 5885399: ($0) => { performance.now = function() { return $0; }; },  
- 5885447: () => { performance.now = Module['emscripten_get_now_backup']; }
+  5886256: () => { Module['emscripten_get_now_backup'] = performance.now; },  
+ 5886311: ($0) => { performance.now = function() { return $0; }; },  
+ 5886359: ($0) => { performance.now = function() { return $0; }; },  
+ 5886407: () => { performance.now = Module['emscripten_get_now_backup']; }
 };
 
 
@@ -20461,6 +20461,17 @@ function invoke_viiff(index,a1,a2,a3,a4) {
   }
 }
 
+function invoke_fiifi(index,a1,a2,a3,a4) {
+  var sp = stackSave();
+  try {
+    return dynCall_fiifi(index,a1,a2,a3,a4);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0) throw e;
+    _setThrew(1, 0);
+  }
+}
+
 function invoke_viiiiiffi(index,a1,a2,a3,a4,a5,a6,a7,a8) {
   var sp = stackSave();
   try {
@@ -20476,17 +20487,6 @@ function invoke_fifi(index,a1,a2,a3) {
   var sp = stackSave();
   try {
     return dynCall_fifi(index,a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0) throw e;
-    _setThrew(1, 0);
-  }
-}
-
-function invoke_fiifi(index,a1,a2,a3,a4) {
-  var sp = stackSave();
-  try {
-    return dynCall_fiifi(index,a1,a2,a3,a4);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0) throw e;

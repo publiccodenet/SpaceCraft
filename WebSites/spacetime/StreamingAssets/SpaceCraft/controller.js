@@ -1,1027 +1,636 @@
-// controller.js - Shared JavaScript utilities and setup for SpaceCraft controller pages
-// (e.g., navigator.html, selector.html)
+// SpaceCraft Controller - Clean, Simple, Complete Implementation
+
+import { AudioModule } from './audio.js';
+import { LoggingModule } from './logging.js';
+import { MotionModule } from './motion.js';
+import { GestureService } from './gesture.js';
 
 /**
- * =============================================================================
- *                       Message and Event Documentation
- * =============================================================================
- * This section documents all messages exchanged between controllers and Unity
- * via Supabase to facilitate remote control and data synchronization.
- *
- * --- EVENTS SENT FROM CONTROLLERS TO UNITY (via Supabase broadcasts) ---
- * 'pan': Sent by navigator or selector during movement
- *    - Navigator: {clientId, clientType, clientName, panXDelta, panYDelta, screenId, targetSimulatorId}
- *    - Selector: {clientId, clientType, clientName, selectXDelta, selectYDelta, screenId, targetSimulatorId}
- *    - Used for continuous movement input
- *
- * 'tap': Sent by selector for selection actions
- *    - {clientId, clientType, clientName, screenId, targetSimulatorId}
- *    - Used for discrete selection actions
- *
- * 'select': Sent by selector for directional selection
- *    - {clientId, clientType, clientName, action, screenId, targetSimulatorId}
- *    - action can be "tap" or directional ("north","south","east","west","up","down")
- *
- * 'zoom': Sent by navigator for zoom actions
- *    - {clientId, clientType, clientName, zoomDelta, screenId, targetSimulatorId}
- *    - Controls camera zoom level
- *
- * --- STATE SYNCHRONIZATION (via Supabase presence) ---
- * Controllers automatically observe simulator state through presence:
- * 
- * --- SHARED STATE PROPERTIES (synchronized via presence) ---
- * Simulator shares these properties in its presence state:
- * - selectedItemId: Currently selected item ID (string or null)
- * - highlightedItemId: Currently highlighted item ID (string or null)
- * - selectedItem: Metadata for current selected item (without nested tree)
- * - highlightedItem: Metadata for highlighted item (without nested tree)
- * - currentCollectionId: ID of the currently active collection
- * - currentCollection: Metadata for the current collection (without items array)
- * - currentCollectionItems: Array of item IDs in the current collection
- * - tags: Array of all available tags from all collections combined
- * - screenIds: Array of available screen IDs
- * - currentScreenId: Current active screen ID
- *
- * --- PRESENCE IDENTITY PROPERTIES ---
- * All clients track identity with:
- * - clientId: Unique identifier for the client
- * - clientType: "simulator", "navigator", or "selector"
- * - clientName: User-friendly name
- * - startTime: Timestamp of connection
- *
- * --- PRESENCE EVENTS ---
- * 'presence' { event: 'sync' }: Full state of all connected clients
- * 'presence' { event: 'join' }: New client has connected
- * 'presence' { event: 'leave' }: Client has disconnected
- *
- * --- SIMULATOR TAKEOVER ---
- * 'simulator_takeover': Sent when a new simulator takes over
- *    - {newSimulatorId, newSimulatorName, startTime}
- *    - Controllers will attach to most recent simulator
- * =============================================================================
+ * Single Controller class - proper module usage, consistent naming, complete features
  */
-
-/**
- * =============================================================================
- *                         CONTROLLER-AS-SERVICE-PROVIDER ARCHITECTURE
- * =============================================================================
- * 
- * This implements a "kitchen sink" Controller class that provides ALL services:
- * - Supabase communication
- * - Audio/sound synthesis
- * - Motion detection 
- * - Search functionality
- * - Event handling
- * - State management
- * - Logging/debugging
- * 
- * Tabs are thin wrappers that compose Controller services as needed.
- * No inheritance hierarchy - just service composition.
- * =============================================================================
- */
-
-/**
- * Single Controller class - Kitchen Sink Service Provider
- * Contains ALL services that tabs can mix and match.
- */
-window.Controller = class Controller {
+export class Controller {
+    // API Constants
+    static supabaseUrl = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
+    static supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc';
+    static clientChannelName = 'spacecraft';
+    static clientType = 'controller';
+    static defaultTabId = 'about';
     
-    // API constants
-    static SUPABASE_URL = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
-    static SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc';
-    static CLIENT_CHANNEL_NAME = 'clients';
-    
-    /**
-     * Get the channel name from URL query parameter or use default
-     * @returns {string} Channel name to use
-     */
-    static getChannelName() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const channelFromUrl = urlParams.get('channel');
-        return channelFromUrl || this.CLIENT_CHANNEL_NAME;
-    }
+    // Interaction Constants
+    static panSensitivity = 0.333;
+    static zoomSensitivity = 0.008;
+    static gestureThreshold = 20;
 
     constructor() {
-        // === IDENTITY & CORE STATE ===
-        this.clientType = 'controller'; // Always controller now - tabs determine behavior
+        // Client Identity
         this.clientId = this.generateClientId();
-        this.clientName = this.generateTimestampName();
+        this.clientName = this.generateClientName();
         
-        // === UI & INTERACTION STATE ===
+        // Initialize modules
+        this.loggingModule = new LoggingModule();
+        this.audioModule = new AudioModule(this.loggingModule);
+        this.motionModule = new MotionModule(this.loggingModule);
+        this.gestureService = new GestureService(this.motionModule, this.loggingModule);
+        
+        // Tab Management  
+        this.tabs = new Map();
+        this.activeTabId = null;
+        
+        // UI Elements
         this.targetElement = null;
-        this.evCache = [];
-        this.prevDiff = -1;
-        this.prevX = 0;
-        this.prevY = 0;
-        this.touchStartX = 0;
-        this.touchStartY = 0;
-        this.pointerDown = false;
+        this.contentArea = null;
         
-        // === SCREEN & SIMULATOR STATE ===
-        this.currentScreenId = 'main';
+        // Connection State
+        this.supabaseClient = null;
+        this.clientChannel = null;
+        this.isConnected = false;
         this.currentSimulatorId = null;
-        this.simulatorState = null;
-        
-        // === MOTION DETECTION STATE ===
-        this.lastShakeTime = 0;
-        this.isDetectingImpulse = false;
-        this.impulseStartTime = 0;
-        this.impulseAxis = null;
-        this.impulseDirection = null;
-        this.lastAccel = { x: 0, y: 0, z: 0 };
-        this.lastAccelG = { x: 0, y: 0, z: 0 };
-        this.lastOrientation = { alpha: 0, beta: 0, gamma: 0 };
-        this.lastMotionMagnitude = 0;
-        this.motionListenerActive = false;
-        
-        // === MOTION EVENT HANDLERS (bound for removal) ===
-        this.boundHandleDeviceMotion = (event) => this.handleDeviceMotion(event);
-        this.boundHandleDeviceOrientation = (event) => this.handleDeviceOrientation(event);
-        
-        // === PERMISSION TRACKING ===
-        this.permissionStates = {
-            'connection': 'unknown',
-            'motion': 'inactive'
+        this.simulatorState = {
+            selectedItem: null,
+            currentCollectionItems: [],
+            tags: [],
+            magnets: []
         };
         
-        // === CONNECTION STATE ===
-        this.clientChannel = null;
-        this.supabaseClient = null;
-        this.isSubscribed = false;
-        this.tiltingActive = false;
+        // Search State
+        this.currentSearchQuery = '';
+        this.filteredItems = [];
         
-        // === SOUND & SPEECH SERVICES ===
-        this.soundEnabled = false; 
-        this.audioContext = null;
-        this.currentGain = null;
-        this.gainNode = null;
-        this.speechQueue = [];
-        this.speechEnabled = false;
-        this.isSpeaking = false;
+        // Input State
+        this.pointerStartX = 0;
+        this.pointerStartY = 0;
+        this.isDragging = false;
         
-        // === TAB MANAGEMENT ===
-        this.currentTab = null;
-        this.tabs = {};
-        
-        // === DEBUG & LOGGING ===
-        this.debugLog = [];
-        this.maxDebugEntries = 100;
+        this.loggingModule.log('Controller', `Created: ${this.clientId}`);
     }
 
-    // === CLIENT ID & NAMING SERVICES ===
+    // === TAB MANAGEMENT ===
     
-    generateClientId() {
-        return 'ctrl_' + Math.random().toString(36).substr(2, 9);
-    }
-    
-    generateTimestampName() {
-        const now = new Date();
-        return `ctrl-${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+    registerTab(TabClass) {
+        const tab = new TabClass(this);
+        this.tabs.set(TabClass.tabId, tab);
+        this.loggingModule.log('Tab', `Registered: ${TabClass.tabId}`);
     }
 
-    // === LOGGING & DEBUG SERVICES ===
-    
-    logEvent(category, message, extra = '') {
-        const timestamp = new Date().toLocaleTimeString();
-        const logEntry = `[${timestamp}] ${category}: ${message} ${extra}`;
-        
-        console.log(logEntry);
-        
-        this.debugLog.push({
-            timestamp,
-            category,
-            message,
-            extra
-        });
-        
-        if (this.debugLog.length > this.maxDebugEntries) {
-            this.debugLog.shift();
+    showTab(tabId) {
+        // Hide current tab
+        if (this.activeTabId && this.tabs.has(this.activeTabId)) {
+            this.tabs.get(this.activeTabId).hide();
+            const oldButton = document.querySelector(`[data-tab="${this.activeTabId}"]`);
+            if (oldButton) oldButton.classList.remove('active');
         }
         
-        this.updateDebugDisplay();
-    }
-    
-    updateDebugDisplay() {
-        const debugContent = document.getElementById('debug-content');
-        if (debugContent) {
-            const recent = this.debugLog.slice(-20);
-            debugContent.textContent = recent.map(entry => 
-                `[${entry.timestamp}] ${entry.category}: ${entry.message} ${entry.extra}`
-            ).join('\n');
-        }
-    }
-
-    // === PERMISSION & STATUS SERVICES ===
-    
-    updatePermissionStatus(permission, status) {
-        this.permissionStates[permission] = status;
-        this.updateStatusDisplay();
-    }
-    
-    updateStatusDisplay() {
-        const statusElement = document.getElementById('status');
-        if (!statusElement) return;
-        
-        const connection = this.permissionStates.connection;
-        const motion = this.permissionStates.motion;
-        
-        let statusText = '';
-        let className = 'status';
-        
-        if (connection === 'granted') {
-            statusText = 'Connected';
-            className += ' connected';
+        // Show new tab
+        if (this.tabs.has(tabId)) {
+            this.tabs.get(tabId).show();
+            this.activeTabId = tabId;
+            const newButton = document.querySelector(`[data-tab="${tabId}"]`);
+            if (newButton) newButton.classList.add('active');
             
-            if (motion === 'active') {
-                statusText += ' + Motion';
-                className += ' motion-active';
-            } else if (motion === 'inactive') {
-                statusText += ' (Motion inactive)';
+            // Configure input target based on tab type
+            this.configureInputTarget(tabId);
+            
+            // Update URL hash
+            this.updateUrlHash(tabId);
+            
+            // Update presence state with current tab
+            this.updatePresenceState();
+        }
+    }
+
+    // === UI CREATION ===
+    
+    createUI() {
+        this.createTabBar();
+        this.createContentArea();
+        this.createTargetElement();
+        this.createAllTabContent();
+        this.setupInputHandlers();
+    }
+
+    createTabBar() {
+        const tabBar = document.createElement('div');
+        tabBar.className = 'tab-bar';
+        
+        this.tabs.forEach((tab, tabId) => {
+            const button = document.createElement('button');
+            button.className = 'tab-button';
+            button.textContent = tab.constructor.tabLabel;
+            button.dataset.tab = tabId;
+            button.onclick = () => this.showTab(tabId);
+            
+            // Mark about tab as active by default
+            if (tabId === Controller.defaultTabId) {
+                button.classList.add('active');
             }
-        } else if (connection === 'pending') {
-            statusText = 'Connecting...';
-            className += ' pending';
-        } else if (connection === 'error') {
-            statusText = 'Connection failed';
-            className += ' error';
-        } else {
-            statusText = 'Not connected';
-            className += ' disconnected';
-        }
-        
-        statusElement.textContent = statusText;
-        statusElement.className = className;
-    }
-
-    // === AUDIO SERVICES ===
-    
-    initAudioContext() {
-        if (this.audioContext) return;
-        
-        try {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            this.gainNode = this.audioContext.createGain();
-            this.gainNode.connect(this.audioContext.destination);
-            this.gainNode.gain.value = 0.3;
             
-            this.logEvent('Audio', 'Audio context initialized');
-        } catch (error) {
-            this.logEvent('Audio', 'Failed to initialize audio context', error.message);
-        }
-    }
-    
-    playTone(frequency = 440, duration = 200, type = 'sine') {
-        if (!this.soundEnabled || !this.audioContext) return;
-        
-        try {
-            const oscillator = this.audioContext.createOscillator();
-            const envelope = this.audioContext.createGain();
-            
-            oscillator.connect(envelope);
-            envelope.connect(this.gainNode);
-            
-            oscillator.type = type;
-            oscillator.frequency.value = frequency;
-            
-            const now = this.audioContext.currentTime;
-            envelope.gain.setValueAtTime(0, now);
-            envelope.gain.linearRampToValueAtTime(0.3, now + 0.01);
-            envelope.gain.exponentialRampToValueAtTime(0.001, now + duration / 1000);
-            
-            oscillator.start(now);
-            oscillator.stop(now + duration / 1000);
-            
-        } catch (error) {
-            this.logEvent('Audio', 'Failed to play tone', error.message);
-        }
-    }
-
-    // === SEARCH SERVICES ===
-    
-    createSearchField() {
-        const searchContainer = document.createElement('div');
-        searchContainer.className = 'search-container';
-        
-        const searchInput = document.createElement('input');
-        searchInput.type = 'text';
-        searchInput.id = 'search-input';
-        searchInput.placeholder = 'Search...';
-        searchInput.className = 'search-input';
-        
-        searchInput.addEventListener('input', (e) => {
-            this.onSearchInput(e.target.value);
+            tabBar.appendChild(button);
         });
         
-        searchContainer.appendChild(searchInput);
-        return searchContainer;
-    }
-    
-    onSearchInput(query) {
-        this.logEvent('Search', `Query: "${query}"`);
-        // Tabs can override this or listen for search events
-        this.broadcastEvent('search', { query });
+        document.body.appendChild(tabBar);
     }
 
-    // === COMMUNICATION SERVICES ===
+    createContentArea() {
+        this.contentArea = document.createElement('div');
+        this.contentArea.className = 'tab-content-area';
+        document.body.appendChild(this.contentArea);
+    }
+
+    createTargetElement() {
+        this.targetElement = document.createElement('div');
+        this.targetElement.id = 'target';
+        this.targetElement.className = 'input-target';
+        document.body.appendChild(this.targetElement); // Fullscreen overlay
+    }
+
+    createAllTabContent() {
+        this.tabs.forEach((tab, tabId) => {
+            tab.createContent();
+            
+            if (tab.contentElement) {
+                tab.contentElement.className = `tab-content tab-content-${tabId}`;
+                
+                // Show about tab content by default, hide others
+                if (tabId === Controller.defaultTabId) {
+                    tab.contentElement.style.display = 'block';
+                    this.activeTabId = tabId;
+                } else {
+                    tab.contentElement.style.display = 'none';
+                }
+                
+                this.contentArea.appendChild(tab.contentElement);
+            }
+        });
+    }
+
+    // === INPUT HANDLING ===
     
-    broadcastEvent(eventType, data) {
-        if (!this.clientChannel || !this.currentSimulatorId) return;
+    setupInputHandlers() {
+        this.targetElement.onpointerdown = (e) => this.handlePointerDown(e);
+        this.targetElement.onpointermove = (e) => this.handlePointerMove(e);
+        this.targetElement.onpointerup = (e) => this.handlePointerUp(e);
+        this.targetElement.onwheel = (e) => this.handleWheel(e);
         
-        const message = {
+        // Prevent mobile zoom/scroll
+        document.ontouchstart = (e) => { if (e.touches.length > 1) e.preventDefault(); };
+        document.ontouchmove = (e) => e.preventDefault();
+    }
+    
+    configureInputTarget(tabId) {
+        // Enable gesture capture for tabs that need it, disable for interactive tabs
+        const gestureEnabledTabs = ['navigate', 'select'];
+        
+        if (gestureEnabledTabs.includes(tabId)) {
+            this.targetElement.classList.add('gesture-active');
+            console.log(`Controller: Enabled gesture capture for ${tabId} tab`);
+        } else {
+            this.targetElement.classList.remove('gesture-active');
+            console.log(`Controller: Disabled gesture capture for ${tabId} tab`);
+        }
+    }
+
+    handlePointerDown(e) {
+        console.log('Controller: handlePointerDown called', e.clientX, e.clientY);
+        if (!this.isConnected) return;
+        
+        this.pointerStartX = e.clientX;
+        this.pointerStartY = e.clientY;
+        this.isDragging = true;
+        
+        this.audioModule.playTouchSound();
+        e.preventDefault();
+    }
+
+    handlePointerMove(e) {
+        if (!this.isConnected || !this.isDragging) return;
+        
+        const deltaX = e.clientX - this.pointerStartX;
+        const deltaY = e.clientY - this.pointerStartY;
+        
+        if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) {
+            // Only send pan events for NavigateTab - other tabs handle gestures on release
+            if (this.activeTabId === 'navigate') {
+                this.sendPanEvent(deltaX * Controller.panSensitivity, deltaY * Controller.panSensitivity);
+                this.pointerStartX = e.clientX;
+                this.pointerStartY = e.clientY;
+            }
+        }
+    }
+
+    handlePointerUp(e) {
+        if (!this.isConnected) return;
+        
+        const deltaX = e.clientX - this.pointerStartX;
+        const deltaY = e.clientY - this.pointerStartY;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        let gestureType = 'tap';
+        if (distance > Controller.gestureThreshold) {
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                gestureType = deltaX > 0 ? 'east' : 'west';
+                } else {
+                gestureType = deltaY > 0 ? 'south' : 'north';
+            }
+        }
+        
+        this.handleGesture(gestureType);
+        this.isDragging = false;
+    }
+
+    handleWheel(e) {
+        if (!this.isConnected) return;
+        
+        // Negate wheel sensitivity for select tab only
+        const sensitivity = this.activeTabId === 'select' ? -Controller.zoomSensitivity : Controller.zoomSensitivity;
+        const zoomDelta = -e.deltaY * sensitivity;
+        this.sendZoomEvent(zoomDelta);
+        e.preventDefault();
+    }
+
+    handleGesture(gestureType) {
+        console.log(`Controller: handleGesture called with: ${gestureType}, activeTabId: ${this.activeTabId}`);
+        const activeTab = this.tabs.get(this.activeTabId);
+        if (activeTab && activeTab.handleGesture) {
+            console.log(`Controller: Calling handleGesture on ${this.activeTabId} tab`);
+            activeTab.handleGesture(gestureType);
+        } else {
+            console.log(`Controller: No handleGesture method on ${this.activeTabId} tab`);
+        }
+        
+        // Use audio module for gesture sounds
+        this.audioModule.playReleaseSound(gestureType);
+    }
+
+    // === UNITY COMMUNICATION ===
+    
+    sendPanEvent(deltaX, deltaY) {
+        this.sendEventToSimulator('pan', { panXDelta: deltaX, panYDelta: deltaY });
+    }
+
+    sendZoomEvent(zoomDelta) {
+        this.sendEventToSimulator('zoom', { zoomDelta });
+    }
+
+    sendSelectEvent(action) {
+        this.sendEventToSimulator('select', { action });
+    }
+
+    sendAddMagnetEvent(magnetName) {
+        this.sendEventToSimulator('AddMagnet', { magnetName });
+    }
+
+    sendDeleteMagnetEvent(magnetName) {
+        this.sendEventToSimulator('DeleteMagnet', { magnetName });
+    }
+
+    sendPushMagnetEvent(magnetName, deltaX, deltaZ) {
+        this.sendEventToSimulator('PushMagnet', { magnetName, deltaX, deltaZ });
+    }
+    
+    sendPanEvent(deltaX, deltaY) {
+        this.sendEventToSimulator('pan', { panXDelta: deltaX, panYDelta: deltaY });
+    }
+    
+    sendSelectEvent(action) {
+        this.sendEventToSimulator('select', { action });
+    }
+
+    sendEventToSimulator(eventType, data) {
+        console.log(`Controller: sendEventToSimulator called - eventType: ${eventType}, data:`, data);
+        console.log(`Controller: clientChannel exists: ${!!this.clientChannel}`);
+        console.log(`Controller: currentSimulatorId: ${this.currentSimulatorId}`);
+        
+        if (!this.clientChannel) {
+            console.error('Controller: Cannot send event - no client channel');
+            return;
+        }
+        
+        if (!this.currentSimulatorId) {
+            console.error('Controller: Cannot send event - no current simulator ID');
+            return;
+        }
+
+        const payload = {
             clientId: this.clientId,
-            clientType: this.clientType,
+            clientType: Controller.clientType,
             clientName: this.clientName,
-            screenId: this.currentScreenId,
+            screenId: 'main',
             targetSimulatorId: this.currentSimulatorId,
             ...data
         };
         
+        console.log(`Controller: Sending event '${eventType}' with payload:`, payload);
+        
         this.clientChannel.send({
             type: 'broadcast',
             event: eventType,
-            payload: message
+            payload: payload
+        }).then(() => {
+            console.log(`Controller: Successfully sent event '${eventType}'`);
+        }).catch(err => {
+            console.error(`Controller: Error sending event '${eventType}':`, err);
+            this.loggingModule.log('Error', `Send error: ${err}`);
         });
     }
 
-    // === MOTION DETECTION SERVICES ===
+    // === CONNECTION MANAGEMENT ===
     
-    handleDeviceMotion(event) {
-        if (!this.motionListenerActive) return;
-        
-        const accel = event.acceleration || { x: 0, y: 0, z: 0 };
-        const accelG = event.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
-        
-        this.lastAccel = accel;
-        this.lastAccelG = accelG;
-        
-        const magnitude = Math.sqrt(accel.x * accel.x + accel.y * accel.y + accel.z * accel.z);
-        this.lastMotionMagnitude = magnitude;
-        
-        // Detect shake
-        if (magnitude > 15) {
-            const now = Date.now();
-            if (now - this.lastShakeTime > 500) {
-                this.lastShakeTime = now;
-                this.onShakeDetected(magnitude);
+    initializeConnection() {
+        if (typeof supabase === 'undefined') {
+            console.error('Supabase library missing!');
+            this.loggingModule.log('Error', 'Supabase library missing');
+                return;
             }
-        }
-    }
-    
-    onShakeDetected(magnitude) {
-        this.logEvent('Motion', `Shake detected: ${magnitude.toFixed(2)}`);
-        this.playTone(800, 100);
-        // Tabs can listen for shake events
-        document.dispatchEvent(new CustomEvent('controller-shake', { detail: { magnitude } }));
-    }
-
-    // === EVENT HANDLING SERVICES ===
-    
-    setupPageEventHandlers() {
-        if (!this.targetElement) return;
-        
-        // Touch events
-        this.targetElement.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
-        this.targetElement.addEventListener('pointermove', (e) => this.handlePointerMove(e));
-        this.targetElement.addEventListener('pointerup', (e) => this.handlePointerUp(e));
-        this.targetElement.addEventListener('pointercancel', (e) => this.handlePointerUp(e));
-        
-        // Mouse wheel for zoom
-        this.targetElement.addEventListener('wheel', (e) => this.handleWheel(e), { passive: false });
-        
-        this.logEvent('Events', 'Page event handlers set up');
-    }
-    
-    handlePointerDown(e) {
-        this.evCache.push(e);
-        this.pointerDown = true;
-        this.prevX = e.clientX;
-        this.prevY = e.clientY;
-        this.touchStartX = e.clientX;
-        this.touchStartY = e.clientY;
-        
-        // Let active tab handle this
-        if (this.currentTab && this.currentTab.onPointerDown) {
-            this.currentTab.onPointerDown(e);
-        }
-    }
-    
-    handlePointerMove(e) {
-        if (!this.pointerDown) return;
-        
-        const deltaX = e.clientX - this.prevX;
-        const deltaY = e.clientY - this.prevY;
-        
-        this.prevX = e.clientX;
-        this.prevY = e.clientY;
-        
-        // Let active tab handle this
-        if (this.currentTab && this.currentTab.onPointerMove) {
-            this.currentTab.onPointerMove(e, deltaX, deltaY);
-        }
-    }
-    
-    handlePointerUp(e) {
-        this.pointerDown = false;
-        this.evCache = [];
-        
-        // Check if this was a tap (small movement)
-        const deltaX = e.clientX - this.touchStartX;
-        const deltaY = e.clientY - this.touchStartY;
-        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        
-        if (distance < 10) {
-            // This was a tap
-            if (this.currentTab && this.currentTab.onTap) {
-                this.currentTab.onTap(e);
-            }
-        }
-        
-        // Let active tab handle this
-        if (this.currentTab && this.currentTab.onPointerUp) {
-            this.currentTab.onPointerUp(e);
-        }
-    }
-    
-    handleWheel(e) {
-        e.preventDefault();
-        
-        // Let active tab handle this
-        if (this.currentTab && this.currentTab.onWheel) {
-            this.currentTab.onWheel(e);
-        }
-    }
-
-    // === BUTTON SERVICES ===
-    
-    setupButtons() {
-        // Sound toggle
-        const soundBtn = document.getElementById('sound-toggle');
-        if (soundBtn) {
-            soundBtn.addEventListener('click', () => this.toggleSound());
-            soundBtn.textContent = this.soundEnabled ? '🔊' : '🔇';
-        }
-        
-        // Motion toggle
-        const motionBtn = document.getElementById('motion-toggle');
-        if (motionBtn) {
-            motionBtn.addEventListener('click', () => this.toggleMotion());
-        }
-        
-        // Other service buttons can be added here
-    }
-    
-    toggleSound() {
-        this.soundEnabled = !this.soundEnabled;
-        const soundBtn = document.getElementById('sound-toggle');
-        if (soundBtn) {
-            soundBtn.textContent = this.soundEnabled ? '🔊' : '🔇';
-        }
-        
-        if (this.soundEnabled) {
-            this.initAudioContext();
-            this.playTone(600, 100);
-        }
-        
-        this.logEvent('Audio', `Sound ${this.soundEnabled ? 'enabled' : 'disabled'}`);
-    }
-    
-    toggleMotion() {
-        if (this.motionListenerActive) {
-            this.stopMotionDetection();
-        } else {
-            this.startMotionDetection();
-        }
-    }
-    
-    startMotionDetection() {
-        if (this.motionListenerActive) return;
-        
-        window.addEventListener('devicemotion', this.boundHandleDeviceMotion);
-        window.addEventListener('deviceorientation', this.boundHandleDeviceOrientation);
-        
-        this.motionListenerActive = true;
-        this.updatePermissionStatus('motion', 'active');
-        this.logEvent('Motion', 'Motion detection started');
-    }
-    
-    stopMotionDetection() {
-        if (!this.motionListenerActive) return;
-        
-        window.removeEventListener('devicemotion', this.boundHandleDeviceMotion);
-        window.removeEventListener('deviceorientation', this.boundHandleDeviceOrientation);
-        
-        this.motionListenerActive = false;
-        this.updatePermissionStatus('motion', 'inactive');
-        this.logEvent('Motion', 'Motion detection stopped');
-    }
-
-    // === SUPABASE CONNECTION SERVICES ===
-    
-    async initializeConnection() {
-        this.logEvent('Init', 'Initializing controller connection');
-        this.updatePermissionStatus('connection', 'pending');
-
-        if (typeof supabase === 'undefined' || !supabase.createClient) {
-            this.logEvent('Error', 'Supabase library missing');
-            this.updatePermissionStatus('connection', 'error');
-            return false;
-        }
-
-        try {
-            this.initAudioContext();
             
-            const channelName = this.constructor.getChannelName();
-            this.logEvent('Init', `Creating Supabase client and channel: ${channelName}`);
-            this.supabaseClient = supabase.createClient(this.constructor.SUPABASE_URL, this.constructor.SUPABASE_ANON_KEY);
+        try {
+            const channelName = new URLSearchParams(window.location.search).get('channel') || Controller.clientChannelName;
+            console.log(`Controller connecting to channel: ${channelName}`);
+            
+            this.supabaseClient = supabase.createClient(Controller.supabaseUrl, Controller.supabaseAnonKey);
             this.clientChannel = this.supabaseClient.channel(channelName, {
-                config: {
-                    presence: {
-                        key: this.clientId,
-                    },
-                },
+                config: { presence: { key: this.clientId } }
             });
 
-            // Set up event handlers
-            this.clientChannel
-                .on('presence', { event: 'sync' }, () => this.handlePresenceSync())
-                .on('presence', { event: 'join' }, ({ key, newPresences }) => this.handlePresenceJoin(key, newPresences))
-                .on('presence', { event: 'leave' }, ({ key, leftPresences }) => this.handlePresenceLeave(key, leftPresences))
-                .on('broadcast', { event: 'simulator_takeover' }, ({ payload }) => this.handleSimulatorTakeover(payload));
+            console.log('Controller: Setting up presence handlers and subscribing...');
+            this.setupPresenceHandlers();
+            this.subscribeToChannel();
+            
+            // Debug: Check presence state after a delay
+            setTimeout(() => {
+                const presenceState = this.clientChannel.presenceState();
+                console.log('Controller: Current presence state after 2s:', presenceState);
+                Object.entries(presenceState).forEach(([key, presence]) => {
+                    presence.forEach(client => {
+                        console.log(`Controller: Found client: ${client.clientId} (${client.clientType})`);
+                    });
+                });
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Controller connection failed:', error);
+            this.loggingModule.log('Error', 'Connection failed', error);
+        }
+    }
 
-            await this.clientChannel.subscribe(async (status) => {
-                if (status === 'SUBSCRIBED') {
-                    this.isSubscribed = true;
-                    this.updatePermissionStatus('connection', 'granted');
-                    this.logEvent('Connection', 'Subscribed to channel');
-                    
-                    // Track our presence
-                    await this.clientChannel.track({
-                        clientId: this.clientId,
-                        clientType: this.clientType,
-                        clientName: this.clientName,
-                        startTime: Date.now()
+    setupPresenceHandlers() {
+            this.clientChannel
+                .on('presence', { event: 'sync' }, () => {
+                    const presenceState = this.clientChannel.presenceState();
+                const simulator = this.findLatestSimulator(presenceState);
+                    if (simulator) {
+                        this.currentSimulatorId = simulator.clientId;
+                        this.updateSimulatorState(simulator);
+                    this.loggingModule.log('Connection', 'Received simulator state update', {
+                        simulatorId: simulator.clientId,
+                        tags: simulator.tags?.length || 0,
+                        magnets: simulator.magnets?.length || 0,
+                        selectedItem: simulator.selectedItem?.title || 'none'
                     });
                 }
+            })
+            .on('broadcast', { event: 'simulator_takeover' }, ({ payload }) => {
+                this.currentSimulatorId = payload.newSimulatorId;
             });
+    }
 
-            return true;
-        } catch (error) {
-            this.logEvent('Error', 'Connection failed', error.message);
-            this.updatePermissionStatus('connection', 'error');
-            return false;
+    subscribeToChannel() {
+        this.clientChannel.subscribe(async (status) => {
+                    if (status === 'SUBSCRIBED') {
+                this.isConnected = true;
+                await this.clientChannel.track({
+                            clientId: this.clientId,
+                    clientType: Controller.clientType,
+                    clientName: this.clientName,
+                    currentTabId: this.activeTabId,
+                    startTime: Date.now()
+                });
+                this.loggingModule.log('Connection', 'Connected to simulator');
+            }
+        });
+    }
+    
+    async updatePresenceState() {
+        if (this.isConnected && this.clientChannel) {
+            try {
+                await this.clientChannel.track({
+                clientId: this.clientId,
+                    clientType: Controller.clientType,
+                clientName: this.clientName,
+                    currentTabId: this.activeTabId,
+                    startTime: Date.now()
+                });
+                this.loggingModule.log('Connection', `Updated presence with tab: ${this.activeTabId}`);
+            } catch (error) {
+                this.loggingModule.log('Connection', `Failed to update presence: ${error.message}`);
+            }
         }
     }
-    
-    handlePresenceSync() {
-        const state = this.clientChannel.presenceState();
-        this.updateSimulatorState(state);
-        this.logEvent('Presence', `Sync: ${Object.keys(state).length} clients`);
-    }
-    
-    handlePresenceJoin(key, newPresences) {
-        this.logEvent('Presence', `Join: ${key}`);
-        const state = this.clientChannel.presenceState();
-        this.updateSimulatorState(state);
-    }
-    
-    handlePresenceLeave(key, leftPresences) {
-        this.logEvent('Presence', `Leave: ${key}`);
-        const state = this.clientChannel.presenceState();
-        this.updateSimulatorState(state);
-    }
-    
-    handleSimulatorTakeover(payload) {
-        this.logEvent('Takeover', `New simulator: ${payload.newSimulatorId}`);
-        this.currentSimulatorId = payload.newSimulatorId;
-    }
-    
-    updateSimulatorState(presenceState) {
-        // Find the most recent simulator
+
+    findLatestSimulator(presenceState) {
+        console.log('Controller: findLatestSimulator called with presence state:', presenceState);
         let latestSimulator = null;
-        let latestTime = 0;
-        
+        let latestStartTime = 0;
+
         Object.values(presenceState).forEach(presences => {
             presences.forEach(presence => {
-                if (presence.clientType === 'simulator' && presence.startTime > latestTime) {
+                console.log(`Controller: Checking presence - clientType: ${presence.clientType}, startTime: ${presence.startTime}`);
+                if (presence.clientType === 'simulator' && presence.startTime > latestStartTime) {
                     latestSimulator = presence;
-                    latestTime = presence.startTime;
+                    latestStartTime = presence.startTime;
+                    console.log('Controller: Found newer simulator:', presence.clientId);
                 }
             });
         });
-        
-        if (latestSimulator && latestSimulator.clientId !== this.currentSimulatorId) {
-            this.currentSimulatorId = latestSimulator.clientId;
-            this.simulatorState = latestSimulator;
-            this.logEvent('Simulator', `Attached to: ${this.currentSimulatorId}`);
-        }
+
+        console.log('Controller: Latest simulator found:', latestSimulator);
+        return latestSimulator;
     }
 
-    // === TAB MANAGEMENT SERVICES ===
-    
-    registerTab(tabId, tab) {
-        this.tabs[tabId] = tab;
-        this.logEvent('Tab', `Registered: ${tabId}`);
-    }
-    
-    async switchToTab(tabId) {
-        if (this.currentTab) {
-            this.currentTab.deactivate();
-        }
+    updateSimulatorState(simulator) {
+        console.log('Controller: updateSimulatorState called with:', simulator);
+        console.log('Controller: Full simulator object:', JSON.stringify(simulator, null, 2));
         
-        const tab = this.tabs[tabId];
-        if (tab) {
-            await tab.activate();
-            this.currentTab = tab;
-            this.logEvent('Tab', `Switched to: ${tabId}`);
-        }
-    }
-
-    // === DOM CREATION SERVICES ===
-    
-    createContainer() {
-        const container = document.createElement('div');
-        container.className = 'container';
-        return container;
-    }
-    
-    createTitle(text) {
-        const title = document.createElement('h1');
-        title.className = 'page-title';
-        title.textContent = text;
-        return title;
-    }
-    
-    createInstructions(html) {
-        const instructions = document.createElement('p');
-        instructions.className = 'instructions';
-        instructions.innerHTML = html;
-        return instructions;
-    }
-    
-    createStatus() {
-        const status = document.createElement('div');
-        status.id = 'status';
-        status.className = 'status';
-        status.textContent = 'Initializing...';
-        return status;
-    }
-    
-    createDebugPanel() {
-        const debugPanel = document.createElement('div');
-        debugPanel.id = 'debug-panel';
+        // Access state from the 'shared' property where the simulator publishes it
+        const simState = simulator.shared || {};
+        console.log('Controller: Simulator shared state:', simState);
+        console.log('Controller: Simulator tags:', simState.tags);
+        console.log('Controller: Simulator magnets:', simState.magnets);
+        console.log('Controller: Simulator selectedItem:', simState.selectedItem);
         
-        const debugContent = document.createElement('pre');
-        debugContent.id = 'debug-content';
-        debugContent.textContent = 'Initializing...';
-        debugPanel.appendChild(debugContent);
+        this.simulatorState = {
+            selectedItemIds: simState.selectedItemIds || [],
+            highlightedItemIds: simState.highlightedItemIds || [],
+            selectedItem: simState.selectedItem || null,
+            highlightedItem: simState.highlightedItem || null,
+            currentCollectionId: simState.currentCollectionId || null,
+            currentCollection: simState.currentCollection || null,
+            currentCollectionItems: simState.currentCollectionItems || [],
+            tags: simState.tags || [],
+            screenIds: simState.screenIds || [],
+            currentScreenId: simState.currentScreenId || 'main',
+            magnets: simState.magnets || []
+        };
         
-        return debugPanel;
-    }
-    
-    createTargetDiv() {
-        const targetDiv = document.createElement('div');
-        targetDiv.id = 'target';
-        return targetDiv;
+        console.log('Controller: Updated simulator state:', this.simulatorState);
+        
+        this.performSearch(); // Update search results when state changes
+        
+        // Notify ALL tabs of state changes, not just active tab
+        let notifiedTabs = 0;
+        this.tabs.forEach((tab, tabId) => {
+            if (tab && tab.onSimulatorStateChange) {
+                console.log(`Controller: Notifying tab '${tabId}' of state change`);
+                tab.onSimulatorStateChange(this.simulatorState);
+                notifiedTabs++;
+            }
+        });
+        console.log(`Controller: Notified ${notifiedTabs} tabs of simulator state change`);
     }
 
-    // === INITIALIZATION SERVICE ===
+    // === SEARCH IMPLEMENTATION ===
     
-    async initialize() {
-        // Create target element if it doesn't exist
-        let targetElement = document.getElementById("target");
-        if (!targetElement) {
-            targetElement = this.createTargetDiv();
-            document.body.appendChild(targetElement);
-        }
-        this.targetElement = targetElement;
-        
-        // Set up event handlers
-        this.setupPageEventHandlers();
-        this.setupButtons();
-        
-        // Initialize connection
-        await this.initializeConnection();
-        
-        this.logEvent('Init', 'Controller initialization complete');
-        return true;
+    setSearchQuery(query) {
+        this.currentSearchQuery = query.trim().toLowerCase();
+        this.performSearch();
     }
-};
 
-/**
- * =============================================================================
- *                           ABSTRACT TAB BASE CLASS
- * =============================================================================
- */
+    performSearch() {
+        if (!this.simulatorState || !this.simulatorState.currentCollectionItems) {
+            this.filteredItems = [];
+            return;
+        }
+        
+        const items = this.simulatorState.currentCollectionItems;
+        const query = this.currentSearchQuery;
+        
+        if (!query) {
+            this.filteredItems = items;
+            return;
+        }
 
-/**
- * Abstract Tab base class - minimal interface for tabs
- * Tabs compose Controller services as needed
- */
-window.Tab = class Tab {
-    constructor(controller, tabId) {
-        this.controller = controller; // Service provider
-        this.tabId = tabId;
-        this.isActive = false;
-        this.isInitialized = false;
-        
-        // Find or create UI elements
-        this.button = document.querySelector(`[data-tab="${tabId}"]`);
-        this.pane = document.getElementById(`${tabId}-tab`);
-        
-        // Register with controller
-        this.controller.registerTab(tabId, this);
-    }
-    
-    // === ABSTRACT METHODS (implement in subclasses) ===
-    async initialize() {
-        // Override in subclasses
-        this.isInitialized = true;
-    }
-    
-    createContent() {
-        // Override in subclasses to create tab content
-        return document.createElement('div');
-    }
-    
-    // === TAB LIFECYCLE ===
-    async activate() {
-        if (!this.isInitialized) {
-            await this.initialize();
-        }
-        
-        this.isActive = true;
-        
-        if (this.pane) {
-            this.pane.classList.add('active');
-        }
-        if (this.button) {
-            this.button.classList.add('active');
-        }
-        
-        this.onActivate();
-    }
-    
-    deactivate() {
-        this.isActive = false;
-        
-        if (this.pane) {
-            this.pane.classList.remove('active');
-        }
-        if (this.button) {
-            this.button.classList.remove('active');
-        }
-        
-        this.onDeactivate();
-    }
-    
-    // === EVENT HOOKS (override as needed) ===
-    onActivate() {}
-    onDeactivate() {}
-    onPointerDown(e) {}
-    onPointerMove(e, deltaX, deltaY) {}
-    onPointerUp(e) {}
-    onTap(e) {}
-    onWheel(e) {}
-    updateFromState() {}
-};
+        this.filteredItems = items.filter(item => {
+            const searchText = [
+                item.title || '',
+                item.author || '',
+                item.description || '',
+                ...(item.tags || [])
+            ].join(' ').toLowerCase();
+            
+            return searchText.includes(query);
+        });
 
-// === INITIALIZATION ===
-document.addEventListener('DOMContentLoaded', function() {
-    // Create single controller instance
-    window.controller = new Controller();
-    
-    // For now, create a basic interface
-    // TODO: Implement tab system
-    const title = controller.createTitle('SpaceCraft Controller');
-    const instructions = controller.createInstructions('<strong>Tab-based controller coming soon...</strong>');
-    const status = controller.createStatus();
-    const debugPanel = controller.createDebugPanel();
-    
-    const container = controller.createContainer();
-    container.appendChild(title);
-    container.appendChild(instructions);
-    container.appendChild(status);
-    
-    document.body.appendChild(container);
-    document.body.appendChild(debugPanel);
-    
-    // Initialize controller
-    controller.initialize();
-    
-    console.log('Controller architecture refactored - single Controller class with Tab system ready');
-});
-
-/**
- * =============================================================================
- *                           CONCRETE TAB IMPLEMENTATIONS
- * =============================================================================
- */
-
-/**
- * AboutTab - Welcome and help information
- * Demonstrates how tabs compose Controller services
- */
-window.AboutTab = class AboutTab extends Tab {
-    constructor(controller) {
-        super(controller, 'about');
+        this.loggingModule.log('Search', `"${query}" found ${this.filteredItems.length} items`);
     }
-    
-    async initialize() {
-        this.controller.logEvent('Tab', 'Initializing AboutTab');
+
+    getFilteredTags() {
+        console.log('Controller.getFilteredTags() called');
+        console.log('Current simulator state:', this.simulatorState);
         
-        // Create our tab content
-        const content = this.createContent();
-        
-        // Find or create our tab pane
-        if (!this.pane) {
-            this.pane = document.createElement('div');
-            this.pane.id = 'about-tab';
-            this.pane.className = 'tab-pane';
-            document.body.appendChild(this.pane);
+        if (!this.simulatorState) {
+            console.log('No simulator state available');
+            this.loggingModule.log('Tags', 'No simulator state available');
+            return [];
         }
         
-        this.pane.appendChild(content);
+        if (!this.simulatorState.tags) {
+            console.log('No tags in simulator state, state keys:', Object.keys(this.simulatorState));
+            this.loggingModule.log('Tags', 'No tags in simulator state');
+            return [];
+        }
         
-        // Use controller's audio service for feedback
-        this.controller.playTone(440, 100);
+        console.log('Tags available:', this.simulatorState.tags);
+        this.loggingModule.log('Tags', `Available tags: ${this.simulatorState.tags.length}`);
         
-        await super.initialize();
-    }
-    
-    createContent() {
-        const content = document.createElement('div');
-        content.className = 'about-content';
+        const query = this.currentSearchQuery;
+        if (!query) {
+            console.log('No search query, returning all tags:', this.simulatorState.tags);
+            return this.simulatorState.tags;
+        }
         
-        // Use controller's DOM creation services
-        const title = this.controller.createTitle('Welcome to SpaceCraft');
-        title.style.color = '#4CAF50';
-        
-        const intro = document.createElement('div');
-        intro.className = 'about-intro';
-        intro.innerHTML = `
-            <p><strong>🚀 SpaceCraft Controller</strong></p>
-            <p>A unified controller with multiple interaction modes.</p>
-        `;
-        
-        // Tab descriptions
-        const tabsInfo = document.createElement('div');
-        tabsInfo.className = 'tabs-info';
-        tabsInfo.innerHTML = `
-            <h3>Available Tabs:</h3>
-            <div class="tab-list">
-                <div class="tab-item">
-                    <strong>📖 About</strong> - This welcome screen and help
-                </div>
-                <div class="tab-item">
-                    <strong>🧭 Navigate</strong> - Pan and zoom controls
-                </div>
-                <div class="tab-item">
-                    <strong>👆 Select</strong> - Item selection and gestures
-                </div>
-                <div class="tab-item">
-                    <strong>🔍 Inspect</strong> - Item details and metadata
-                </div>
-                <div class="tab-item">
-                    <strong>⚙️ Adjust</strong> - Settings and preferences
-                </div>
-            </div>
-        `;
-        
-        // Instructions
-        const instructions = document.createElement('div');
-        instructions.className = 'instructions';
-        instructions.innerHTML = `
-            <h3>How to Use:</h3>
-            <ul>
-                <li><strong>Switch Tabs:</strong> Click tab buttons to change modes</li>
-                <li><strong>Touch & Gestures:</strong> Each tab responds to different gestures</li>
-                <li><strong>Audio Feedback:</strong> Enable sound for interaction feedback</li>
-                <li><strong>Motion Controls:</strong> Enable motion for shake gestures</li>
-            </ul>
-        `;
-        
-        // Status info using controller services
-        const statusInfo = document.createElement('div');
-        statusInfo.className = 'status-info';
-        statusInfo.innerHTML = `
-            <h3>Controller Status:</h3>
-            <div id="about-status-details">
-                <p>Connection: ${this.controller.permissionStates.connection}</p>
-                <p>Motion: ${this.controller.permissionStates.motion}</p>
-                <p>Sound: ${this.controller.soundEnabled ? 'enabled' : 'disabled'}</p>
-                <p>Client ID: ${this.controller.clientId}</p>
-            </div>
-        `;
-        
-        // Controls
-        const controls = document.createElement('div');
-        controls.className = 'about-controls';
-        
-        const soundButton = document.createElement('button');
-        soundButton.textContent = this.controller.soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
-        soundButton.addEventListener('click', () => {
-            this.controller.toggleSound();
-            soundButton.textContent = this.controller.soundEnabled ? '🔊 Sound On' : '🔇 Sound Off';
-            this.updateStatusInfo();
+        const filtered = this.simulatorState.tags.filter(tag => 
+            tag.toLowerCase().includes(query.toLowerCase())
+        ).sort((a, b) => {
+            // Tags starting with query come first
+            const aStarts = a.toLowerCase().startsWith(query.toLowerCase());
+            const bStarts = b.toLowerCase().startsWith(query.toLowerCase());
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+            return a.localeCompare(b);
         });
         
-        const motionButton = document.createElement('button');
-        motionButton.textContent = this.controller.motionListenerActive ? '📱 Motion On' : '📱 Motion Off';
-        motionButton.addEventListener('click', () => {
-            this.controller.toggleMotion();
-            motionButton.textContent = this.controller.motionListenerActive ? '📱 Motion On' : '📱 Motion Off';
-            this.updateStatusInfo();
-        });
-        
-        controls.appendChild(soundButton);
-        controls.appendChild(motionButton);
-        
-        // Assemble content
-        content.appendChild(title);
-        content.appendChild(intro);
-        content.appendChild(tabsInfo);
-        content.appendChild(instructions);
-        content.appendChild(statusInfo);
-        content.appendChild(controls);
-        
-        return content;
+        console.log('Filtered tags for query "' + query + '":', filtered);
+        return filtered;
+    }
+
+    // === HIGH-LEVEL AUDIO INTERFACE ===
+    
+    toggleSound() {
+        return this.audioModule.toggleSound();
+    }
+
+    // === URL HASH MANAGEMENT ===
+    
+    getTabFromUrl() {
+        const hash = window.location.hash;
+        if (hash && hash.length > 1) {
+            const tabId = hash.substring(1); // Remove the #
+            // Validate that this is a registered tab
+            if (this.tabs.has(tabId)) {
+                return tabId;
+            }
+        }
+        return null;
     }
     
-    updateStatusInfo() {
-        const statusElement = document.getElementById('about-status-details');
-        if (statusElement) {
-            statusElement.innerHTML = `
-                <p>Connection: ${this.controller.permissionStates.connection}</p>
-                <p>Motion: ${this.controller.permissionStates.motion}</p>
-                <p>Sound: ${this.controller.soundEnabled ? 'enabled' : 'disabled'}</p>
-                <p>Client ID: ${this.controller.clientId}</p>
-            `;
+    updateUrlHash(tabId) {
+        // Only update hash if it's different to avoid triggering hashchange
+        const currentHash = window.location.hash.substring(1);
+        if (currentHash !== tabId) {
+            // Use replaceState for default tab to keep URL clean
+            if (tabId === Controller.defaultTabId) {
+                history.replaceState(null, '', window.location.pathname + window.location.search);
+                this.loggingModule.log('Controller', `Cleared URL hash (default tab: ${tabId})`);
+            } else {
+                history.replaceState(null, '', `#${tabId}`);
+                this.loggingModule.log('Controller', `Updated URL hash to: #${tabId}`);
+            }
         }
     }
-    
-    onActivate() {
-        this.controller.logEvent('Tab', 'AboutTab activated');
-        this.updateStatusInfo(); // Refresh status when tab becomes active
-    }
-    
-    onDeactivate() {
-        this.controller.logEvent('Tab', 'AboutTab deactivated');
-    }
-    
-    onTap(e) {
-        // Use controller's audio service
-        this.controller.playTone(600, 50);
-        this.controller.logEvent('About', 'Tab tapped');
-    }
-};
 
-// Create initial AboutTab to demonstrate the system
-document.addEventListener('DOMContentLoaded', function() {
-    // Override the previous simple initialization
-    setTimeout(() => {
-        // Clear existing content
-        document.body.innerHTML = '';
+    // === INITIALIZATION ===
+    
+    initialize() {
+        this.createUI();
         
-        // Create controller
-        window.controller = new Controller();
+        // Read initial tab from URL hash
+        const initialTab = this.getTabFromUrl() || Controller.defaultTabId;
+        this.loggingModule.log('Controller', `Initial tab from URL: ${initialTab}`);
+        this.showTab(initialTab);
         
-        // Create a simple tab bar
-        const tabBar = document.createElement('div');
-        tabBar.className = 'tab-bar';
-        tabBar.innerHTML = `
-            <button class="tab-button active" data-tab="about">📖 About</button>
-            <button class="tab-button" data-tab="navigate">🧭 Navigate</button>
-            <button class="tab-button" data-tab="select">👆 Select</button>
-            <button class="tab-button" data-tab="inspect">🔍 Inspect</button>
-            <button class="tab-button" data-tab="adjust">⚙️ Adjust</button>
-        `;
-        
-        // Add tab switching functionality
-        tabBar.addEventListener('click', (e) => {
-            if (e.target.classList.contains('tab-button')) {
-                const tabId = e.target.dataset.tab;
-                
-                // Update button states
-                tabBar.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-                
-                // Switch tabs if implemented
-                if (controller.switchToTab) {
-                    controller.switchToTab(tabId);
-                }
+        // Listen for browser navigation (back/forward)
+        window.addEventListener('hashchange', () => {
+            const tabFromUrl = this.getTabFromUrl();
+            if (tabFromUrl && tabFromUrl !== this.activeTabId) {
+                this.loggingModule.log('Controller', `Hash changed to: ${tabFromUrl}`);
+                this.showTab(tabFromUrl);
             }
         });
         
-        document.body.appendChild(tabBar);
+        this.initializeConnection();
         
-        // Create and initialize AboutTab
-        const aboutTab = new AboutTab(controller);
-        aboutTab.activate(); // Show about tab by default
-        
-        // Initialize controller
-        controller.initialize();
-        
-        console.log('AboutTab demonstration ready - single Controller + Tab composition pattern working!');
-    }, 100);
-});
+        this.loggingModule.log('Controller', 'Initialized successfully');
+    }
+
+    // === UTILITIES ===
+    
+    generateClientId() {
+        return 'controller-' + Math.random().toString(36).substr(2, 9);
+    }
+
+    generateClientName() {
+        const now = new Date();
+        const timestamp = now.toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        return `Controller-${timestamp}`;
+    }
+}
 

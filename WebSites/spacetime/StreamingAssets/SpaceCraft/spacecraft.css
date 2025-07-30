@@ -176,6 +176,12 @@ a { /* Style for the QR code links */
     right: 15px;
 }
 
+.qr-position-center {
+    top: 15px;
+    right: 15px;
+    margin: 5px;
+}
+
 /* Add more positions as needed */
 /* Example: Middle Left */
 /*
