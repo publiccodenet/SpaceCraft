@@ -1,7 +1,6 @@
 // SpaceCraft Controller - Clean, Simple, Complete Implementation
 
 import { AudioModule } from './audio.js';
-import { LoggingModule } from './logging.js';
 import { MotionModule } from './motion.js';
 import { GestureService } from './gesture.js';
 
@@ -17,7 +16,7 @@ export class Controller {
     static defaultTabId = 'about';
     
     // Interaction Constants
-    static panSensitivity = 0.333;
+    static panSensitivity = 0.15;
     static zoomSensitivity = 0.008;
     static gestureThreshold = 20;
 
@@ -27,10 +26,9 @@ export class Controller {
         this.clientName = this.generateClientName();
         
         // Initialize modules
-        this.loggingModule = new LoggingModule();
-        this.audioModule = new AudioModule(this.loggingModule);
-        this.motionModule = new MotionModule(this.loggingModule);
-        this.gestureService = new GestureService(this.motionModule, this.loggingModule);
+        this.audioModule = new AudioModule();
+        this.motionModule = new MotionModule();
+        this.gestureService = new GestureService(this.motionModule);
         
         // Tab Management  
         this.tabs = new Map();
@@ -54,15 +52,14 @@ export class Controller {
         
         // Search State
         this.currentSearchQuery = '';
-        this.currentSearchGravity = 0.0; // -100 to 100 for gravity force modulation
-        this.filteredItems = [];
+        this.currentSearchGravity = 0; // -100 to 100 for gravity force modulation
         
         // Input State
         this.pointerStartX = 0;
         this.pointerStartY = 0;
         this.isDragging = false;
         
-        console.log('Controller', `Created: ${this.clientId}`);
+        console.log(`[Controller] Created: ${this.clientId}`);
     }
 
     // === TAB MANAGEMENT ===
@@ -70,7 +67,7 @@ export class Controller {
     registerTab(TabClass) {
         const tab = new TabClass(this);
         this.tabs.set(TabClass.tabId, tab);
-        console.log('Tab', `Registered: ${TabClass.tabId}`);
+        console.log(`[Tab] Registered: ${TabClass.tabId}`);
     }
 
     showTab(tabId) {
@@ -183,15 +180,13 @@ export class Controller {
         
         if (gestureEnabledTabs.includes(tabId)) {
             this.targetElement.classList.add('gesture-active');
-            console.log(`Controller: Enabled gesture capture for ${tabId} tab`);
         } else {
             this.targetElement.classList.remove('gesture-active');
-            console.log(`Controller: Disabled gesture capture for ${tabId} tab`);
         }
     }
 
     handlePointerDown(e) {
-        console.log('Controller: handlePointerDown called', e.clientX, e.clientY);
+
         if (!this.isConnected) return;
         
         this.pointerStartX = e.clientX;
@@ -249,13 +244,13 @@ export class Controller {
     }
 
     handleGesture(gestureType) {
-        console.log(`Controller: handleGesture called with: ${gestureType}, activeTabId: ${this.activeTabId}`);
+                    console.log(`[Controller] handleGesture: ${gestureType}, activeTabId: ${this.activeTabId}`);
         const activeTab = this.tabs.get(this.activeTabId);
         if (activeTab && activeTab.handleGesture) {
-            console.log(`Controller: Calling handleGesture on ${this.activeTabId} tab`);
+            
             activeTab.handleGesture(gestureType);
         } else {
-            console.log(`Controller: No handleGesture method on ${this.activeTabId} tab`);
+            
         }
         
         // Use audio module for gesture sounds
@@ -297,17 +292,13 @@ export class Controller {
     }
 
     sendEventToSimulator(eventType, data) {
-        console.log(`Controller: sendEventToSimulator called - eventType: ${eventType}, data:`, data);
-        console.log(`Controller: clientChannel exists: ${!!this.clientChannel}`);
-        console.log(`Controller: currentSimulatorId: ${this.currentSimulatorId}`);
-        
         if (!this.clientChannel) {
-            console.error('Controller: Cannot send event - no client channel');
+            console.error(`[Controller] Cannot send event - no client channel`);
             return;
         }
         
         if (!this.currentSimulatorId) {
-            console.error('Controller: Cannot send event - no current simulator ID');
+            console.error(`[Controller] Cannot send event - no current simulator ID`);
             return;
         }
 
@@ -320,17 +311,14 @@ export class Controller {
             ...data
         };
         
-        console.log(`Controller: Sending event '${eventType}' with payload:`, payload);
+        console.log(`[Controller] Sending '${eventType}':`, payload);
         
         this.clientChannel.send({
             type: 'broadcast',
             event: eventType,
             payload: payload
-        }).then(() => {
-            console.log(`Controller: Successfully sent event '${eventType}'`);
         }).catch(err => {
-            console.error(`Controller: Error sending event '${eventType}':`, err);
-            console.log('Error', `Send error: ${err}`);
+            console.error(`[Controller] Send '${eventType}' failed:`, err);
         });
     }
 
@@ -339,7 +327,7 @@ export class Controller {
     initializeConnection() {
         if (typeof supabase === 'undefined') {
             console.error('Supabase library missing!');
-            console.log('Error', 'Supabase library missing');
+            console.log(`[Controller] Error: Supabase library missing`);
                 return;
             }
             
@@ -359,7 +347,7 @@ export class Controller {
             // Debug: Check presence state after a delay
             setTimeout(() => {
                 const presenceState = this.clientChannel.presenceState();
-                console.log('Controller: Current presence state after 2s:', presenceState);
+                console.log(`[Controller] Presence state after 2s:`, presenceState);
                 Object.entries(presenceState).forEach(([key, presence]) => {
                     presence.forEach(client => {
                         console.log(`Controller: Found client: ${client.clientId} (${client.clientType})`);
@@ -369,7 +357,7 @@ export class Controller {
             
         } catch (error) {
             console.error('Controller connection failed:', error);
-            console.log('Error', 'Connection failed', error);
+            console.error(`[Controller] Connection failed:`, error);
         }
     }
 
@@ -405,7 +393,7 @@ export class Controller {
                     currentTabId: this.activeTabId,
                     startTime: Date.now()
                 });
-                console.log('Connection', 'Connected to simulator');
+                console.log(`[Connection] Connected to simulator`);
             }
         });
     }
@@ -420,43 +408,38 @@ export class Controller {
                     currentTabId: this.activeTabId,
                     startTime: Date.now()
                 });
-                console.log('Connection', `Updated presence with tab: ${this.activeTabId}`);
+                console.log(`[Connection] Updated presence with tab: ${this.activeTabId}`);
             } catch (error) {
-                console.log('Connection', `Failed to update presence: ${error.message}`);
+                console.log(`[Connection] Failed to update presence:`, error);
             }
         }
     }
 
     findLatestSimulator(presenceState) {
-        console.log('Controller: findLatestSimulator called with presence state:', presenceState);
+        console.log(`[Controller] Finding latest simulator:`, presenceState);
         let latestSimulator = null;
         let latestStartTime = 0;
 
         Object.values(presenceState).forEach(presences => {
             presences.forEach(presence => {
-                console.log(`Controller: Checking presence - clientType: ${presence.clientType}, startTime: ${presence.startTime}`);
                 if (presence.clientType === 'simulator' && presence.startTime > latestStartTime) {
                     latestSimulator = presence;
                     latestStartTime = presence.startTime;
-                    console.log('Controller: Found newer simulator:', presence.clientId);
+                    console.log(`[Controller] Found newer simulator: ${presence.clientId}`);
                 }
             });
         });
 
-        console.log('Controller: Latest simulator found:', latestSimulator);
+        console.log(`[Controller] Latest simulator found:`, latestSimulator);
         return latestSimulator;
     }
 
     updateSimulatorState(simulator) {
-        console.log('Controller: updateSimulatorState called with:', simulator);
-        console.log('Controller: Full simulator object:', JSON.stringify(simulator, null, 2));
+        console.log(`[Controller] Updating simulator state:`, simulator);
         
         // Access state from the 'shared' property where the simulator publishes it
         const simState = simulator.shared || {};
-        console.log('Controller: Simulator shared state:', simState);
-        console.log('Controller: Simulator tags:', simState.tags);
-        console.log('Controller: Simulator magnets:', simState.magnets);
-        console.log('Controller: Simulator selectedItem:', simState.selectedItem);
+        console.log(`[Controller] Simulator shared state:`, simState);
         
         this.simulatorState = {
             selectedItemIds: simState.selectedItemIds || [],
@@ -469,121 +452,53 @@ export class Controller {
             tags: simState.tags || [],
             screenIds: simState.screenIds || [],
             currentScreenId: simState.currentScreenId || 'main',
-            magnets: simState.magnets || []
+            magnets: simState.magnets || [],
+            currentSearchString: simState.currentSearchString || '',
+            currentSearchGravity: simState.currentSearchGravity || 0
         };
         
-        console.log('Controller: Updated simulator state:', this.simulatorState);
+        console.log(`[Controller] Updated simulator state:`, this.simulatorState);
         
-        this.performSearch(); // Update search results when state changes
+        // Note: Search and gravity are now managed by simulator, no need to send here
         
         // Notify ALL tabs of state changes, not just active tab
         let notifiedTabs = 0;
         this.tabs.forEach((tab, tabId) => {
             if (tab && tab.onSimulatorStateChange) {
-                console.log(`Controller: Notifying tab '${tabId}' of state change`);
+        
                 tab.onSimulatorStateChange(this.simulatorState);
                 notifiedTabs++;
             }
         });
-        console.log(`Controller: Notified ${notifiedTabs} tabs of simulator state change`);
+
     }
 
     // === SEARCH IMPLEMENTATION ===
     
     setSearchQuery(query) {
         this.currentSearchQuery = query.trim().toLowerCase();
-        this.performSearch();
+        this.sendSearchToUnity();
     }
     
     setSearchGravity(gravity) {
         this.currentSearchGravity = Math.max(-100, Math.min(100, gravity));
-        this.sendSearchToUnity();
+        // Send gravity update to simulator in real-time
+        this.sendEventToSimulator('gravityUpdate', {
+            searchGravity: this.currentSearchGravity
+        });
     }
     
     setSearchQueryAndGravity(query, gravity) {
         this.currentSearchQuery = query.trim().toLowerCase();
         this.currentSearchGravity = Math.max(-100, Math.min(100, gravity));
-        this.performSearch();
+        // This method is no longer used - search string and gravity are updated separately
     }
 
-    performSearch() {
-        if (!this.simulatorState || !this.simulatorState.currentCollectionItems) {
-            this.filteredItems = [];
-            return;
-        }
-        
-        const items = this.simulatorState.currentCollectionItems;
-        const query = this.currentSearchQuery;
-        
-        if (!query) {
-            this.filteredItems = items;
-            return;
-        }
 
-        this.filteredItems = items.filter(item => {
-            const searchText = [
-                item.title || '',
-                item.author || '',
-                item.description || '',
-                ...(item.tags || [])
-            ].join(' ').toLowerCase();
-            
-            return searchText.includes(query);
-        });
-
-        console.log('Search', `"${query}" found ${this.filteredItems.length} items`);
-        this.sendSearchToUnity();
-    }
     
-    sendSearchToUnity() {
-        // Send both search query and gravity to Unity
-        this.sendEvent('searchUpdate', {
-            searchQuery: this.currentSearchQuery,
-            searchGravity: this.currentSearchGravity
-        });
-        
-        console.log('Search', `Sent to Unity: "${this.currentSearchQuery}" gravity=${this.currentSearchGravity}`);
-    }
 
-    getFilteredTags() {
-        console.log('Controller.getFilteredTags() called');
-        console.log('Current simulator state:', this.simulatorState);
-        
-        if (!this.simulatorState) {
-            console.log('No simulator state available');
-            console.log('Tags', 'No simulator state available');
-            return [];
-        }
-        
-        if (!this.simulatorState.tags) {
-            console.log('No tags in simulator state, state keys:', Object.keys(this.simulatorState));
-            console.log('Tags', 'No tags in simulator state');
-            return [];
-        }
-        
-        console.log('Tags available:', this.simulatorState.tags);
-        console.log('Tags', `Available tags: ${this.simulatorState.tags.length}`);
-        
-        const query = this.currentSearchQuery;
-        if (!query) {
-            console.log('No search query, returning all tags:', this.simulatorState.tags);
-            return this.simulatorState.tags;
-        }
-        
-        const filtered = this.simulatorState.tags.filter(tag => 
-            tag.toLowerCase().includes(query.toLowerCase())
-        ).sort((a, b) => {
-            // Tags starting with query come first
-            const aStarts = a.toLowerCase().startsWith(query.toLowerCase());
-            const bStarts = b.toLowerCase().startsWith(query.toLowerCase());
-            if (aStarts && !bStarts) return -1;
-            if (!aStarts && bStarts) return 1;
-            return a.localeCompare(b);
-        });
-        
-        console.log('Filtered tags for query "' + query + '":', filtered);
-        return filtered;
-    }
+
+
 
     // === HIGH-LEVEL AUDIO INTERFACE ===
     
@@ -612,10 +527,10 @@ export class Controller {
             // Use replaceState for default tab to keep URL clean
             if (tabId === Controller.defaultTabId) {
                 history.replaceState(null, '', window.location.pathname + window.location.search);
-                console.log('Controller', `Cleared URL hash (default tab: ${tabId})`);
+                console.log(`[Controller] Cleared URL hash (default tab: ${tabId})`);
             } else {
                 history.replaceState(null, '', `#${tabId}`);
-                console.log('Controller', `Updated URL hash to: #${tabId}`);
+                console.log(`[Controller] Updated URL hash to: #${tabId}`);
             }
         }
     }
@@ -627,21 +542,21 @@ export class Controller {
         
         // Read initial tab from URL hash
         const initialTab = this.getTabFromUrl() || Controller.defaultTabId;
-        console.log('Controller', `Initial tab from URL: ${initialTab}`);
+        console.log(`[Controller] Initial tab from URL: ${initialTab}`);
         this.showTab(initialTab);
         
         // Listen for browser navigation (back/forward)
         window.addEventListener('hashchange', () => {
             const tabFromUrl = this.getTabFromUrl();
             if (tabFromUrl && tabFromUrl !== this.activeTabId) {
-                console.log('Controller', `Hash changed to: ${tabFromUrl}`);
+                console.log(`[Controller] Hash changed to: ${tabFromUrl}`);
                 this.showTab(tabFromUrl);
             }
         });
         
         this.initializeConnection();
         
-        console.log('Controller', 'Initialized successfully');
+        console.log(`[Controller] Initialized successfully`);
     }
 
     // === UTILITIES ===
@@ -656,4 +571,3 @@ export class Controller {
         return `Controller-${timestamp}`;
     }
 }
-

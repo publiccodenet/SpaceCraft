@@ -5,9 +5,8 @@ import { MotionModule } from './motion.js';
  * Maps raw motion data to semantic gesture events with configurable behavior
  */
 export class GestureService {
-    constructor(motionModule, loggingModule = null) {
+    constructor(motionModule) {
         this.motionModule = motionModule;
-        this.loggingModule = loggingModule;
         
         // Registered gesture instances
         this.gestureInstances = new Map(); // targetId -> GestureServiceInstance
@@ -21,7 +20,7 @@ export class GestureService {
         // Touch-to-target mapping
         this.touchTargets = new Map(); // touchId -> targetId
         
-        this.log('GestureService created');
+        console.log('[Gesture] GestureService created');
     }
     
     
@@ -31,7 +30,7 @@ export class GestureService {
     registerTarget(targetId, gestureInstance) {
         this.gestureInstances.set(targetId, gestureInstance);
         gestureInstance.setParentService(this);
-        this.log(`Registered gesture target: ${targetId}`);
+        console.log(`[Gesture] Registered gesture target: ${targetId}`);
     }
     
     
@@ -49,7 +48,7 @@ export class GestureService {
                 this.deactivateTarget();
             }
             
-            this.log(`Unregistered gesture target: ${targetId}`);
+            console.log(`[Gesture] Unregistered gesture target: ${targetId}`);
         }
     }
     
@@ -60,7 +59,7 @@ export class GestureService {
     handleTouchStart(touch, targetId) {
         const gestureInstance = this.gestureInstances.get(targetId);
         if (!gestureInstance) {
-            this.log(`No gesture instance found for target: ${targetId}`);
+            console.log(`[Gesture] No gesture instance found for target: ${targetId}`);
             return false;
         }
         
@@ -77,7 +76,7 @@ export class GestureService {
             this.activateTarget(targetId);
         }
         
-        this.log(`Touch ${touch.identifier} started for target: ${targetId}`);
+        console.log(`[Gesture] Touch ${touch.identifier} started for target: ${targetId}`);
         return true;
     }
     
@@ -124,7 +123,7 @@ export class GestureService {
             this.deactivateTarget();
         }
         
-        this.log(`Touch ${touch.identifier} ended for target: ${targetId}`);
+        console.log(`[Gesture] Touch ${touch.identifier} ended for target: ${targetId}`);
         return true;
     }
     
@@ -145,7 +144,7 @@ export class GestureService {
         // Notify the gesture instance
         gestureInstance.onActivate();
         
-        this.log(`Activated gesture target: ${targetId}`);
+        console.log(`[Gesture] Activated gesture target: ${targetId}`);
     }
     
     
@@ -161,7 +160,7 @@ export class GestureService {
         this.activeTargetId = null;
         this.activeGestureInstance = null;
         
-        this.log('Deactivated gesture target');
+        console.log('[Gesture] Deactivated gesture target');
     }
     
     
@@ -177,7 +176,7 @@ export class GestureService {
             }
         }, 1000 / this.updateRate);
         
-        this.log('Started continuous gesture updates');
+        console.log('[Gesture] Started continuous gesture updates');
     }
     
     
@@ -188,7 +187,7 @@ export class GestureService {
         if (this.updateInterval) {
             clearInterval(this.updateInterval);
             this.updateInterval = null;
-            this.log('Stopped continuous gesture updates');
+            console.log('[Gesture] Stopped continuous gesture updates');
         }
     }
     
@@ -207,18 +206,7 @@ export class GestureService {
     getGestureInstance(targetId) {
         return this.gestureInstances.get(targetId);
     }
-    
-    
-    /**
-     * Log helper
-     */
-    log(message, data = null) {
-        if (this.loggingModule) {
-            console.log('Gesture', message, data);
-        } else {
-            console.log(`[Gesture] ${message}`, data || '');
-        }
-    }
+
 }
 
 
@@ -434,4 +422,4 @@ export class GestureServiceInstance {
             isActive: this.isActive
         };
     }
-} 
+}

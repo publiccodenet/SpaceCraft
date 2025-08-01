@@ -3,8 +3,7 @@
  * Provides raw sensor data with normalization and dead zones
  */
 export class MotionModule {
-    constructor(loggingModule = null) {
-        this.loggingModule = loggingModule;
+    constructor() {
         
         // Current device orientation state (radians)
         this.currentTiltX = 0;      // Left/right tilt (gamma)
@@ -19,7 +18,7 @@ export class MotionModule {
         this.isOrientationActive = false;
         this.orientationPermissionGranted = false;
         
-        this.log('MotionModule created');
+        console.log('[Motion] MotionModule created');
     }
     
     
@@ -29,7 +28,7 @@ export class MotionModule {
      */
     async initializeOrientationTracking() {
         if (typeof DeviceOrientationEvent === 'undefined') {
-            this.log('Device orientation not supported');
+            console.log('[Motion] Device orientation not supported');
             return false;
         }
         
@@ -44,11 +43,11 @@ export class MotionModule {
                     this.startOrientationListening();
                     return true;
                 } else {
-                    this.log('Device orientation permission denied');
+                    console.log('[Motion] Device orientation permission denied');
                     return false;
                 }
             } catch (error) {
-                this.log('Error requesting orientation permission:', error);
+                console.log('[Motion] Error requesting orientation permission:', error);
                 return false;
             }
         } else {
@@ -71,7 +70,7 @@ export class MotionModule {
         });
         
         this.isOrientationActive = true;
-        this.log('Device orientation listening started');
+        console.log('[Motion] Device orientation listening started');
     }
     
     
@@ -112,7 +111,7 @@ export class MotionModule {
         };
         
         this.activeTouches.set(touch.identifier, touchData);
-        this.log(`Touch ${touch.identifier} started at (${touch.clientX}, ${touch.clientY})`);
+        console.log(`[Motion] Touch ${touch.identifier} started at (${touch.clientX}, ${touch.clientY})`);
         
         return touchData;
     }
@@ -149,7 +148,7 @@ export class MotionModule {
         const touchData = this.activeTouches.get(touch.identifier);
         if (touchData) {
             const duration = Date.now() - touchData.startTime;
-            this.log(`Touch ${touch.identifier} ended after ${duration}ms`);
+            console.log(`[Motion] Touch ${touch.identifier} ended after ${duration}ms`);
             this.activeTouches.delete(touch.identifier);
             return touchData;
         }
@@ -227,14 +226,5 @@ export class MotionModule {
     }
     
     
-    /**
-     * Log helper
-     */
-    log(message, data = null) {
-        if (this.loggingModule) {
-            console.log('Motion', message, data);
-        } else {
-            console.log(`[Motion] ${message}`, data || '');
-        }
-    }
+
 } 
