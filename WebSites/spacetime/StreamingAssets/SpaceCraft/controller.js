@@ -54,6 +54,7 @@ export class Controller {
         
         // Search State
         this.currentSearchQuery = '';
+        this.currentSearchGravity = 0.0; // -100 to 100 for gravity force modulation
         this.filteredItems = [];
         
         // Input State
@@ -61,7 +62,7 @@ export class Controller {
         this.pointerStartY = 0;
         this.isDragging = false;
         
-        this.loggingModule.log('Controller', `Created: ${this.clientId}`);
+        console.log('Controller', `Created: ${this.clientId}`);
     }
 
     // === TAB MANAGEMENT ===
@@ -69,7 +70,7 @@ export class Controller {
     registerTab(TabClass) {
         const tab = new TabClass(this);
         this.tabs.set(TabClass.tabId, tab);
-        this.loggingModule.log('Tab', `Registered: ${TabClass.tabId}`);
+        console.log('Tab', `Registered: ${TabClass.tabId}`);
     }
 
     showTab(tabId) {
@@ -329,7 +330,7 @@ export class Controller {
             console.log(`Controller: Successfully sent event '${eventType}'`);
         }).catch(err => {
             console.error(`Controller: Error sending event '${eventType}':`, err);
-            this.loggingModule.log('Error', `Send error: ${err}`);
+            console.log('Error', `Send error: ${err}`);
         });
     }
 
@@ -338,7 +339,7 @@ export class Controller {
     initializeConnection() {
         if (typeof supabase === 'undefined') {
             console.error('Supabase library missing!');
-            this.loggingModule.log('Error', 'Supabase library missing');
+            console.log('Error', 'Supabase library missing');
                 return;
             }
             
@@ -368,7 +369,7 @@ export class Controller {
             
         } catch (error) {
             console.error('Controller connection failed:', error);
-            this.loggingModule.log('Error', 'Connection failed', error);
+            console.log('Error', 'Connection failed', error);
         }
     }
 
@@ -380,7 +381,7 @@ export class Controller {
                     if (simulator) {
                         this.currentSimulatorId = simulator.clientId;
                         this.updateSimulatorState(simulator);
-                    this.loggingModule.log('Connection', 'Received simulator state update', {
+                    console.log('Connection', 'Received simulator state update', {
                         simulatorId: simulator.clientId,
                         tags: simulator.tags?.length || 0,
                         magnets: simulator.magnets?.length || 0,
@@ -404,7 +405,7 @@ export class Controller {
                     currentTabId: this.activeTabId,
                     startTime: Date.now()
                 });
-                this.loggingModule.log('Connection', 'Connected to simulator');
+                console.log('Connection', 'Connected to simulator');
             }
         });
     }
@@ -419,9 +420,9 @@ export class Controller {
                     currentTabId: this.activeTabId,
                     startTime: Date.now()
                 });
-                this.loggingModule.log('Connection', `Updated presence with tab: ${this.activeTabId}`);
+                console.log('Connection', `Updated presence with tab: ${this.activeTabId}`);
             } catch (error) {
-                this.loggingModule.log('Connection', `Failed to update presence: ${error.message}`);
+                console.log('Connection', `Failed to update presence: ${error.message}`);
             }
         }
     }
@@ -493,6 +494,17 @@ export class Controller {
         this.currentSearchQuery = query.trim().toLowerCase();
         this.performSearch();
     }
+    
+    setSearchGravity(gravity) {
+        this.currentSearchGravity = Math.max(-100, Math.min(100, gravity));
+        this.sendSearchToUnity();
+    }
+    
+    setSearchQueryAndGravity(query, gravity) {
+        this.currentSearchQuery = query.trim().toLowerCase();
+        this.currentSearchGravity = Math.max(-100, Math.min(100, gravity));
+        this.performSearch();
+    }
 
     performSearch() {
         if (!this.simulatorState || !this.simulatorState.currentCollectionItems) {
@@ -519,7 +531,18 @@ export class Controller {
             return searchText.includes(query);
         });
 
-        this.loggingModule.log('Search', `"${query}" found ${this.filteredItems.length} items`);
+        console.log('Search', `"${query}" found ${this.filteredItems.length} items`);
+        this.sendSearchToUnity();
+    }
+    
+    sendSearchToUnity() {
+        // Send both search query and gravity to Unity
+        this.sendEvent('searchUpdate', {
+            searchQuery: this.currentSearchQuery,
+            searchGravity: this.currentSearchGravity
+        });
+        
+        console.log('Search', `Sent to Unity: "${this.currentSearchQuery}" gravity=${this.currentSearchGravity}`);
     }
 
     getFilteredTags() {
@@ -528,18 +551,18 @@ export class Controller {
         
         if (!this.simulatorState) {
             console.log('No simulator state available');
-            this.loggingModule.log('Tags', 'No simulator state available');
+            console.log('Tags', 'No simulator state available');
             return [];
         }
         
         if (!this.simulatorState.tags) {
             console.log('No tags in simulator state, state keys:', Object.keys(this.simulatorState));
-            this.loggingModule.log('Tags', 'No tags in simulator state');
+            console.log('Tags', 'No tags in simulator state');
             return [];
         }
         
         console.log('Tags available:', this.simulatorState.tags);
-        this.loggingModule.log('Tags', `Available tags: ${this.simulatorState.tags.length}`);
+        console.log('Tags', `Available tags: ${this.simulatorState.tags.length}`);
         
         const query = this.currentSearchQuery;
         if (!query) {
@@ -589,10 +612,10 @@ export class Controller {
             // Use replaceState for default tab to keep URL clean
             if (tabId === Controller.defaultTabId) {
                 history.replaceState(null, '', window.location.pathname + window.location.search);
-                this.loggingModule.log('Controller', `Cleared URL hash (default tab: ${tabId})`);
+                console.log('Controller', `Cleared URL hash (default tab: ${tabId})`);
             } else {
                 history.replaceState(null, '', `#${tabId}`);
-                this.loggingModule.log('Controller', `Updated URL hash to: #${tabId}`);
+                console.log('Controller', `Updated URL hash to: #${tabId}`);
             }
         }
     }
@@ -604,21 +627,21 @@ export class Controller {
         
         // Read initial tab from URL hash
         const initialTab = this.getTabFromUrl() || Controller.defaultTabId;
-        this.loggingModule.log('Controller', `Initial tab from URL: ${initialTab}`);
+        console.log('Controller', `Initial tab from URL: ${initialTab}`);
         this.showTab(initialTab);
         
         // Listen for browser navigation (back/forward)
         window.addEventListener('hashchange', () => {
             const tabFromUrl = this.getTabFromUrl();
             if (tabFromUrl && tabFromUrl !== this.activeTabId) {
-                this.loggingModule.log('Controller', `Hash changed to: ${tabFromUrl}`);
+                console.log('Controller', `Hash changed to: ${tabFromUrl}`);
                 this.showTab(tabFromUrl);
             }
         });
         
         this.initializeConnection();
         
-        this.loggingModule.log('Controller', 'Initialized successfully');
+        console.log('Controller', 'Initialized successfully');
     }
 
     // === UTILITIES ===

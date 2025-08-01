@@ -12,11 +12,12 @@ public abstract class BaseView : BridgeObject
 {
     // Dynamic Scaling fields and properties - Public for direct bridge access
     [Header("Dynamic Scaling")]
+    [NonSerialized]
     [SerializeField, ExposedParameter(Category = "Scaling", Description = "Target scale for this object", Min = 0.1f, Max = 10f, Step = 0.1f)]
     public float viewScale = 1.0f;
     [SerializeField] public float currentScale = 1.0f;
     [SerializeField, ExposedParameter(Category = "Scaling", Description = "Speed of scale animation", Min = 0.1f, Max = 10f, Step = 0.1f)]
-    public float viewScaleSlerpRate = 3.0f;
+    public float viewScaleSlerpRate = 1.2f;
     [SerializeField, ExposedParameter(Category = "Scaling", Description = "Minimum allowed scale", Min = 0.01f, Max = 1f, Step = 0.01f)]
     public float minViewScale = 0.1f;
     [SerializeField, ExposedParameter(Category = "Scaling", Description = "Maximum allowed scale", Min = 1f, Max = 20f, Step = 0.1f)]
@@ -38,16 +39,19 @@ public abstract class BaseView : BridgeObject
 
     // Physics Properties (shared by all objects) - Public for direct bridge access
     [Header("Physics Properties")]
+    [NonSerialized]
     [SerializeField, ExposedParameter(Category = "Physics", Description = "Physical mass for rigidbody physics and inertia", Min = 0.1f, Max = 100f, Step = 0.1f, Unit = "kg")]
     [Tooltip("Physical mass for rigidbody physics and inertia")]
     [Range(0.1f, 50f)]
     public float mass = 1.0f;
 
+    [NonSerialized]
     [SerializeField, ExposedParameter(Category = "Physics", Description = "Resistance to start moving when at rest", Min = 0f, Max = 50f, Step = 0.1f)]
     [Tooltip("Resistance to start moving when at rest")]
     [Range(0f, 50f)]
     public float staticFriction = 0.5f;
 
+    [NonSerialized]
     [SerializeField, ExposedParameter(Category = "Physics", Description = "Resistance while moving", Min = 0f, Max = 50f, Step = 0.1f)]
     [Tooltip("Resistance while moving")]
     [Range(0f, 50f)]
@@ -170,7 +174,6 @@ public abstract class BaseView : BridgeObject
 
     protected virtual void Update()
     {
-        // Handle dynamic scaling
         float targetScale = CalculateTargetScale();
         if (!Mathf.Approximately(currentScale, targetScale))
         {

@@ -214,7 +214,7 @@ export class GestureService {
      */
     log(message, data = null) {
         if (this.loggingModule) {
-            this.loggingModule.log('Gesture', message, data);
+            console.log('Gesture', message, data);
         } else {
             console.log(`[Gesture] ${message}`, data || '');
         }

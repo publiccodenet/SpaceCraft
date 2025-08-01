@@ -232,7 +232,7 @@ export class MotionModule {
      */
     log(message, data = null) {
         if (this.loggingModule) {
-            this.loggingModule.log('Motion', message, data);
+            console.log('Motion', message, data);
         } else {
             console.log(`[Motion] ${message}`, data || '');
         }

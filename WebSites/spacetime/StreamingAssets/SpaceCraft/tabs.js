@@ -281,11 +281,19 @@ export class SelectTab extends BaseTab {
         
         const selectedItem = state.selectedItem;
         if (selectedItem) {
+            // Format description as paragraphs, splitting on any number of newlines
+            const descriptionText = selectedItem.description || 'No description available';
+            const paragraphs = descriptionText
+                .split(/\n+/) // Split on any number of newlines
+                .filter(line => line.trim().length > 0) // Remove empty lines
+                .map(line => `<p>${line.trim()}</p>`) // Create paragraph for each line
+                .join('');
+            
             this.selectionDisplay.innerHTML = `
                 <h3>Current Selection:</h3>
                 <div class="selected-item">
                     <h4>${selectedItem.title || 'Untitled'}</h4>
-                    <p>${selectedItem.description || 'No description available'}</p>
+                    <div class="description">${paragraphs}</div>
                 </div>
             `;
         } else {
@@ -568,7 +576,7 @@ export class MagnetTab extends BaseTab {
         
         // Send AddMagnet event to simulator
         this.controller.sendAddMagnetEvent(trimmedTag);
-        this.controller.loggingModule.log('Magnet', `Sent AddMagnet command for: ${trimmedTag}`);
+        this.console.log('Magnet', `Sent AddMagnet command for: ${trimmedTag}`);
     }
     
     highlightExistingMagnet(magnetName) {
@@ -596,7 +604,7 @@ export class MagnetTab extends BaseTab {
     deleteMagnet(magnetName) {
         // Send DeleteMagnet event to simulator
         this.controller.sendDeleteMagnetEvent(magnetName);
-        this.controller.loggingModule.log('Magnet', `Sent DeleteMagnet command for: ${magnetName}`);
+        this.console.log('Magnet', `Sent DeleteMagnet command for: ${magnetName}`);
     }
     
     updateMagnetsList() {
