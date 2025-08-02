@@ -444,7 +444,7 @@ class SpaceCraftSim {
 
             createUnityInstance(canvas, config, (progress) => {
                 // Optional: Update loading progress UI
-                 console.log("[SpaceCraft] Unity loading progress:", Math.round(progress * 100) + "%");
+                 console.log(`[SpaceCraft] Unity loading progress: ${Math.round(progress * 100)}%`);
                 // if (progressBarFull) {
                 //     progressBarFull.style.width = 100 * progress + "%";
                 // }
@@ -564,7 +564,7 @@ class SpaceCraftSim {
             this.state.tags = this.availableTags;
             console.log(`[SpaceCraft] Loaded ${this.availableTags.length} tags from content items`);
             if (this.availableTags.length > 0) {
-                console.log("[SpaceCraft] Available tags:", this.availableTags.slice(0, 10).join(", ") + (this.availableTags.length > 10 ? "..." : ""));
+                console.log(`[SpaceCraft] Available tags (${this.availableTags.length}):`, this.availableTags.slice(0, 10));
             } else {
                 console.log("[SpaceCraft] No tags found in content items");
             }
@@ -613,42 +613,59 @@ class SpaceCraftSim {
                 // Map of magnet name => Unity bridge object (kept within the bridge object)
                 magnetViews: new Map(),
                 
-                createMagnetView: function (magnetName, mass = 10.0, magnetStrength = 1.0, staticFriction = 25.0, dynamicFriction = 20.0, magnetRadius = 100.0, magnetSoftness = 0.5, viewScale = 2.0) {
-                    console.log(`[Bridge] this: ${this} createMagnetView called with: "${magnetName}" mass: ${mass} strength: ${magnetStrength} staticFriction: ${staticFriction} dynamicFriction: ${dynamicFriction} radius: ${magnetRadius} softness: ${magnetSoftness} viewScale: ${viewScale}`);
+                createMagnetView: function (magnetData) {
+                    console.log(`[Bridge] this: ${this} createMagnetView called with:`, magnetData);
+                    
+                    // Use provided magnetId or generate one if not provided
+                    const magnetId = magnetData.magnetId || (() => {
+                        const timestamp = Date.now();
+                        const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                        return `${timestamp}${randomDigits}`;
+                    })();
+                    
                     const magnetBridge = window.bridge.createObject({
                             prefab: "Prefabs/MagnetView",
                             parent: this,
                             update: {
-                                "magnetName": magnetName,
-                                "mass": mass,
-                                "magnetStrength": magnetStrength,
-                                "staticFriction": staticFriction,
-                                "dynamicFriction": dynamicFriction,
-                                "magnetRadius": magnetRadius,
-                                "magnetSoftness": magnetSoftness,
-                                "viewScale": viewScale,
+                                "magnetId": magnetId,
+                                "title": magnetData.title,
+                                "searchExpression": magnetData.searchExpression,
+                                "searchType": magnetData.searchType,
+                                "enabled": magnetData.enabled,
+                                "mass": magnetData.mass,
+                                "staticFriction": magnetData.staticFriction,
+                                "dynamicFriction": magnetData.dynamicFriction,
+                                "magnetRadius": magnetData.magnetRadius,
+                                "magnetSoftness": magnetData.magnetSoftness,
+                                "magnetHoleRadius": magnetData.magnetHoleRadius,
+                                "magnetStrength": magnetData.magnetStrength,
+                                "magnetEnabled": magnetData.magnetEnabled,
+                                "scoreMin": magnetData.scoreMin,
+                                "scoreMax": magnetData.scoreMax,
+                                "viewScale": magnetData.viewScale,
+                                "initialScale": magnetData.initialScale,
                                 "method:MoveToPanCenter": [],
                             }
                         });
                     
-                    // Store in our magnetViews map
-                    this.magnetViews.set(magnetName, magnetBridge);
-                    console.log(`[Bridge] Created and stored magnet: "${magnetName}". Total magnets: ${this.magnetViews.size}`);
+                    // Store in our magnetViews map using magnetId as key
+                    this.magnetViews.set(magnetId, magnetBridge);
+                    console.log(`[Bridge] Created and stored magnet: "${magnetData.title}" (ID: ${magnetId}). Total magnets: ${this.magnetViews.size}`);
                     
                     return magnetBridge;
                },
                 
-                getMagnetView: function (magnetName) {
-                    console.log(`[Bridge] getMagnetView called with: "${magnetName}"`);
-                    return this.magnetViews.get(magnetName) || null;
+                getMagnetView: function (magnetId) {
+                    console.log(`[Bridge] getMagnetView called with: "${magnetId}"`);
+                    return this.magnetViews.get(magnetId) || null;
                 },
                 
-                                 deleteMagnetView: function (magnetName) {
-                     console.log(`[Bridge] deleteMagnetView called with: "${magnetName}"`);
+                deleteMagnetView: function (magnetId) {
+                     console.log(`[Bridge] deleteMagnetView called with: "${magnetId}"`);
                      
-                     const magnetBridge = this.magnetViews.get(magnetName);
+                     const magnetBridge = this.magnetViews.get(magnetId);
                      if (!magnetBridge) {
-                         console.warn(`[Bridge] No magnet found to delete: "${magnetName}"`);
+                         console.warn(`[Bridge] No magnet found to delete: "${magnetId}"`);
                          return false;
                      }
                      
@@ -657,12 +674,12 @@ class SpaceCraftSim {
                          window.bridge.destroyObject(magnetBridge);
                          
                          // Remove from our map
-                         this.magnetViews.delete(magnetName);
-                         console.log(`[Bridge] Deleted magnet: "${magnetName}". Total magnets: ${this.magnetViews.size}`);
+                         this.magnetViews.delete(magnetId);
+                         console.log(`[Bridge] Deleted magnet: "${magnetId}". Total magnets: ${this.magnetViews.size}`);
                          
                          return true;
                      } catch (error) {
-                         console.error(`[Bridge] Error deleting magnet "${magnetName}":`, error);
+                         console.error(`[Bridge] Error deleting magnet "${magnetId}":`, error);
                          return false;
                      }
                  }               
@@ -771,6 +788,10 @@ class SpaceCraftSim {
             
             // Magnet system
             magnets: [],
+            
+            // Search system
+            currentSearchString: '', // Official search string coordinated across all controllers
+            currentSearchGravity: 0, // Current gravity setting (-100 to +100)
             
             updateCounter: 0, // Add update counter
             
@@ -942,6 +963,61 @@ class SpaceCraftSim {
                 // Track client info for presence
                 this.updateClientInfo(clientId, data.payload.clientType, clientName);
             })
+
+            .on('broadcast', { event: 'searchStringUpdate' }, (data) => {
+                // Skip messages targeted at other simulators
+                if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
+                    return;
+                }
+                
+                console.log(`[SpaceCraft] SearchStringUpdate event received:`, data.payload);
+                
+                const newSearchString = data.payload.newSearchString || "";
+                
+                console.log(`[SpaceCraft] Updating official search string to: "${newSearchString}"`);
+                
+                // Update our official search string state
+                this.state.currentSearchString = newSearchString;
+                
+                // Send search string and current gravity to Unity
+                bridge.updateObject(this.spaceCraft, {
+                    "inputManager/searchString": newSearchString,
+                    "inputManager/searchGravity": this.state.currentSearchGravity || 0
+                });
+                
+                // Update presence to share with all controllers
+                this.syncStateToPresence();
+                
+                // Track client info for presence
+                this.updateClientInfo(data.payload.clientId, data.payload.clientType, data.payload.clientName);
+            })
+            .on('broadcast', { event: 'gravityUpdate' }, (data) => {
+                // Skip messages targeted at other simulators
+                if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
+                    return;
+                }
+                
+                console.log(`[SpaceCraft] GravityUpdate event received:`, data.payload);
+                
+                const searchGravity = data.payload.searchGravity || 0;
+                
+                console.log(`[SpaceCraft] Updating search gravity to: ${searchGravity}`);
+                
+                // Update our gravity state
+                this.state.currentSearchGravity = searchGravity;
+                
+                // Send gravity to Unity (with current search string)
+                bridge.updateObject(this.spaceCraft, {
+                    "inputManager/searchString": this.state.currentSearchString,
+                    "inputManager/searchGravity": searchGravity
+                });
+                
+                // Update presence to share with all controllers
+                this.syncStateToPresence();
+                
+                // Track client info for presence
+                this.updateClientInfo(data.payload.clientId, data.payload.clientType, data.payload.clientName);
+            })
             .on('broadcast', { event: 'AddMagnet' }, (data) => {
                 console.log(`[SpaceCraft] AddMagnet event handler triggered!`, data);
                 
@@ -968,23 +1044,49 @@ class SpaceCraftSim {
                     return;
                 }
                 
-                // Check if magnet already exists (case-insensitive)
+                // Generate magnetId (timestamp + 4 random digits)
+                const timestamp = Date.now();
+                const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                const magnetId = `${timestamp}${randomDigits}`;
+                
+                // Create magnet object with all properties
+                const magnetObject = {
+                    magnetId: magnetId,
+                    title: trimmedName,
+                    searchExpression: trimmedName,
+                    searchType: "fuzzy",
+                    enabled: true,
+                    magnetEnabled: true,
+                    mass: 1.0,
+                    staticFriction: 10.0,
+                    dynamicFriction: 8.0,
+                    magnetRadius: 100.0,
+                    magnetSoftness: 0.5,
+                    magnetHoleRadius: 10.0,
+                    magnetStrength: 1.0,
+                    scoreMin: 0.0,
+                    scoreMax: 1.0,
+                    viewScale: 4.0,
+                    initialScale: 0.01
+                };
+                
+                // Check if magnet already exists (case-insensitive by title)
                 const existingMagnet = this.state.magnets.find(m => 
-                    m.toLowerCase() === trimmedName.toLowerCase()
+                    m.title.toLowerCase() === trimmedName.toLowerCase()
                 );
                 
                 if (existingMagnet) {
-                    console.log(`[SpaceCraft] Magnet "${trimmedName}" already exists as "${existingMagnet}", ignoring duplicate`);
+                    console.log(`[SpaceCraft] Magnet "${trimmedName}" already exists as "${existingMagnet.title}", ignoring duplicate`);
                     return;
                 }
                 
-                // Add magnet to state (case-preserved)
-                this.state.magnets.push(trimmedName);
-                console.log(`[SpaceCraft] Added magnet "${trimmedName}" to state. Total magnets: ${this.state.magnets.length}`);
-                console.log(`[SpaceCraft] Current magnets: [${this.state.magnets.join(', ')}]`);
+                // Add magnet to state
+                this.state.magnets.push(magnetObject);
+                console.log(`[SpaceCraft] Added magnet "${trimmedName}" (ID: ${magnetId}) to state. Total magnets: ${this.state.magnets.length}`);
+                console.log(`[SpaceCraft] Current magnets: [${this.state.magnets.map(m => m.title).join(', ')}]`);
                 
                 // Create Unity magnet prefab
-                this.createUnityMagnet(trimmedName);
+                this.createUnityMagnet(magnetObject);
                 
                 // Update presence to sync with controllers
                 this.syncStateToPresence();
@@ -1018,22 +1120,22 @@ class SpaceCraftSim {
                     return;
                 }
                 
-                // Find the exact magnet name to delete (case-insensitive match)
+                // Find the exact magnet to delete (case-insensitive match by title)
                 const magnetToDelete = this.state.magnets.find(m => 
-                    m.toLowerCase() === trimmedName.toLowerCase()
+                    m.title.toLowerCase() === trimmedName.toLowerCase()
                 );
                 
                 if (magnetToDelete) {
                     // Destroy Unity magnet prefab first
-                    this.destroyUnityMagnet(magnetToDelete);
+                    this.destroyUnityMagnet(magnetToDelete.magnetId);
                     
                     // Remove from state
                     this.state.magnets = this.state.magnets.filter(m => 
-                        m.toLowerCase() !== trimmedName.toLowerCase()
+                        m.title.toLowerCase() !== trimmedName.toLowerCase()
                     );
                     
-                    console.log(`[SpaceCraft] Removed magnet "${magnetToDelete}". Total magnets: ${this.state.magnets.length}`);
-                    console.log(`[SpaceCraft] Current magnets: [${this.state.magnets.join(', ')}]`);
+                    console.log(`[SpaceCraft] Removed magnet "${magnetToDelete.title}" (ID: ${magnetToDelete.magnetId}). Total magnets: ${this.state.magnets.length}`);
+                    console.log(`[SpaceCraft] Current magnets: [${this.state.magnets.map(m => m.title).join(', ')}]`);
                     
                     // Update presence to sync with controllers
                     this.syncStateToPresence();
@@ -1071,12 +1173,21 @@ class SpaceCraftSim {
                     return;
                 }
                 
-                // Push the Unity magnet
-                const success = this.pushUnityMagnet(magnetName, deltaX, deltaZ);
-                if (success) {
-                    console.log(`[SpaceCraft] Successfully pushed magnet "${magnetName}" by (${deltaX}, ${deltaZ})`);
+                // Find the magnet by title (case-insensitive)
+                const magnet = this.state.magnets.find(m => 
+                    m.title.toLowerCase() === magnetName.toLowerCase()
+                );
+                
+                if (magnet) {
+                    // Push the Unity magnet using magnetId
+                    const success = this.pushUnityMagnet(magnet.magnetId, deltaX, deltaZ);
+                    if (success) {
+                        console.log(`[SpaceCraft] Successfully pushed magnet "${magnet.title}" (ID: ${magnet.magnetId}) by (${deltaX}, ${deltaZ})`);
+                    } else {
+                        console.warn(`[SpaceCraft] Failed to push magnet "${magnet.title}" (ID: ${magnet.magnetId})`);
+                    }
                 } else {
-                    console.warn(`[SpaceCraft] Failed to push magnet "${magnetName}"`);
+                    console.warn(`[SpaceCraft] No magnet found matching "${magnetName}" to push`);
                 }
                 
                 // Track client info for presence
@@ -1344,32 +1455,26 @@ class SpaceCraftSim {
         // console.log("[SpaceCraft] State updated (counter: " + this.state.updateCounter + "):", stateChanges);
     }
     
-    
     /**
      * Creates a Unity magnet prefab at the current view pan location
-     * @param {string} magnetName - The name of the magnet to create
+     * @param {Object} magnetData - The magnet object with all properties
      */
-    createUnityMagnet(magnetName, mass = 1.0, magnetStrength = 1.0, staticFriction = 10.0, dynamicFriction = 8.0, magnetRadius = 100.0, magnetSoftness = 0.5, viewScale = 4.0) {
-        console.log(`[SpaceCraft] Creating Unity magnet prefab for: "${magnetName}" with mass: ${mass}, strength: ${magnetStrength}, staticFriction: ${staticFriction}, dynamicFriction: ${dynamicFriction}, radius: ${magnetRadius}, softness: ${magnetSoftness}, viewScale: ${viewScale}`);
-        
-        if (!this.spaceCraft) {
-            console.warn(`[SpaceCraft] Cannot create magnet - spaceCraft bridge not available`);
-            return null;
-        }
+    createUnityMagnet(magnetData) {
+        console.log(`[SpaceCraft] Creating Unity magnet: "${magnetData.title}" (ID: ${magnetData.magnetId})`, magnetData);
         
         try {
             // Create magnet prefab via bridge object (magnetViews managed inside bridge)
-            const magnetBridge = this.spaceCraft.createMagnetView(magnetName, mass, magnetStrength, staticFriction, dynamicFriction, magnetRadius, magnetSoftness, viewScale);
+            const magnetBridge = this.spaceCraft.createMagnetView(magnetData);
             
             if (magnetBridge) {
-                console.log(`[SpaceCraft] Successfully created Unity magnet: "${magnetName}" with mass: ${mass}, strength: ${magnetStrength}, staticFriction: ${staticFriction}, dynamicFriction: ${dynamicFriction}, radius: ${magnetRadius}, softness: ${magnetSoftness}, viewScale: ${viewScale}`);
+                console.log(`[SpaceCraft] Successfully created Unity magnet: "${magnetData.title}" (ID: ${magnetData.magnetId})`);
                 return magnetBridge;
             } else {
-                console.error(`[SpaceCraft] Failed to create Unity magnet: "${magnetName}"`);
+                console.error(`[SpaceCraft] Failed to create Unity magnet: "${magnetData.title}" (ID: ${magnetData.magnetId})`);
                 return null;
             }
         } catch (error) {
-            console.error(`[SpaceCraft] Error creating Unity magnet "${magnetName}":`, error);
+            console.error(`[SpaceCraft] Error creating Unity magnet "${magnetData.title}" (ID: ${magnetData.magnetId}):`, error);
             return null;
         }
     }
@@ -1377,10 +1482,10 @@ class SpaceCraftSim {
     
     /**
      * Destroys a Unity magnet prefab
-     * @param {string} magnetName - The name of the magnet to destroy
+     * @param {string} magnetId - The ID of the magnet to destroy
      */
-    destroyUnityMagnet(magnetName) {
-        console.log(`[SpaceCraft] Destroying Unity magnet prefab for: "${magnetName}"`);
+    destroyUnityMagnet(magnetId) {
+        console.log(`[SpaceCraft] Destroying Unity magnet prefab for ID: "${magnetId}"`);
         
         if (!this.spaceCraft) {
             console.warn(`[SpaceCraft] Cannot destroy magnet - spaceCraft bridge not available`);
@@ -1389,17 +1494,17 @@ class SpaceCraftSim {
         
         try {
             // Delete magnet via bridge object (magnetViews managed inside bridge)
-            const success = this.spaceCraft.deleteMagnetView(magnetName);
+            const success = this.spaceCraft.deleteMagnetView(magnetId);
             
             if (success) {
-                console.log(`[SpaceCraft] Successfully destroyed Unity magnet: "${magnetName}"`);
+                console.log(`[SpaceCraft] Successfully destroyed Unity magnet with ID: "${magnetId}"`);
                 return true;
             } else {
-                console.warn(`[SpaceCraft] Failed to destroy Unity magnet: "${magnetName}"`);
+                console.warn(`[SpaceCraft] Failed to destroy Unity magnet with ID: "${magnetId}"`);
                 return false;
             }
         } catch (error) {
-            console.error(`[SpaceCraft] Error destroying Unity magnet "${magnetName}":`, error);
+            console.error(`[SpaceCraft] Error destroying Unity magnet with ID "${magnetId}":`, error);
             return false;
         }
     }
@@ -1407,12 +1512,12 @@ class SpaceCraftSim {
     
     /**
      * Pushes a Unity magnet by world coordinate offset
-     * @param {string} magnetName - The name of the magnet to push
+     * @param {string} magnetId - The ID of the magnet to push
      * @param {number} deltaX - World coordinate X offset
      * @param {number} deltaZ - World coordinate Z offset
      */
-    pushUnityMagnet(magnetName, deltaX, deltaZ) {
-        console.log(`[SpaceCraft] Pushing Unity magnet "${magnetName}" by (${deltaX}, ${deltaZ})`);
+    pushUnityMagnet(magnetId, deltaX, deltaZ) {
+        console.log(`[SpaceCraft] Pushing Unity magnet with ID "${magnetId}" by (${deltaX}, ${deltaZ})`);
         
         if (!this.spaceCraft) {
             console.warn(`[SpaceCraft] Cannot push magnet - spaceCraft bridge not available`);
@@ -1421,10 +1526,10 @@ class SpaceCraftSim {
         
         try {
             // Get magnet from bridge object
-            const magnetBridge = this.spaceCraft.getMagnetView(magnetName);
+            const magnetBridge = this.spaceCraft.getMagnetView(magnetId);
             
             if (!magnetBridge) {
-                console.warn(`[SpaceCraft] No magnet found to push: "${magnetName}"`);
+                console.warn(`[SpaceCraft] No magnet found to push with ID: "${magnetId}"`);
                 return false;
             }
             
@@ -1434,10 +1539,10 @@ class SpaceCraftSim {
                 "method:PushPosition": [deltaX, deltaZ]
             });
             
-            console.log(`[SpaceCraft] Successfully pushed Unity magnet: "${magnetName}"`);
+            console.log(`[SpaceCraft] Successfully pushed Unity magnet with ID: "${magnetId}"`);
             return true;
         } catch (error) {
-            console.error(`[SpaceCraft] Error pushing Unity magnet "${magnetName}":`, error);
+            console.error(`[SpaceCraft] Error pushing Unity magnet with ID "${magnetId}":`, error);
             return false;
         }
     }
@@ -1514,7 +1619,7 @@ class SpaceCraftSim {
             this.currentSearchQuery = foundSearchQuery;
             
             if (searchSourceClient) {
-                console.log(`[SpaceCraft] Sending search query to Unity: "${foundSearchQuery}" from ${searchSourceClient.name}`);
+                console.log(`[SpaceCraft] Sending search query "${foundSearchQuery}" from ${searchSourceClient.name}`);
                 
                 // Send search update to Unity via bridge (simple property update)
                 bridge.updateObject(this.spaceCraft, {
@@ -1522,7 +1627,7 @@ class SpaceCraftSim {
                 });
             } else if (foundSearchQuery === '') {
                 // Search was cleared
-                console.log("[SpaceCraft] Search query cleared, notifying Unity");
+                console.log(`[SpaceCraft] Search query cleared`);
                 
                 bridge.updateObject(this.spaceCraft, {
                     "inputManager/searchString": ""
@@ -1608,27 +1713,37 @@ async function initializeControllerIfNeeded() {
             console.log("[SpaceCraft] Detected controller page, initializing Controller...");
             
             // Import controller and tab modules
+            console.log('[SpaceCraft] About to import controller.js');
             const { Controller } = await import('./controller.js');
+            console.log('[SpaceCraft] Controller imported successfully');
+            
+            console.log('[SpaceCraft] About to import tabs.js');
             const { 
                 BaseTab, 
                 AboutTab, 
                 NavigateTab, 
                 SelectTab, 
                 InspectTab, 
+                GravityTab, 
                 MagnetTab, 
                 AdjustTab 
             } = await import('./tabs.js');
+            console.log('[SpaceCraft] All tabs imported successfully');
             
             // Create controller instance
             const controller = new Controller();
+            console.log('[SpaceCraft] Controller created successfully');
             
             // Register all tabs
             controller.registerTab(AboutTab);
             controller.registerTab(NavigateTab);
             controller.registerTab(SelectTab);
             controller.registerTab(InspectTab);
+            controller.registerTab(GravityTab);
             controller.registerTab(MagnetTab);
             controller.registerTab(AdjustTab);
+            
+            console.log('[SpaceCraft] All tabs registered successfully');
             
             // Initialize the controller
             controller.initialize();

@@ -61,6 +61,27 @@ public class ItemView : BaseView, IModelView<Item>
         }
     }
     
+    protected override void Update()
+    {
+        // Update tap scale decay
+        UpdateTapScaleDecay();
+        
+        // Call base Update for normal scaling animation
+        base.Update();
+    }
+    
+    public override void SetSelected(bool selected)
+    {
+        // Reset tap scale when deselected
+        if (!selected && isSelected)
+        {
+            ResetTapScale();
+        }
+        
+        // Call base SetSelected
+        base.SetSelected(selected);
+    }
+    
 
 
     
@@ -207,7 +228,61 @@ public class ItemView : BaseView, IModelView<Item>
             targetScale *= SpaceCraft.Instance.InputManager.SelectionScale;
         }
         
+        // Apply tap scale multiplier if this item has been tapped
+        if (tapScaleMultiplier > 1.0f)
+        {
+            targetScale *= tapScaleMultiplier;
+        }
+        
         return targetScale;
+    }
+    
+    // Tap scaling system - allows cumulative tap scaling
+    private float tapScaleMultiplier = 1.0f;
+    private float tapScaleDecayRate = 0.95f; // Decay per second
+    private float lastTapTime = 0f;
+    
+    /// <summary>
+    /// Apply tap scaling that accumulates and decays over time
+    /// </summary>
+    public void ApplyTapScale(float tapScale)
+    {
+        // Multiply the current tap scale multiplier
+        tapScaleMultiplier *= tapScale;
+        lastTapTime = Time.time;
+        
+        Debug.Log($"[ItemView] Applied tap scale {tapScale}, new multiplier: {tapScaleMultiplier}");
+    }
+    
+    /// <summary>
+    /// Update tap scale decay - called from Update
+    /// </summary>
+    private void UpdateTapScaleDecay()
+    {
+        if (tapScaleMultiplier > 1.0f)
+        {
+            // Decay the tap scale multiplier over time
+            float timeSinceLastTap = Time.time - lastTapTime;
+            if (timeSinceLastTap > 0.1f) // Start decaying after 0.1 seconds
+            {
+                tapScaleMultiplier = Mathf.Lerp(tapScaleMultiplier, 1.0f, tapScaleDecayRate * Time.deltaTime);
+                
+                // Snap to 1.0 when very close to avoid floating point issues
+                if (Mathf.Abs(tapScaleMultiplier - 1.0f) < 0.01f)
+                {
+                    tapScaleMultiplier = 1.0f;
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Reset tap scale multiplier (called when item is deselected)
+    /// </summary>
+    public void ResetTapScale()
+    {
+        tapScaleMultiplier = 1.0f;
+        Debug.Log($"[ItemView] Reset tap scale multiplier for {name}");
     }
     
     /// <summary>

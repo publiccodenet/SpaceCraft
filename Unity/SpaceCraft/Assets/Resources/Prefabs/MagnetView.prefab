@@ -79,7 +79,6 @@ MonoBehaviour:
   bridge: {fileID: 0}
   destroyed: 0
   destroying: 0
-  viewScale: 1
   currentScale: 1
   viewScaleSlerpRate: 3
   minViewScale: 0.1
@@ -90,9 +89,6 @@ MonoBehaviour:
   labelText: {fileID: 9070170670509696909}
   loadingMaterial: {fileID: 2100000, guid: fce334ba836b34881b69be3f1af1bc54, type: 2}
   displayText: 
-  mass: 1
-  staticFriction: 0.5
-  dynamicFriction: 0.3
   linearDrag: 1
   angularDrag: 5
   coverCollider: {fileID: 7725714835302606266}
@@ -109,9 +105,20 @@ MonoBehaviour:
   isHighlighted: 0
   isSelected: 0
   highlightCount: 0
-  magnetStrength: 1
+  magnetId: 
+  searchExpression: 
+  searchType: fuzzy
+  enabled: 1
+  mass: 1
+  staticFriction: 0.5
+  dynamicFriction: 0.3
   magnetRadius: 100
   magnetSoftness: 0.5
+  magnetHoleRadius: 10
+  magnetStrength: 1
+  magnetEnabled: 1
+  viewScale: 1
+  initialScale: 0.01
   magnetMaterial: {fileID: 2100000, guid: 2610998a9e1a94c63a3d4e941db2602e, type: 2}
 --- !u!1 &7411782117926916970
 GameObject:
@@ -278,8 +285,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4279900698
+  m_fontColor: {r: 0.103773594, g: 0.103773594, b: 0.103773594, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -296,13 +303,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1.45
+  m_fontSize: 1.15
   m_fontSizeBase: 1.8
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 0.2
   m_fontSizeMax: 10
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -334,7 +341,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0.05, y: 0.05, z: 0.05, w: 0.05}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
