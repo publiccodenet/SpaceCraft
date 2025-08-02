@@ -114,7 +114,7 @@ class SpaceCraftSim {
     static supabaseUrl = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
     static supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc';
     static deepIndexPath = 'StreamingAssets/Content/index-deep.json';
-    static controllerHtmlPath = 'StreamingAssets/SpaceCraft/controller.html';
+    static controllerHtmlPath = '../controller/index.html';
     static clientChannelName = 'spacecraft';
     
     /**
