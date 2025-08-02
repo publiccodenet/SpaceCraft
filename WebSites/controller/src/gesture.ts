@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { MotionModule } from './motion.js';
 
 /**

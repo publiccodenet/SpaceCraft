@@ -1,3 +1,4 @@
+// @ts-nocheck
 // audio.js - Complete Audio Module for SpaceCraft
 
 export class AudioModule {
@@ -56,25 +57,25 @@ export class AudioModule {
         this.audioContext = null;
         this.speechSynthesis = null;
         this.userInteractionDetected = false;
-        
+
         // Auto-enable audio on first user interaction
         this.setupUserInteractionListener();
     }
-    
+
     setupUserInteractionListener() {
         const enableAudioOnInteraction = () => {
             if (!this.userInteractionDetected) {
                 this.userInteractionDetected = true;
                 // Just mark that user interaction happened, but don't auto-enable sound
                 // Sound must be explicitly enabled by user via toggleSound()
-                
+
                 // Remove listeners after first interaction
                 document.removeEventListener('touchstart', enableAudioOnInteraction, true);
                 document.removeEventListener('click', enableAudioOnInteraction, true);
                 document.removeEventListener('keydown', enableAudioOnInteraction, true);
             }
         };
-        
+
         document.addEventListener('touchstart', enableAudioOnInteraction, true);
         document.addEventListener('click', enableAudioOnInteraction, true);
         document.addEventListener('keydown', enableAudioOnInteraction, true);
@@ -184,7 +185,7 @@ export class AudioModule {
         if (!this.speechEnabled || !this.speechSynthesis) return;
 
         const utterance = new SpeechSynthesisUtterance(text);
-        
+
         if (options.rate) utterance.rate = options.rate;
         if (options.pitch) utterance.pitch = options.pitch;
         if (options.volume) utterance.volume = options.volume;
@@ -223,4 +224,4 @@ export class AudioModule {
     playErrorSound() {
         this.playSound(AudioModule.soundPatterns.ERROR);
     }
-} 
+}

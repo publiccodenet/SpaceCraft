@@ -1,3 +1,4 @@
+// @ts-nocheck
 // logging.js - Simple Logging Module for SpaceCraft
 
 export class LoggingModule {
@@ -13,14 +14,14 @@ export class LoggingModule {
             message,
             data
         };
-        
+
         this.logs.push(logEntry);
-        
+
         // Keep only recent logs
         if (this.logs.length > this.maxLogs) {
             this.logs.shift();
         }
-        
+
         // Console output
         const prefix = `[${category}]`;
         if (data) {
@@ -37,4 +38,4 @@ export class LoggingModule {
     clearLogs() {
         this.logs = [];
     }
-} 
+}

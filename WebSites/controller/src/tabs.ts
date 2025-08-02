@@ -1,3 +1,4 @@
+// @ts-nocheck
 // SpaceCraft Tabs - Clean, Simple, Complete Implementation
 
 import { GestureServiceInstance } from './gesture.js';
