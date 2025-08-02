@@ -303,7 +303,7 @@ export class InspectTab extends BaseTab {
  * Gravity Tab - DEPRECATED - Replaced by magnet-based system
  * This tab is being phased out in favor of the new magnet-based scoring and scaling system
  */
-export class GravityTab extends BaseTab {
+// export class GravityTab extends BaseTab {
     static tabId = 'gravity';
     static tabLabel = '🌍 Gravity';
     
@@ -1116,7 +1116,7 @@ export class GravityTab extends BaseTab {
         // Update button state after action
         this.updateMakeMagnetButtonState();
     }
-}
+// }
 
 /**
  * Magnet Tab - Search magnet creation and management
