@@ -9,48 +9,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css?family=Mulish:400italic,400,600italic,600,700italic,700" rel="stylesheet">
-    
-    <!-- Shared Controller Styles -->
+
     <link rel="stylesheet" href="controller.css">
-    <!-- Supabase library (Local Copy) -->
-    <script src="supabase.min.js"></script>
-    <!-- Controller Logic -->
+    <script src="./lib/supabase.min.js"></script>
     <script type="module">
-        import { Controller } from './controller.js';
-        import { 
-            BaseTab, 
-            AboutTab, 
-            NavigateTab, 
-            SelectTab, 
-            InspectTab, 
-            GravityTab, 
-            MagnetTab, 
-            AdjustTab 
-        } from './tabs.js';
-        
-        // Initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            // Create controller instance
-            const controller = new Controller();
-            
-            // Register all tabs
-            controller.registerTab(AboutTab);
-            controller.registerTab(NavigateTab);
-            controller.registerTab(SelectTab);
-            controller.registerTab(InspectTab);
-            controller.registerTab(GravityTab);
-            controller.registerTab(MagnetTab);
-            controller.registerTab(AdjustTab);
-            
-            // Initialize the controller
-            controller.initialize();
-            
-            // Make controller globally accessible
-            window.controller = controller;
-        });
+      import './build/index.js';
     </script>
   </head>
   <body>
-    <!-- Controller content will be dynamically created by JavaScript -->
+    <spacetime-controller></spacetime-controller>
   </body>
 </html> 

@@ -1,7 +1,10 @@
 ---
-alwaysApply: true
+globs: WebSites/controller/src/**
+alwaysApply: false
 ---
 # Usage
+
+Address user as Captain
 
 This documet explains how to use io-gui library in a project.
 

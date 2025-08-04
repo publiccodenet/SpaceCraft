@@ -1,9 +1,30 @@
-// @ts-nocheck
-// audio.js - Complete Audio Module for SpaceCraft
+// audio.ts - Complete Audio Module for SpaceCraft
+
+interface ToneOptions {
+    frequency?: number;
+    duration?: number;
+    type?: OscillatorType;
+    fadeIn?: boolean;
+    fadeOut?: boolean;
+    delay?: number;
+}
+
+interface SpeechOptions {
+    rate?: number;
+    pitch?: number;
+    volume?: number;
+    voice?: SpeechSynthesisVoice;
+}
+
+type SoundPattern = ToneOptions | ToneOptions[];
+
+interface SoundPatterns {
+    [key: string]: SoundPattern;
+}
 
 export class AudioModule {
     // Complete sound patterns - keeping all original functionality
-    static soundPatterns = {
+    static soundPatterns: SoundPatterns = {
         CLICK: { frequency: 1200, duration: 40, type: 'sine' },
         SUCCESS: { frequency: 880, duration: 60, type: 'sine', fadeOut: true },
         ERROR: { frequency: 220, duration: 150, type: 'square' },
@@ -48,10 +69,15 @@ export class AudioModule {
         ]
     };
 
-    static overallVolume = 0.1;
+    static overallVolume: number = 0.1;
 
-    constructor(logger) {
-        this.logger = logger;
+    private soundEnabled: boolean = false;
+    private speechEnabled: boolean = false;
+    private audioContext: AudioContext | null = null;
+    private speechSynthesis: SpeechSynthesis | null = null;
+    private userInteractionDetected: boolean = false;
+
+    constructor() {
         this.soundEnabled = false;
         this.speechEnabled = false;
         this.audioContext = null;
@@ -62,8 +88,8 @@ export class AudioModule {
         this.setupUserInteractionListener();
     }
 
-    setupUserInteractionListener() {
-        const enableAudioOnInteraction = () => {
+    private setupUserInteractionListener(): void {
+        const enableAudioOnInteraction = (): void => {
             if (!this.userInteractionDetected) {
                 this.userInteractionDetected = true;
                 // Just mark that user interaction happened, but don't auto-enable sound
@@ -81,37 +107,37 @@ export class AudioModule {
         document.addEventListener('keydown', enableAudioOnInteraction, true);
     }
 
-    initAudioContext() {
+    private initAudioContext(): boolean {
         if (!this.audioContext) {
             try {
-                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                this.logger.log('Audio', 'Audio context initialized');
+                this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+                console.log('Audio', 'Audio context initialized');
             } catch (error) {
-                this.logger.log('Audio', 'Failed to initialize audio context', error);
+                console.log('Audio', 'Failed to initialize audio context', error);
             }
         }
         return this.audioContext !== null;
     }
 
-    toggleSound() {
+    toggleSound(): boolean {
         this.soundEnabled = !this.soundEnabled;
         if (this.soundEnabled) {
             this.initAudioContext();
         }
-        this.logger.log('Audio', `Sound ${this.soundEnabled ? 'enabled' : 'disabled'}`);
+        console.log('Audio', `Sound ${this.soundEnabled ? 'enabled' : 'disabled'}`);
         return this.soundEnabled;
     }
 
-    toggleSpeech() {
+    toggleSpeech(): boolean {
         this.speechEnabled = !this.speechEnabled;
         if (this.speechEnabled && !this.speechSynthesis) {
             this.speechSynthesis = window.speechSynthesis;
         }
-        this.logger.log('Audio', `Speech ${this.speechEnabled ? 'enabled' : 'disabled'}`);
+        console.log('Audio', `Speech ${this.speechEnabled ? 'enabled' : 'disabled'}`);
         return this.speechEnabled;
     }
 
-    async playTone(options) {
+    async playTone(options: ToneOptions): Promise<void> {
         if (!this.soundEnabled || !this.audioContext) return;
 
         // Resume AudioContext if suspended (required after user interaction)
@@ -119,7 +145,7 @@ export class AudioModule {
             try {
                 await this.audioContext.resume();
             } catch (error) {
-                this.logger.log('Audio', 'Failed to resume audio context', error);
+                console.log('Audio', 'Failed to resume audio context', error);
                 return;
             }
         }
@@ -165,7 +191,7 @@ export class AudioModule {
         oscillator.stop(endTime);
     }
 
-    async playSound(pattern) {
+    async playSound(pattern: SoundPattern): Promise<void> {
         if (!this.soundEnabled) return;
 
         if (Array.isArray(pattern)) {
@@ -181,7 +207,7 @@ export class AudioModule {
         }
     }
 
-    speakText(text, options = {}) {
+    speakText(text: string, options: SpeechOptions = {}): void {
         if (!this.speechEnabled || !this.speechSynthesis) return;
 
         const utterance = new SpeechSynthesisUtterance(text);
@@ -192,36 +218,36 @@ export class AudioModule {
         if (options.voice) utterance.voice = options.voice;
 
         this.speechSynthesis.speak(utterance);
-        this.logger.log('Audio', `Speaking: "${text}"`);
+        console.log('Audio', `Speaking: "${text}"`);
     }
 
     // High-level interface methods
-    playGestureSound(gestureType) {
+    playGestureSound(gestureType: string): void {
         const soundKey = `SHAKE_${gestureType.toUpperCase()}`;
         const pattern = AudioModule.soundPatterns[soundKey] || AudioModule.soundPatterns.CLICK;
         this.playSound(pattern);
     }
 
-    playTouchSound() {
+    playTouchSound(): void {
         this.playSound(AudioModule.soundPatterns.TOUCH);
     }
 
-    playReleaseSound(gestureType) {
+    playReleaseSound(gestureType: string): void {
         const soundKey = `RELEASE_${gestureType.toUpperCase()}`;
         const pattern = AudioModule.soundPatterns[soundKey] || AudioModule.soundPatterns.RELEASE_TAP;
         this.playSound(pattern);
     }
 
-    playButtonSound(buttonType = 'CLICK') {
+    playButtonSound(buttonType: string = 'CLICK'): void {
         const pattern = AudioModule.soundPatterns[buttonType] || AudioModule.soundPatterns.CLICK;
         this.playSound(pattern);
     }
 
-    playSuccessSound() {
+    playSuccessSound(): void {
         this.playSound(AudioModule.soundPatterns.SUCCESS);
     }
 
-    playErrorSound() {
+    playErrorSound(): void {
         this.playSound(AudioModule.soundPatterns.ERROR);
     }
 }

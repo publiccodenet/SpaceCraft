@@ -225,4 +225,7 @@ export class MotionModule {
           y: directionY * smoothScale * scaleFactor
       };
   }
-}
+  
+  
+
+} 
