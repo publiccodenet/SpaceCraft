@@ -53,6 +53,9 @@ public class SpaceCraft : BridgeObject
     // Backing fields for state lists
     private List<string> _selectedItemIds = new List<string>();
     private List<string> _highlightedItemIds = new List<string>(); // Can contain duplicates for multiple highlights
+    
+    // Magnet state management (Unity's local copy - JS simulator is the single source of truth)
+    private List<JObject> _magnets = new List<JObject>(); // Local copy of magnet JSON objects
 
     // Public properties with setters to trigger visual updates
     public List<string> SelectedItemIds
@@ -117,6 +120,17 @@ public class SpaceCraft : BridgeObject
 
     // Configuration
     public bool multiSelectEnabled = false;
+    
+    // Magnet state property (Unity's local copy - JS simulator is the single source of truth)
+    public List<JObject> Magnets
+    {
+        get => _magnets;
+        set
+        {
+            _magnets = value ?? new List<JObject>();
+            Debug.Log($"[SpaceCraft] Magnets updated: {_magnets.Count} magnets");
+        }
+    }
     
     // Create events to notify Bridge when there are changes
     public bool selectedItemsChanged = false;
@@ -312,6 +326,10 @@ public class SpaceCraft : BridgeObject
         
         if (collectionsView == null)
             Debug.LogError("SpaceCraft: CollectionsView reference not found!");
+        
+        // Initialize Unity's local magnet state by syncing with any existing Unity magnets
+        SyncMagnetState();
+        Debug.Log($"[SpaceCraft] Initialized with {_magnets.Count} magnets in local state");
             
     }
     
@@ -850,14 +868,13 @@ public class SpaceCraft : BridgeObject
             
             if (itemView != null && inputManager != null)
             {
-                // Apply scale impulse by directly modifying the item's current scale
+                // Apply tap scale using the new cumulative system
                 float tapScale = inputManager.SelectionTapScale;
-                float newScale = itemView.CurrentScale * tapScale;
                 
-                Debug.Log($"{logPrefix} Applying tap scale {tapScale} to item {targetItemId}. Current: {itemView.CurrentScale} → New: {newScale}");
+                Debug.Log($"{logPrefix} Applying tap scale {tapScale} to item {targetItemId}. Current: {itemView.CurrentScale}");
                 
-                // Set the current scale directly (this will smoothly animate back to target scale)
-                itemView.SetCurrentScale(newScale);
+                // Apply tap scale using the new system
+                itemView.ApplyTapScale(tapScale);
             }
             else
             {
@@ -883,9 +900,8 @@ public class SpaceCraft : BridgeObject
                     if (itemView != null && inputManager != null)
                     {
                         float tapScale = inputManager.SelectionTapScale;
-                        float newScale = itemView.CurrentScale * tapScale;
-                        Debug.Log($"{logPrefix} Applying tap scale {tapScale} to item {targetItemId}. Current: {itemView.CurrentScale} → New: {newScale}");
-                        itemView.SetCurrentScale(newScale);
+                        Debug.Log($"{logPrefix} Applying tap scale {tapScale} to item {targetItemId}. Current: {itemView.CurrentScale}");
+                        itemView.ApplyTapScale(tapScale);
                     }
                 }
                 else
@@ -928,18 +944,18 @@ public class SpaceCraft : BridgeObject
     }
     
     /// <summary>
-    /// Finds a MagnetView by its name by searching all MagnetView components in the scene.
+    /// Finds a MagnetView by its ID by searching all MagnetView components in the scene.
     /// </summary>
-    public MagnetView FindMagnetViewByName(string magnetName)
+    public MagnetView FindMagnetViewById(string magnetId)
     {
-        if (string.IsNullOrEmpty(magnetName)) return null;
+        if (string.IsNullOrEmpty(magnetId)) return null;
         
         // Find all MagnetView components in the scene
         MagnetView[] allMagnets = FindObjectsByType<MagnetView>(FindObjectsSortMode.None);
         
         foreach (MagnetView magnet in allMagnets)
         {
-            if (magnet.magnetName == magnetName)
+            if (magnet.magnetId == magnetId)
             {
                 return magnet;
             }
@@ -954,6 +970,440 @@ public class SpaceCraft : BridgeObject
     public MagnetView[] GetAllMagnetViews()
     {
         return FindObjectsByType<MagnetView>(FindObjectsSortMode.None);
+    }
+    
+    /// <summary>
+    /// Gets all magnet data as a JSON array for JS consumption
+    /// </summary>
+    /// <returns>JArray containing all magnet data</returns>
+    public JArray GetAllMagnetData()
+    {
+        MagnetView[] magnets = GetAllMagnetViews();
+        JArray magnetArray = new JArray();
+        
+        foreach (MagnetView magnet in magnets)
+        {
+            JObject magnetData = new JObject
+            {
+                // ================== IDENTITY ==================
+                ["magnetId"] = magnet.magnetId,
+                ["title"] = magnet.title,
+                
+                // ================== SEARCH ==================
+                ["searchExpression"] = magnet.searchExpression,
+                ["searchType"] = magnet.searchType,
+                ["enabled"] = magnet.enabled,
+                
+                // ================== PHYSICS ==================
+                ["mass"] = magnet.mass,
+                ["staticFriction"] = magnet.staticFriction,
+                ["dynamicFriction"] = magnet.dynamicFriction,
+                
+                // ================== MAGNETIC FIELD ==================
+                ["magnetRadius"] = magnet.magnetRadius,
+                ["magnetSoftness"] = magnet.magnetSoftness,
+                ["magnetHoleRadius"] = magnet.magnetHoleRadius,
+                
+                // ================== VISUAL ==================
+                ["viewScale"] = magnet.viewScale,
+                ["initialScale"] = magnet.initialScale
+            };
+            
+            magnetArray.Add(magnetData);
+        }
+        
+        return magnetArray;
+    }
+    
+    /// <summary>
+    /// Bridge method to get all magnet data from JS
+    /// </summary>
+    public JArray getAllMagnetData()
+    {
+        return GetAllMagnetData();
+    }
+    
+
+    
+
+    
+    /// <summary>
+    /// Syncs Unity's local magnet state with actual Unity magnets
+    /// </summary>
+    public void SyncMagnetState()
+    {
+        MagnetView[] unityMagnets = GetAllMagnetViews();
+        
+        // Clear current local state and rebuild from Unity magnets
+        _magnets.Clear();
+        
+        foreach (MagnetView magnet in unityMagnets)
+        {
+            JObject magnetData = new JObject
+            {
+                // ================== IDENTITY ==================
+                ["magnetId"] = magnet.magnetId,
+                ["title"] = magnet.title,
+                
+                // ================== SEARCH ==================
+                ["searchExpression"] = magnet.searchExpression,
+                ["searchType"] = magnet.searchType,
+                ["enabled"] = magnet.enabled,
+                
+                // ================== PHYSICS ==================
+                ["mass"] = magnet.mass,
+                ["staticFriction"] = magnet.staticFriction,
+                ["dynamicFriction"] = magnet.dynamicFriction,
+                
+                // ================== MAGNETIC FIELD ==================
+                ["magnetRadius"] = magnet.magnetRadius,
+                ["magnetSoftness"] = magnet.magnetSoftness,
+                ["magnetHoleRadius"] = magnet.magnetHoleRadius,
+                ["magnetStrength"] = magnet.magnetStrength,
+                ["magnetEnabled"] = magnet.magnetEnabled,
+                ["scoreMin"] = magnet.scoreMin,
+                ["scoreMax"] = magnet.scoreMax,
+                
+                // ================== VISUAL ==================
+                ["viewScale"] = magnet.viewScale,
+                ["initialScale"] = magnet.initialScale
+            };
+            
+            _magnets.Add(magnetData);
+        }
+        
+        Debug.Log($"[SpaceCraft] Synced local magnet state: {_magnets.Count} magnets");
+    }
+    
+    /// <summary>
+    /// Bridge method to sync Unity's local magnet state from JS
+    /// </summary>
+    public void syncMagnetState()
+    {
+        SyncMagnetState();
+    }
+    
+    /// <summary>
+    /// Generates a unique magnet ID using timestamp + random digits
+    /// </summary>
+    /// <returns>Unique magnet ID string</returns>
+    private string GenerateMagnetId()
+    {
+        long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        int randomDigits = UnityEngine.Random.Range(0, 10000);
+        return $"{timestamp}{randomDigits:D4}";
+    }
+    
+    /// <summary>
+    /// Creates a new magnet from a JS object with all the magnet properties
+    /// </summary>
+    /// <param name="magnetData">JS object containing magnet properties</param>
+    /// <returns>The created MagnetView, or null if creation failed</returns>
+    public MagnetView CreateMagnet(JObject magnetData)
+    {
+        if (magnetData == null) return null;
+        
+        try
+        {
+            // Create a new GameObject for the magnet
+            GameObject magnetObject = new GameObject("Magnet");
+            
+            // Add MagnetView component
+            MagnetView magnetView = magnetObject.AddComponent<MagnetView>();
+            
+            // Set all properties from the JS object (maintaining logical grouping order)
+            
+            // ================== IDENTITY ==================
+            if (magnetData.TryGetValue("magnetId", out JToken magnetIdToken))
+                magnetView.magnetId = magnetIdToken.ToString();
+            else
+                magnetView.magnetId = GenerateMagnetId(); // Generate ID if not provided
+                
+            if (magnetData.TryGetValue("title", out JToken titleToken))
+                magnetView.title = titleToken.ToString();
+                
+            // ================== SEARCH ==================
+            if (magnetData.TryGetValue("searchExpression", out JToken searchExpressionToken))
+                magnetView.searchExpression = searchExpressionToken.ToString();
+                
+            if (magnetData.TryGetValue("searchType", out JToken searchTypeToken))
+                magnetView.searchType = searchTypeToken.ToString();
+                
+            if (magnetData.TryGetValue("enabled", out JToken enabledToken))
+                magnetView.enabled = enabledToken.Value<bool>();
+                
+            // ================== PHYSICS ==================
+            if (magnetData.TryGetValue("mass", out JToken massToken))
+                magnetView.mass = massToken.Value<float>();
+                
+            if (magnetData.TryGetValue("staticFriction", out JToken staticFrictionToken))
+                magnetView.staticFriction = staticFrictionToken.Value<float>();
+                
+            if (magnetData.TryGetValue("dynamicFriction", out JToken dynamicFrictionToken))
+                magnetView.dynamicFriction = dynamicFrictionToken.Value<float>();
+                
+            // ================== MAGNETIC FIELD ==================
+            if (magnetData.TryGetValue("magnetRadius", out JToken magnetRadiusToken))
+                magnetView.magnetRadius = magnetRadiusToken.Value<float>();
+                
+            if (magnetData.TryGetValue("magnetSoftness", out JToken magnetSoftnessToken))
+                magnetView.magnetSoftness = magnetSoftnessToken.Value<float>();
+                
+            if (magnetData.TryGetValue("magnetHoleRadius", out JToken magnetHoleRadiusToken))
+                magnetView.magnetHoleRadius = magnetHoleRadiusToken.Value<float>();
+                
+            if (magnetData.TryGetValue("magnetStrength", out JToken magnetStrengthToken))
+                magnetView.magnetStrength = magnetStrengthToken.Value<float>();
+                
+            if (magnetData.TryGetValue("magnetEnabled", out JToken magnetEnabledToken))
+                magnetView.magnetEnabled = magnetEnabledToken.Value<bool>();
+                
+            if (magnetData.TryGetValue("scoreMin", out JToken scoreMinToken))
+                magnetView.scoreMin = scoreMinToken.Value<float>();
+                
+            if (magnetData.TryGetValue("scoreMax", out JToken scoreMaxToken))
+                magnetView.scoreMax = scoreMaxToken.Value<float>();
+                
+            // ================== VISUAL ==================
+            if (magnetData.TryGetValue("viewScale", out JToken viewScaleToken))
+                magnetView.viewScale = viewScaleToken.Value<float>();
+                
+            if (magnetData.TryGetValue("initialScale", out JToken initialScaleToken))
+                magnetView.initialScale = initialScaleToken.Value<float>();
+            
+            // Position the magnet at the pan center
+            magnetView.MoveToPanCenter();
+            
+            // Add to Unity's local magnet state (JS simulator is the single source of truth)
+            JObject magnetDataForState = new JObject
+            {
+                // ================== IDENTITY ==================
+                ["magnetId"] = magnetView.magnetId,
+                ["title"] = magnetView.title,
+                
+                // ================== SEARCH ==================
+                ["searchExpression"] = magnetView.searchExpression,
+                ["searchType"] = magnetView.searchType,
+                ["enabled"] = magnetView.enabled,
+                
+                // ================== PHYSICS ==================
+                ["mass"] = magnetView.mass,
+                ["staticFriction"] = magnetView.staticFriction,
+                ["dynamicFriction"] = magnetView.dynamicFriction,
+                
+                // ================== MAGNETIC FIELD ==================
+                ["magnetRadius"] = magnetView.magnetRadius,
+                ["magnetSoftness"] = magnetView.magnetSoftness,
+                ["magnetHoleRadius"] = magnetView.magnetHoleRadius,
+                ["magnetStrength"] = magnetView.magnetStrength,
+                ["magnetEnabled"] = magnetView.magnetEnabled,
+                ["scoreMin"] = magnetView.scoreMin,
+                ["scoreMax"] = magnetView.scoreMax,
+                
+                // ================== VISUAL ==================
+                ["viewScale"] = magnetView.viewScale,
+                ["initialScale"] = magnetView.initialScale
+            };
+            
+            _magnets.Add(magnetDataForState);
+            
+            Debug.Log($"[SpaceCraft] Created magnet: {magnetView.title} (ID: {magnetView.magnetId}) - Added to Unity's local state");
+            
+            return magnetView;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[SpaceCraft] Error creating magnet: {ex.Message}");
+            return null;
+        }
+    }
+    
+    /// <summary>
+    /// Bridge method to create a magnet from JS
+    /// </summary>
+    public void createMagnet(JObject magnetData)
+    {
+        CreateMagnet(magnetData);
+    }
+    
+
+    
+    /// <summary>
+    /// Updates an existing magnet with new properties (Unity magnet and local state)
+    /// </summary>
+    /// <param name="magnetId">ID of the magnet to update</param>
+    /// <param name="magnetData">JS object containing updated properties</param>
+    /// <returns>True if magnet was found and updated</returns>
+    public bool UpdateMagnet(string magnetId, JObject magnetData)
+    {
+        if (string.IsNullOrEmpty(magnetId) || magnetData == null) return false;
+        
+        // Update Unity magnet
+        MagnetView magnetView = FindMagnetViewById(magnetId);
+        if (magnetView == null) return false;
+        
+        try
+        {
+            // Update properties from the JS object (maintaining logical grouping order)
+            
+            // ================== IDENTITY ==================
+            if (magnetData.TryGetValue("title", out JToken titleToken))
+                magnetView.title = titleToken.ToString();
+                
+            // ================== SEARCH ==================
+            if (magnetData.TryGetValue("searchExpression", out JToken searchExpressionToken))
+                magnetView.searchExpression = searchExpressionToken.ToString();
+                
+            if (magnetData.TryGetValue("searchType", out JToken searchTypeToken))
+                magnetView.searchType = searchTypeToken.ToString();
+                
+            if (magnetData.TryGetValue("enabled", out JToken enabledToken))
+                magnetView.enabled = enabledToken.Value<bool>();
+                
+            // ================== PHYSICS ==================
+            if (magnetData.TryGetValue("mass", out JToken massToken))
+                magnetView.mass = massToken.Value<float>();
+                
+            if (magnetData.TryGetValue("staticFriction", out JToken staticFrictionToken))
+                magnetView.staticFriction = staticFrictionToken.Value<float>();
+                
+            if (magnetData.TryGetValue("dynamicFriction", out JToken dynamicFrictionToken))
+                magnetView.dynamicFriction = dynamicFrictionToken.Value<float>();
+                
+            // ================== MAGNETIC FIELD ==================
+            if (magnetData.TryGetValue("magnetRadius", out JToken magnetRadiusToken))
+                magnetView.magnetRadius = magnetRadiusToken.Value<float>();
+                
+            if (magnetData.TryGetValue("magnetSoftness", out JToken magnetSoftnessToken))
+                magnetView.magnetSoftness = magnetSoftnessToken.Value<float>();
+                
+            if (magnetData.TryGetValue("magnetHoleRadius", out JToken magnetHoleRadiusToken))
+                magnetView.magnetHoleRadius = magnetHoleRadiusToken.Value<float>();
+                
+            if (magnetData.TryGetValue("magnetStrength", out JToken magnetStrengthToken))
+                magnetView.magnetStrength = magnetStrengthToken.Value<float>();
+                
+            if (magnetData.TryGetValue("magnetEnabled", out JToken magnetEnabledToken))
+                magnetView.magnetEnabled = magnetEnabledToken.Value<bool>();
+                
+            if (magnetData.TryGetValue("scoreMin", out JToken scoreMinToken))
+                magnetView.scoreMin = scoreMinToken.Value<float>();
+                
+            if (magnetData.TryGetValue("scoreMax", out JToken scoreMaxToken))
+                magnetView.scoreMax = scoreMaxToken.Value<float>();
+                
+            // ================== VISUAL ==================
+            if (magnetData.TryGetValue("viewScale", out JToken viewScaleToken))
+                magnetView.viewScale = viewScaleToken.Value<float>();
+                
+            if (magnetData.TryGetValue("initialScale", out JToken initialScaleToken))
+                magnetView.initialScale = initialScaleToken.Value<float>();
+            
+            // Update Unity's local magnet state
+            JObject existingMagnet = _magnets.FirstOrDefault(m => m.Value<string>("magnetId") == magnetId);
+            if (existingMagnet != null)
+            {
+                // Update existing magnet in local state
+                foreach (var property in magnetData)
+                {
+                    existingMagnet[property.Key] = property.Value;
+                }
+                Debug.Log($"[SpaceCraft] Updated magnet in local state: {magnetView.title} (ID: {magnetId})");
+            }
+            else
+            {
+                // Add new magnet to local state if not found
+                JObject magnetDataForState = new JObject
+                {
+                    // ================== IDENTITY ==================
+                    ["magnetId"] = magnetView.magnetId,
+                    ["title"] = magnetView.title,
+                    
+                    // ================== SEARCH ==================
+                    ["searchExpression"] = magnetView.searchExpression,
+                    ["searchType"] = magnetView.searchType,
+                    ["enabled"] = magnetView.enabled,
+                    
+                    // ================== PHYSICS ==================
+                    ["mass"] = magnetView.mass,
+                    ["staticFriction"] = magnetView.staticFriction,
+                    ["dynamicFriction"] = magnetView.dynamicFriction,
+                    
+                    // ================== MAGNETIC FIELD ==================
+                    ["magnetRadius"] = magnetView.magnetRadius,
+                    ["magnetSoftness"] = magnetView.magnetSoftness,
+                    ["magnetHoleRadius"] = magnetView.magnetHoleRadius,
+                    ["magnetStrength"] = magnetView.magnetStrength,
+                    ["magnetEnabled"] = magnetView.magnetEnabled,
+                    
+                    // ================== VISUAL ==================
+                    ["viewScale"] = magnetView.viewScale,
+                    ["initialScale"] = magnetView.initialScale
+                };
+                _magnets.Add(magnetDataForState);
+                Debug.Log($"[SpaceCraft] Added magnet to local state: {magnetView.title} (ID: {magnetId})");
+            }
+            
+            Debug.Log($"[SpaceCraft] Updated magnet: {magnetView.title} (ID: {magnetId}) - Unity magnet and local state");
+            return true;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[SpaceCraft] Error updating magnet {magnetId}: {ex.Message}");
+            return false;
+        }
+    }
+    
+    /// <summary>
+    /// Bridge method to update a magnet from JS
+    /// </summary>
+    public void updateMagnet(JObject data)
+    {
+        if (data == null) return;
+        
+        string magnetId = data.Value<string>("magnetId");
+        if (string.IsNullOrEmpty(magnetId)) return;
+        
+        Debug.Log($"[SpaceCraft] UpdateMagnet message received for magnet ID: {magnetId}");
+        UpdateMagnet(magnetId, data);
+    }
+    
+    /// <summary>
+    /// Deletes a magnet by ID (Unity magnet and local state)
+    /// </summary>
+    /// <param name="magnetId">ID of the magnet to delete</param>
+    /// <returns>True if magnet was found and deleted</returns>
+    public bool DeleteMagnet(string magnetId)
+    {
+        if (string.IsNullOrEmpty(magnetId)) return false;
+        
+        MagnetView magnetView = FindMagnetViewById(magnetId);
+        if (magnetView == null) return false;
+        
+        // Remove from Unity's local magnet state
+        JObject magnetToRemove = _magnets.FirstOrDefault(m => m.Value<string>("magnetId") == magnetId);
+        if (magnetToRemove != null)
+        {
+            _magnets.Remove(magnetToRemove);
+            Debug.Log($"[SpaceCraft] Removed magnet from local state: {magnetView.title} (ID: {magnetId})");
+        }
+        
+        Debug.Log($"[SpaceCraft] Deleting magnet: {magnetView.title} (ID: {magnetId}) - Unity magnet and local state");
+        DestroyImmediate(magnetView.gameObject);
+        return true;
+    }
+    
+    /// <summary>
+    /// Bridge method to delete a magnet from JS
+    /// </summary>
+    public void deleteMagnet(JObject data)
+    {
+        if (data == null) return;
+        
+        string magnetId = data.Value<string>("magnetId");
+        if (string.IsNullOrEmpty(magnetId)) return;
+        
+        DeleteMagnet(magnetId);
     }
 
     // ================== CAMERA VIBRATION ======================
@@ -1187,6 +1637,28 @@ public class SpaceCraft : BridgeObject
     /// Forward tilt input to InputManager (Bridge compatibility)
     /// </summary>
     // Tilt input removed - was causing excessive message spam and is not currently used
+
+    /// <summary>
+    /// Handle search update from controller.
+    /// Called when controller sends searchUpdate event.
+    /// </summary>
+    public void searchUpdate(JObject data)
+    {
+        if (inputManager != null && data != null)
+        {
+            string searchQuery = data["searchQuery"]?.ToString() ?? "";
+            float searchGravity = data["searchGravity"]?.ToObject<float>() ?? 0f;
+            
+            // DEBUG: Log search gravity updates
+            Debug.Log($"[SEARCH GRAVITY BRIDGE] searchUpdate received - searchQuery: '{searchQuery}', searchGravity: {searchGravity}");
+            
+            inputManager.searchString = searchQuery;
+            inputManager.searchGravity = searchGravity;
+            
+            // DEBUG: Verify the values were set
+            Debug.Log($"[SEARCH GRAVITY BRIDGE] InputManager updated - searchString: '{inputManager.searchString}', searchGravity: {inputManager.searchGravity}");
+        }
+    }
 
     /// <summary>
     /// Send events only when changes have occurred - reduce bridge traffic

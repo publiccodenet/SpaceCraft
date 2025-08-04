@@ -237,7 +237,7 @@ public class InputManager : MonoBehaviour
         Min = 0.1f, Max = 10f, Step = 0.1f)]
     [Tooltip("Scaling animation speed (how fast books change size)")]
     [Range(0.1f, 10f)]
-    public float scaleAnimationSpeed = 3.0f;
+    public float scaleAnimationSpeed = 1.0f;
     
     [ExposedParameter("Curve Type",
         Category = "Search Scaling",
@@ -350,6 +350,17 @@ public class InputManager : MonoBehaviour
     [Header("Search Integration")]
     [Tooltip("Current search query from controllers")]
     public string searchString = "";
+    
+    [Tooltip("Current search gravity value from controllers (-100 to 100)")]
+    public float searchGravity = 0f;
+    
+    [ExposedParameter("Search Gravity Scale",
+        Category = "Search Integration",
+        Description = "Scales the -100..100 searchGravity slider to physics force multiplier",
+        Min = 0f, Max = 10f, Step = 0.01f)]
+    [Tooltip("Multiplier for converting search gravity slider (-100..100) to force multiplier")]
+    [Range(0f, 10f)]
+    public float searchGravityScale = 1.0f;
     
     // ==========================================
     // SECTION 3: UNITY LOCAL UI PARAMETERS
@@ -636,10 +647,25 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // DEBUG: Search gravity flow tracking
+        if (Time.frameCount % 180 == 0) // Every 3 seconds
+        {
+            Debug.Log($"[SEARCH GRAVITY DEBUG] enableCenterForce: {enableCenterForce}, searchGravity: {searchGravity}, searchGravityScale: {searchGravityScale}");
+            Debug.Log($"[SEARCH GRAVITY DEBUG] searchString: '{searchString}', hasSearch: {!string.IsNullOrEmpty(searchString)}");
+        }
+        
         // Apply physics forces in FixedUpdate for proper physics integration
         if (enableCenterForce)
         {
-            ApplyCenterForce();
+            ApplyMagnetForces();
+        }
+        else
+        {
+            // DEBUG: Log when center force is disabled
+            if (Time.frameCount % 300 == 0) // Every 5 seconds
+            {
+                Debug.LogWarning("[MAGNET FORCES DEBUG] enableCenterForce is FALSE - ApplyMagnetForces() will NOT be called!");
+            }
         }
         
         // Apply continuous thrust forces for held Shift/CapsLock+Arrow keys
@@ -692,9 +718,8 @@ public class InputManager : MonoBehaviour
                             // Item is already selected - apply tap scale IMMEDIATELY
                             Debug.Log($"[LEFT MOUSE] Item already selected, applying tap scale: {clickedItem.name}");
                             float tapScale = selectionTapScale;
-                            float newScale = clickedItem.CurrentScale * tapScale;
-                            Debug.Log($"[LEFT MOUSE] Applying tap scale {tapScale} to clicked item. Current: {clickedItem.CurrentScale} → New: {newScale}");
-                            clickedItem.SetCurrentScale(newScale);
+                            Debug.Log($"[LEFT MOUSE] Applying tap scale {tapScale} to clicked item. Current: {clickedItem.CurrentScale}");
+                            clickedItem.ApplyTapScale(tapScale);
                         }
                         else
                         {
@@ -710,7 +735,7 @@ public class InputManager : MonoBehaviour
                     itemAtDragStart = null; // Magnets don't use the item selection system
                     
                     // For now, clicking on magnet does nothing (later might toggle magnet on/off)
-                    Debug.Log($"[LEFT MOUSE] Clicked on magnet: {clickedMagnet.magnetName} - no action (will enable dragging below)");
+                    Debug.Log($"[LEFT MOUSE] Clicked on magnet: {clickedMagnet.title} - no action (will enable dragging below)");
                 }
                 
                 // Start object dragging if enabled (works for both items and magnets)
@@ -1233,9 +1258,8 @@ public class InputManager : MonoBehaviour
                 if (selectedItem != null)
                 {
                     float tapScale = selectionTapScale;
-                    float newScale = selectedItem.CurrentScale * tapScale;
-                    Debug.Log($"[Keyboard] Applying tap scale {tapScale} to selected item {selectedId}. Current: {selectedItem.CurrentScale} → New: {newScale}");
-                    selectedItem.SetCurrentScale(newScale);
+                    Debug.Log($"[Keyboard] Applying tap scale {tapScale} to selected item {selectedId}. Current: {selectedItem.CurrentScale}");
+                    selectedItem.ApplyTapScale(tapScale);
                 }
             }
             else
@@ -1734,6 +1758,8 @@ public class InputManager : MonoBehaviour
 
 
 
+
+
     // --- Core Logic Helpers ---
 
     /// <summary>
@@ -1862,7 +1888,7 @@ public class InputManager : MonoBehaviour
                 }
                 else if (baseView is MagnetView magnetView)
                 {
-                    objectName = $"Magnet: {magnetView.magnetName}";
+                    objectName = $"Magnet: {magnetView.title}";
                 }
                 
                 Debug.Log($"[GetObjectUnderMouse] Found object: {objectName}");
@@ -1937,7 +1963,7 @@ public class InputManager : MonoBehaviour
             }
             else if (newlyHovered is MagnetView magnetView)
             {
-                objectName = $"Magnet: {magnetView.magnetName}";
+                objectName = $"Magnet: {magnetView.title}";
             }
             
             Debug.Log($"[Mouse Detection] {colliderInfo} - Object: {objectName}");
@@ -2031,6 +2057,8 @@ public class InputManager : MonoBehaviour
         // Apply search-based scaling to all books for physics-based semantic landscape!
         ApplySearchBasedScaling(newSearchString);
     }
+
+
 
     /// <summary>
     /// Apply search-based scaling to create physics-based semantic landscape!
@@ -2233,69 +2261,7 @@ public class InputManager : MonoBehaviour
         return matrix[sourceLength, targetLength];
     }
     
-    /// <summary>
-    /// Test method to demonstrate search-based scaling with sample queries
-    /// Call this from inspector or via code to test the semantic landscape system
-    /// </summary>
-    [ContextMenu("Test Search Scaling")]
-    public void TestSearchScaling()
-    {
-        Debug.Log("[Test] Testing search-based scaling system...");
-        
-        // Simulate a search for "science fiction" 
-        ApplySearchBasedScaling("science fiction");
-        
-        // You can test other searches by calling this method with different terms:
-        // ApplySearchBasedScaling("adventure");
-        // ApplySearchBasedScaling("mystery"); 
-        // ApplySearchBasedScaling("romance");
-        // ApplySearchBasedScaling(""); // Reset to normal
-    }
-    
-    /// <summary>
-    /// Create a random search landscape for testing physics interactions
-    /// </summary>
-    [ContextMenu("Test Random Landscape")]  
-    public void TestRandomLandscape()
-    {
-        List<ItemView> allItemViews = GetAllItemViews();
-        Debug.Log($"[Test] Creating random landscape with {allItemViews.Count} books...");
-        
-        foreach (var itemView in allItemViews)
-        {
-            if (itemView != null)
-            {
-                // Create random scale distribution for testing physics
-                float randomScale = UnityEngine.Random.Range(0.2f, 2.5f);
-                itemView.ViewScale = randomScale;
-            }
-        }
-    }
-    
-    /// <summary>
-    /// Test center force by scattering books randomly and watching them get pulled back
-    /// </summary>
-    [ContextMenu("Test Center Force")]
-    public void TestCenterForce()
-    {
-        List<ItemView> allItemViews = GetAllItemViews();
-        Debug.Log($"[Test] Scattering {allItemViews.Count} books to test center force...");
-        
-        foreach (var itemView in allItemViews)
-        {
-            if (itemView?.GetComponent<Rigidbody>() != null)
-            {
-                // Scatter books randomly with some velocity
-                Vector3 randomPosition = centerPoint + UnityEngine.Random.insideUnitSphere * (centerForceMaxDistance * 2f);
-                randomPosition.y = Mathf.Max(1f, randomPosition.y); // Keep above ground
-                
-                itemView.transform.position = randomPosition;
-                
-                Rigidbody rb = itemView.GetComponent<Rigidbody>();
-                rb.linearVelocity = UnityEngine.Random.insideUnitSphere * 5f; // Random initial velocity
-            }
-        }
-    }
+
     
     /// <summary>
     /// Filter ItemViews to only include those in the current collection
@@ -2377,13 +2343,27 @@ public class InputManager : MonoBehaviour
     }
     
     /// <summary>
-    /// Apply center force to draw books toward the center point
-    /// Creates a gentle gravitational effect to keep books from drifting too far
-    /// Properly integrates with Unity physics to overcome static friction
+    /// Apply magnetic forces to all items based on magnet positions and search expressions
+    /// Each magnet calculates its own relevance scores and applies forces based on distance and eligibility
     /// </summary>
-    private void ApplyCenterForce()
+    private void ApplyMagnetForces()
     {
         List<ItemView> allItemViews = GetAllItemViews();
+        
+        // DEBUG: Search gravity tracking
+        bool hasSearchString = !string.IsNullOrEmpty(searchString);
+        if (Time.frameCount % 180 == 0) // Every 3 seconds
+        {
+            Debug.Log($"[SEARCH GRAVITY FORCE] ApplyCenterForce CALLED - Items: {allItemViews.Count}, searchGravity: {searchGravity}");
+            if (hasSearchString)
+            {
+                Debug.Log($"[SEARCH GRAVITY FORCE] Has search string: '{searchString}' - will apply search-based force multipliers");
+            }
+            else
+            {
+                Debug.Log($"[SEARCH GRAVITY FORCE] No search string - will apply normal center force");
+            }
+        }
         
         // Filter to current collection if enabled
         if (limitToCurrentCollection && spaceCraft != null)
@@ -2397,11 +2377,12 @@ public class InputManager : MonoBehaviour
         int forcesApplied = 0;
         int kinematicBodies = 0;
         int sleepingBodies = 0;
+        int searchGravityItemsProcessed = 0;
         
         foreach (var itemView in allItemViews)
         {
             if (itemView?.GetComponent<Rigidbody>() == null) continue;
-            
+
             // Skip the item that's currently being thrust
             if (!string.IsNullOrEmpty(thrustingItemId) && itemView.Model?.Id == thrustingItemId)
             {
@@ -2445,13 +2426,79 @@ public class InputManager : MonoBehaviour
                 scaleBasedMultiplier = Mathf.Lerp(minForceMultiplier, maxForceMultiplier, normalizedScale);
             }
             
+            // Calculate search gravity force multiplier - ALWAYS calculate for ALL items
+            float searchGravityMultiplier = 1.0f;
+            
+            // Calculate relevance score in REAL-TIME for responsive search experience
+            float relevanceScore = 0.0f;
+            
+            if (itemView?.Model != null)
+            {
+                if (hasSearchString)
+                {
+                    // Calculate relevance score in real-time for immediate feedback
+                    string[] searchTokens = TokenizeAndNormalize(searchString);
+                    relevanceScore = CalculateRelevanceScore(itemView.Model, searchTokens);
+                }
+                else
+                {
+                    // If no search string, all items are considered fully "relevant" for global gravity effect
+                    relevanceScore = 1.0f;
+                }
+            }
+            
+            // Now apply search gravity based on relevanceScore (which is 1.0 if no search string)
+            if (Mathf.Abs(searchGravity) < 0.01f)
+            {
+                // searchGravity = 0: Zero gravity mode
+                // If hasSearchString: Matching items get NO center force, non-matching items get normal force  
+                // If no search string: All items get NO center force (1.0 - 1.0 = 0)
+                searchGravityMultiplier = 1.0f - relevanceScore;
+            }
+            else
+            {
+                // searchGravity != 0: Attraction/repulsion mode
+                // Convert searchGravity (-100 to +100) to force multiplier
+                float gravityEffect = searchGravity * searchGravityScale;
+                
+                // NATURAL APPROACH: Direct multiplication without arbitrary offset
+                // Positive gravity = attraction, Negative gravity = repulsion
+                searchGravityMultiplier = gravityEffect * relevanceScore;
+                
+                // Track if clamping occurs
+                float originalMultiplier = searchGravityMultiplier;
+                
+                // Clamp to reasonable bounds for stability
+                // Positive: up to 5x attraction, Negative: up to 2x repulsion
+                searchGravityMultiplier = Mathf.Clamp(searchGravityMultiplier, -2.0f, 5.0f);
+                
+                // DEBUG: Log when clamping occurs
+                if (Time.frameCount % 300 == 0 && Mathf.Abs(originalMultiplier - searchGravityMultiplier) > 0.01f)
+                {
+                    Debug.LogWarning($"[SEARCH GRAVITY] Multiplier clamped: {originalMultiplier:F3} → {searchGravityMultiplier:F3} (searchGravity: {searchGravity})");
+                }
+            }
+            
+            // DEBUG: Log first few search gravity calculations
+            if (searchGravityItemsProcessed < 3 && Time.frameCount % 180 == 0 && (hasSearchString || Mathf.Abs(searchGravity) > 0.01f))
+            {
+                string itemName = itemView.Model?.Title ?? itemView.name;
+                string forceType = searchGravityMultiplier > 0 ? "ATTRACTION" : "REPULSION";
+                Debug.Log($"[SEARCH GRAVITY REAL-TIME] Item: '{itemName}', relevanceScore: {relevanceScore:F3} (calculated live), searchGravity: {searchGravity:F1}, searchGravityMultiplier: {searchGravityMultiplier:F3} ({forceType})");
+                searchGravityItemsProcessed++;
+            }
+            
             // Choose between constant force or distance-based force
             Vector3 centerForce = Vector3.zero;
             
             if (useConstantCenterForce)
             {
                 // CONSTANT FORCE - same strength regardless of distance
-                centerForce = toCenter.normalized * constantCenterForce * scaleBasedMultiplier;
+                float baseForce = constantCenterForce * scaleBasedMultiplier;
+                
+                // NATURAL APPROACH: searchGravityMultiplier directly modulates the force
+                // Positive = attraction, Negative = repulsion
+                centerForce = toCenter.normalized * baseForce * searchGravityMultiplier;
             }
             else
             {
@@ -2474,7 +2521,10 @@ public class InputManager : MonoBehaviour
                 }
                 
                 forceStrength *= scaleBasedMultiplier; // Apply scale-based adjustment
-                centerForce = toCenter.normalized * forceStrength;
+                
+                // NATURAL APPROACH: searchGravityMultiplier directly modulates the force
+                // Positive = attraction, Negative = repulsion
+                centerForce = toCenter.normalized * forceStrength * searchGravityMultiplier;
             }
             
             // Calculate minimum force needed to overcome static friction
@@ -2730,253 +2780,6 @@ public class InputManager : MonoBehaviour
         Debug.Log($"[Physics] ROTATION LOCKED on all {allItemViews.Count} rigidbodies - no spinning allowed!");
     }
     
-    /// <summary>
-    /// Coroutine that tests various tilt patterns
-    /// </summary>
-    private System.Collections.IEnumerator TiltTestSequence()
-    {
-        Debug.Log("[Test] Tilt sequence: Starting neutral...");
-        PushTiltInput("test", "Tilt Test", 0f, 0f);
-        yield return new WaitForSeconds(2f);
-        
-        Debug.Log("[Test] Tilt sequence: Tilting right...");
-        PushTiltInput("test", "Tilt Test", 0.5f, 0f);
-        yield return new WaitForSeconds(2f);
-        
-        Debug.Log("[Test] Tilt sequence: Tilting forward...");
-        PushTiltInput("test", "Tilt Test", 0f, 0.5f);
-        yield return new WaitForSeconds(2f);
-        
-        Debug.Log("[Test] Tilt sequence: Tilting left-back...");
-        PushTiltInput("test", "Tilt Test", -0.5f, -0.5f);
-        yield return new WaitForSeconds(2f);
-        
-        Debug.Log("[Test] Tilt sequence: Circular motion...");
-        for (float angle = 0; angle < 360; angle += 30)
-        {
-            float x = Mathf.Sin(angle * Mathf.Deg2Rad) * 0.7f;
-            float z = Mathf.Cos(angle * Mathf.Deg2Rad) * 0.7f;
-            PushTiltInput("test", "Tilt Test", x, z);
-            yield return new WaitForSeconds(0.5f);
-        }
-        
-        Debug.Log("[Test] Tilt sequence: Return to neutral");
-        PushTiltInput("test", "Tilt Test", 0f, 0f);
-        Debug.Log("[Test] Tilt test complete!");
-    }
-    
-    /// <summary>
-    /// Force-refresh all physics settings if books are still rotating (emergency fix!)
-    /// </summary>
-    [ContextMenu("EMERGENCY: Force Stop All Rotation")]
-    public void EmergencyStopAllRotation()
-    {
-        List<ItemView> allItemViews = GetAllItemViews();
-        int fixedBooks = 0;
-        
-        foreach (var itemView in allItemViews)
-        {
-            Rigidbody rb = itemView.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                // NUCLEAR OPTION - force stop everything!
-                rb.freezeRotation = true;
-                rb.constraints = RigidbodyConstraints.FreezeRotationX | 
-                                RigidbodyConstraints.FreezeRotationY | 
-                                RigidbodyConstraints.FreezeRotationZ;
-                rb.angularVelocity = Vector3.zero;
-                rb.maxAngularVelocity = 0f;
-                rb.angularDamping = 1000f; // Extreme angular drag as backup
-                
-                // Also reset transform rotation to identity
-                itemView.transform.rotation = Quaternion.identity;
-                
-                fixedBooks++;
-            }
-        }
-        
-        Debug.Log($"[EMERGENCY] FORCE-STOPPED rotation on {fixedBooks} books! They should be completely locked now!");
-        
-        // Also refresh materials and settings
-        UpdatePhysicsMaterials();
-        UpdateRigidbodySettings();
-    }
 
-    [ContextMenu("Debug Physics State")]
-    public void DebugPhysicsState()
-    {
-        Debug.Log("=== PHYSICS STATE DEBUG ===");
-        Debug.Log($"Static Friction: {staticFriction}");
-        Debug.Log($"Dynamic Friction: {dynamicFriction}");
-        Debug.Log($"Bounciness: {bounciness}");
-        Debug.Log($"Gravity Multiplier: {gravityMultiplier}");
-        Debug.Log($"Current Gravity: {Physics.gravity}");
-        
-        if (itemPhysicsMaterial != null)
-        {
-            Debug.Log($"Item Material - Static: {itemPhysicsMaterial.staticFriction}, Dynamic: {itemPhysicsMaterial.dynamicFriction}, Bounce: {itemPhysicsMaterial.bounciness}");
-            Debug.Log($"Item Material - Friction Combine: {itemPhysicsMaterial.frictionCombine}, Bounce Combine: {itemPhysicsMaterial.bounceCombine}");
-        }
-        else
-        {
-            Debug.LogError("Item Physics Material is NULL!");
-        }
-        
-        if (groundPhysicsMaterial != null)
-        {
-            Debug.Log($"Ground Material - Static: {groundPhysicsMaterial.staticFriction}, Dynamic: {groundPhysicsMaterial.dynamicFriction}, Bounce: {groundPhysicsMaterial.bounciness}");
-        }
-        else
-        {
-            Debug.LogError("Ground Physics Material is NULL!");
-        }
-        
-        // Check a few items
-        List<ItemView> items = GetAllItemViews();
-        Debug.Log($"Total ItemViews in scene: {items.Count}");
-        
-        int sampleCount = Mathf.Min(3, items.Count);
-        for (int i = 0; i < sampleCount; i++)
-        {
-            ItemView item = items[i];
-            if (item == null) continue;
-            
-            Rigidbody rb = item.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                Debug.Log($"Item '{item.name}': isKinematic={rb.isKinematic}, mass={rb.mass}, drag={rb.linearDamping}, angularDrag={rb.angularDamping}");
-                
-                Collider[] colliders = item.GetComponentsInChildren<Collider>();
-                foreach (var col in colliders)
-                {
-                    if (col != null && !col.isTrigger && col.material != null)
-                    {
-                        bool isShared = (col.material == itemPhysicsMaterial || col.material == groundPhysicsMaterial);
-                        Debug.Log($"  - Collider '{col.name}': Material friction (static={col.material.staticFriction}, dynamic={col.material.dynamicFriction}) SHARED={isShared}");
-                        
-                        if (!isShared)
-                        {
-                            Debug.LogWarning($"    WARNING: This collider is NOT using the shared material!");
-                        }
-                    }
-                }
-            }
-        }
-        
-        Debug.Log("=== END PHYSICS DEBUG ===");
-    }
-
-    [ContextMenu("Test Magnet Physics")]
-    public void TestMagnetPhysics()
-    {
-        Debug.Log("=== MAGNET PHYSICS TEST ===");
-        Debug.Log($"Static Friction: {staticFriction}");
-        Debug.Log($"Gravity: {Physics.gravity.y * gravityMultiplier}");
-        Debug.Log($"Constant Force: {constantCenterForce}");
-        Debug.Log($"Force Mode: {(useConstantCenterForce ? "Constant" : "Variable")}");
-        
-        float gravityMagnitude = Mathf.Abs(Physics.gravity.y) * gravityMultiplier;
-        float minForceRequired = 1.0f * gravityMagnitude * staticFriction * 1.1f;
-        Debug.Log($"Min force to overcome friction (1kg object): {minForceRequired:F2}N");
-        Debug.Log($"Current constant force is {(constantCenterForce >= minForceRequired ? "SUFFICIENT" : "INSUFFICIENT")}");
-        
-        // Test on all items
-        List<ItemView> items = GetAllItemViews();
-        int stuckItems = 0;
-        int movingItems = 0;
-        
-        foreach (var item in items)
-        {
-            if (item?.GetComponent<Rigidbody>() != null)
-            {
-                Rigidbody rb = item.GetComponent<Rigidbody>();
-                if (!rb.isKinematic)
-                {
-                    bool isMoving = rb.linearVelocity.magnitude > rigidbodySleepThreshold;
-                    if (isMoving)
-                        movingItems++;
-                    else
-                        stuckItems++;
-                        
-                    if (!isMoving && rb.IsSleeping())
-                    {
-                        Debug.Log($"Item '{item.name}' is SLEEPING - needs wake up!");
-                    }
-                }
-            }
-        }
-        
-        Debug.Log($"Items status: {movingItems} moving, {stuckItems} stationary");
-        Debug.Log("=== END MAGNET PHYSICS TEST ===");
-    }
     
-    [ContextMenu("Force Wake All Items")]
-    public void ForceWakeAllItems()
-    {
-        List<ItemView> allItems = GetAllItemViews();
-        int wokenCount = 0;
-        
-        foreach (ItemView item in allItems)
-        {
-            Rigidbody rb = item.GetComponent<Rigidbody>();
-            if (rb != null && rb.IsSleeping())
-            {
-                rb.WakeUp();
-                wokenCount++;
-            }
-        }
-        
-        Debug.Log($"[Physics] Force woke {wokenCount} sleeping items out of {allItems.Count} total");
-    }
-    
-    [ContextMenu("Debug Thrust System")]
-    public void DebugThrustSystem()
-    {
-        Debug.Log($"[THRUST DEBUG] ===== THRUST SYSTEM STATUS =====");
-        Debug.Log($"[THRUST DEBUG] selectionThrustForce: {selectionThrustForce}");
-        Debug.Log($"[THRUST DEBUG] selectionNudgeForce: {selectionNudgeForce}");
-        Debug.Log($"[THRUST DEBUG] Active thrust keys: {activeThrustKeys.Count}");
-        
-        if (activeThrustKeys.Count > 0)
-        {
-            string keysStr = string.Join(", ", activeThrustKeys);
-            Debug.Log($"[THRUST DEBUG] Keys: [{keysStr}]");
-        }
-        
-        // Check physics settings
-        Debug.Log($"[THRUST DEBUG] === PHYSICS SETTINGS ===");
-        Debug.Log($"[THRUST DEBUG] rigidbodyDrag: {rigidbodyDrag}");
-        Debug.Log($"[THRUST DEBUG] rigidbodyAngularDrag: {rigidbodyAngularDrag}");
-        Debug.Log($"[THRUST DEBUG] staticFriction: {staticFriction}");
-        Debug.Log($"[THRUST DEBUG] dynamicFriction: {dynamicFriction}");
-        Debug.Log($"[THRUST DEBUG] rigidbodySleepThreshold: {rigidbodySleepThreshold}");
-        Debug.Log($"[THRUST DEBUG] Fixed timestep: {Time.fixedDeltaTime} ({1f/Time.fixedDeltaTime:F1} Hz)");
-        
-        // Check selected item
-        if (spaceCraft.SelectedItemIds.Count > 0)
-        {
-            string selectedId = spaceCraft.SelectedItemIds[0];
-            ItemView selectedItem = spaceCraft.FindItemViewById(selectedId);
-            
-            if (selectedItem != null)
-            {
-                Rigidbody rb = selectedItem.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    Debug.Log($"[THRUST DEBUG] === SELECTED ITEM: {selectedItem.name} ===");
-                    Debug.Log($"[THRUST DEBUG] Mass: {rb.mass}");
-                    Debug.Log($"[THRUST DEBUG] Drag: {rb.linearDamping}");
-                    Debug.Log($"[THRUST DEBUG] Angular Drag: {rb.angularDamping}");
-                    Debug.Log($"[THRUST DEBUG] Velocity: {rb.linearVelocity.magnitude:F3}");
-                    Debug.Log($"[THRUST DEBUG] Is Sleeping: {rb.IsSleeping()}");
-                    Debug.Log($"[THRUST DEBUG] Use Gravity: {rb.useGravity}");
-                    
-                    // Calculate what thrust force should do
-                    float acceleration = selectionThrustForce / rb.mass;
-                    Debug.Log($"[THRUST DEBUG] Expected acceleration: {acceleration:F2} m/s²");
-                    Debug.Log($"[THRUST DEBUG] Expected velocity gain per second: {acceleration:F2} m/s");
-                }
-            }
-        }
-    }
 }
