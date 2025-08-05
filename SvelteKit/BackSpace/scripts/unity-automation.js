@@ -1019,12 +1019,10 @@ async function copydownWebGL(env) {
   try {
     // List of files to copy (JS and related files)
     const filesToCopy = [
-      'controller.js',
       'spacecraft.js',
       'navigator.html',
       'selector.html',
       'inspector.html',
-      'controller.css',
       'spacecraft.css'
     ];
     
