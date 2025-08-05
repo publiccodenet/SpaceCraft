@@ -1,14 +1,20 @@
 // @ts-nocheck
 // SpaceCraft Controller - Clean, Simple, Complete Implementation
 
+import { Node, Register, ReactiveProperty } from '../lib/io-gui/index.js';
+
 import { AudioModule } from './audio.js';
 import { MotionModule } from './motion.js';
 import { GestureService } from './gesture.js';
 
+export type ControllerProps = NodeProps & {
+};
+
 /**
  * Single Controller class - proper module usage, consistent naming, complete features
  */
-export class Controller {
+@Register
+export class Controller extends Node {
     // API Constants
     static supabaseUrl = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
     static supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3b2Rod3l2dWZ0eXJ2YnltbXZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNDkyMDMsImV4cCI6MjA1NzkyNTIwM30.APVpyOupY84gQ7c0vBZkY-GqoJRPhb4oD4Lcj9CEzlc';
@@ -21,7 +27,11 @@ export class Controller {
     static zoomSensitivity = 0.008;
     static gestureThreshold = 20;
 
-    constructor() {
+    @ReactiveProperty({type: Object, value: undefined})
+    declare selectedItem: any;
+
+    constructor(props: ControllerProps) {
+        super(props);
         // Client Identity
         this.clientId = this.generateClientId();
         this.clientName = this.generateClientName();
@@ -60,7 +70,7 @@ export class Controller {
         this.pointerStartY = 0;
         this.isDragging = false;
         
-        console.log(`[Controller] Created: ${this.clientId}`);
+        // console.log(`[Controller] Created: ${this.clientId}`);
     }
 
     // === TAB MANAGEMENT ===
@@ -68,7 +78,7 @@ export class Controller {
     registerTab(TabClass) {
         const tab = new TabClass(this);
         this.tabs.set(TabClass.tabId, tab);
-        console.log(`[Tab] Registered: ${TabClass.tabId}`);
+        // console.log(`[Tab] Registered: ${TabClass.tabId}`);
     }
 
     showTab(tabId) {
@@ -245,7 +255,7 @@ export class Controller {
     }
 
     handleGesture(gestureType) {
-                    console.log(`[Controller] handleGesture: ${gestureType}, activeTabId: ${this.activeTabId}`);
+                    // console.log(`[Controller] handleGesture: ${gestureType}, activeTabId: ${this.activeTabId}`);
         const activeTab = this.tabs.get(this.activeTabId);
         if (activeTab && activeTab.handleGesture) {
             
@@ -312,7 +322,7 @@ export class Controller {
             ...data
         };
         
-        console.log(`[Controller] Sending '${eventType}':`, payload);
+        // console.log(`[Controller] Sending '${eventType}':`, payload);
         
         this.clientChannel.send({
             type: 'broadcast',
@@ -328,30 +338,30 @@ export class Controller {
     initializeConnection() {
         if (typeof supabase === 'undefined') {
             console.error('Supabase library missing!');
-            console.log(`[Controller] Error: Supabase library missing`);
+            // console.log(`[Controller] Error: Supabase library missing`);
                 return;
             }
             
         try {
             const channelName = new URLSearchParams(window.location.search).get('channel') || Controller.clientChannelName;
-            console.log(`Controller connecting to channel: ${channelName}`);
+            // console.log(`Controller connecting to channel: ${channelName}`);
             
             this.supabaseClient = supabase.createClient(Controller.supabaseUrl, Controller.supabaseAnonKey);
             this.clientChannel = this.supabaseClient.channel(channelName, {
                 config: { presence: { key: this.clientId } }
             });
 
-            console.log('Controller: Setting up presence handlers and subscribing...');
+            // console.log('Controller: Setting up presence handlers and subscribing...');
             this.setupPresenceHandlers();
             this.subscribeToChannel();
             
             // Debug: Check presence state after a delay
             setTimeout(() => {
                 const presenceState = this.clientChannel.presenceState();
-                console.log(`[Controller] Presence state after 2s:`, presenceState);
+                // console.log(`[Controller] Presence state after 2s:`, presenceState);
                 Object.entries(presenceState).forEach(([key, presence]) => {
                     presence.forEach(client => {
-                        console.log(`Controller: Found client: ${client.clientId} (${client.clientType})`);
+                        // console.log(`Controller: Found client: ${client.clientId} (${client.clientType})`);
                     });
                 });
             }, 2000);
@@ -370,12 +380,12 @@ export class Controller {
                     if (simulator) {
                         this.currentSimulatorId = simulator.clientId;
                         this.updateSimulatorState(simulator);
-                    console.log('Connection', 'Received simulator state update', {
-                        simulatorId: simulator.clientId,
-                        tags: simulator.tags?.length || 0,
-                        magnets: simulator.magnets?.length || 0,
-                        selectedItem: simulator.selectedItem?.title || 'none'
-                    });
+                    // console.log('Connection', 'Received simulator state update', {
+                    //     simulatorId: simulator.clientId,
+                    //     tags: simulator.tags?.length || 0,
+                    //     magnets: simulator.magnets?.length || 0,
+                    //     selectedItem: simulator.selectedItem?.title || 'none'
+                    // });
                 }
             })
             .on('broadcast', { event: 'simulator_takeover' }, ({ payload }) => {
@@ -394,7 +404,7 @@ export class Controller {
                     currentTabId: this.activeTabId,
                     startTime: Date.now()
                 });
-                console.log(`[Connection] Connected to simulator`);
+                // console.log(`[Connection] Connected to simulator`);
             }
         });
     }
@@ -409,15 +419,15 @@ export class Controller {
                     currentTabId: this.activeTabId,
                     startTime: Date.now()
                 });
-                console.log(`[Connection] Updated presence with tab: ${this.activeTabId}`);
+                // console.log(`[Connection] Updated presence with tab: ${this.activeTabId}`);
             } catch (error) {
-                console.log(`[Connection] Failed to update presence:`, error);
+                // console.log(`[Connection] Failed to update presence:`, error);
             }
         }
     }
 
     findLatestSimulator(presenceState) {
-        console.log(`[Controller] Finding latest simulator:`, presenceState);
+        // console.log(`[Controller] Finding latest simulator:`, presenceState);
         let latestSimulator = null;
         let latestStartTime = 0;
 
@@ -426,21 +436,21 @@ export class Controller {
                 if (presence.clientType === 'simulator' && presence.startTime > latestStartTime) {
                     latestSimulator = presence;
                     latestStartTime = presence.startTime;
-                    console.log(`[Controller] Found newer simulator: ${presence.clientId}`);
+                    // console.log(`[Controller] Found newer simulator: ${presence.clientId}`);
                 }
             });
         });
 
-        console.log(`[Controller] Latest simulator found:`, latestSimulator);
+        // console.log(`[Controller] Latest simulator found:`, latestSimulator);
         return latestSimulator;
     }
 
     updateSimulatorState(simulator) {
-        console.log(`[Controller] Updating simulator state:`, simulator);
+        // console.log(`[Controller] Updating simulator state:`, simulator);
         
         // Access state from the 'shared' property where the simulator publishes it
         const simState = simulator.shared || {};
-        console.log(`[Controller] Simulator shared state:`, simState);
+        // console.log(`[Controller] Simulator shared state:`, simState);
         
         this.simulatorState = {
             selectedItemIds: simState.selectedItemIds || [],
@@ -457,13 +467,17 @@ export class Controller {
             currentSearchString: simState.currentSearchString || '',
             currentSearchGravity: simState.currentSearchGravity || 0
         };
+
+        this.selectedItem = this.simulatorState.selectedItem;
         
-        console.log(`[Controller] Updated simulator state:`, this.simulatorState);
+        // console.log(`[Controller] Updated simulator state:`, this.simulatorState);
         
         // Note: Search and gravity are now managed by simulator, no need to send here
         
         // Notify ALL tabs of state changes, not just active tab
         let notifiedTabs = 0;
+        this.dispatch('simulatorStateChange', this.simulatorState);
+
         this.tabs.forEach((tab, tabId) => {
             if (tab && tab.onSimulatorStateChange) {
         
@@ -528,10 +542,10 @@ export class Controller {
             // Use replaceState for default tab to keep URL clean
             if (tabId === Controller.defaultTabId) {
                 history.replaceState(null, '', window.location.pathname + window.location.search);
-                console.log(`[Controller] Cleared URL hash (default tab: ${tabId})`);
+                // console.log(`[Controller] Cleared URL hash (default tab: ${tabId})`);
             } else {
                 history.replaceState(null, '', `#${tabId}`);
-                console.log(`[Controller] Updated URL hash to: #${tabId}`);
+                // console.log(`[Controller] Updated URL hash to: #${tabId}`);
             }
         }
     }
@@ -543,21 +557,21 @@ export class Controller {
         
         // Read initial tab from URL hash
         const initialTab = this.getTabFromUrl() || Controller.defaultTabId;
-        console.log(`[Controller] Initial tab from URL: ${initialTab}`);
+        // console.log(`[Controller] Initial tab from URL: ${initialTab}`);
         this.showTab(initialTab);
         
         // Listen for browser navigation (back/forward)
         window.addEventListener('hashchange', () => {
             const tabFromUrl = this.getTabFromUrl();
             if (tabFromUrl && tabFromUrl !== this.activeTabId) {
-                console.log(`[Controller] Hash changed to: ${tabFromUrl}`);
+                // console.log(`[Controller] Hash changed to: ${tabFromUrl}`);
                 this.showTab(tabFromUrl);
             }
         });
         
         this.initializeConnection();
         
-        console.log(`[Controller] Initialized successfully`);
+        // console.log(`[Controller] Initialized successfully`);
     }
 
     // === UTILITIES ===

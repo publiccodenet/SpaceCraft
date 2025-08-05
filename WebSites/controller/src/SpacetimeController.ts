@@ -1,13 +1,29 @@
-import { IoElement, IoElementProps, Register, ioNavigator, MenuOption, ioString, Storage as $, div, h1, h2, p } from '../lib/io-gui/index.js';
-import { GestureServiceInstance } from './gesture.js';
-import { Controller, SimulatorState } from './controller.js';
+import { IoElement, IoElementProps, Register, ioNavigator, MenuOption, ioString, Storage as $, div, h1, h2, p, ioMarkdown } from '../lib/io-gui/index.js';
+import { Controller } from './controller.js';
+import { spacetimeNavigate } from './SpacetimeNavigate.js';
+import { spacetimeSelect } from './SpacetimeSelect.js';
+import { spacetimeInspect } from './SpacetimeInspect.js';
+import { spacetimeGravity } from './SpacetimeGravity.js';
+import { spacetimeMagnet } from './SpacetimeMagnet.js'; 
+import { spacetimeAdjust } from './SpacetimeAdjust.js';
 
 export type SpacetimeControllerProps = IoElementProps & {
 };
 
-const controller = new Controller();
+const controller = new Controller({});
 
 export class SpacetimeController extends IoElement {
+
+  static get Style() {
+    return /* css */`
+      :host {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+      }
+    `;
+  }
 
   constructor(props: SpacetimeControllerProps) {
     super(props);
@@ -21,46 +37,24 @@ export class SpacetimeController extends IoElement {
         option: new MenuOption({
           id: 'root',
           options: [
-            {id: 'About', label: '📖 About'},
-            {id: 'Navigate', label: '🧭 Navigate'},
-            {id: 'Select', label: '👆 Select'},
-            {id: 'Inspect', label: '🔍 Inspect'},
-            {id: 'Magnet', label: '🧲 Magnet'},
-            {id: 'Adjust', label: '⚙️ Adjust'},
+            {id: 'About', icon: '📖'},
+            {id: 'Navigate', icon: '🧭'},
+            {id: 'Select', icon: '👆'},
+            {id: 'Inspect', icon: '🔍'},
+            {id: 'Gravity', icon: '🌍'},
+            {id: 'Magnet', icon: '🧲'},
+            {id: 'Adjust', icon: '⚙️'},
           ],
           selectedID: $({key: 'path', storage: 'hash', value: 'About'})
         }),
         elements: [
-          div({id: 'About'}, [
-            h1('Spacetime Controller'),
-            p('Unified Multi-Tab Interface'),
-          ]),
-          div({id: 'Navigate'}, [
-            p('DRAG to pan • SCROLL to zoom • SEARCH to filter'),
-            ioString({
-              value: '',
-              placeholder: 'Search',
-              '@value-changed': (event: CustomEvent) => {
-                controller.setSearchQuery(event.detail.value);
-              }
-            })
-          ]),
-          div({id: 'Select'}, [
-            h1('Select'),
-            p('Select an item'),
-          ]),
-          div({id: 'Inspect'}, [
-            h1('Inspect'),
-            p('Inspect an item'),
-          ]),
-          div({id: 'Magnet'}, [
-            h1('Magnet'),
-            p('Magnet an item'),
-          ]),
-          div({id: 'Adjust'}, [
-            h2('Simulation Parameters'),
-            p('Settings will be loaded from metadata'),
-          ]),
+          ioMarkdown({id: 'About', src: './docs/About.md'}),
+          spacetimeNavigate({id: 'Navigate', controller: controller}),
+          spacetimeSelect({id: 'Select', controller: controller}),
+          spacetimeInspect({id: 'Inspect', controller: controller}),
+          spacetimeGravity({id: 'Gravity'}),
+          spacetimeMagnet({id: 'Magnet'}),
+          spacetimeAdjust({id: 'Adjust'}),
         ]
       })
     ])
