@@ -12,7 +12,10 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "outDir": "build",
+    "paths": {
+      "io-gui": ["./lib/io-gui/"]
+    }
   },
-  "include": ["./src"]
 
+  "include": ["./src", "./global.d.ts"]
 }

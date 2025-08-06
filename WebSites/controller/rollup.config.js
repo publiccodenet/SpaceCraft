@@ -21,13 +21,13 @@ export function makeBundleTarget(src, target, skipExternals = true) {
         functions: [],
         labels: ['debug']
       }),
-      terser({
-        keep_classnames: true,
-        keep_fnames: true,
-        compress: {
-          keep_infinity: true,
-        }
-      })
+      // terser({
+      //   keep_classnames: true,
+      //   keep_fnames: true,
+      //   compress: {
+      //     keep_infinity: true,
+      //   }
+      // })
     ],
     treeshake: true,
     output: [{
@@ -45,5 +45,5 @@ export function makeBundleTarget(src, target, skipExternals = true) {
 }
 
 export default [
-  makeBundleTarget('build/index.js', 'bundle/index.js'),
+  makeBundleTarget('build/SpacetimeController.js', 'bundle/SpacetimeController.js'),
 ];

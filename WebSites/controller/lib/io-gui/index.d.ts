@@ -244,8 +244,9 @@ export type OtherHTMLElementProps = PropsWithUndefined<{
 	disablePictureInPicture?: boolean;
 }>;
 export type prefix<TKey, TPrefix extends string> = TKey extends string ? `${TPrefix}${TKey}` : never;
+export type AnyEventHandler = ((event: CustomEvent<any>) => void) | ((event: PointerEvent) => void) | ((event: KeyboardEvent) => void) | ((event: MouseEvent) => void) | ((event: TouchEvent) => void) | ((event: WheelEvent) => void) | ((event: InputEvent) => void) | ((event: ClipboardEvent) => void) | ((event: DragEvent) => void) | ((event: FocusEvent) => void) | ((event: TransitionEvent) => void) | ((event: AnimationEvent) => void) | ((event: ErrorEvent) => void) | ((event: Event) => void);
 export type NativeElementProps = AriaProps & PropsWithUndefined<{
-	[key: prefix<string, "@">]: string | ((event: CustomEvent<any>) => void) | ((event: PointerEvent) => void) | ((event: KeyboardEvent) => void);
+	[key: prefix<string, "@">]: string | AnyEventHandler;
 	title?: string;
 	lang?: Lang;
 	translate?: any;
@@ -463,9 +464,10 @@ export declare function throttle(func: CallbackFunction, arg?: any, node?: Node$
  */
 export declare function debounce(func: CallbackFunction, arg?: any, node?: Node$1 | IoElement, delay?: number): void;
 type prefix$1<TKey, TPrefix extends string> = TKey extends string ? `${TPrefix}${TKey}` : never;
+type AnyEventHandler$1 = ((event: CustomEvent<any>) => void) | ((event: PointerEvent) => void) | ((event: KeyboardEvent) => void) | ((event: MouseEvent) => void) | ((event: TouchEvent) => void) | ((event: WheelEvent) => void) | ((event: InputEvent) => void) | ((event: ClipboardEvent) => void) | ((event: DragEvent) => void) | ((event: FocusEvent) => void) | ((event: TransitionEvent) => void) | ((event: AnimationEvent) => void) | ((event: ErrorEvent) => void) | ((event: Event) => void);
 export type IoElementProps = NativeElementProps & {
 	reactivity?: ReactivityType;
-	[key: prefix$1<string, "@">]: string | ((event: CustomEvent<any>) => void) | ((event: PointerEvent) => void) | ((event: KeyboardEvent) => void);
+	[key: prefix$1<string, "@">]: string | AnyEventHandler$1;
 };
 export declare class IoElement extends HTMLElement {
 	static vConstructor: (arg0?: IoElementProps | Array<VDOMElement | null> | string, arg1?: Array<VDOMElement | null> | string) => VDOMElement;
@@ -746,9 +748,10 @@ export declare const NODES: {
 export type ReactivityType = "immediate" | "throttled" | "debounced";
 export type WithBinding<T> = T | Binding<T>;
 type prefix$2<TKey, TPrefix extends string> = TKey extends string ? `${TPrefix}${TKey}` : never;
+type AnyEventHandler$2 = ((event: CustomEvent<any>) => void) | ((event: PointerEvent) => void) | ((event: KeyboardEvent) => void) | ((event: MouseEvent) => void) | ((event: TouchEvent) => void) | ((event: WheelEvent) => void) | ((event: InputEvent) => void) | ((event: ClipboardEvent) => void) | ((event: DragEvent) => void) | ((event: FocusEvent) => void) | ((event: TransitionEvent) => void) | ((event: AnimationEvent) => void) | ((event: ErrorEvent) => void) | ((event: Event) => void);
 export type NodeProps = {
 	reactivity?: ReactivityType;
-	[key: prefix$2<string, "@">]: string | ((event: CustomEvent<any>) => void);
+	[key: prefix$2<string, "@">]: string | AnyEventHandler$2;
 };
 declare class Node$1 extends Object {
 	reactivity: ReactivityType;

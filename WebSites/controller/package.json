@@ -4,9 +4,9 @@
   "type": "module",
   "packageManager": "pnpm@9.5.0",
   "description": "SpaceCraft controller.",
-  "main": "build/index.js",
-  "module": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "build/SpacetimeController.js",
+  "module": "build/SpacetimeController.js",
+  "types": "build/SpacetimeController.d.ts",
   "files": [
     "/build",
     "/src"
@@ -15,7 +15,8 @@
   "scripts": {
     "clean": "rm -rf build && rm -rf bundle",
     "lint": "eslint -c .eslintrc.js ./src --fix",
-    "build": "pnpm clean && tsc && rollup -c && dts-bundle-generator -o bundle/index.d.ts build/index.d.ts && rm -rf build && mv bundle build",
+    "build": "pnpm clean && tsc",
+    "bundle": "pnpm clean && pnpm lint && tsc && rollup -c && dts-bundle-generator -o bundle/SpacetimeController.d.ts build/SpacetimeController.d.ts && rm -rf build && mv bundle build",
     "dev": "pnpm clean && tsc -w"
   },
   "repository": {
