@@ -6,7 +6,7 @@ export class TabInspect extends TabBase {
   static get Style() {
     return /* css */`
       :host {
-        margin: 0;
+        padding: 0;
       }
       iframe {
         flex: 1 1 auto;

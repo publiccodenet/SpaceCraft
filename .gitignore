@@ -260,3 +260,4 @@ logs/
 # Controller
 WebSites/controller/node_modules/
 !WebSites/controller/lib/
+!WebSites/controller/build/

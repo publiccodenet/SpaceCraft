@@ -17,7 +17,8 @@ export class TabBase extends IoElement {
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        margin: 2em;
+        padding: 2em;
+        overflow-y: auto;
       }
     `;
   }

@@ -53,6 +53,10 @@ export class SpacetimeController extends IoElement {
         height: 100%;
         width: 100%;
       }
+      :host > io-navigator {
+        flex: 1 1 auto;
+        overflow: hidden;
+      }
     `;
   }
 
