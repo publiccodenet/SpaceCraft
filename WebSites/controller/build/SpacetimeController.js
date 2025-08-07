@@ -1,6 +1,6 @@
-import { ReactiveProperty, Register, Node, Property, IoElement, h2, div, p, img, h4, iframe, ioNumberSlider, h3, ioObject, ioButton, ioString, ioInspector, ioNavigator, ioMarkdown, MenuOption, Storage } from 'io-gui';
+import { ReactiveProperty, Register, Node, Property, IoElement, h2, div, p, img, h4, iframe, h3, ioObject, ioButton, ioNumberSlider, ioString, ioInspector, ioNavigator, ioMarkdown, MenuOption, Storage } from 'io-gui';
 
-var __decorate$9 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+var __decorate$8 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -33,74 +33,74 @@ let SimulatorState = class SimulatorState extends Node {
         });
     }
 };
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: String })
 ], SimulatorState.prototype, "clientId", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: String })
 ], SimulatorState.prototype, "clientName", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: String })
 ], SimulatorState.prototype, "clientType", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty()
 ], SimulatorState.prototype, "connectedClients", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Object })
 ], SimulatorState.prototype, "currentCollection", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty()
 ], SimulatorState.prototype, "currentCollectionId", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Array })
 ], SimulatorState.prototype, "currentCollectionItems", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: String })
 ], SimulatorState.prototype, "currentScreenId", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Number })
 ], SimulatorState.prototype, "currentSearchGravity", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: String })
 ], SimulatorState.prototype, "currentSearchString", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Object })
 ], SimulatorState.prototype, "highlightedItem", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: String })
 ], SimulatorState.prototype, "highlightedItemId", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Array })
 ], SimulatorState.prototype, "highlightedItemIds", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Array })
 ], SimulatorState.prototype, "magnets", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Array })
 ], SimulatorState.prototype, "screenIds", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Object })
 ], SimulatorState.prototype, "selectedItem", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: String })
 ], SimulatorState.prototype, "selectedItemId", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Array })
 ], SimulatorState.prototype, "selectedItemIds", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: String })
 ], SimulatorState.prototype, "lastUpdated", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Array })
 ], SimulatorState.prototype, "tags", void 0);
-__decorate$9([
+__decorate$8([
     ReactiveProperty({ type: Number })
 ], SimulatorState.prototype, "updateCounter", void 0);
-SimulatorState = __decorate$9([
+SimulatorState = __decorate$8([
     Register
 ], SimulatorState);
 
-var __decorate$8 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+var __decorate$7 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -109,16 +109,16 @@ var __decorate$8 = (undefined && undefined.__decorate) || function (decorators, 
 let TabBase = class TabBase extends IoElement {
     static get Style() {
         return /* css */ `
-      :host {
-        flex: 1 1 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 2em;
-        overflow-y: auto;
-      }
-    `;
+            :host {
+                flex: 1 1 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 2em;
+                overflow-y: auto;
+            }
+        `;
     }
     static get Listeners() {
         return {
@@ -159,17 +159,17 @@ let TabBase = class TabBase extends IoElement {
         ]);
     }
 };
-__decorate$8([
+__decorate$7([
     Property()
 ], TabBase.prototype, "controller", void 0);
-__decorate$8([
+__decorate$7([
     ReactiveProperty({ type: SimulatorState })
 ], TabBase.prototype, "simulatorState", void 0);
-TabBase = __decorate$8([
+TabBase = __decorate$7([
     Register
 ], TabBase);
 
-var __decorate$7 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+var __decorate$6 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -178,17 +178,17 @@ var __decorate$7 = (undefined && undefined.__decorate) || function (decorators, 
 let TabNavigate = class TabNavigate extends TabBase {
     static get Style() {
         return /* css */ `
-      :host {
-        justify-content: center;
-      }
-      :host > h2 {
-        pointer-events: none;
-        user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-      }
-    `;
+            :host {
+                justify-content: center;
+            }
+            :host > h2 {
+                pointer-events: none;
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+            }
+        `;
     }
     onPointermove(event) {
         super.onPointermove(event);
@@ -202,14 +202,14 @@ let TabNavigate = class TabNavigate extends TabBase {
         ]);
     }
 };
-TabNavigate = __decorate$7([
+TabNavigate = __decorate$6([
     Register
 ], TabNavigate);
 const tabNavigate = function (arg0) {
     return TabNavigate.vConstructor(arg0);
 };
 
-var __decorate$6 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+var __decorate$5 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -219,14 +219,14 @@ const GESTURE_THRESHOLD = 20;
 let TabSelect = class TabSelect extends TabBase {
     static get Style() {
         return /* css */ `
-      :host {
-        text-align: justify;
-      }
-      :host .cover-image {
-        float: right;
-        margin: 4.2em 0 0.5em 1em;
-      }
-    `;
+            :host {
+                text-align: justify;
+            }
+            :host .cover-image {
+                float: right;
+                margin: 4.2em 0 0.5em 1em;
+            }
+        `;
     }
     onPointerdown(event) {
         super.onPointerdown(event);
@@ -285,14 +285,14 @@ let TabSelect = class TabSelect extends TabBase {
         ]);
     }
 };
-TabSelect = __decorate$6([
+TabSelect = __decorate$5([
     Register
 ], TabSelect);
 const tabSelect = function (arg0) {
     return TabSelect.vConstructor(arg0);
 };
 
-var __decorate$5 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+var __decorate$4 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -301,30 +301,21 @@ var __decorate$5 = (undefined && undefined.__decorate) || function (decorators, 
 let TabInspect = class TabInspect extends TabBase {
     static get Style() {
         return /* css */ `
-      :host {
-        padding: 0;
-      }
-      iframe {
-        flex: 1 1 auto;
-        border: none;
-        align-self: stretch;
-      }
-    `;
+            :host {
+                padding: 0;
+            }
+            :host > iframe {
+                flex: 1 1 auto;
+                border: none;
+                align-self: stretch;
+            }
+        `;
     }
     changed() {
         const selected = this.simulatorState.selectedItem;
         let itemUrl = '';
         if (selected) {
-            itemUrl = selected.url ||
-                selected.href ||
-                selected.link ||
-                selected.source ||
-                selected.archiveUrl ||
-                selected.pageUrl ||
-                selected.webUrl ||
-                selected.URL ||
-                selected.Link ||
-                selected.Source;
+            itemUrl = selected.url;
             // If no explicit URL found, construct from Internet Archive ID
             if (!itemUrl && selected.id) {
                 itemUrl = `https://archive.org/details/${selected.id}`;
@@ -335,14 +326,66 @@ let TabInspect = class TabInspect extends TabBase {
         ]);
     }
 };
-TabInspect = __decorate$5([
+TabInspect = __decorate$4([
     Register
 ], TabInspect);
 const tabInspect = function (arg0) {
     return TabInspect.vConstructor(arg0);
 };
 
-var __decorate$4 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+var __decorate$3 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+let MagnetItem = class MagnetItem extends IoElement {
+    static get Style() {
+        return /* css */ `
+            :host {
+                display: flex;
+                flex-direction: row;
+                gap: 0.5em;
+                border: var(--io_border);
+                border-color: var(--io_borderColorOutset);
+                margin: 0.5em 0;
+                padding: 0.5em;
+                border-radius: var(--io_borderRadius);
+                background-color: var(--io_bgColor);
+            }
+            :host > h3 {
+                margin: 0 1em 0 0;
+            }
+            :host > io-object {
+                flex: 1 1 auto;
+            }
+    `;
+    }
+    onDeleteMagnet() {
+        this.controller.sendDeleteMagnetEvent(this.magnet.title);
+    }
+    changed() {
+        this.render([
+            h3(this.magnet.title),
+            ioObject({ value: this.magnet, label: 'Magnet Data' }),
+            ioButton({ label: 'Delete', action: this.onDeleteMagnet, class: 'red' })
+        ]);
+    }
+};
+__decorate$3([
+    ReactiveProperty({ type: Object })
+], MagnetItem.prototype, "magnet", void 0);
+__decorate$3([
+    ReactiveProperty({ type: Object })
+], MagnetItem.prototype, "controller", void 0);
+MagnetItem = __decorate$3([
+    Register
+], MagnetItem);
+const magnetItem = function (arg0) {
+    return MagnetItem.vConstructor(arg0);
+};
+
+var __decorate$2 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -379,119 +422,37 @@ function applyGravityCurve(rawValue) {
     const curved = normalizedAbs * normalizedAbs * 100;
     return Math.round(sign * curved);
 }
-let TabGravity = class TabGravity extends TabBase {
+let TabMagnet = class TabMagnet extends TabBase {
     static get Style() {
         return /* css */ `
-      :host > io-number-slider {
-        align-self: stretch;
-      }
-      :host > io-number-slider > io-number {
-        flex-basis: 4rem;
-      }
-    `;
+          :host {
+              display: block;
+          }
+          :host .input-row {
+              display: flex;
+              flex-direction: row;
+              gap: 10px;
+          }
+          :host .input-row > io-string {
+              flex: 1 1 auto;
+          }
+          :host .input-row > io-button {
+              flex: 0 0 4rem;
+          }
+          :host > io-number-slider {
+              align-self: stretch;
+          }
+          :host > io-number-slider > io-number {
+              flex-basis: 4rem;
+          }
+      `;
     }
     onGravitySet(event) {
         const curvedValue = applyGravityCurve(event.detail.value);
         this.controller.setSearchGravity(curvedValue);
     }
-    changed() {
-        const currentGravity = this.simulatorState.currentSearchGravity;
-        const sliderValue = reverseGravityCurve(currentGravity);
-        this.render([
-            h2('Gravity Force'),
-            ioNumberSlider({ min: -100, max: 100, step: 1, value: sliderValue, '@value-input': this.onGravitySet }),
-        ]);
-    }
-};
-TabGravity = __decorate$4([
-    Register
-], TabGravity);
-const tabGravity = function (arg0) {
-    return TabGravity.vConstructor(arg0);
-};
-
-var __decorate$3 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-let MagnetItem = class MagnetItem extends IoElement {
-    static get Style() {
-        return /* css */ `
-      :host {
-        display: flex;
-        flex-direction: row;
-        gap: 0.5em;
-        border: var(--io_border);
-        border-color: var(--io_borderColorOutset);
-        margin: 0.5em 0;
-        padding: 0.5em;
-        border-radius: var(--io_borderRadius);
-        background-color: var(--io_bgColor);
-      }
-      :host > h3 {
-        margin: 0 1em 0 0;
-        flex: 1 1 auto;
-      }
-      :host > io-object {
-      }
-    `;
-    }
-    onDeleteMagnet() {
-        this.controller.sendDeleteMagnetEvent(this.magnet.title);
-    }
-    changed() {
-        this.render([
-            h3(this.magnet.title),
-            ioObject({ value: this.magnet, label: 'Magnet Data' }),
-            ioButton({ label: 'Delete', action: this.onDeleteMagnet, class: 'red' })
-        ]);
-    }
-};
-__decorate$3([
-    ReactiveProperty({ type: Object })
-], MagnetItem.prototype, "magnet", void 0);
-__decorate$3([
-    ReactiveProperty({ type: Object })
-], MagnetItem.prototype, "controller", void 0);
-MagnetItem = __decorate$3([
-    Register
-], MagnetItem);
-const magnetItem = function (arg0) {
-    return MagnetItem.vConstructor(arg0);
-};
-
-var __decorate$2 = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-let TabMagnet = class TabMagnet extends TabBase {
-    static get Style() {
-        return /* css */ `
-      :host {
-        display: block;
-      }
-      :host > h2 {
-        margin: 0;
-      }
-      :host .input-row {
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-      }
-      :host .input-row > io-string {
-        flex: 1 1 auto;
-      }
-      :host .input-row > io-button {
-        flex: 0 0 4rem;
-      }
-    `;
-    }
     onAddMagnet() {
-        const input = this.$['input-magnet-name'];
+        const input = this.$['magnet-name-input'];
         const name = (input).value.trim();
         if (name) {
             input.value = '';
@@ -513,12 +474,16 @@ let TabMagnet = class TabMagnet extends TabBase {
         }
     }
     changed() {
+        const currentGravity = this.simulatorState.currentSearchGravity;
+        const sliderValue = reverseGravityCurve(currentGravity);
         const magnets = this.simulatorState.magnets || [];
         this.render([
+            h2('Gravity Force'),
+            ioNumberSlider({ min: -100, max: 100, step: 1, value: sliderValue, '@value-input': this.onGravitySet }),
             h2('Search Magnets'),
             p('Create magnets to attract related items'),
             div({ class: 'input-row' }, [
-                ioString({ id: 'input-magnet-name', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp }),
+                ioString({ id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp }),
                 ioButton({ label: 'Add', action: this.onAddMagnet })
             ]),
             ...magnets.map(magnet => magnetItem({ magnet: magnet, controller: this.controller }))
@@ -541,10 +506,13 @@ var __decorate$1 = (undefined && undefined.__decorate) || function (decorators, 
 let TabAdjust = class TabAdjust extends TabBase {
     static get Style() {
         return /* css */ `
-      :host > io-inspector {
-        align-self: stretch;
-      }
-    `;
+            :host > io-inspector {
+              align-self: stretch;
+            }
+            :host io-property-editor > .row > span {
+              flex: 0 1 10rem;
+            }
+        `;
     }
     changed() {
         this.render([
@@ -586,16 +554,16 @@ let SpacetimeController = class SpacetimeController extends IoElement {
     static { SpacetimeController_1 = this; }
     static get Style() {
         return /* css */ `
-      :host {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        width: 100%;
-      }
-      :host > io-navigator {
-        flex: 1 1 auto;
-        overflow: hidden;
-      }
+            :host {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                width: 100%;
+            }
+            :host > io-navigator {
+                flex: 1 1 auto;
+                overflow: hidden;
+            }
     `;
     }
     static supabaseUrl = 'https://gwodhwyvuftyrvbymmvc.supabase.co';
@@ -645,18 +613,16 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                         { id: 'Navigate', icon: '🧭' },
                         { id: 'Select', icon: '👆' },
                         { id: 'Inspect', icon: '🔍' },
-                        { id: 'Gravity', icon: '🌍' },
                         { id: 'Magnet', icon: '🧲' },
                         { id: 'Adjust', icon: '⚙️' },
                     ],
-                    selectedID: Storage({ key: 'path', storage: 'hash', value: 'About' })
+                    selectedID: Storage({ key: 'page', storage: 'hash', value: 'About' })
                 }),
                 elements: [
                     ioMarkdown({ id: 'About', src: './docs/About.md' }),
                     tabNavigate({ id: 'Navigate', controller: this, simulatorState: this.simulatorState }),
                     tabSelect({ id: 'Select', controller: this, simulatorState: this.simulatorState }),
                     tabInspect({ id: 'Inspect', controller: this, simulatorState: this.simulatorState }),
-                    tabGravity({ id: 'Gravity', controller: this, simulatorState: this.simulatorState }),
                     tabMagnet({ id: 'Magnet', controller: this, simulatorState: this.simulatorState }),
                     tabAdjust({ id: 'Adjust', controller: this, simulatorState: this.simulatorState }),
                 ]

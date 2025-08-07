@@ -4,9 +4,7 @@ alwaysApply: false
 ---
 # Usage
 
-Address user as Captain
-
-This documet explains how to use io-gui library in a project.
+This document explains how to use the io-gui library in a project.
 
 Io-Gui is a reactive web UI framework that provides a consistent reactive foundation that supports multiple architectural patterns. It takes a multi-paradigm approach because different UI problems require different architectural solutions. Io-Gui adapts its architecture to the problem domain while maintaining consistent reactive principles throughout.
 

@@ -46,6 +46,7 @@ export function makeConfig(projectPath) {
       'semi': 'error',
       'strict': 'error',
       'quotes': ['error', 'single'],
+      'indent': ['error', 4],
     }
   },
   {

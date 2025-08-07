@@ -1920,6 +1920,7 @@ export declare class IoInspector extends IoElement {
 	};
 	onLinkClicked(event: CustomEvent): void;
 	valueChanged(): void;
+	valueMutated(): void;
 	selectedChanged(): void;
 	selectedMutated(): void;
 	changed(): void;
