@@ -162,15 +162,15 @@ class SpaceCraftSim {
         // Supabase channel reference
         this.clientChannel = null;
         this.presenceVersion = 0; // For tracking changes to presence state
-        
+
         // Fetch timeout reference
         this.contentFetchTimeout = null;
-        
+
         // QR Code configuration
         this.qrcodeDefaults = {
-      dim: 100, // Default dimension (can be overridden in CSS)
+            dim: 100, // Default dimension (can be overridden in CSS)
             pad: 1, // Padding around QR code
-      pal: ['#000', '#fff'] // Color palette [background, foreground]
+            pal: ['#000', '#fff'] // Color palette [background, foreground]
         };
         
         // Define QR code to be generated
