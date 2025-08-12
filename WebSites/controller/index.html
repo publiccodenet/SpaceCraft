@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>SpaceCraft Controller</title>
+    <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Mulish:400italic,400,600italic,600,700italic,700" rel="stylesheet">
+    <script type="importmap">
+      {
+        "imports": {
+          "io-gui": "./lib/io-gui/index.js"
+        }
+      }
+    </script>
+    <style>
+      html, body {
+          margin: 0;
+          padding: 0;
+          width: 100vw;
+          height: 100vh;
+          overflow: hidden;
+          background-color: #111;
+          color: #eee;
+          font-family: 'Mulish', 'Roboto', sans-serif;
+          
+          /* Prevent mobile browser behaviors */
+          overscroll-behavior: none;
+          touch-action: none;
+          -webkit-text-size-adjust: 100%;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          user-select: none;
+      }
+    </style>
+    <script src="./lib/supabase.min.js"></script>
+    <script type="module">
+      import './build/SpacetimeController.js';
+    </script>
+  </head>
+  <body>
+    <spacetime-controller></spacetime-controller>
+  </body>
+</html> 

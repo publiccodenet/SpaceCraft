@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["esnext", "dom"],
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "outDir": "build",
+    "paths": {
+      "io-gui": ["./lib/io-gui/"]
+    }
+  },
+
+  "include": ["./src", "./global.d.ts"]
+}

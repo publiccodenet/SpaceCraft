@@ -5,7 +5,7 @@ on:
     branches:
       - main  # or master, depending on your default branch
     paths:
-      - 'WebSites/spacetime/**'  # Only trigger when files in this directory change
+      - 'WebSites/**'  # Only trigger when files in this directory change
   workflow_dispatch:
   repository_dispatch:
     types: [spacetime-deploy]
@@ -35,7 +35,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './WebSites/spacetime'
+          path: './WebSites'
           
       - name: Deploy to GitHub Pages
         id: deployment

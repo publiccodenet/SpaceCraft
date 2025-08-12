@@ -256,3 +256,8 @@ logs/
 # Add this to explicitly UN-ignore the WebSites/spacetime/Build directory
 !WebSites/spacetime/Build/
 !WebSites/spacetime/Build/**
+
+# Controller
+WebSites/controller/node_modules/
+!WebSites/controller/lib/
+!WebSites/controller/build/
