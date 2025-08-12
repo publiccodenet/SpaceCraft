@@ -253,6 +253,11 @@ coverage/
 *.log
 logs/
 
-# Add this to explicitly UN-ignore the WebSites/spacetime/Build directory
-!WebSites/spacetime/Build/
-!WebSites/spacetime/Build/**
+# Add this to explicitly UN-ignore the WebSites/SpaceCraft/Build directory
+!WebSites/SpaceCraft/Build/
+!WebSites/SpaceCraft/Build/**
+
+# Controller
+WebSites/controller/node_modules/
+!WebSites/controller/lib/
+!WebSites/controller/build/

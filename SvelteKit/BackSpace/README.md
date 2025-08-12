@@ -66,10 +66,6 @@ BackSpace serves as the middle layer in the SpaceCraft pipeline:
 - `npm run unity:start` - Launch Unity editor
 - `npm run unity:openproject` - Open Unity project
 - `npm run unity:prebuild` - Run Unity prebuild steps
-- `npm run unity:install:sveltekit` - Install Unity build to SvelteKit static
-- `npm run unity:install:website` - Install Unity build to website directory
-- `npm run unity:copyup` - Copy WebSites/spacetime to Unity/SpaceCraft/Builds/SpaceCraft
-- `npm run unity:copydown` - Copy edited JS files back to WebSites/spacetime
 
 ### 🔴 Broken Scripts (Need Fixing)
 
@@ -189,7 +185,7 @@ The SpaceCraft project has a special workflow for developing JavaScript code tha
    ```bash
    npm run unity:copydown
    ```
-   This copies your edited files back to `WebSites/spacetime/StreamingAssets/SpaceCraft/` which is under source control
+   This copies your edited files back to `WebSites/SpaceCraft/StreamingAssets/SpaceCraft/` which is under source control
 
 5. **Commit and deploy**:
    ```bash
@@ -220,7 +216,7 @@ Unity/SpaceCraft/
     ├── selector.html               # Selector controller UI
     └── *.css                       # Stylesheets
 
-WebSites/spacetime/
+WebSites/SpaceCraft/
 └── StreamingAssets/SpaceCraft/     # Deployed version (source control)
     ├── controller.js               # Gets updated by copydown
     ├── spacecraft.js               # Gets updated by copydown

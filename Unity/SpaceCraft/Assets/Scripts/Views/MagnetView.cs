@@ -123,7 +123,7 @@ public class MagnetView : BaseView
         Description = "Starting scale for the magnet", 
         Min = 0.01f, Max = 10f, Step = 0.01f)]
     [Range(0.01f, 10f)]
-    [SerializeField] public float initialScale = 0.01f;
+    [SerializeField] public float viewScaleInitial = 0.01f;
     
     [Header("UI References")]
     // Uses labelText from BaseView (now properly typed as TextMeshPro)
@@ -137,19 +137,6 @@ public class MagnetView : BaseView
     [SerializeField] private float lastCacheUpdateTime = 0f;
     [SerializeField] private const float CACHE_UPDATE_INTERVAL = 1.0f; // Update cache every second
     
-    /// <summary>
-    /// Set the initial and target scales for this magnet
-    /// </summary>
-    /// <param name="initial">Starting scale</param>
-    /// <param name="target">Final scale</param>
-    public void SetScales(float initial, float target)
-    {
-        initialScale = initial;
-        viewScale = target;
-        currentScale = initialScale;
-        Debug.Log($"[MagnetView] SetScales: {title} initial={initialScale}, target={viewScale}");
-    }
-    
     protected override void Awake()
     {
         // Set magnet-appropriate defaults before calling base
@@ -157,7 +144,7 @@ public class MagnetView : BaseView
         // mass, staticFriction, dynamicFriction are now public fields
         
         // Set initial scale to tiny, target to full size
-        currentScale = initialScale;
+        currentScale = viewScaleInitial;
         
         // Call base Awake to initialize components and physics
         base.Awake();
@@ -442,7 +429,8 @@ public class MagnetView : BaseView
     public void SetPosition(float x, float y)
     {
         Debug.Log($"MagnetView: MovePosition: title: {title} x: {x} y: {y}");
-        transform.position = new Vector3(x, transform.position.y, y);
+        transform.position = 
+            new Vector3(x, transform.position.y, y);
     }
     
     /// <summary>
@@ -454,25 +442,10 @@ public class MagnetView : BaseView
         
         Debug.Log($"MagnetView: PushPosition: title: {title} xDelta: {xDelta} yDelta: {yDelta}");
         
-        Vector3 newPosition = transform.position + new Vector3(xDelta, 0, yDelta);
+        Vector3 newPosition = 
+            transform.position + 
+            new Vector3(xDelta, 0, yDelta);
         rigidBody.MovePosition(newPosition);
-    }
-    
-
-    
-    /// <summary>
-    /// Updates the physics material properties based on current magnet settings
-    /// </summary>
-    protected override void UpdatePhysicsMaterial()
-    {
-        if (rigidBody != null)
-        {
-            // Mass is now handled by BaseView physics system
-            // Physics material is also handled by BaseView
-            
-            // Just call the base class physics material update
-            base.UpdatePhysicsMaterial();
-        }
     }
 
     /// <summary>
@@ -482,8 +455,6 @@ public class MagnetView : BaseView
     {
         return (1.2f, 1.2f); // Square magnet dimensions
     }
-    
-
 
     // BaseView abstract method implementations
     
@@ -492,7 +463,6 @@ public class MagnetView : BaseView
     /// </summary>
     protected override float CalculateTargetScale()
     {
-        // MAGNETS SHOULD ALWAYS BE THE SAME SIZE - NO DYNAMIC SCALING!
         return viewScale; // Magnets don't have selection scaling like items
     }
     

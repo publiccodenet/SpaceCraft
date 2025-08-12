@@ -43,9 +43,10 @@ public static class Build
             Debug.Log($"[Build] Current WebGL template is '{PlayerSettings.WebGL.template}'. Forcing to '{templateName}'.");
             PlayerSettings.WebGL.template = templateName;
         }
-        // --- End Force --- 
         
-        string buildPath = Path.Combine("Builds", "SpaceCraft");
+        //string buildPath = Path.Combine("Builds", "SpaceCraft");
+        // Build directly into WebSites/SpaceCraft at top level of repo.
+        string buildPath = Path.Combine("..", "..", "WebSites", "SpaceCraft");
         
         BuildPlayerOptions options = new BuildPlayerOptions
         {
