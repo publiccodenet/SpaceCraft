@@ -13,7 +13,16 @@
     "experimentalDecorators": true,
     "outDir": "build",
     "paths": {
-      "io-gui": ["./lib/io-gui/"]
+      "io-gui": ["./lib/io-gui/packages/io-gui/"],
+      "io-core": ["./lib/io-gui/packages/io-core"],
+      "io-menus": ["./lib/io-gui/packages/io-menus"],
+      "io-colors": ["./lib/io-gui/packages/io-colors"],
+      "io-navigation": ["./lib/io-gui/packages/io-navigation"],
+      "io-sliders": ["./lib/io-gui/packages/io-sliders"],
+      "io-inputs": ["./lib/io-gui/packages/io-inputs"],
+      "io-markdown": ["./lib/io-gui/packages/io-markdown"],
+      "io-editors": ["./lib/io-gui/packages/io-editors"],
+      "io-icons": ["./lib/io-gui/packages/io-icons"]
     }
   },
 
