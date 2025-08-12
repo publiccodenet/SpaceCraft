@@ -713,7 +713,7 @@ class SpaceCraftSim {
                     handler: (obj, results) => {
                         console.log("[SpaceCraft] ContentLoaded event received from Unity");
                         console.log("[SpaceCraft] unityMetaData:", results.unityMetaData);
-                        this.unityMetaData = results.unityMetaData;
+                        this.state.unityMetaData = results.unityMetaData;
                     }
                 },
                 
