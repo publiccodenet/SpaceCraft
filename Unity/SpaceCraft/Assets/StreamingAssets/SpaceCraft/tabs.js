@@ -68,7 +68,6 @@ export class AboutTab extends BaseTab {
             <p><strong>🧭 Navigate</strong> - Move your view around the 3D space, pan and zoom to explore collections</p>
             <p><strong>👆 Select</strong> - Point and choose items, select multiple things, toggle selections on/off</p>
             <p><strong>🔍 Inspect</strong> - Look inside items in detail, view web pages and documents embedded in the simulator</p>
-            <p><strong>🌍 Gravity</strong> - Search for items and make matching ones attract or repel with physics forces - type "science" and crank up gravity to pull all science books toward the center, or reverse it to scatter them away</p>
             <p><strong>🧲 Magnet</strong> - Create magnetic hotspots that pull items around - drop a "fiction" magnet and watch novels fly toward it, use device tilt to move magnets around in real-time</p>
             <p><strong>⚙️ Adjust</strong> - Fine-tune physics settings, friction, forces, and visual parameters to get the simulation feeling just right</p>
             <p>Each tab gives you different powers over the physics simulation - from gently browsing to dramatically reshaping how thousands of items behave based on their content and your interests.</p>
@@ -94,7 +93,7 @@ export class NavigateTab extends BaseTab {
         
         const instructions = document.createElement('p');
         instructions.className = 'instructions';
-        instructions.innerHTML = '<strong>DRAG to pan • SCROLL to zoom</strong><br><small>Search functionality moved to Gravity tab</small>';
+        instructions.innerHTML = '<strong>DRAG to pan • SCROLL to zoom</strong><br>';
         this.contentElement.appendChild(instructions);
     }
     
@@ -303,7 +302,7 @@ export class InspectTab extends BaseTab {
  * Gravity Tab - DEPRECATED - Replaced by magnet-based system
  * This tab is being phased out in favor of the new magnet-based scoring and scaling system
  */
-// export class GravityTab extends BaseTab {
+export class GravityTab extends BaseTab {
     static tabId = 'gravity';
     static tabLabel = '🌍 Gravity';
     
@@ -1116,14 +1115,14 @@ export class InspectTab extends BaseTab {
         // Update button state after action
         this.updateMakeMagnetButtonState();
     }
-// }
+}
 
 /**
- * Magnet Tab - Search magnet creation and management
+ * Magnets Tab - Search magnets creation and management
  */
-export class MagnetTab extends BaseTab {
-    static tabId = 'magnet';
-    static tabLabel = '🧲 Magnet';
+export class MagnetsTab extends BaseTab {
+    static tabId = 'magnets';
+    static tabLabel = '🧲 Magnets';
 
     constructor(controller) {
         super(controller);
@@ -1136,88 +1135,797 @@ export class MagnetTab extends BaseTab {
         
         // Track which magnets are being deleted
         this.deletingMagnets = new Set();
+        
+        // Sub-panel management
+        this.currentPanel = null; // 'edit' or null
+        this.mainButtonsContainer = null;
+        this.subPanelContainer = null;
+        this.magnetsListContainer = null;
+        
+        // Unified edit panel elements (simplified)
+        this.searchInput = null;
+        this.tagSuggestionsPanel = null;
+        
+        // Modal search editor
+        this.modalSearchEditor = null;
+        this.isModalOpen = false;
+        
+        // Edit panel state management
+        this.editMode = null; // 'add' or 'frob'
+        this.currentMagnetId = null; // null for add mode, magnetId for frob mode
+        this.pendingMagnetId = null; // Used during add mode waiting
+        this.isWaitingForMagnet = false; // True when waiting for new magnet to appear
     }
     
     createContent() {
         this.contentElement = document.createElement('div');
-        this.contentElement.className = 'magnet-content';
+        this.contentElement.className = 'magnets-content';
         this.contentElement.style.cssText = `
             display: flex;
             flex-direction: column;
             height: 100%;
         `;
         
+        // Title
         const header = document.createElement('div');
-        header.innerHTML = '<h2>Search Magnets</h2><p>Create magnets to attract related items</p>';
-        header.style.cssText = `flex-shrink: 0;`;
+        header.innerHTML = '<h2>Magnets</h2>';
+        header.style.cssText = `flex-shrink: 0; margin-bottom: 20px;`;
         this.contentElement.appendChild(header);
         
-        const controls = document.createElement('div');
-        controls.className = 'magnet-controls';
-        
-        const tagInput = document.createElement('input');
-        tagInput.type = 'text';
-        tagInput.id = 'magnet-tag-input';
-        tagInput.className = 'magnet-tag-input';
-        tagInput.placeholder = 'Magnet Search String';
+        // Main buttons row: Add
+        this.mainButtonsContainer = document.createElement('div');
+        this.mainButtonsContainer.className = 'main-buttons-row';
+        this.mainButtonsContainer.style.cssText = `
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        `;
         
         const addButton = document.createElement('button');
-        addButton.id = 'add-magnet';
-        addButton.className = 'magnet-add-button';
+        addButton.className = 'main-button';
         addButton.textContent = 'Add';
+        addButton.onclick = () => this.showEditPanel('add', null);
         
-        // Attach event handlers directly
-        addButton.onclick = (e) => {
-            e.stopPropagation(); // Prevent any parent event handling
-            const tag = tagInput.value.trim();
-            if (tag) {
-                this.addMagnet(tag);
-                tagInput.value = '';
-                tagInput.focus(); // Keep focus for easy multiple additions
-            }
-        };
+        this.mainButtonsContainer.appendChild(addButton);
+        this.contentElement.appendChild(this.mainButtonsContainer);
         
-        tagInput.onkeypress = (e) => {
-            if (e.key === 'Enter') {
-                addButton.click();
-            }
-        };
+        // Sub-panel container (replaces everything below when active)
+        this.subPanelContainer = document.createElement('div');
+        this.subPanelContainer.className = 'sub-panel-container';
+        this.subPanelContainer.style.cssText = `
+            flex: 1;
+            display: none;
+        `;
+        this.contentElement.appendChild(this.subPanelContainer);
         
-        controls.appendChild(tagInput);
-        controls.appendChild(addButton);
-        this.contentElement.appendChild(controls);
+        // Default magnets list container
+        this.magnetsListContainer = document.createElement('div');
+        this.magnetsListContainer.className = 'magnets-list-container';
+        this.magnetsListContainer.style.cssText = `
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        `;
         
         const magnetsList = document.createElement('div');
         magnetsList.id = 'magnets-list';
         magnetsList.className = 'magnets-list';
-        this.contentElement.appendChild(magnetsList);
+        this.magnetsListContainer.appendChild(magnetsList);
+        this.contentElement.appendChild(this.magnetsListContainer);
         
-        // Initialize magnet list display
+        // Initialize magnets list display
         this.updateMagnetsList();
     }
     
+    showEditPanel(mode, magnetId) {
+        this.currentPanel = 'edit';
+        this.editMode = mode;
+        this.currentMagnetId = magnetId;
+        this.isWaitingForMagnet = false;
+        this.pendingMagnetId = null;
+        
+        // Hide magnets list and show sub-panel
+        this.magnetsListContainer.style.display = 'none';
+        this.subPanelContainer.style.display = 'flex';
+        this.subPanelContainer.style.flexDirection = 'column';
+        
+        // Clear and populate sub-panel
+        this.subPanelContainer.innerHTML = '';
+        
+        this.createEditPanel();
+    }
+    
+    hidePanel() {
+        this.currentPanel = null;
+        this.editMode = null;
+        this.currentMagnetId = null;
+        this.pendingMagnetId = null;
+        this.isWaitingForMagnet = false;
+        this.subPanelContainer.style.display = 'none';
+        this.magnetsListContainer.style.display = 'flex';
+    }
+    
+    generateMagnetId() {
+        // Generate unique ID: timestamp + 4 random digits
+        const timestamp = Date.now();
+        const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        return `${timestamp}${randomDigits}`;
+    }
+    
+    extractTimestampFromId(id) {
+        // Extract timestamp from magnet ID (first 13 digits)
+        if (!id || typeof id !== 'string') return null;
+        const timestampStr = id.substring(0, 13);
+        const timestamp = parseInt(timestampStr, 10);
+        return isNaN(timestamp) ? null : timestamp;
+    }
+    
+    createEditPanel() {
+        // Buttons row - changes based on mode and state
+        const buttonsRow = document.createElement('div');
+        buttonsRow.className = 'edit-panel-buttons';
+        buttonsRow.style.cssText = `
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        `;
+        
+        // Create buttons based on current mode and state
+        this.createEditPanelButtons(buttonsRow);
+        this.subPanelContainer.appendChild(buttonsRow);
+        
+        if (this.editMode === 'add') {
+            // Add mode: Simple text input with suggestions
+            this.createAddModeInterface();
+        } else if (this.editMode === 'frob') {
+            // Frob mode: Structured interface with modal editor
+            this.    createFrobModeInterface();
+        }
+    }
+    
+    createAddModeInterface() {
+        // Full width text field
+        const inputRow = document.createElement('div');
+        inputRow.className = 'search-input-row';
+        inputRow.style.cssText = `margin-bottom: 20px; flex-shrink: 0;`;
+        
+        this.searchInput = document.createElement('input');
+        this.searchInput.type = 'text';
+        this.searchInput.className = 'search-input full-width';
+        this.searchInput.placeholder = 'Enter search text...';
+        
+        this.searchInput.oninput = () => this.populateTagSuggestions();
+        this.searchInput.onkeypress = (e) => {
+            if (e.key === 'Enter' && !this.isWaitingForMagnet) {
+                this.commitAddMagnet();
+            }
+        };
+        
+        // Disable input if waiting for magnet
+        this.searchInput.disabled = this.isWaitingForMagnet;
+        
+        inputRow.appendChild(this.searchInput);
+        this.subPanelContainer.appendChild(inputRow);
+        
+        // Add suggestions interface for add mode
+        this.createSuggestionsInterface();
+    }
+    
+    createFrobModeInterface() {
+        // Get current magnet data
+        const magnet = this.findMagnetById(this.currentMagnetId);
+        if (!magnet) return;
+        
+        // Search Text row with Edit button
+        const searchTextRow = document.createElement('div');
+        searchTextRow.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        `;
+        
+        const searchLabel = document.createElement('span');
+        searchLabel.textContent = 'Search Text:';
+        searchLabel.style.cssText = `
+            font-weight: bold;
+            color: #fff;
+            min-width: 100px;
+        `;
+        
+        const searchDisplay = document.createElement('span');
+        searchDisplay.textContent = magnet.title || '';
+        searchDisplay.style.cssText = `
+            flex: 1;
+            padding: 8px 12px;
+            background: #444;
+            border-radius: 4px;
+            color: #fff;
+            border: 1px solid #666;
+        `;
+        
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.style.cssText = `
+            padding: 8px 16px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        `;
+        editButton.onclick = () => this.openModalSearchEditor(magnet.title || '');
+        
+        searchTextRow.appendChild(searchLabel);
+        searchTextRow.appendChild(searchDisplay);
+        searchTextRow.appendChild(editButton);
+        this.subPanelContainer.appendChild(searchTextRow);
+        
+        // Store reference to display for updates
+        this.searchDisplay = searchDisplay;
+        
+        // Magnet Strength slider (-100 to 100)
+        const strengthRow = document.createElement('div');
+        strengthRow.style.cssText = `
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        `;
+        
+        const strengthLabel = document.createElement('label');
+        strengthLabel.textContent = 'Magnet Strength:';
+        strengthLabel.style.cssText = `
+            display: block;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        `;
+        
+        const strengthSlider = document.createElement('input');
+        strengthSlider.type = 'range';
+        strengthSlider.min = '-100';
+        strengthSlider.max = '100';
+        strengthSlider.value = magnet.magnetStrength ? (magnet.magnetStrength * 100).toString() : '100';
+        strengthSlider.style.cssText = `
+            width: 100%;
+            margin-bottom: 5px;
+        `;
+        
+        const strengthValue = document.createElement('span');
+        strengthValue.textContent = strengthSlider.value;
+        strengthValue.style.cssText = `
+            font-weight: bold;
+            color: #fff;
+        `;
+        
+        strengthSlider.oninput = () => {
+            strengthValue.textContent = strengthSlider.value;
+            // TODO: Update magnet strength in real-time
+        };
+        
+        strengthRow.appendChild(strengthLabel);
+        strengthRow.appendChild(strengthSlider);
+        strengthRow.appendChild(strengthValue);
+        this.subPanelContainer.appendChild(strengthRow);
+        
+        // Enabled checkbox
+        const enabledRow = document.createElement('div');
+        enabledRow.style.cssText = `
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        `;
+        
+        const enabledLabel = document.createElement('label');
+        enabledLabel.style.cssText = `
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            cursor: pointer;
+        `;
+        
+        const enabledCheckbox = document.createElement('input');
+        enabledCheckbox.type = 'checkbox';
+        enabledCheckbox.checked = magnet.enabled !== false;
+        enabledCheckbox.style.cssText = `
+            transform: scale(1.2);
+        `;
+        
+        enabledCheckbox.onchange = () => {
+            // TODO: Update magnet enabled state in real-time
+        };
+        
+        const enabledText = document.createElement('span');
+        enabledText.textContent = 'Enabled';
+        enabledText.style.cssText = `font-weight: bold;`;
+        
+        enabledLabel.appendChild(enabledCheckbox);
+        enabledLabel.appendChild(enabledText);
+        enabledRow.appendChild(enabledLabel);
+        this.subPanelContainer.appendChild(enabledRow);
+    }
+    
+    createSuggestionsInterface() {
+        // Simple suggestions label (no mode controls needed)
+        const suggestionsLabel = document.createElement('div');
+        suggestionsLabel.textContent = 'Tag Suggestions:';
+        suggestionsLabel.style.cssText = `
+            font-weight: bold;
+            margin: 10px 0 5px 0;
+            color: #fff;
+        `;
+        this.subPanelContainer.appendChild(suggestionsLabel);
+        
+        // Tag suggestions panel
+        this.tagSuggestionsPanel = this.createTagSuggestionsPanel();
+        this.subPanelContainer.appendChild(this.tagSuggestionsPanel);
+        
+        // Populate initial suggestions
+        this.populateTagSuggestions();
+    }
+    
+    openModalSearchEditor(currentText) {
+        if (this.isModalOpen) return;
+        this.isModalOpen = true;
+        
+        // Create modal overlay
+        this.modalSearchEditor = document.createElement('div');
+        this.modalSearchEditor.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+        `;
+        
+        // Modal content container
+        const modalContent = document.createElement('div');
+        modalContent.style.cssText = `
+            background: #333;
+            margin: 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+        `;
+        
+        // Header with title and buttons
+        const header = document.createElement('div');
+        header.style.cssText = `
+            padding: 20px;
+            border-bottom: 1px solid #555;
+            flex-shrink: 0;
+        `;
+        
+        const title = document.createElement('h3');
+        title.textContent = 'Enter Search String';
+        title.style.cssText = `
+            margin: 0 0 15px 0;
+            color: #fff;
+            text-align: center;
+        `;
+        
+        // Text input (pinned to top)
+        const modalInput = document.createElement('input');
+        modalInput.type = 'text';
+        modalInput.value = currentText;
+        modalInput.style.cssText = `
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            background: #444;
+            color: #fff;
+            box-sizing: border-box;
+        `;
+        
+        const buttonRow = document.createElement('div');
+        buttonRow.style.cssText = `
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        `;
+        
+        const setButton = document.createElement('button');
+        setButton.textContent = 'Set';
+        setButton.style.cssText = `
+            flex: 1;
+            padding: 12px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        `;
+        
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.style.cssText = `
+            flex: 1;
+            padding: 12px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        `;
+        
+        // Suggestions list (scrollable)
+        const suggestionsContainer = document.createElement('div');
+        suggestionsContainer.style.cssText = `
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        `;
+        
+        const suggestionsList = document.createElement('div');
+        suggestionsList.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        `;
+        
+        // Populate suggestions
+        const availableTags = this.controller.simulatorState.tags || [];
+        availableTags.forEach(tag => {
+            const item = document.createElement('div');
+            item.textContent = tag;
+            item.style.cssText = `
+                padding: 12px;
+                cursor: pointer;
+                background: #444;
+                border-radius: 4px;
+                color: #fff;
+                transition: background-color 0.2s;
+            `;
+            item.onmouseenter = () => item.style.backgroundColor = '#555';
+            item.onmouseleave = () => item.style.backgroundColor = '#444';
+            item.onclick = () => {
+                modalInput.value = tag;
+                modalInput.focus();
+            };
+            suggestionsList.appendChild(item);
+        });
+        
+        // Event handlers
+        const closeModal = () => {
+            if (this.modalSearchEditor) {
+                document.body.removeChild(this.modalSearchEditor);
+                this.modalSearchEditor = null;
+                this.isModalOpen = false;
+            }
+        };
+        
+        const saveAndClose = () => {
+            const newText = modalInput.value.trim();
+            if (newText && this.searchDisplay) {
+                this.searchDisplay.textContent = newText;
+                // Update the magnet with new search text
+                this.updateMagnetSearchText(newText);
+            }
+            closeModal();
+        };
+        
+        setButton.onclick = saveAndClose;
+        cancelButton.onclick = closeModal;
+        
+        modalInput.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                saveAndClose();
+            } else if (e.key === 'Escape') {
+                closeModal();
+            }
+        };
+        
+        // Filter suggestions as user types
+        modalInput.oninput = () => {
+            const searchText = modalInput.value.toLowerCase();
+            const items = suggestionsList.children;
+            
+            for (let item of items) {
+                const tag = item.textContent.toLowerCase();
+                if (!searchText || tag.includes(searchText)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        };
+        
+        // Assemble modal
+        buttonRow.appendChild(setButton);
+        buttonRow.appendChild(cancelButton);
+        header.appendChild(title);
+        header.appendChild(modalInput);
+        header.appendChild(buttonRow);
+        suggestionsContainer.appendChild(suggestionsList);
+        modalContent.appendChild(header);
+        modalContent.appendChild(suggestionsContainer);
+        this.modalSearchEditor.appendChild(modalContent);
+        
+        // Add to DOM and focus
+        document.body.appendChild(this.modalSearchEditor);
+        setTimeout(() => {
+            modalInput.focus();
+            modalInput.select();
+        }, 100);
+    }
+    
+    updateMagnetSearchText(newText) {
+        if (this.editMode === 'frob' && this.currentMagnetId) {
+            // For now, use the existing pattern - delete old and add new with same ID
+            this.controller.sendDeleteMagnetEvent(this.currentMagnetId);
+            setTimeout(() => {
+                this.controller.sendAddMagnetEvent(newText, this.currentMagnetId);
+            }, 50);
+            console.log(`[Magnets] Updated magnet ${this.currentMagnetId} search text: ${newText}`);
+        }
+        
+        // Auto-focus the search input if not waiting
+        if (!this.isWaitingForMagnet) {
+            setTimeout(() => {
+                if (this.searchInput) {
+                    this.searchInput.focus();
+                }
+            }, 100);
+        }
+    }
+    
+    createEditPanelButtons(buttonsRow) {
+        if (this.editMode === 'add') {
+            if (this.isWaitingForMagnet) {
+                // Waiting for magnet to be created
+                const cancelButton = document.createElement('button');
+                cancelButton.className = 'panel-button';
+                cancelButton.textContent = 'Cancel';
+                cancelButton.onclick = () => this.cancelAddMagnet();
+                buttonsRow.appendChild(cancelButton);
+                
+                const statusSpan = document.createElement('span');
+                statusSpan.textContent = 'Creating magnet...';
+                statusSpan.style.cssText = 'color: #fff; font-style: italic; align-self: center;';
+                buttonsRow.appendChild(statusSpan);
+            } else {
+                // Normal add mode
+                const addMagnetButton = document.createElement('button');
+                addMagnetButton.className = 'panel-button';
+                addMagnetButton.textContent = 'Add Magnet';
+                addMagnetButton.onclick = () => this.commitAddMagnet();
+                
+                const cancelButton = document.createElement('button');
+                cancelButton.className = 'panel-button';
+                cancelButton.textContent = 'Cancel';
+                cancelButton.onclick = () => this.hidePanel();
+                
+                buttonsRow.appendChild(addMagnetButton);
+                buttonsRow.appendChild(cancelButton);
+            }
+        } else if (this.editMode === 'frob') {
+            // Frob mode
+            const removeMagnetButton = document.createElement('button');
+            removeMagnetButton.className = 'panel-button remove-button';
+            removeMagnetButton.textContent = 'Remove Magnet';
+            removeMagnetButton.onclick = () => this.removeMagnetAndClose();
+            
+            const doneButton = document.createElement('button');
+            doneButton.className = 'panel-button';
+            doneButton.textContent = 'Done';
+            doneButton.onclick = () => this.hidePanel();
+            
+            buttonsRow.appendChild(removeMagnetButton);
+            buttonsRow.appendChild(doneButton);
+        }
+    }
+    
+    // Methods moved from GravityTab
+
+    
+    createTagSuggestionsPanel() {
+        const panel = document.createElement('div');
+        panel.className = 'suggestions-panel';
+        panel.style.cssText = `
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        `;
+        
+        const header = document.createElement('div');
+        header.className = 'suggestions-header';
+        header.textContent = 'Tag Suggestions:';
+        header.style.cssText = `
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        `;
+        panel.appendChild(header);
+        
+        const list = document.createElement('div');
+        list.className = 'suggestions-list scroll-area';
+        list.style.cssText = `
+            flex: 1;
+            overflow-y: auto;
+        `;
+        panel.appendChild(list);
+        
+        return panel;
+    }
+    
+    populateTagSuggestions() {
+        if (!this.tagSuggestionsPanel) return;
+        
+        const list = this.tagSuggestionsPanel.querySelector('.suggestions-list');
+        if (!list) return;
+        
+        list.innerHTML = '';
+        
+        const searchText = this.searchInput ? this.searchInput.value.toLowerCase().trim() : '';
+        const availableTags = this.controller.simulatorState.tags || [];
+        
+        let tagsToShow = [];
+        
+        if (searchText) {
+            // Separate prefix and infix matches
+            const prefixMatches = [];
+            const infixMatches = [];
+            
+            availableTags.forEach(tag => {
+                const lowerTag = tag.toLowerCase();
+                if (lowerTag.startsWith(searchText)) {
+                    prefixMatches.push(tag);
+                } else if (lowerTag.includes(searchText)) {
+                    infixMatches.push(tag);
+                }
+            });
+            
+            // Show prefix matches first, then infix matches
+            tagsToShow = [...prefixMatches, ...infixMatches];
+        } else {
+            // Show all tags when no search text
+            tagsToShow = [...availableTags];
+        }
+        
+        // Limit to 50 suggestions for performance
+        tagsToShow = tagsToShow.slice(0, 50);
+        
+        // Update header with count
+        const header = this.tagSuggestionsPanel.querySelector('.suggestions-header');
+        if (header) {
+            const count = tagsToShow.length;
+            const plural = count === 1 ? '' : 's';
+            header.textContent = `${count} Tag Suggestion${plural}:`;
+        }
+        
+        // Create suggestion items
+        tagsToShow.forEach(tag => {
+            const item = document.createElement('div');
+            item.className = 'suggestion-item';
+            item.textContent = tag;
+            item.style.cssText = `
+                padding: 8px;
+                cursor: pointer;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            `;
+            item.onclick = () => this.selectTag(tag);
+            list.appendChild(item);
+        });
+    }
+    
+    selectTag(tag) {
+        if (this.searchInput) {
+            this.searchInput.value = tag;
+            this.populateTagSuggestions();
+        }
+    }
+    
+    commitAddMagnet() {
+        const searchText = this.searchInput ? this.searchInput.value.trim() : '';
+        if (!searchText) return;
+        
+        // Generate unique magnet ID
+        this.pendingMagnetId = this.generateMagnetId();
+        this.isWaitingForMagnet = true;
+        
+        // Update UI to waiting state
+        this.updateEditPanelButtons();
+        this.searchInput.disabled = true;
+        
+        // Create magnet JSON
+        const magnetData = {
+            id: this.pendingMagnetId,
+            title: searchText,
+            timestamp: Date.now()
+        };
+        
+        // Send create magnet command
+        this.controller.sendAddMagnetEvent(searchText, this.pendingMagnetId);
+        console.log(`[Magnets] Creating magnet with ID: ${this.pendingMagnetId}`);
+    }
+    
+    cancelAddMagnet() {
+        if (this.pendingMagnetId) {
+            // Send delete command for the pending magnet
+            this.controller.sendDeleteMagnetEvent(this.pendingMagnetId);
+            console.log(`[Magnets] Cancelling magnet creation: ${this.pendingMagnetId}`);
+        }
+        this.hidePanel();
+    }
+    
+    updateMagnetLive() {
+        if (this.editMode === 'frob' && this.currentMagnetId) {
+            const searchText = this.searchInput ? this.searchInput.value.trim() : '';
+            if (searchText) {
+                // For now, use the existing pattern - delete old and add new with same ID
+                // This gives live update behavior until we have a proper update method
+                const currentMagnet = this.findMagnetById(this.currentMagnetId);
+                if (currentMagnet && currentMagnet.title !== searchText) {
+                    // Only update if the text actually changed
+                    this.controller.sendDeleteMagnetEvent(this.currentMagnetId);
+                    // Use a small delay to ensure delete completes before add
+                    setTimeout(() => {
+                        this.controller.sendAddMagnetEvent(searchText, this.currentMagnetId);
+                    }, 50);
+                    console.log(`[Magnets] Live updating magnet ${this.currentMagnetId}: ${searchText}`);
+                }
+            }
+        }
+    }
+    
+    removeMagnetAndClose() {
+        if (this.currentMagnetId) {
+            this.deleteMagnet(this.currentMagnetId);
+            this.hidePanel();
+        }
+    }
+    
+    findMagnetById(magnetId) {
+        const magnets = this.controller.simulatorState.magnets || [];
+        return magnets.find(magnet => magnet.id === magnetId || magnet.title === magnetId);
+    }
+    
+    updateEditPanelButtons() {
+        // Update the buttons in the current edit panel
+        const buttonsRow = this.subPanelContainer.querySelector('.edit-panel-buttons');
+        if (buttonsRow) {
+            buttonsRow.innerHTML = '';
+            this.createEditPanelButtons(buttonsRow);
+        }
+    }
+    
+    addMagnetFromSearch() {
+        // Legacy method - redirect to commitAddMagnet
+        this.commitAddMagnet();
+    }
+    
     activate() {
-        // Initialize orientation tracking when magnet tab becomes active
+        // Initialize orientation tracking when magnets tab becomes active
         if (!this.controller.motionModule.isOrientationActive) {
             this.controller.motionModule.initializeOrientationTracking().then(success => {
                 if (success) {
-                    console.log(`[Magnet] Device orientation tracking initialized`);
+                    console.log(`[Magnets] Device orientation tracking initialized`);
                 } else {
-                    console.log(`[Magnet] Device orientation tracking failed`);
+                    console.log(`[Magnets] Device orientation tracking failed`);
                 }
             });
         }
         
-        // Auto-focus the magnet search input field
-        setTimeout(() => {
-            const magnetInput = document.getElementById('magnet-tag-input');
-            if (magnetInput) {
-                magnetInput.focus();
-            }
-        }, 100); // Small delay to ensure DOM is ready
-        
         this.updateMagnetsList();
-        console.log('Tab', 'MagnetTab activated');
+        console.log('Tab', 'MagnetsTab activated');
     }
     
     addMagnet(tag) {
@@ -1234,14 +1942,14 @@ export class MagnetTab extends BaseTab {
         });
         
         if (existingMagnet) {
-            console.log(`[Magnet] Duplicate magnet: "${existingMagnet.title}"`);
+            console.log(`[Magnets] Duplicate magnet: "${existingMagnet.title}"`);
             this.highlightExistingMagnet(existingMagnet.title);
             return;
         }
         
         // Send AddMagnet event to simulator
         this.controller.sendAddMagnetEvent(trimmedTag);
-        console.log(`[Magnet] Sent AddMagnet command for: ${trimmedTag}`);
+        console.log(`[Magnets] Sent AddMagnet command for: ${trimmedTag}`);
     }
     
     highlightExistingMagnet(magnetName) {
@@ -1269,7 +1977,7 @@ export class MagnetTab extends BaseTab {
     deleteMagnet(magnetName) {
         // Prevent multiple delete attempts for the same magnet
         if (this.deletingMagnets.has(magnetName)) {
-            console.log(`[Magnet] Delete already in progress for: ${magnetName}`);
+            console.log(`[Magnets] Delete already in progress for: ${magnetName}`);
             return;
         }
         
@@ -1282,17 +1990,17 @@ export class MagnetTab extends BaseTab {
             // Add deleting class to the entire row
             magnetElement.classList.add('deleting');
             
-            // Find and disable the delete button
-            const deleteButton = magnetElement.querySelector('.magnet-delete-button');
-            if (deleteButton) {
-                deleteButton.classList.add('deleting');
-                deleteButton.disabled = true;
+            // Find and disable the frob button (or delete button for backward compatibility)
+            const frobButton = magnetElement.querySelector('.magnet-frob-button, .magnet-delete-button');
+            if (frobButton) {
+                frobButton.classList.add('deleting');
+                frobButton.disabled = true;
             }
         }
         
         // Send DeleteMagnet event to simulator
         this.controller.sendDeleteMagnetEvent(magnetName);
-        console.log(`[Magnet] Sent DeleteMagnet command for: ${magnetName}`);
+        console.log(`[Magnets] Sent DeleteMagnet command for: ${magnetName}`);
     }
     
     updateMagnetsList() {
@@ -1303,12 +2011,19 @@ export class MagnetTab extends BaseTab {
         
         const list = document.getElementById('magnets-list');
         if (!list) {
-            console.error('[MagnetTab] magnets-list element not found');
+            console.error('[MagnetsTab] magnets-list element not found');
             return;
         }
         
         // Get magnets from simulator state
-        const magnets = this.controller.simulatorState.magnets || [];
+        const rawMagnets = this.controller.simulatorState.magnets || [];
+        
+        // Sort magnets by timestamp (newest first) - extract timestamp from ID if available
+        const magnets = rawMagnets.sort((a, b) => {
+            const aTimestamp = this.extractTimestampFromId(a.id || a.title) || 0;
+            const bTimestamp = this.extractTimestampFromId(b.id || b.title) || 0;
+            return bTimestamp - aTimestamp; // Descending order (newest first)
+        });
         
         // Extract magnet titles for comparison
         const magnetTitles = magnets.map(m => m.title);
@@ -1320,7 +2035,7 @@ export class MagnetTab extends BaseTab {
             return;
         }
         
-        console.log(`[Magnet] Updating list: ${magnets.length} magnets`);
+        console.log(`[Magnets] Updating list: ${magnets.length} magnets`);
         
         // Tear down and recreate
         list.innerHTML = '';
@@ -1364,23 +2079,24 @@ export class MagnetTab extends BaseTab {
             item.addEventListener('touchend', (e) => this.handleTouchEnd(e));
             item.addEventListener('touchcancel', (e) => this.handleTouchEnd(e));
             
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'magnet-delete-button';
-            deleteButton.textContent = 'Delete';
+            const frobButton = document.createElement('button');
+            frobButton.className = 'magnet-frob-button';
+            frobButton.textContent = 'Frob';
             
             // Apply deleting state if this magnet is being deleted
             if (this.deletingMagnets.has(magnetName)) {
-                deleteButton.classList.add('deleting');
-                deleteButton.disabled = true;
+                frobButton.classList.add('deleting');
+                frobButton.disabled = true;
             }
             
-            deleteButton.onclick = (e) => {
+            frobButton.onclick = (e) => {
                 e.stopPropagation(); // Prevent any parent event handling
-                this.deleteMagnet(magnetName);
+                const magnetId = magnet.id || magnetName; // Use ID if available, fallback to name
+                this.showEditPanel('frob', magnetId);
             };
             
             item.appendChild(nameSpan);
-            item.appendChild(deleteButton);
+            item.appendChild(frobButton);
             list.appendChild(item);
         });
         
@@ -1399,6 +2115,29 @@ export class MagnetTab extends BaseTab {
     }
     
     onSimulatorStateChange(state) {
+        // Check if we're waiting for a magnet to be created
+        if (this.isWaitingForMagnet && this.pendingMagnetId) {
+            const magnets = state.magnets || [];
+            const newMagnet = magnets.find(magnet => 
+                magnet.id === this.pendingMagnetId || 
+                magnet.title === this.pendingMagnetId
+            );
+            
+            if (newMagnet) {
+                // Magnet was created successfully - switch to frob mode
+                console.log(`[Magnets] New magnet created successfully: ${newMagnet.title}`);
+                this.isWaitingForMagnet = false;
+                this.editMode = 'frob';
+                this.currentMagnetId = newMagnet.id || newMagnet.title;
+                this.pendingMagnetId = null;
+                
+                // Update the edit panel to frob mode
+                this.updateEditPanelButtons();
+                this.searchInput.disabled = false;
+                this.searchInput.focus();
+            }
+        }
+        
         // Update magnet list when simulator state changes
         this.updateMagnetsList();
     }
@@ -1412,7 +2151,7 @@ export class MagnetTab extends BaseTab {
             }
         }
         
-        console.log('Tab', 'MagnetTab deactivated');
+        console.log('Tab', 'MagnetsTab deactivated');
     }
     
     /**
@@ -1465,11 +2204,11 @@ export class MagnetTab extends BaseTab {
             },
             
             onSelect: () => {
-                console.log(`[Magnet] Selected: ${magnetName}`);
+                console.log(`[Magnets] Selected: ${magnetName}`);
             },
             
             onDeselect: () => {
-                console.log(`[Magnet] Deselected: ${magnetName}`);
+                console.log(`[Magnets] Deselected: ${magnetName}`);
             }
         });
         
@@ -1499,7 +2238,7 @@ export class MagnetTab extends BaseTab {
         
         const gestureInstanceId = this.magnetGestures.get(magnetName);
         if (!gestureInstanceId) {
-            console.error(`[MagnetTab] No gesture instance found for magnet: ${magnetName}`);
+            console.error(`[MagnetsTab] No gesture instance found for magnet: ${magnetName}`);
             return;
         }
         

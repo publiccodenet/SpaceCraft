@@ -271,21 +271,22 @@ class Bridge {
     }
 
 
-    destroyObject(obj)
+    destroyObject(obj, path = null)
     {
         if (obj == null) {
-            console.log("Bridge: destroyObject: obj is null", JSON.stringify(query));
+            console.log("Bridge: destroyObject: obj is null");
             return;
         }
 
         this.sendEvent({
             event: 'Destroy',
             id: this.objToId(obj),
+            path: path,
         });
     }
 
 
-    updateObject(obj, data)
+    updateObject(obj, data, path = null)
     {
         if (obj == null) {
             console.log("Bridge: updateObject: obj is null", "data", JSON.stringify(data));
@@ -296,13 +297,14 @@ class Bridge {
             event: 'Update',
             id: this.objToId(obj),
             data: data,
+            path: path,
         });
     }
 
 
-    queryObject(obj, query, callback)
+    queryObject(obj, query, callback, path = null)
     {
-        //console.log("Bridge.queryObject", "obj:", obj, obj.id, "query:", query, "callback:", callback, "id", this.objToId(obj));
+        //console.log("Bridge.queryObject", "obj:", obj, obj.id, "query:", query, "callback:", callback, "id", this.objToId(obj), "path:", path);
 
         if (obj == null) {
             console.log("Bridge: queryObject: obj is null", "query", JSON.stringify(query), "callback", callback);
@@ -322,30 +324,15 @@ class Bridge {
             event: 'Query',
             id: this.objToId(obj),
             data: data,
+            path: path,
         });
     }
 
 
-    setGlobals(obj, globals)
-    {
-        if (obj == null) {
-            console.log("Bridge: setGlobals: obj is null", "globals", JSON.stringify(globals));
-            return;
-        }
-
-        var data = {
-            globals: globals,
-        };
-
-        this.sendEvent({
-            event: 'SetGlobals',
-            id: this.objToId(obj),
-            data: data,
-        });
-    }
 
 
-    animateObject(obj, data)
+
+    animateObject(obj, data, path = null)
     {
         if (obj == null) {
             console.log("Bridge: animateObject: obj is null", "data", JSON.stringify(data));
@@ -358,11 +345,12 @@ class Bridge {
             event: 'Animate',
             id: this.objToId(obj),
             data: data,
+            path: path,
         });
     }
 
 
-    updateInterests(obj, data)
+    updateInterests(obj, data, path = null)
     {
         if (obj == null) {
             console.log("Bridge: updateInterests: obj is null", "data", data);
@@ -373,6 +361,60 @@ class Bridge {
             event: 'UpdateInterests',
             id: this.objToId(obj),
             data: data,
+            path: path,
+        });
+    }
+
+
+    destroyAfter(obj, delay, path = null)
+    {
+        if (obj == null) {
+            console.log("Bridge: destroyAfter: obj is null", "delay", delay);
+            return;
+        }
+
+        this.sendEvent({
+            event: 'DestroyAfter',
+            id: this.objToId(obj),
+            data: { delay: delay },
+            path: path,
+        });
+    }
+
+
+
+
+
+    setParent(obj, parentPath = null, worldPositionStays = true)
+    {
+        if (obj == null) {
+            console.log("Bridge: setParent: obj is null", "parentPath", parentPath);
+            return;
+        }
+
+        this.sendEvent({
+            event: 'SetParent',
+            id: this.objToId(obj),
+            data: { 
+                path: parentPath,
+                worldPositionStays: worldPositionStays
+            },
+        });
+    }
+
+
+    addComponent(obj, className, path = null)
+    {
+        if (obj == null) {
+            console.log("Bridge: addComponent: obj is null", "className", className);
+            return;
+        }
+
+        this.sendEvent({
+            event: 'AddComponent',
+            id: this.objToId(obj),
+            data: { className: className },
+            path: path,
         });
     }
 

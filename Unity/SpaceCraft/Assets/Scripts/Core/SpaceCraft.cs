@@ -141,34 +141,32 @@ public class SpaceCraft : BridgeObject
     /// Used by JavaScript controllers to build dynamic parameter control panels.
     /// Property is PascalCase but will serialize to camelCase for JavaScript.
     /// </summary>
-    [Newtonsoft.Json.JsonProperty("parameterMetaData")]
-    public JArray ParameterMetaData
+    [Newtonsoft.Json.JsonProperty("unityMetaData")]
+    public JObject UnityMetaData
     {
         get
         {
-            var metadataArray = new JArray();
+            var metadataObject = new JObject();
             
-            // Get InputManager parameters if available
-            if (inputManager != null)
-            {
-                CollectParametersFromObject(inputManager, "InputManager", metadataArray);
-            }
+            // Get InputManager parameters
+            metadataObject["InputManager"] = CollectParametersFromType(typeof(InputManager), "InputManager");
             
             // Get SpaceCraft's own parameters
-            CollectParametersFromObject(this, "SpaceCraft", metadataArray);
+            metadataObject["SpaceCraft"] = CollectParametersFromType(typeof(SpaceCraft), "SpaceCraft");
             
-            // Could add other components here as needed
+            // Get MagnetView parameters
+            metadataObject["MagnetView"] = CollectParametersFromType(typeof(MagnetView), "MagnetView");
             
-            return metadataArray;
+            return metadataObject;
         }
     }
     
     /// <summary>
-    /// Helper method to collect parameter metadata from an object using reflection
+    /// Helper method to collect parameter metadata from a type using reflection
     /// </summary>
-    private void CollectParametersFromObject(object obj, string componentName, JArray metadataArray)
+    private JArray CollectParametersFromType(Type type, string componentName)
     {
-        Type type = obj.GetType();
+        var metadataArray = new JArray();
         
         // Get all public fields and properties
         var members = type.GetMembers(BindingFlags.Public | BindingFlags.Instance)
@@ -183,30 +181,16 @@ public class SpaceCraft : BridgeObject
             // Get member info
             string memberName = member.Name;
             Type memberType = null;
-            object currentValue = null;
             bool canWrite = true;
             
             if (member is FieldInfo field)
             {
                 memberType = field.FieldType;
-                currentValue = field.GetValue(obj);
                 canWrite = !field.IsInitOnly && !field.IsLiteral;
             }
             else if (member is PropertyInfo prop)
             {
                 memberType = prop.PropertyType;
-                if (prop.CanRead)
-                {
-                    try 
-                    {
-                        currentValue = prop.GetValue(obj);
-                    }
-                    catch 
-                    {
-                        // Some properties might throw exceptions
-                        currentValue = null;
-                    }
-                }
                 canWrite = prop.CanWrite;
             }
             
@@ -234,6 +218,20 @@ public class SpaceCraft : BridgeObject
                     description = tooltipAttr.tooltip;
             }
             
+            // Get default value for the type (no current value since we don't have an instance)
+            object defaultValue = null;
+            try
+            {
+                if (memberType.IsValueType)
+                {
+                    defaultValue = Activator.CreateInstance(memberType);
+                }
+            }
+            catch
+            {
+                // If we can't create a default value, just leave it null
+            }
+            
             // Create metadata object
             var metadata = new JObject
             {
@@ -241,7 +239,7 @@ public class SpaceCraft : BridgeObject
                 ["name"] = memberName,
                 ["displayName"] = attr.DisplayName ?? memberName,
                 ["type"] = GetTypeString(memberType),
-                ["currentValue"] = currentValue != null ? JToken.FromObject(currentValue) : null,
+                ["defaultValue"] = defaultValue != null ? JToken.FromObject(defaultValue) : null,
                 ["canWrite"] = canWrite && !attr.ReadOnly,
                 ["category"] = attr.Category ?? "General",
                 ["unityType"] = "unity",
@@ -266,6 +264,8 @@ public class SpaceCraft : BridgeObject
                 
             metadataArray.Add(metadata);
         }
+        
+        return metadataArray;
     }
     
     /// <summary>

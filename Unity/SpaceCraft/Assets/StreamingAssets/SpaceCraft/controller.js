@@ -271,8 +271,12 @@ export class Controller {
         this.sendEventToSimulator('select', { action });
     }
 
-    sendAddMagnetEvent(magnetName) {
-        this.sendEventToSimulator('AddMagnet', { magnetName });
+    sendAddMagnetEvent(magnetName, magnetId = null) {
+        const payload = { magnetName };
+        if (magnetId) {
+            payload.magnetId = magnetId;
+        }
+        this.sendEventToSimulator('AddMagnet', payload);
     }
 
     sendDeleteMagnetEvent(magnetName) {
@@ -456,9 +460,9 @@ export class Controller {
             currentSearchString: simState.currentSearchString || '',
             currentSearchGravity: simState.currentSearchGravity || 0
         };
-        
+
         console.log(`[Controller] Updated simulator state:`, this.simulatorState);
-        
+
         // Note: Search and gravity are now managed by simulator, no need to send here
         
         // Notify ALL tabs of state changes, not just active tab

@@ -59,6 +59,20 @@ public class MagnetView : BaseView
     [SerializeField] public new float dynamicFriction = 40.0f;
     
     // ================== MAGNETIC FIELD ==================
+
+    [ExposedParameter("Magnet Enabled", 
+        Category = "Magnetic Field", 
+        Description = "Whether the magnetic field is active", 
+        Unit = "")]
+    [SerializeField] public bool magnetEnabled = true;
+    
+    [ExposedParameter("Magnet Strength", 
+        Category = "Magnetic Field", 
+        Description = "Strength of the magnetic field", 
+        Min = 0f, Max = 100f, Step = 0.1f)]
+    [Range(0f, 100f)]
+    [SerializeField] public float magnetStrength = 1.0f;
+    
     [ExposedParameter("Magnet Radius", 
         Category = "Magnetic Field", 
         Description = "Effective radius of magnetic field influence", 
@@ -81,19 +95,6 @@ public class MagnetView : BaseView
         Min = 0f, Max = 100f, Step = 0.1f, Unit = "units")]
     [Range(0f, 100f)]
     [SerializeField] public float magnetHoleRadius = 10f;
-    
-    [ExposedParameter("Magnet Strength", 
-        Category = "Magnetic Field", 
-        Description = "Strength of the magnetic field", 
-        Min = 0f, Max = 100f, Step = 0.1f)]
-    [Range(0f, 100f)]
-    [SerializeField] public float magnetStrength = 1.0f;
-    
-    [ExposedParameter("Magnet Enabled", 
-        Category = "Magnetic Field", 
-        Description = "Whether the magnetic field is active", 
-        Unit = "")]
-    [SerializeField] public bool magnetEnabled = true;
     
     [ExposedParameter("Score Min", 
         Category = "Magnetic Field", 

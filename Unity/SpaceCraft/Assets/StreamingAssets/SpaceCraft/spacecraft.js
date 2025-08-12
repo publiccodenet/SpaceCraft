@@ -689,12 +689,12 @@ class SpaceCraftSim {
                 // Listen for when content is processed in Unity
                 "ContentLoaded": {
                     query: {
-                        "parameterMetaData": "ParameterMetaData"
+                        "unityMetaData": "UnityMetaData"
                     },
                     handler: (obj, results) => {
                         console.log("[SpaceCraft] ContentLoaded event received from Unity");
-                        console.log("[SpaceCraft] parameterMetaData:", results.parameterMetaData);
-                        this.parameterMetaData = results.parameterMetaData;
+                        console.log("[SpaceCraft] unityMetaData:", results.unityMetaData);
+                        this.unityMetaData = results.unityMetaData;
                     }
                 },
                 
