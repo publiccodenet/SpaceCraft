@@ -67,7 +67,7 @@ let TabMagnet = class TabMagnet extends TabBase {
         const curvedValue = applyGravityCurve(event.detail.value);
         this.controller.setSearchGravity(curvedValue);
     }
-    onAddMagnet() {
+    onCreateMagnet() {
         const input = this.$['magnet-name-input'];
         const name = (input).value.trim();
         if (name) {
@@ -81,12 +81,13 @@ let TabMagnet = class TabMagnet extends TabBase {
                 // this.highlightExistingMagnet(existingMagnet.title);
                 return;
             }
-            this.controller.sendAddMagnetEvent(name);
+            const magnetData = {};
+            this.controller.sendCreateMagnetEvent(magnetData);
         }
     }
     onKeyUp(event) {
         if (event.key === 'Enter') {
-            this.onAddMagnet();
+            this.onCreateMagnet();
         }
     }
     changed() {
@@ -100,7 +101,7 @@ let TabMagnet = class TabMagnet extends TabBase {
             p('Create magnets to attract related items'),
             div({ class: 'input-row' }, [
                 ioString({ id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp }),
-                ioButton({ label: 'Add', action: this.onAddMagnet })
+                ioButton({ label: 'Add', action: this.onCreateMagnet })
             ]),
             ...magnets.map(magnet => magnetItem({ magnet: magnet, controller: this.controller }))
         ]);

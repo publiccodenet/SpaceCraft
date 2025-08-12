@@ -1,6 +1,6 @@
 import { h2, p, Register, ioString, ioButton, div, IoString, ioNumberSlider } from 'io-gui';
 import { TabBase, TabBaseProps } from './TabBase.js';
-import { magnetItem } from './MagnetItem.js';
+import { magnetItem, Magnet } from './MagnetItem.js';
 
 function reverseGravityCurve(gravityValue: number) {
     // Reverse the curve mapping: given a gravity value, find the raw slider position
@@ -69,7 +69,7 @@ export class TabMagnet extends TabBase {
         const curvedValue = applyGravityCurve(event.detail.value);
         this.controller.setSearchGravity(curvedValue);
     }
-    onAddMagnet() {
+    onCreateMagnet() {
         const input = this.$['magnet-name-input'] as IoString;
         const name = (input).value.trim();
         if (name) {
@@ -84,12 +84,31 @@ export class TabMagnet extends TabBase {
                 // this.highlightExistingMagnet(existingMagnet.title);
                 return;
             }
-            this.controller.sendAddMagnetEvent(name);
+            const magnetData: Magnet = {
+                dynamicFriction: number;
+                enabled: boolean;
+                magnetEnabled: boolean;
+                magnetHoleRadius: number;
+                magnetId: string;
+                magnetRadius: number;
+                magnetSoftness: number;
+                magnetStrength: number;
+                mass: number;
+                scoreMax: number;
+                scoreMin: number;
+                searchExpression: string;
+                searchType: string;
+                staticFriction: number;
+                title: string;
+                viewScale: number;
+                viewScaleInitial: number;
+            };
+            this.controller.sendCreateMagnetEvent(magnetData);
         }
     }
     onKeyUp(event: KeyboardEvent) {
         if (event.key === 'Enter') {
-            this.onAddMagnet();
+            this.onCreateMagnet();
         }
     }
     changed() {
@@ -104,7 +123,7 @@ export class TabMagnet extends TabBase {
             p('Create magnets to attract related items'),
             div({class: 'input-row'}, [
                 ioString({id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp}),
-                ioButton({label: 'Add', action: this.onAddMagnet})
+                ioButton({label: 'Add', action: this.onCreateMagnet})
             ]),
             ...magnets.map(magnet => magnetItem({magnet: magnet, controller: this.controller}))
         ]);

@@ -426,7 +426,7 @@ public class MagnetView : BaseView
     /// <summary>
     /// Teleports magnet to specific position (initial positioning)
     /// </summary>
-    public void SetPosition(float x, float y)
+    public void MovePosition(float x, float y)
     {
         Debug.Log($"MagnetView: MovePosition: title: {title} x: {x} y: {y}");
         transform.position = 

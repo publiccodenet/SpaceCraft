@@ -109,14 +109,17 @@ let SpacetimeController = class SpacetimeController extends IoElement {
     sendSelectEvent(action) {
         this.sendEventToSimulator('select', { action });
     }
-    sendAddMagnetEvent(magnetName) {
-        this.sendEventToSimulator('AddMagnet', { magnetName });
+    sendCreateMagnetEvent(magnetData) {
+        this.sendEventToSimulator('createMagnet', { magnetData });
     }
-    sendDeleteMagnetEvent(magnetName) {
-        this.sendEventToSimulator('DeleteMagnet', { magnetName });
+    sendUpdateMagnetEvent(magnetData) {
+        this.sendEventToSimulator('updateMagnet', { magnetData });
     }
-    sendPushMagnetEvent(magnetName, deltaX, deltaZ) {
-        this.sendEventToSimulator('PushMagnet', { magnetName, deltaX, deltaZ });
+    sendDeleteMagnetEvent(magnetId) {
+        this.sendEventToSimulator('deleteMagnet', { magnetId });
+    }
+    sendPushMagnetEvent(magnetId, deltaX, deltaY) {
+        this.sendEventToSimulator('pushMagnet', { magnetId, deltaX, deltaY });
     }
     sendEventToSimulator(eventType, data) {
         if (!this.clientChannel) {
@@ -159,7 +162,7 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 this.simulatorState.update(simulator.shared);
             }
         })
-            .on('broadcast', { event: 'simulator_takeover' }, (payload) => {
+            .on('broadcast', { event: 'simulatorTakeover' }, (payload) => {
             this.currentSimulatorId = payload.newSimulatorId;
         });
     }

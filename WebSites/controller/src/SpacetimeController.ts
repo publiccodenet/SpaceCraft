@@ -5,6 +5,7 @@ import { tabInspect } from './TabInspect.js';
 import { tabMagnet } from './TabMagnet.js';
 import { tabAdjust } from './TabAdjust.js';
 import { SimulatorState } from './SimulatorState.js';
+import { Magnet } from './MagnetItem.js';
 
 function generateClientId() {
     return 'controller-' + Math.random().toString(36).substr(2, 9);
@@ -150,16 +151,20 @@ export class SpacetimeController extends IoElement {
         this.sendEventToSimulator('select', { action });
     }
 
-    sendAddMagnetEvent(magnetName: string) {
-        this.sendEventToSimulator('AddMagnet', { magnetName });
+    sendCreateMagnetEvent(magnetData: Magnet) {
+        this.sendEventToSimulator('createMagnet', { magnetData });
     }
 
-    sendDeleteMagnetEvent(magnetName: string) {
-        this.sendEventToSimulator('DeleteMagnet', { magnetName });
+    sendUpdateMagnetEvent(magnetData: Magnet) {
+        this.sendEventToSimulator('updateMagnet', { magnetData });
     }
 
-    sendPushMagnetEvent(magnetName: string, deltaX: number, deltaZ: number) {
-        this.sendEventToSimulator('PushMagnet', { magnetName, deltaX, deltaZ });
+    sendDeleteMagnetEvent(magnetId: string) {
+        this.sendEventToSimulator('deleteMagnet', { magnetId });
+    }
+
+    sendPushMagnetEvent(magnetId: string, deltaX: number, deltaY: number) {
+        this.sendEventToSimulator('pushMagnet', { magnetId, deltaX, deltaY });
     }
 
     sendEventToSimulator(eventType: string, data: any) {
@@ -208,7 +213,7 @@ export class SpacetimeController extends IoElement {
                     this.simulatorState.update(simulator.shared);
                 }
             })
-            .on('broadcast', { event: 'simulator_takeover' }, (payload: SimulatorTakeoverPayload) => {
+            .on('broadcast', { event: 'simulatorTakeover' }, (payload: SimulatorTakeoverPayload) => {
                 this.currentSimulatorId = payload.newSimulatorId;
             });
     }
