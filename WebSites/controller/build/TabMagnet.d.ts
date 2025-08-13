@@ -1,7 +1,6 @@
 import { TabBase, TabBaseProps } from './TabBase.js';
 export declare class TabMagnet extends TabBase {
     static get Style(): string;
-    onGravitySet(event: CustomEvent): void;
     onCreateMagnet(): void;
     onKeyUp(event: KeyboardEvent): void;
     changed(): void;

@@ -388,7 +388,7 @@ class SpaceCraftSim {
 
         // --- Unity Loader Configuration ---
         // Note: Template variables like {{{ LOADER_FILENAME }}} are replaced by Unity during build.
-        const buildUrl = "/SpaceCraft/Build";
+        const buildUrl = "Build";
 
         // IMPORTANT: Make sure these template variables match your Unity WebGL template settings
         const loaderUrl = buildUrl + "/SpaceCraft.loader.js"; // Assuming default naming

@@ -498,7 +498,7 @@ export declare class IoElement extends HTMLElement {
 	dispatchQueue(debounce?: boolean): void;
 	throttle(func: CallbackFunction, arg?: any, timeout?: number): void;
 	debounce(func: CallbackFunction, arg?: any, timeout?: number): void;
-	onPropertyMutated(event: CustomEvent): true | undefined;
+	onPropertyMutated(event: CustomEvent): boolean;
 	dispatchMutation(object?: Object | Node$1, properties?: string[]): void;
 	bind<T>(name: string): Binding<T>;
 	unbind(name: string): void;
@@ -780,7 +780,7 @@ declare class Node$1 extends Object {
 	dispatchQueue(debounce?: boolean): void;
 	throttle(func: CallbackFunction, arg?: any, timeout?: number): void;
 	debounce(func: CallbackFunction, arg?: any, timeout?: number): void;
-	onPropertyMutated(event: CustomEvent): true | undefined;
+	onPropertyMutated(event: CustomEvent): boolean;
 	dispatchMutation(object?: Object | Node$1, properties?: string[]): void;
 	bind<T>(name: string): Binding<T>;
 	unbind(name: string): void;
@@ -797,7 +797,7 @@ export declare function initProperties(node: Node$1 | IoElement): void;
 export declare function setProperties(node: Node$1 | IoElement, props: any): void;
 export declare function setProperty(node: Node$1 | IoElement, name: string, value: any, debounce?: boolean): void;
 export declare function dispatchQueue(node: Node$1 | IoElement, debounce?: boolean): void;
-export declare function onPropertyMutated(node: Node$1 | IoElement, event: CustomEvent): true | undefined;
+export declare function onPropertyMutated(node: Node$1 | IoElement, event: CustomEvent): boolean;
 export declare function observeObjectProperty(node: Node$1 | IoElement, name: string, property: ReactivePropertyInstance): void;
 export declare function observeNodeProperty(node: Node$1 | IoElement, name: string, property: ReactivePropertyInstance): void;
 export declare function bind<T>(node: Node$1 | IoElement, name: string): Binding<T>;
@@ -1155,7 +1155,7 @@ export declare class Theme extends Node$1 {
 	registerTheme(themeID: string, theme: ThemeVars): void;
 	reset(): void;
 	themeIDChanged(): void;
-	onPropertyMutated(event: CustomEvent): true | undefined;
+	onPropertyMutated(event: CustomEvent): boolean;
 	fontSizeChanged(): void;
 	lineHeightChanged(): void;
 	changed(): void;
@@ -1856,16 +1856,19 @@ export type IoPropertyEditorProps = IoElementProps & {
 export declare class IoPropertyEditor extends IoElement {
 	static get Style(): string;
 	reactivity: ReactivityType;
-	value: Object;
+	value: Object | Array<any>;
 	properties: string[];
 	labeled: boolean;
 	orientation: "vertical" | "horizontal";
 	config: EditorConfig;
 	groups: EditorGroups;
 	widgets: EditorWidgets;
+	init(): void;
 	_onValueInput(event: CustomEvent): void;
 	valueMutated(): void;
 	changed(): void;
+	changeThrottled(): void;
+	dispose(): void;
 }
 export declare const ioPropertyEditor: (arg0?: IoPropertyEditorProps) => VDOMElement;
 export interface IoContextEditorExpandProps {
@@ -1908,24 +1911,24 @@ export type IoInspectorProps = IoElementProps & {
  **/
 export declare class IoInspector extends IoElement {
 	static get Style(): string;
-	value: Record<string, any> | any[];
-	selected: Record<string, any> | any[];
+	value: Object | Array<any>;
+	selected: Object | Array<any>;
 	search: string;
 	config: EditorConfig;
 	groups: EditorGroups;
 	widgets: EditorWidgets;
-	_cfgTimeout: number;
 	static get Listeners(): {
 		"io-button-clicked": string;
 	};
+	init(): void;
 	onLinkClicked(event: CustomEvent): void;
 	valueChanged(): void;
 	valueMutated(): void;
-	selectedChanged(): void;
 	selectedMutated(): void;
+	selectedChanged(): void;
 	changed(): void;
-	_onChangedThrottled(): void;
-	_onChange(): void;
+	changeThrottled(): void;
+	dispose(): void;
 }
 export declare const ioInspector: (arg0?: IoInspectorProps) => VDOMElement;
 export type IoObjectProps = IoElementProps & {
@@ -2137,7 +2140,7 @@ export declare class IoField extends IoElement {
 	onPointerup(event: PointerEvent): void;
 	onTouchstart(event: TouchEvent): void;
 	onTouchmove(event: TouchEvent): void;
-	onTouchend(): void;
+	onTouchend(event: TouchEvent): void;
 	inputValue(value: any): void;
 	onClick(event?: MouseEvent): void;
 	onKeydown(event: KeyboardEvent): void;
@@ -2310,8 +2313,6 @@ export declare class IoString extends IoField {
 	_setFromTextNode(): void;
 	_setObjectFromTextNodeJSON(): void;
 	onBlur(event: FocusEvent): void;
-	onPointerdown(event: PointerEvent): void;
-	onPointermove(event: PointerEvent): void;
 	onPointerup(event: PointerEvent): void;
 	onKeydown(event: KeyboardEvent): void;
 	onKeyup(event: KeyboardEvent): void;
