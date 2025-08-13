@@ -58,7 +58,7 @@ export class MagnetItem extends IoElement {
     declare controller: SpacetimeController;
 
     onDeleteMagnet() {
-        this.controller.sendDeleteMagnetEvent(this.magnet.title);
+        this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
     }
 
     changed() {

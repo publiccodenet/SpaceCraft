@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { h2, p, Register, ioString, ioButton, div, ioNumberSlider } from 'io-gui';
+import { h2, p, Register, ioString, ioButton, div } from 'io-gui';
 import { TabBase } from './TabBase.js';
 import { magnetItem } from './MagnetItem.js';
 function reverseGravityCurve(gravityValue) {
@@ -81,7 +81,28 @@ let TabMagnet = class TabMagnet extends TabBase {
                 // this.highlightExistingMagnet(existingMagnet.title);
                 return;
             }
-            const magnetData = {};
+            const timestamp = Date.now();
+            const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            const magnetId = `Magnet_${timestamp}${randomDigits}`;
+            const magnetData = {
+                magnetId: magnetId,
+                title: name,
+                searchExpression: name,
+                searchType: "fuzzy",
+                enabled: true,
+                magnetEnabled: true,
+                mass: 1.0,
+                staticFriction: 10.0,
+                dynamicFriction: 8.0,
+                magnetRadius: 100.0,
+                magnetSoftness: 0.5,
+                magnetHoleRadius: 10.0,
+                magnetStrength: 1.0,
+                scoreMin: 0.0,
+                scoreMax: 1.0,
+                viewScale: 4.0,
+                viewScaleInitial: 0.01
+            };
             this.controller.sendCreateMagnetEvent(magnetData);
         }
     }
@@ -95,9 +116,7 @@ let TabMagnet = class TabMagnet extends TabBase {
         const sliderValue = reverseGravityCurve(currentGravity);
         const magnets = this.simulatorState.magnets || [];
         this.render([
-            h2('Gravity Force'),
-            ioNumberSlider({ min: -100, max: 100, step: 1, value: sliderValue, '@value-input': this.onGravitySet }),
-            h2('Search Magnets'),
+            h2('Magnets'),
             p('Create magnets to attract related items'),
             div({ class: 'input-row' }, [
                 ioString({ id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp }),

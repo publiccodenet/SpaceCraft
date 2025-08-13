@@ -927,7 +927,7 @@ class SpaceCraftSim {
                     return;
                 }
 
-                const magnetBridge = this.spacecraft.magnets.get(magnetId);
+                const magnetBridge = this.spaceCraft.magnets.get(magnetId);
                 if (magnetBridge) {
                     console.warn(`[SpaceCraft] Magnet "${magnetData.magnetId}" already exists, ignoring duplicate`);
                     return;
@@ -935,7 +935,7 @@ class SpaceCraftSim {
                 
                 this.state.magnets.push(magnetData);
                 
-                this.spacecraft.createMagnet(magnetData);
+                this.spaceCraft.createMagnet(magnetData);
 
                 this.syncStateToPresence();
             })
@@ -987,7 +987,7 @@ class SpaceCraftSim {
                 
                 this.updateClientInfo(clientId, data.payload.clientType, clientName);
 
-                if (!magnetId || typeof magnetName !== 'string') {
+                if (!magnetId || typeof magnetId !== 'string') {
                     console.warn(`[SpaceCraft] Invalid magnetId received: ${magnetId}`);
                     return;
                 }
@@ -1015,7 +1015,7 @@ class SpaceCraftSim {
                 this.updateClientInfo(clientId, data.payload.clientType, clientName);
                 
                 if (!magnetId || typeof magnetId !== 'string') {
-                    console.warn(`[SpaceCraft] Invalid magnetId received: ${magnetName}`);
+                    console.warn(`[SpaceCraft] Invalid magnetId received: ${magnetId}`);
                     return;
                 }
                 
@@ -1051,7 +1051,7 @@ class SpaceCraftSim {
             })
 
             .on('presence', { event: 'sync' }, () => {
-                const allPresences = channel.presenceState();
+                const allPresences = this.clientChannel.presenceState();
             })
 
             .on('presence', { event: 'join' }, ({ newPresences }) => {                
@@ -1089,7 +1089,7 @@ class SpaceCraftSim {
                  if (status === 'SUBSCRIBED') {
                     console.log("[SpaceCraft] Successfully subscribed to client channel");
                     
-                    channel.track({
+                    this.clientChannel.track({
                         ...this.identity,
                         shared: { ...this.state } // Nest state under 'shared'
                     });
