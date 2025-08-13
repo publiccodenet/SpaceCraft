@@ -28,7 +28,7 @@ let MagnetItem = class MagnetItem extends IoElement {
     `;
     }
     onDeleteMagnet() {
-        this.controller.sendDeleteMagnetEvent(this.magnet.title);
+        this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
     }
     changed() {
         this.render([

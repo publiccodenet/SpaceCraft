@@ -64,7 +64,7 @@ export class TabSelect extends TabBase {
         this.render([
             h2('TAP or SWIPE to select items'),
             selected ? div([
-                img({src: `../spacetime/StreamingAssets/Content/collections/scifi/items/${selected.id}/cover.jpg`, alt: `Cover for ${selected.title}`, class: 'cover-image'}),
+                img({src: `../SpaceCraft/StreamingAssets/Content/collections/scifi/items/${selected.id}/cover.jpg`, alt: `Cover for ${selected.title}`, class: 'cover-image'}),
                 h4(selected.title || 'Untitled'),
                 div({class: 'description', innerHTML: description}),
             ]) : p('No item selected'),

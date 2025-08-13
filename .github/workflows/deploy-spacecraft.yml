@@ -5,10 +5,10 @@ on:
     branches:
       - main  # or master, depending on your default branch
     paths:
-      - 'WebSites/**'  # Only trigger when files in this directory change
+      - 'WebSites'  # Only trigger when files in this directory change
   workflow_dispatch:
   repository_dispatch:
-    types: [spacetime-deploy]
+    types: [spacecraft-deploy]
 
 jobs:
   deploy:

@@ -1,5 +1,6 @@
 import { IoElement, IoElementProps } from 'io-gui';
 import { SimulatorState } from './SimulatorState.js';
+import { Magnet } from './MagnetItem.js';
 type PresenceState = {
     [key: string]: Presence[];
 };
@@ -37,9 +38,10 @@ export declare class SpacetimeController extends IoElement {
     sendPanEvent(deltaX: number, deltaY: number): void;
     sendZoomEvent(zoomDelta: number): void;
     sendSelectEvent(action: string): void;
-    sendAddMagnetEvent(magnetName: string): void;
-    sendDeleteMagnetEvent(magnetName: string): void;
-    sendPushMagnetEvent(magnetName: string, deltaX: number, deltaZ: number): void;
+    sendCreateMagnetEvent(magnetData: Magnet): void;
+    sendUpdateMagnetEvent(magnetData: Magnet): void;
+    sendDeleteMagnetEvent(magnetId: string): void;
+    sendPushMagnetEvent(magnetId: string, deltaX: number, deltaY: number): void;
     sendEventToSimulator(eventType: string, data: any): void;
     setSearchGravity(gravity: number): void;
     setupPresenceHandlers(): void;

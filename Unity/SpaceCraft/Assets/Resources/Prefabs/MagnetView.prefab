@@ -118,7 +118,7 @@ MonoBehaviour:
   magnetStrength: 1
   magnetEnabled: 1
   viewScale: 1
-  initialScale: 0.01
+  viewScaleInitial: 0.01
   magnetMaterial: {fileID: 2100000, guid: 2610998a9e1a94c63a3d4e941db2602e, type: 2}
 --- !u!1 &7411782117926916970
 GameObject:

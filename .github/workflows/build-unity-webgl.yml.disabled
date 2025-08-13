@@ -11,8 +11,8 @@ on:
       - 'Unity/SpaceCraft/**'
   workflow_dispatch:
     inputs:
-      copy_to_spacetime:
-        description: 'Copy build to WebSites/spacetime'
+      copy_to_spacecraft:
+        description: 'Copy build to WebSites/SpaceCraft'
         type: boolean
         default: true
       trigger_pages_deploy:
@@ -50,8 +50,8 @@ jobs:
       - name: Build Unity WebGL app
         run: cd SvelteKit/BackSpace && npm run unity:build-webgl
         
-      - name: Deploy to WebSites/spacetime
-        if: ${{ github.event.inputs.copy_to_spacetime == 'true' || github.event_name == 'push' }}
+      - name: Deploy to WebSites/SpaceCraft
+        if: ${{ github.event.inputs.copy_to_SpaceCraft == 'true' || github.event_name == 'push' }}
         run: cd SvelteKit/BackSpace && npm run unity:deploy-webgl
         
       - name: Trigger GitHub Pages deployment
@@ -59,4 +59,4 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: spacetime-deploy 
+          event-type: SpaceCraft-deploy 

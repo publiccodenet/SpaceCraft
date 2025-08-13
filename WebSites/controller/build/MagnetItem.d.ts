@@ -3,7 +3,6 @@ import { SpacetimeController } from './SpacetimeController';
 export type Magnet = {
     dynamicFriction: number;
     enabled: boolean;
-    initialScale: number;
     magnetEnabled: boolean;
     magnetHoleRadius: number;
     magnetId: string;
@@ -18,6 +17,7 @@ export type Magnet = {
     staticFriction: number;
     title: string;
     viewScale: number;
+    viewScaleInitial: number;
 };
 export type MagnetItemProps = IoElementProps & {
     magnet: Magnet;

@@ -41,7 +41,7 @@ Build Directory:
    - Critical for the iterative development cycle
 
 5. **unity:deploy-webgl**
-   - Copies the WebGL build to the WebSites/spacetime directory
+   - Copies the WebGL build to the WebSites/SpaceCraft directory
    - This directory is set up for automatic deployment through GitHub Actions
    - Enables easy sharing of builds with team members and stakeholders
 

@@ -60,9 +60,7 @@
     "unity:logs": "tsx scripts/unity-automation.js check-logs",
     "unity:start": "tsx scripts/unity-automation.js launch",
     "unity:openproject": "tsx scripts/unity-automation.js run openproject",
-    "unity:prebuild": "tsx scripts/unity-automation.js prebuild-webgl",
-    "unity:install:sveltekit": "tsx scripts/unity-automation.js install-unity --app spacecraft --source ../../Unity/SpaceCraft/Builds/SpaceCraft --clean",
-    "unity:install:website": "tsx scripts/unity-automation.js install-unity --app spacecraft --source ../../Unity/SpaceCraft/Builds/SpaceCraft --target ../../WebSites/spacetime --clean"
+    "unity:prebuild": "tsx scripts/unity-automation.js prebuild-webgl"
   },
   "dependencies": {
     "async-retry": "^1.3.3",

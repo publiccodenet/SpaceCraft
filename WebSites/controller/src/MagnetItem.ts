@@ -5,7 +5,6 @@ import { SpacetimeController } from './SpacetimeController';
 export type Magnet = {
   dynamicFriction: number;
   enabled: boolean;
-  initialScale: number;
   magnetEnabled: boolean;
   magnetHoleRadius: number;
   magnetId: string;
@@ -20,6 +19,7 @@ export type Magnet = {
   staticFriction: number;
   title: string;
   viewScale: number;
+  viewScaleInitial: number;
 }
 
 export type MagnetItemProps = IoElementProps & {
@@ -58,7 +58,7 @@ export class MagnetItem extends IoElement {
     declare controller: SpacetimeController;
 
     onDeleteMagnet() {
-        this.controller.sendDeleteMagnetEvent(this.magnet.title);
+        this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
     }
 
     changed() {

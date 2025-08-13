@@ -153,7 +153,7 @@ SpaceCraft/
    # Serve the existing build
    cd ../../WebSites
    python3 -m http.server 8080
-   # Open http://localhost:8080/spacetime
+   # Open http://localhost:8080
    ```
 
 ### Full Development Setup
