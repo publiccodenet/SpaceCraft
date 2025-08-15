@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { IoElement, Register, ReactiveProperty, h3, ioObject, ioButton } from 'io-gui';
+import { IoElement, Register, ReactiveProperty, h3, ioSlider2d, ioObject, ioButton } from 'io-gui';
 let MagnetItem = class MagnetItem extends IoElement {
     static get Style() {
         return /* css */ `
@@ -22,6 +22,9 @@ let MagnetItem = class MagnetItem extends IoElement {
             :host > h3 {
                 margin: 0 1em 0 0;
             }
+            :host > io-slider-2d {
+              align-self: flex-start;
+            }
             :host > io-object {
                 flex: 1 1 auto;
             }
@@ -30,16 +33,24 @@ let MagnetItem = class MagnetItem extends IoElement {
     onDeleteMagnet() {
         this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
     }
+    onPushMagnet() {
+        const slider = this.$.moveslider;
+        this.controller.sendPushMagnetEvent(this.magnet.magnetId, slider.value[0], slider.value[1]);
+    }
+    magnetMutated() {
+        this.controller.sendUpdateMagnetEvent(this.magnet);
+    }
     changed() {
         this.render([
             h3(this.magnet.title),
+            ioSlider2d({ id: 'moveslider', value: [0, 0], min: [-1, -1], max: [1, 1], '@value-input': this.onPushMagnet }),
             ioObject({ value: this.magnet, label: 'Magnet Data' }),
             ioButton({ label: 'Delete', action: this.onDeleteMagnet, class: 'red' })
         ]);
     }
 };
 __decorate([
-    ReactiveProperty({ type: Object })
+    ReactiveProperty({ type: Object, init: null })
 ], MagnetItem.prototype, "magnet", void 0);
 __decorate([
     ReactiveProperty({ type: Object })
