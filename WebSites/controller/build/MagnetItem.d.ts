@@ -28,6 +28,8 @@ export declare class MagnetItem extends IoElement {
     magnet: Magnet;
     controller: SpacetimeController;
     onDeleteMagnet(): void;
+    onPushMagnet(): void;
+    magnetMutated(): void;
     changed(): void;
 }
 export declare const magnetItem: (arg0: MagnetItemProps) => import("io-gui").VDOMElement;
