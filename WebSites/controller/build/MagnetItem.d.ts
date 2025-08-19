@@ -33,5 +33,5 @@ export declare class MagnetItem extends IoElement {
     magnetMutated(): void;
     changed(): void;
 }
-export declare const magnetItem: (arg0: MagnetItemProps) => any;
+export declare const magnetItem: (arg0: MagnetItemProps) => import("io-gui").VDOMElement;
 //# sourceMappingURL=MagnetItem.d.ts.map

@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
+    "baseUrl": ".",
     "lib": ["esnext", "dom"],
     "declaration": true,
     "declarationMap": true,
@@ -13,7 +14,10 @@
     "experimentalDecorators": true,
     "outDir": "build",
     "paths": {
-      "io-gui": ["./lib/io-gui/packages/io-gui/"],
+      "io-gui": [
+        "./lib/io-gui/packages/io-gui/build/index.d.ts",
+        "./lib/io-gui/packages/io-gui/build/index.js"
+      ],
       "io-core": ["./lib/io-gui/packages/io-core"],
       "io-menus": ["./lib/io-gui/packages/io-menus"],
       "io-colors": ["./lib/io-gui/packages/io-colors"],
