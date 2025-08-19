@@ -6,6 +6,7 @@ export type Magnet = {
   enabled: boolean;
   magnetEnabled: boolean;
   magnetHoleRadius: number;
+  magnetHoleStrength: number;
   magnetId: string;
   magnetRadius: number;
   magnetSoftness: number;
@@ -84,10 +85,18 @@ export class MagnetItem extends IoElement {
 
     onPushMagnet() {
       const slider = this.$.moveslider as IoSlider2d;
+      try {
+        console.log('[Controller] pushMagnet', this.magnet?.magnetId, 'delta', slider.value);
+      } catch {}
       this.controller.sendPushMagnetEvent(this.magnet.magnetId, slider.value[0], slider.value[1]);
     }
 
     magnetMutated() {
+      try {
+        console.log('[Controller] magnetMutated -> sendUpdateMagnetEvent:', JSON.parse(JSON.stringify(this.magnet)));
+      } catch {
+        console.log('[Controller] magnetMutated -> sendUpdateMagnetEvent:', this.magnet);
+      }
       this.controller.sendUpdateMagnetEvent(this.magnet);
     }
 

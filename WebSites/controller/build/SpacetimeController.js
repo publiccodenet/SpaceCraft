@@ -111,6 +111,12 @@ let SpacetimeController = class SpacetimeController extends IoElement {
         this.sendEventToSimulator('select', { action });
     }
     sendCreateMagnetEvent(magnetData) {
+        try {
+            console.log('[Controller] sendCreateMagnetEvent magnetData:', JSON.parse(JSON.stringify(magnetData)));
+        }
+        catch (e) {
+            console.log('[Controller] sendCreateMagnetEvent magnetData (raw):', magnetData);
+        }
         this.sendEventToSimulator('createMagnet', { magnetData });
     }
     sendUpdateMagnetEvent(magnetData) {

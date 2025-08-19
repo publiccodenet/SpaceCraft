@@ -4,5 +4,5 @@ export declare class TabNavigate extends TabBase {
     onPointermove(event: PointerEvent): void;
     changed(): void;
 }
-export declare const tabNavigate: (arg0: TabBaseProps) => import("io-gui").VDOMElement;
+export declare const tabNavigate: (arg0: TabBaseProps) => any;
 //# sourceMappingURL=TabNavigate.d.ts.map

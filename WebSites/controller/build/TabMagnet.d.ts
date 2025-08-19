@@ -5,5 +5,5 @@ export declare class TabMagnet extends TabBase {
     onKeyUp(event: KeyboardEvent): void;
     changed(): void;
 }
-export declare const tabMagnet: (arg0: TabBaseProps) => import("io-gui").VDOMElement;
+export declare const tabMagnet: (arg0: TabBaseProps) => any;
 //# sourceMappingURL=TabMagnet.d.ts.map

@@ -1,6 +1,7 @@
 import { h2, p, Register, ioString, ioButton, div, IoString } from 'io-gui';
 import { TabBase, TabBaseProps } from './TabBase.js';
 import { magnetItem, Magnet } from './MagnetItem.js';
+import type { ViewMetadata } from './SpacetimeController.js';
 
 type MagnetData = {
     title: string,
@@ -16,6 +17,7 @@ type MagnetData = {
     magnetRadius: number,
     magnetSoftness: number,
     magnetHoleRadius: number,
+    magnetHoleStrength: number,
     scoreMin: number,
     scoreMax: number,
     viewScale: number,
@@ -33,11 +35,11 @@ type MagnetData = {
     selectionMargin: number,
 };
 
-function generateMagnetDataFromMetadata(metadata: Array<unknown>): MagnetData {
+function generateMagnetDataFromMetadata(metadata: Array<ViewMetadata>): MagnetData {
   const data = {} as any;
-  metadata.forEach((field: any) => {
+  metadata.forEach((field) => {
     data[field.name as keyof MagnetData] = field.defaultValue;
-    if (data[field.name] === null) {
+    if (data[field.name] == null) {
       switch(field.type) {
         case 'string':
           data[field.name] = '';

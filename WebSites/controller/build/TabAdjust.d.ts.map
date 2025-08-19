@@ -1,1 +1,1 @@
-{"version":3,"file":"TabAdjust.d.ts","sourceRoot":"","sources":["../src/TabAdjust.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,OAAO,EAAE,YAAY,EAAE,MAAM,cAAc,CAAC;AAErD,qBACa,SAAU,SAAQ,OAAO;IAClC,MAAM,KAAK,KAAK,WASf;IACD,OAAO;CAaV;AAED,eAAO,MAAM,SAAS,GAAY,MAAM,YAAY,iCAEnD,CAAC"}
+{"version":3,"file":"TabAdjust.d.ts","sourceRoot":"","sources":["../src/TabAdjust.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,OAAO,EAAE,YAAY,EAAE,MAAM,cAAc,CAAC;AAErD,qBACa,SAAU,SAAQ,OAAO;IAClC,MAAM,KAAK,KAAK,WASf;IACD,OAAO;CAaV;AAED,eAAO,MAAM,SAAS,GAAY,MAAM,YAAY,QAEnD,CAAC"}

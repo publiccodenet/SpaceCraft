@@ -24,5 +24,5 @@ export declare class TabBase extends IoElement {
     simulatorStateMutated(): void;
     changed(): void;
 }
-export declare const tabBase: (arg0: TabBaseProps) => import("io-gui").VDOMElement;
+export declare const tabBase: (arg0: TabBaseProps) => any;
 //# sourceMappingURL=TabBase.d.ts.map

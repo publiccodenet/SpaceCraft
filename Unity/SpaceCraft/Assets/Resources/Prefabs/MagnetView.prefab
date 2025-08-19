@@ -115,6 +115,7 @@ MonoBehaviour:
   magnetRadius: 100
   magnetSoftness: 0.5
   magnetHoleRadius: 10
+  magnetHoleStrength: 0.0
   magnetStrength: 1
   magnetEnabled: 1
   viewScale: 1

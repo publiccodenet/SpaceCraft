@@ -32,12 +32,12 @@ public class InputManager : MonoBehaviour
     
     [Header("Physics Materials - Global Settings")]
     
-    [ExposedParameter("Static Friction", Category = "Physics Materials", Description = "Resistance to start moving", Min = 0f, Max = 20f)]
+    [ExposedParameter("Static Friction", Category = "Physics Materials", Description = "Resistance to start moving", Min = 0f, Max = 20f, Default = 0.5f, Visible = true)]
     [Tooltip("Static friction - resistance to start moving")]
     [Range(0f, 20f)]
     public float staticFriction = 0.5f;
     
-    [ExposedParameter("Dynamic Friction", Category = "Physics Materials", Description = "Resistance while moving", Min = 0f, Max = 20f)]
+    [ExposedParameter("Dynamic Friction", Category = "Physics Materials", Description = "Resistance while moving", Min = 0f, Max = 20f, Default = 0.3f, Visible = true)]
     [Tooltip("Dynamic friction - resistance while moving")]
     [Range(0f, 20f)]
     public float dynamicFriction = 0.3f;
@@ -45,7 +45,7 @@ public class InputManager : MonoBehaviour
     [ExposedParameter("Bounciness",
         Category = "Physics Materials",
         Description = "How much items bounce when they collide. 0 = no bounce, 1 = perfect bounce.",
-        Min = 0f, Max = 1f, Step = 0.01f)]
+        Min = 0f, Max = 1f, Step = 0.01f, Default = 0.3f, Visible = true)]
     [Tooltip("Physics material bounciness")]
     [Range(0f, 1f)]
     public float bounciness = 0.3f;
@@ -866,7 +866,7 @@ public class InputManager : MonoBehaviour
         // Active Camera Dragging - Can happen with either LEFT (on empty space) or RIGHT mouse button
         if (isDragging)
         {   
-            Debug.Log($"[MOUSE DEBUG] HandleMouseDrag called - isDragging: {isDragging}");
+            //Debug.Log($"[MOUSE DEBUG] HandleMouseDrag called - isDragging: {isDragging}");
             HandleMouseDrag();
         }
         

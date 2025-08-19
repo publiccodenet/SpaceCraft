@@ -11,7 +11,7 @@ function generateMagnetDataFromMetadata(metadata) {
     const data = {};
     metadata.forEach((field) => {
         data[field.name] = field.defaultValue;
-        if (data[field.name] === null) {
+        if (data[field.name] == null) {
             switch (field.type) {
                 case 'string':
                     data[field.name] = '';
