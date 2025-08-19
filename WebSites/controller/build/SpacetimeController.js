@@ -50,6 +50,7 @@ let SpacetimeController = class SpacetimeController extends IoElement {
         this.clientChannel = null;
         this.clientConnected = false;
         this.currentSimulatorId = null;
+        this.magnetViewMetadata = [];
         this.connect();
     }
     connect() {
@@ -146,18 +147,13 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             console.error(`[Controller] Send '${eventType}' failed:`, err);
         });
     }
-    setSearchGravity(gravity) {
-        this.simulatorState.currentSearchGravity = Math.max(-100, Math.min(100, gravity));
-        this.sendEventToSimulator('gravityUpdate', {
-            searchGravity: this.simulatorState.currentSearchGravity
-        });
-    }
     setupPresenceHandlers() {
         this.clientChannel
             .on('presence', { event: 'sync' }, () => {
             const presenceState = this.clientChannel.presenceState();
             const simulator = this.findLatestSimulator(presenceState);
             if (simulator) {
+                this.magnetViewMetadata = simulator.shared.unityMetaData.MagnetView;
                 this.currentSimulatorId = simulator.clientId;
                 this.simulatorState.update(simulator.shared);
             }

@@ -43,6 +43,22 @@ type SimulatorTakeoverPayload = {
   startTime: number;
 }
 
+export type ViewMetadata = {
+  canWrite: boolean;
+  category: string;
+  component: string;
+  defaultValue: any;
+  description: string;
+  displayName: string;
+  name: string;
+  path: string;
+  type: 'bool' | 'float' | 'string';
+  unityType: string;
+  min?: number,
+  max?: number,
+  step?: number,
+}
+
 @Register
 export class SpacetimeController extends IoElement {
     static get Style() {
@@ -72,6 +88,8 @@ export class SpacetimeController extends IoElement {
     declare clientConnected: boolean;
     declare currentSimulatorId: string | null;
 
+    declare magnetViewMetadata: Array<ViewMetadata>;
+
     @ReactiveProperty({type: SimulatorState, init: null})
     declare simulatorState: SimulatorState;
 
@@ -86,6 +104,7 @@ export class SpacetimeController extends IoElement {
         this.clientChannel = null;
         this.clientConnected = false;
         this.currentSimulatorId = null;
+        this.magnetViewMetadata = [];
         this.connect();
     }
 
@@ -196,19 +215,14 @@ export class SpacetimeController extends IoElement {
         });
     }
 
-    setSearchGravity(gravity: number) {
-        this.simulatorState.currentSearchGravity = Math.max(-100, Math.min(100, gravity));
-        this.sendEventToSimulator('gravityUpdate', {
-            searchGravity: this.simulatorState.currentSearchGravity
-        });
-    }
-
     setupPresenceHandlers() {
         this.clientChannel
             .on('presence', { event: 'sync' }, () => {
                 const presenceState = this.clientChannel.presenceState();
                 const simulator = this.findLatestSimulator(presenceState);
+                
                 if (simulator) {
+                    this.magnetViewMetadata = (simulator.shared as any).unityMetaData.MagnetView;
                     this.currentSimulatorId = simulator.clientId;
                     this.simulatorState.update(simulator.shared);
                 }
