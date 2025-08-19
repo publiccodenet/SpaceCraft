@@ -109,8 +109,6 @@ export class TabMagnet extends TabBase {
             magnetData.searchExpression = title;
             magnetData.searchType = 'fuzzy';
 
-            console.log(magnetData);
-
             this.controller.sendCreateMagnetEvent(magnetData);
         }
     }
