@@ -10,9 +10,9 @@ function generateMagnetEditorConfig(metadata) {
     metadata.forEach(field => {
         if (field.type === 'float') {
             viewConfig.push([field.name, ioNumberSlider({
-                    min: field.min,
-                    max: field.max,
-                    step: field.step,
+                    min: field.min ?? 0,
+                    max: field.max ?? 1,
+                    step: field.step ?? 0.001,
                 })]);
         }
     });

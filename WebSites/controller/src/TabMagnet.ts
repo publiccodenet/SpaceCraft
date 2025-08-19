@@ -37,6 +37,7 @@ function generateMagnetDataFromMetadata(metadata: Array<unknown>): MagnetData {
   const data = {} as any;
   metadata.forEach((field: any) => {
     data[field.name as keyof MagnetData] = field.defaultValue;
+    console.log(field.name, field.defaultValue, field)
     if (data[field.name] === null) {
       switch(field.type) {
         case 'string':
