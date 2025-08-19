@@ -1,6 +1,6 @@
 import { h2, p, Register, ioString, ioButton, div, IoString } from 'io-gui';
 import { TabBase, TabBaseProps } from './TabBase.js';
-import { magnetItem, Magnet } from './MagnetItem.js';
+import { magnetItem } from './MagnetItem.js';
 
 type MagnetData = {
     title: string,

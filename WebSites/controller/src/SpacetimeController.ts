@@ -222,7 +222,7 @@ export class SpacetimeController extends IoElement {
                 const simulator = this.findLatestSimulator(presenceState);
                 
                 if (simulator) {
-                    this.magnetViewMetadata = (simulator.shared as any).unityMetaData.MagnetView;
+                    this.magnetViewMetadata = (simulator.shared as any).unityMetaData?.MagnetView || [];
                     this.currentSimulatorId = simulator.clientId;
                     this.simulatorState.update(simulator.shared);
                 }
