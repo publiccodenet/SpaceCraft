@@ -7,6 +7,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { h2, p, Register, ioString, ioButton, div } from 'io-gui';
 import { TabBase } from './TabBase.js';
 import { magnetItem } from './MagnetItem.js';
+function generateMagnetDataFromMetadata(metadata) {
+    const data = {};
+    metadata.forEach((field) => {
+        data[field.name] = field.defaultValue;
+        if (data[field.name] === null) {
+            switch (field.type) {
+                case 'string':
+                    data[field.name] = '';
+                    break;
+                case 'float':
+                    data[field.name] = 0;
+                    break;
+                case 'bool':
+                    data[field.name] = false;
+                    break;
+            }
+        }
+    });
+    return data;
+}
 let TabMagnet = class TabMagnet extends TabBase {
     static get Style() {
         return /* css */ `
@@ -34,12 +54,12 @@ let TabMagnet = class TabMagnet extends TabBase {
     }
     onCreateMagnet() {
         const input = this.$['magnet-name-input'];
-        const name = (input).value.trim();
-        if (name) {
+        const title = (input).value.trim();
+        if (title) {
             input.value = '';
             const currentMagnets = this.simulatorState.magnets || [];
             const existingMagnet = currentMagnets.find(magnet => {
-                return magnet.title.trim().toLowerCase() === name.toLowerCase();
+                return magnet.title.trim().toLowerCase() === title.toLowerCase();
             });
             if (existingMagnet) {
                 console.warn(`[Magnet] Duplicate magnet: "${existingMagnet.title}"`);
@@ -49,25 +69,11 @@ let TabMagnet = class TabMagnet extends TabBase {
             const timestamp = Date.now();
             const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
             const magnetId = `Magnet_${timestamp}${randomDigits}`;
-            const magnetData = {
-                magnetId: magnetId,
-                title: name,
-                searchExpression: name,
-                searchType: 'fuzzy',
-                enabled: true,
-                magnetEnabled: true,
-                mass: 1.0,
-                staticFriction: 10.0,
-                dynamicFriction: 8.0,
-                magnetRadius: 100.0,
-                magnetSoftness: 0.5,
-                magnetHoleRadius: 10.0,
-                magnetStrength: 1.0,
-                scoreMin: 0.0,
-                scoreMax: 1.0,
-                viewScale: 4.0,
-                viewScaleInitial: 0.01
-            };
+            const magnetData = generateMagnetDataFromMetadata(this.controller.magnetViewMetadata);
+            magnetData.magnetId = magnetId;
+            magnetData.title = title;
+            magnetData.searchExpression = title;
+            magnetData.searchType = 'fuzzy';
             this.controller.sendCreateMagnetEvent(magnetData);
         }
     }

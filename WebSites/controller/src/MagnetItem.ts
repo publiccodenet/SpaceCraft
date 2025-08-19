@@ -1,5 +1,5 @@
-import { IoElement, IoElementProps, Register, ReactiveProperty, h3, ioSlider2d, IoSlider2d, ioObject, ioButton } from 'io-gui';
-import { SpacetimeController } from './SpacetimeController';
+import { IoElement, IoElementProps, Register, ReactiveProperty, h3, ioSlider, ioSlider2d, IoSlider2d, ioObject, ioButton, PropertyConfig } from 'io-gui';
+import { SpacetimeController, ViewMetadata } from './SpacetimeController';
 
 export type Magnet = {
   dynamicFriction: number;
@@ -26,6 +26,22 @@ export type MagnetItemProps = IoElementProps & {
   controller: SpacetimeController;
 }
 
+function generateMagnetEditorConfig(metadata: Array<ViewMetadata>) {
+  const viewConfig: PropertyConfig[] = [];
+  metadata.forEach(field => {
+    if (field.type === 'float') {
+      viewConfig.push([field.name, ioSlider({
+        min: field.min,
+        max: field.max,
+        step: field.step,
+      })]);
+    }
+  });
+  return new Map([
+    [Object, viewConfig]
+  ]);
+}
+
 @Register
 export class MagnetItem extends IoElement {
     static get Style() {
@@ -48,7 +64,10 @@ export class MagnetItem extends IoElement {
               align-self: flex-start;
             }
             :host > io-object {
-                flex: 1 1 auto;
+              flex: 1 1 auto;
+            }
+            :host > io-object io-property-editor > .row > :first-child {
+              flex: 0 1 10em; 
             }
     `;
     }
@@ -73,10 +92,11 @@ export class MagnetItem extends IoElement {
     }
 
     changed() {
+        const magnetEditorConfig = generateMagnetEditorConfig(this.controller.magnetViewMetadata);
         this.render([
             h3(this.magnet.title),
             ioSlider2d({id: 'moveslider', value: [0, 0], min: [-1, -1], max: [1, 1], '@value-input': this.onPushMagnet}),
-            ioObject({value: this.magnet, label: 'Magnet Data'}),
+            ioObject({value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig}),
             ioButton({label: 'Delete', action: this.onDeleteMagnet, class: 'red'})
         ]);
     }

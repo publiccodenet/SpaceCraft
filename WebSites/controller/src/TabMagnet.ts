@@ -2,6 +2,59 @@ import { h2, p, Register, ioString, ioButton, div, IoString } from 'io-gui';
 import { TabBase, TabBaseProps } from './TabBase.js';
 import { magnetItem, Magnet } from './MagnetItem.js';
 
+type MagnetData = {
+    title: string,
+    magnetId: string,
+    searchExpression: string,
+    searchType: string,
+    enabled: boolean,
+    mass: number,
+    staticFriction: number,
+    dynamicFriction: number,
+    magnetEnabled: boolean,
+    magnetStrength: number,
+    magnetRadius: number,
+    magnetSoftness: number,
+    magnetHoleRadius: number,
+    scoreMin: number,
+    scoreMax: number,
+    viewScale: number,
+    viewScaleInitial: number,
+    viewScaleSlerpRate: number,
+    minViewScale: number,
+    maxViewScale: number,
+    aspectRatio: number,
+    displayText: string,
+    linearDrag: number,
+    angularDrag: number,
+    highlightElevation: number,
+    highlightMargin: number,
+    selectionElevation: number,
+    selectionMargin: number,
+};
+
+function generateMagnetDataFromMetadata(metadata: Array<unknown>): MagnetData {
+  const data = {} as any;
+  metadata.forEach((field: any) => {
+    data[field.name as keyof MagnetData] = field.defaultValue;
+    if (data[field.name] === null) {
+      switch(field.type) {
+        case 'string':
+          data[field.name] = '';
+          break;
+        case 'float':
+          data[field.name] = 0;
+          break;
+        case 'bool':
+          data[field.name] = false;
+          break;
+      }
+    }
+  })
+  return data;
+}
+
+
 @Register
 export class TabMagnet extends TabBase {
     static get Style() {
@@ -30,13 +83,13 @@ export class TabMagnet extends TabBase {
     }
     onCreateMagnet() {
         const input = this.$['magnet-name-input'] as IoString;
-        const name = (input).value.trim();
-        if (name) {
+        const title = (input).value.trim();
+        if (title) {
             input.value = '';
 
             const currentMagnets = this.simulatorState.magnets || [];
             const existingMagnet = currentMagnets.find(magnet => {
-                return magnet.title.trim().toLowerCase() === name.toLowerCase();
+                return magnet.title.trim().toLowerCase() === title.toLowerCase();
             });
 
             if (existingMagnet) {
@@ -49,25 +102,12 @@ export class TabMagnet extends TabBase {
             const randomDigits = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
             const magnetId = `Magnet_${timestamp}${randomDigits}`;
 
-            const magnetData: Magnet = {
-                magnetId: magnetId,
-                title: name,
-                searchExpression: name,
-                searchType: 'fuzzy',
-                enabled: true,
-                magnetEnabled: true,
-                mass: 1.0,
-                staticFriction: 10.0,
-                dynamicFriction: 8.0,
-                magnetRadius: 100.0,
-                magnetSoftness: 0.5,
-                magnetHoleRadius: 10.0,
-                magnetStrength: 1.0,
-                scoreMin: 0.0,
-                scoreMax: 1.0,
-                viewScale: 4.0,
-                viewScaleInitial: 0.01
-            };
+            const magnetData = generateMagnetDataFromMetadata(this.controller.magnetViewMetadata);
+
+            magnetData.magnetId = magnetId;
+            magnetData.title = title;
+            magnetData.searchExpression = title;
+            magnetData.searchType = 'fuzzy';
 
             this.controller.sendCreateMagnetEvent(magnetData);
         }

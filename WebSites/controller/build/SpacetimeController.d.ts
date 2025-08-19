@@ -19,6 +19,21 @@ type SimulatorPresence = {
     shared: SimulatorState;
     startTime: number;
 };
+export type ViewMetadata = {
+    canWrite: boolean;
+    category: string;
+    component: string;
+    defaultValue: any;
+    description: string;
+    displayName: string;
+    name: string;
+    path: string;
+    type: 'bool' | 'float' | 'string';
+    unityType: string;
+    min?: number;
+    max?: number;
+    step?: number;
+};
 export declare class SpacetimeController extends IoElement {
     static get Style(): string;
     static supabaseUrl: string;
@@ -31,6 +46,7 @@ export declare class SpacetimeController extends IoElement {
     clientChannel: any;
     clientConnected: boolean;
     currentSimulatorId: string | null;
+    magnetViewMetadata: Array<ViewMetadata>;
     simulatorState: SimulatorState;
     constructor(props: IoElementProps);
     connect(): void;
@@ -43,7 +59,6 @@ export declare class SpacetimeController extends IoElement {
     sendDeleteMagnetEvent(magnetId: string): void;
     sendPushMagnetEvent(magnetId: string, deltaX: number, deltaY: number): void;
     sendEventToSimulator(eventType: string, data: any): void;
-    setSearchGravity(gravity: number): void;
     setupPresenceHandlers(): void;
     subscribeToChannel(): void;
     updatePresenceState(): Promise<void>;
