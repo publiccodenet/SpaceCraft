@@ -4,12 +4,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { IoElement, Register, ReactiveProperty, h3, ioSlider, ioSlider2d, ioObject, ioButton } from 'io-gui';
+import { IoElement, Register, ReactiveProperty, h3, ioNumberSlider, ioSlider2d, ioObject, ioButton } from 'io-gui';
 function generateMagnetEditorConfig(metadata) {
     const viewConfig = [];
     metadata.forEach(field => {
         if (field.type === 'float') {
-            viewConfig.push([field.name, ioSlider({
+            viewConfig.push([field.name, ioNumberSlider({
                     min: field.min,
                     max: field.max,
                     step: field.step,
@@ -38,13 +38,16 @@ let MagnetItem = class MagnetItem extends IoElement {
                 margin: 0 1em 0 0;
             }
             :host > io-slider-2d {
-              align-self: flex-start;
+                align-self: flex-start;
             }
             :host > io-object {
-              flex: 1 1 auto;
+                flex: 1 1 auto;
             }
             :host > io-object io-property-editor > .row > :first-child {
-              flex: 0 1 10em; 
+                flex: 0 1 10em; 
+            }
+            :host > io-object io-property-editor io-number-slider {
+                flex: 1 1 auto; 
             }
     `;
     }

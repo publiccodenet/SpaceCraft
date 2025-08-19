@@ -74,6 +74,20 @@ let TabMagnet = class TabMagnet extends TabBase {
             magnetData.title = title;
             magnetData.searchExpression = title;
             magnetData.searchType = 'fuzzy';
+            // magnetData.enabled = true;
+            // magnetData.magnetEnabled = true;
+            // magnetData.mass = 1.0;
+            // magnetData.staticFriction = 10.0;
+            // magnetData.dynamicFriction = 8.0;
+            // magnetData.magnetRadius = 100.0;
+            // magnetData.magnetSoftness = 0.5;
+            // magnetData.magnetHoleRadius = 10.0;
+            // magnetData.magnetStrength = 1.0;
+            // magnetData.scoreMin = 0.0;
+            // magnetData.scoreMax = 1.0;
+            // magnetData.viewScale = 4.0;
+            // magnetData.viewScaleInitial = 0.0;
+            console.log(magnetData);
             this.controller.sendCreateMagnetEvent(magnetData);
         }
     }
