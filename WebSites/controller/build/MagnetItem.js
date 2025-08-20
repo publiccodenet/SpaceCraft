@@ -46,6 +46,9 @@ let MagnetItem = class MagnetItem extends IoElement {
             :host > io-object io-property-editor > .row > :first-child {
                 flex: 0 1 10em; 
             }
+            :host > io-object io-property-editor > .row > :nth-child(2) {
+                flex: 0 1 20em; 
+            }
             :host > io-object io-property-editor io-number-slider {
                 flex: 1 1 auto; 
             }
