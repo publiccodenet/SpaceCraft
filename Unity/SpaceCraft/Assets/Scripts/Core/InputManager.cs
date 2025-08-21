@@ -108,7 +108,7 @@ public class InputManager : MonoBehaviour
         }
         
         UpdatePhysicsMaterials();
-        UpdateRigidbodySettings();
+        UpdateItemViewRigidbodySettings();
     }
 
     void Update()
@@ -234,7 +234,7 @@ public class InputManager : MonoBehaviour
         }
     }
     
-    private void UpdateRigidbodySettings()
+    private void UpdateItemViewRigidbodySettings()
     {
         ItemView[] allItems = UnityEngine.Object.FindObjectsByType<ItemView>();
         foreach (var itemView in allItems)
@@ -242,7 +242,7 @@ public class InputManager : MonoBehaviour
             Rigidbody rb = itemView.GetComponent<Rigidbody>();
             if (rb != null && itemView.GetComponent<MagnetView>() == null)
             {
-                                rb.drag = rigidbodyDrag;
+                rb.drag = rigidbodyDrag;
                 rb.angularDrag = rigidbodyAngularDrag;
                 
                 if (rb.velocity.magnitude > maxItemVelocity)
