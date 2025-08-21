@@ -1174,16 +1174,16 @@ public class SpaceCraft : BridgeObject
     // Camera bridge methods - these forward to InputManager
     public void PushCameraPosition(string controllerId, string controllerName, string screenId, float panXDelta, float panYDelta)
     {
-        inputManager.PushCameraPosition(controllerId, controllerName, screenId, panXDelta, panYDelta);
+        inputManager.PushCameraPosition(new Vector3(panXDelta, panYDelta, 0));
     }
 
     public void PushCameraZoom(string controllerId, string controllerName, string screenId, float zoomDelta)
     {
-        inputManager.PushCameraZoom(controllerId, controllerName, screenId, zoomDelta);
+        inputManager.PushCameraZoom(zoomDelta);
     }
 
     public void PushCameraVelocity(string controllerId, string controllerName, float panXDelta, float panYDelta)
     {
-        inputManager.PushCameraVelocity(controllerId, controllerName, panXDelta, panYDelta);
+        inputManager.PushCameraVelocity(new Vector3(panXDelta, panYDelta, 0));
     }
 }

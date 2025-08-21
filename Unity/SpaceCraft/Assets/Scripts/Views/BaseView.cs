@@ -869,4 +869,15 @@ public abstract class BaseView : BridgeObject
         // Use default aspect ratio when no content is loaded
         UpdateMeshForAspectRatio(aspectRatio);
     }
+
+    public void OnHoverEnter()
+    {
+        SetHighlighted(true);
+    }
+
+    public void OnHoverExit()
+    {
+        SetHighlighted(false);
+    }
+    
 } 
