@@ -57,30 +57,40 @@ public class MagnetView : BaseView
         }
     }
     
-    [ExposedParameter(Category = "Search", Description = "Whether magnet is enabled", Unit = "", Default = true, Visible = true)]
+    [ExposedParameter(
+        Category = "Search", 
+        Description = "Whether magnet is enabled", 
+        Unit = "", 
+        Default = true, 
+        Visible = true
+    )]
     public new bool enabled = true;
     
     // ================== PHYSICS ==================
-    [ExposedParameter("Mass", 
+    [ExposedParameter(
+        "Mass", 
         Category = "Physics", 
-        Description = "Mass of the magnet", Default = 1f, Visible = true,
-        Min = 0.1f, Max = 100f, Step = 0.1f)]
+        Description = "Mass of the magnet", 
+        Default = 1f, 
+        Visible = true,
+        Min = 0.1f, Max = 100f, Step = 0.1f
+    )]
     [Range(0.1f, 100f)]
-    [SerializeField] public new float mass = 2.0f;
+    [SerializeField] public new float mass = 1.0f;
     
     [ExposedParameter("Static Friction", 
         Category = "Physics", 
         Description = "Static friction coefficient", Default = 0.5f, Visible = true,
         Min = 0f, Max = 100f, Step = 0.1f)]
     [Range(0f, 100f)]
-    [SerializeField] public new float staticFriction = 50.0f;
+    [SerializeField] public new float staticFriction = 0.5f;
     
     [ExposedParameter("Dynamic Friction", 
         Category = "Physics", 
         Description = "Dynamic friction coefficient", Default = 0.3f, Visible = true,
         Min = 0f, Max = 100f, Step = 0.1f)]
     [Range(0f, 100f)]
-    [SerializeField] public new float dynamicFriction = 40.0f;
+    [SerializeField] public new float dynamicFriction = 0.3f;
     
     // ================== MAGNETIC FIELD ==================
 
@@ -92,10 +102,10 @@ public class MagnetView : BaseView
     
     [ExposedParameter("Magnet Strength", 
         Category = "Magnetic Field", 
-        Description = "Strength of the magnetic field", Default = 1f, Visible = true,
+        Description = "Strength of the magnetic field", Default = 50f, Visible = true,
         Min = 0f, Max = 100f, Step = 0.1f)]
     [Range(0f, 100f)]
-    [SerializeField] public float magnetStrength = 1.0f;
+    [SerializeField] public float magnetStrength = 50f;
     
     [ExposedParameter("Magnet Radius", 
         Category = "Magnetic Field", 
@@ -107,18 +117,18 @@ public class MagnetView : BaseView
     
     [ExposedParameter("Magnet Softness", 
         Category = "Magnetic Field", 
-        Description = "How gradually the magnetic field effect falls off with distance", Default = 0.5f, Visible = true,
+        Description = "How gradually the magnetic field effect falls off with distance", Default = 0f, Visible = true,
         Min = 0f, Max = 1f, Step = 0.01f)]
     [Tooltip("How gradually the magnetic field effect falls off with distance (0 = hard edge, 1 = very soft)")]
     [Range(0f, 1f)]
-    [SerializeField] public float magnetSoftness = 0.5f;
+    [SerializeField] public float magnetSoftness = 0f;
     
     [ExposedParameter("Magnet Hole Radius", 
         Category = "Magnetic Field", 
-        Description = "Radius of the magnet's hole/center", Default = 10f, Visible = true,
+        Description = "Radius of the magnet's hole/center", Default = 0f, Visible = true,
         Min = 0f, Max = 100f, Step = 0.1f, Unit = "units")]
     [Range(0f, 100f)]
-    [SerializeField] public float magnetHoleRadius = 10f;
+    [SerializeField] public float magnetHoleRadius = 0f;
 
     [ExposedParameter("Magnet Hole Strength",
         Category = "Magnetic Field",
@@ -145,7 +155,7 @@ public class MagnetView : BaseView
         }
     }
     
-    [SerializeField] private float _scoreMax = 1.0f;
+    [SerializeField] private float _scoreMax = 1f;
     [ExposedParameter("Score Max", 
         Category = "Magnetic Field", 
         Description = "Maximum relevance score for items to be affected by this magnet", Default = 1f, Visible = true,
@@ -170,7 +180,7 @@ public class MagnetView : BaseView
         Description = "Target scale for the magnet", Default = 1f, Visible = true,
         Min = 0.1f, Max = 20f, Step = 0.1f)]
     [Range(0.1f, 20f)]
-    [SerializeField] public new float viewScale = 4.0f;
+    [SerializeField] public new float viewScale = 1f;
     
     [ExposedParameter("Initial Scale", 
         Category = "Visual", 
@@ -211,6 +221,14 @@ public class MagnetView : BaseView
     private void Start()
     {
         Debug.Log($"MagnetView: Start() called for magnet with initial title: '{title}'");
+        
+        // Debug physics settings
+        if (rigidBody != null)
+        {
+            Debug.Log($"[MagnetView] Physics on {name}: mass={mass}, linearDrag={linearDrag}, angularDrag={angularDrag}, isKinematic={isKinematic}");
+            Debug.Log($"[MagnetView] Rigidbody on {name}: mass={rigidBody.mass}, drag={rigidBody.linearDamping}, angularDrag={rigidBody.angularDamping}, isKinematic={rigidBody.isKinematic}");
+            Debug.Log($"[MagnetView] ALIASES CHECK: linearDamping={rigidBody.linearDamping}, angularDamping={rigidBody.angularDamping}");
+        }
         
         // Create the visual mesh and apply permanent magnet material
         ApplyMagnetMaterial();
@@ -317,45 +335,76 @@ public class MagnetView : BaseView
         float outerR = Mathf.Max(innerR, magnetRadius);
         if (distance >= outerR) return Vector3.zero; // beyond influence
         
-        // Normalize radial position between edges
-        float u = (distance - innerR) / Mathf.Max(outerR - innerR, 0.0001f); // u in (0,1)
-        
-        // Softness controls the width of softened ramps on both edges
-        float s = Mathf.Clamp01(magnetSoftness);
-        float edgeWidth = 0.5f * s; // 0 = sharp; 0.5 = widest ramps
-        
-        // Inner ramp (apply only if inner region is present)
-        float a;
-        if (innerR > 0f && edgeWidth > 0f)
-        {
-            a = SmoothStep(0f, edgeWidth, u);
-        }
-        else
-        {
-            a = (u > 0f) ? 1f : 0f; // sharp edge at inner boundary
-        }
-        
-        // Outer ramp (always present)
-        float b;
-        if (edgeWidth > 0f)
-        {
-            b = 1f - SmoothStep(1f - edgeWidth, 1f, u);
-        }
-        else
-        {
-            b = (u < 1f) ? 1f : 0f; // sharp edge at outer boundary
-        }
-        
-        // Combined edge factor: rises from 0 after inner edge, falls to 0 near outer edge
-        float edgeFactor = Mathf.Clamp01(a * b);
-        if (edgeFactor <= 0f) return Vector3.zero;
-        
         // Modulate by similarity score (0..1)
         float score = CalculateItemScore(itemView.Model);
         float scoreMultiplier = Mathf.Clamp01(score);
         
-        float forceStrength = magnetStrength * edgeFactor * scoreMultiplier;
-        return toMagnet.normalized * forceStrength;
+        // HANDLE HOLE FORCE (inside the hole)
+        if (distance < innerR && Mathf.Abs(magnetHoleStrength) > 0.001f)
+        {
+            // Inside the hole - apply hole force
+            float holeU = distance / Mathf.Max(innerR, 0.0001f); // 0 at center, 1 at hole edge
+            
+            // Apply softness to hole edge
+            float s = Mathf.Clamp01(magnetSoftness);
+            float holeEdgeWidth = 0.5f * s;
+            float holeEdgeFactor;
+            
+            if (holeEdgeWidth > 0f)
+            {
+                // Soft edge: force fades out as we approach hole boundary
+                holeEdgeFactor = 1f - SmoothStep(1f - holeEdgeWidth, 1f, holeU);
+            }
+            else
+            {
+                // Sharp edge: full force until hole boundary
+                holeEdgeFactor = 1f;
+            }
+            
+            float holeForceStrength = magnetHoleStrength * holeEdgeFactor * scoreMultiplier;
+            return toMagnet.normalized * holeForceStrength;
+        }
+        
+        // HANDLE OUTER RING FORCE (between hole and outer radius)
+        if (distance >= innerR && distance < outerR)
+        {
+            // Normalize radial position between edges
+            float u = (distance - innerR) / Mathf.Max(outerR - innerR, 0.0001f); // u in (0,1)
+            
+            // Softness controls the width of softened ramps on both edges
+            float s = Mathf.Clamp01(magnetSoftness);
+            float edgeWidth = 0.5f * s; // 0 = sharp; 0.5 = widest ramps
+            
+            // Inner ramp (apply only if inner region is present)
+            float a;
+            if (innerR > 0f && edgeWidth > 0f)
+            {
+                a = SmoothStep(0f, edgeWidth, u);
+            }
+            else
+            {
+                a = (u > 0f) ? 1f : 0f; // sharp edge at inner boundary
+            }
+            
+            // Outer ramp (always present)
+            float b;
+            if (edgeWidth > 0f)
+            {
+                b = 1f - SmoothStep(1f - edgeWidth, 1f, u);
+            }
+            else
+            {
+                b = (u < 1f) ? 1f : 0f; // sharp edge at outer boundary
+            }
+            
+            // Combined edge factor: rises from 0 after inner edge, falls to 0 near outer edge
+            float edgeFactor = Mathf.Clamp01(a * b);
+            
+            float forceStrength = magnetStrength * edgeFactor * scoreMultiplier;
+            return toMagnet.normalized * forceStrength;
+        }
+        
+        return Vector3.zero;
     }
 
     // Cubic Hermite smoothstep

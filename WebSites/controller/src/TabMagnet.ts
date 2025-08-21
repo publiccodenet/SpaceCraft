@@ -1,59 +1,18 @@
 import { h2, p, Register, ioString, ioButton, div, IoString } from 'io-gui';
 import { TabBase, TabBaseProps } from './TabBase.js';
-import { magnetItem, Magnet } from './MagnetItem.js';
+import { magnetItem } from './MagnetItem.js';
+import type { Magnet } from './types/Magnet';
 import type { ViewMetadata } from './SpacetimeController.js';
 
-type MagnetData = {
-    title: string,
-    magnetId: string,
-    searchExpression: string,
-    searchType: string,
-    enabled: boolean,
-    mass: number,
-    staticFriction: number,
-    dynamicFriction: number,
-    magnetEnabled: boolean,
-    magnetStrength: number,
-    magnetRadius: number,
-    magnetSoftness: number,
-    magnetHoleRadius: number,
-    magnetHoleStrength: number,
-    scoreMin: number,
-    scoreMax: number,
-    viewScale: number,
-    viewScaleInitial: number,
-    viewScaleSlerpRate: number,
-    minViewScale: number,
-    maxViewScale: number,
-    aspectRatio: number,
-    displayText: string,
-    linearDrag: number,
-    angularDrag: number,
-    highlightElevation: number,
-    highlightMargin: number,
-    selectionElevation: number,
-    selectionMargin: number,
-};
-
-function generateMagnetDataFromMetadata(metadata: Array<ViewMetadata>): MagnetData {
+function generateMagnetDataFromMetadata(metadata: Array<ViewMetadata>): Magnet {
   const data = {} as any;
   metadata.forEach((field) => {
-    data[field.name as keyof MagnetData] = field.defaultValue;
-    if (data[field.name] == null) {
-      switch(field.type) {
-        case 'string':
-          data[field.name] = '';
-          break;
-        case 'float':
-          data[field.name] = 0;
-          break;
-        case 'bool':
-          data[field.name] = false;
-          break;
-      }
+    // Only set fields with non-null defaults; otherwise omit so Unity prefab values remain
+    if (field.defaultValue !== null && field.defaultValue !== undefined) {
+      data[field.name as keyof Magnet] = field.defaultValue;
     }
   })
-  return data;
+  return data as Magnet;
 }
 
 
@@ -110,6 +69,12 @@ export class TabMagnet extends TabBase {
             magnetData.title = title;
             magnetData.searchExpression = title;
             magnetData.searchType = 'fuzzy';
+            //magnetData.isKinematic = true;
+            
+            // Magnet-specific overrides for physics behavior
+            magnetData.mass = 1000;  // Heavy magnets resist being pushed by books
+            magnetData.linearDrag = 1000;  // Very high drag so magnets stop immediately
+            magnetData.angularDrag = 1000;  // Very high angular drag
 
             this.controller.sendCreateMagnetEvent(magnetData);
         }

@@ -1,26 +1,7 @@
-import { IoElement, IoElementProps, Register, ReactiveProperty, h3, ioSlider, ioSlider2d, IoSlider2d, ioObject, ioButton, PropertyConfig } from 'io-gui';
+import { IoElement, IoElementProps, Register, ReactiveProperty, h3, ioSlider, ioSlider2d, IoSlider2d, ioObject, ioButton, PropertyConfig, ioString } from 'io-gui';
+// Note: io-menus not available in this build; using fallback for booleans
 import { SpacetimeController, ViewMetadata } from './SpacetimeController';
-
-export type Magnet = {
-  dynamicFriction: number;
-  enabled: boolean;
-  magnetEnabled: boolean;
-  magnetHoleRadius: number;
-  magnetHoleStrength: number;
-  magnetId: string;
-  magnetRadius: number;
-  magnetSoftness: number;
-  magnetStrength: number;
-  mass: number;
-  scoreMax: number;
-  scoreMin: number;
-  searchExpression: string;
-  searchType: string;
-  staticFriction: number;
-  title: string;
-  viewScale: number;
-  viewScaleInitial: number;
-}
+import type { Magnet } from './types/Magnet';
 
 export type MagnetItemProps = IoElementProps & {
   magnet: Magnet;
@@ -30,17 +11,25 @@ export type MagnetItemProps = IoElementProps & {
 function generateMagnetEditorConfig(metadata: Array<ViewMetadata>) {
   const viewConfig: PropertyConfig[] = [];
   metadata.forEach(field => {
-    if (field.type === 'float') {
-      viewConfig.push([field.name, ioSlider({
-        min: field.min,
-        max: field.max,
-        step: field.step,
-      })]);
+    switch (field.type) {
+      case 'float':
+        viewConfig.push([field.name, ioSlider({
+          min: field.min,
+          max: field.max,
+          step: field.step ?? 0.01,
+        })]);
+        break;
+      case 'bool':
+        viewConfig.push([field.name, ioSlider({ min: 0, max: 1, step: 1 })]);
+        break;
+      case 'string':
+        viewConfig.push([field.name, ioString({})]);
+        break;
+      default:
+        break;
     }
   });
-  return new Map([
-    [Object, viewConfig]
-  ]);
+  return new Map([[Object, viewConfig]]);
 }
 
 @Register
@@ -80,7 +69,7 @@ export class MagnetItem extends IoElement {
     declare controller: SpacetimeController;
 
     onDeleteMagnet() {
-        this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
+        if (this.magnet?.magnetId) this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
     }
 
     onPushMagnet() {
@@ -88,7 +77,7 @@ export class MagnetItem extends IoElement {
       try {
         console.log('[Controller] pushMagnet', this.magnet?.magnetId, 'delta', slider.value);
       } catch {}
-      this.controller.sendPushMagnetEvent(this.magnet.magnetId, slider.value[0], slider.value[1]);
+      if (this.magnet?.magnetId) this.controller.sendPushMagnetEvent(this.magnet.magnetId, slider.value[0], slider.value[1]);
     }
 
     magnetMutated() {

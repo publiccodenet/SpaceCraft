@@ -212,19 +212,8 @@ public class SpaceCraft : BridgeObject
                     description = tooltipAttr.tooltip;
             }
             
-            // Get default value for the type (no current value since we don't have an instance)
-            object defaultValue = null;
-            try
-            {
-                if (memberType.IsValueType)
-                {
-                    defaultValue = Activator.CreateInstance(memberType);
-                }
-            }
-            catch
-            {
-                // If we can't create a default value, just leave it null
-            }
+            // Use only the annotation-provided Default; otherwise leave null
+            object defaultValue = attr.Default;
             
             // Create metadata object
             var metadata = new JObject
@@ -237,7 +226,8 @@ public class SpaceCraft : BridgeObject
                 ["canWrite"] = canWrite && !attr.ReadOnly,
                 ["category"] = attr.Category ?? "General",
                 ["unityType"] = "unity",
-                ["path"] = memberName
+                ["path"] = memberName,
+                ["visible"] = attr.Visible
             };
             
             // Add optional fields if they have values

@@ -699,6 +699,7 @@ class SpaceCraftSim {
                     handler: (obj, results) => {
                         console.log("[SpaceCraft] ContentLoaded event received from Unity");
                         console.log("[SpaceCraft] unityMetaData:", results.unityMetaData);
+                        console.log("[SpaceCraft] MagnetView metadata sample:", results.unityMetaData.MagnetView?.slice(0, 3));
                         this.state.unityMetaData = results.unityMetaData;
                     }
                 },

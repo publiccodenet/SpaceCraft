@@ -1,6 +1,6 @@
 import { IoElement, IoElementProps } from 'io-gui';
 import { SimulatorState } from './SimulatorState.js';
-import { Magnet } from './MagnetItem.js';
+import type { Magnet } from './types/Magnet';
 type PresenceState = {
     [key: string]: Presence[];
 };

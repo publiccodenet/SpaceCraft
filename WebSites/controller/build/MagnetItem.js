@@ -4,21 +4,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { IoElement, Register, ReactiveProperty, h3, ioSlider, ioSlider2d, ioObject, ioButton } from 'io-gui';
+import { IoElement, Register, ReactiveProperty, h3, ioSlider, ioSlider2d, ioObject, ioButton, ioString } from 'io-gui';
 function generateMagnetEditorConfig(metadata) {
     const viewConfig = [];
     metadata.forEach(field => {
-        if (field.type === 'float') {
-            viewConfig.push([field.name, ioSlider({
-                    min: field.min,
-                    max: field.max,
-                    step: field.step,
-                })]);
+        switch (field.type) {
+            case 'float':
+                viewConfig.push([field.name, ioSlider({
+                        min: field.min,
+                        max: field.max,
+                        step: field.step ?? 0.01,
+                    })]);
+                break;
+            case 'bool':
+                viewConfig.push([field.name, ioSlider({ min: 0, max: 1, step: 1 })]);
+                break;
+            case 'string':
+                viewConfig.push([field.name, ioString({})]);
+                break;
+            default:
+                break;
         }
     });
-    return new Map([
-        [Object, viewConfig]
-    ]);
+    return new Map([[Object, viewConfig]]);
 }
 let MagnetItem = class MagnetItem extends IoElement {
     static get Style() {
@@ -49,7 +57,8 @@ let MagnetItem = class MagnetItem extends IoElement {
     `;
     }
     onDeleteMagnet() {
-        this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
+        if (this.magnet?.magnetId)
+            this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
     }
     onPushMagnet() {
         const slider = this.$.moveslider;
@@ -57,7 +66,8 @@ let MagnetItem = class MagnetItem extends IoElement {
             console.log('[Controller] pushMagnet', this.magnet?.magnetId, 'delta', slider.value);
         }
         catch { }
-        this.controller.sendPushMagnetEvent(this.magnet.magnetId, slider.value[0], slider.value[1]);
+        if (this.magnet?.magnetId)
+            this.controller.sendPushMagnetEvent(this.magnet.magnetId, slider.value[0], slider.value[1]);
     }
     magnetMutated() {
         try {

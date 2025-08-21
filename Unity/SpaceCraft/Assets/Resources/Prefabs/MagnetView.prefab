@@ -59,7 +59,7 @@ Rigidbody:
   m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 2
@@ -106,18 +106,20 @@ MonoBehaviour:
   isSelected: 0
   highlightCount: 0
   magnetId: 
-  searchExpression: 
-  searchType: fuzzy
+  _searchExpression: 
+  _searchType: fuzzy
   enabled: 1
   mass: 1
   staticFriction: 0.5
   dynamicFriction: 0.3
-  magnetRadius: 100
-  magnetSoftness: 0.5
-  magnetHoleRadius: 10
-  magnetHoleStrength: 0.0
-  magnetStrength: 1
   magnetEnabled: 1
+  magnetStrength: 50
+  magnetRadius: 100
+  magnetSoftness: 0
+  magnetHoleRadius: 0
+  magnetHoleStrength: 0
+  _scoreMin: 0
+  _scoreMax: 1
   viewScale: 1
   viewScaleInitial: 0.01
   magnetMaterial: {fileID: 2100000, guid: 2610998a9e1a94c63a3d4e941db2602e, type: 2}

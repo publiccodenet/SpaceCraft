@@ -13,20 +13,55 @@ public abstract class BaseView : BridgeObject
     // Dynamic Scaling fields and properties - Public for direct bridge access
     [Header("Dynamic Scaling")]
     [NonSerialized]
-    [SerializeField, ExposedParameter(Category = "Scaling", Description = "Target scale for this object", Min = 0.1f, Max = 10f, Step = 0.1f)]
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Scaling", 
+        Description = "Target scale for this object", 
+        Min = 0.1f, Max = 10f, Step = 0.1f, 
+        Default = 1f, Visible = true
+    )]
     public float viewScale = 1.0f;
+    
     [SerializeField] public float currentScale = 1.0f;
-    [SerializeField, ExposedParameter(Category = "Scaling", Description = "Speed of scale animation", Min = 0.1f, Max = 10f, Step = 0.1f)]
+    
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Scaling", 
+        Description = "Speed of scale animation", 
+        Min = 0.1f, Max = 10f, Step = 0.1f, 
+        Default = 1.2f, Visible = true
+    )]
     public float viewScaleSlerpRate = 1.2f;
-    [SerializeField, ExposedParameter(Category = "Scaling", Description = "Minimum allowed scale", Min = 0.01f, Max = 1f, Step = 0.01f)]
+    
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Scaling", 
+        Description = "Minimum allowed scale", 
+        Min = 0.01f, Max = 1f, Step = 0.01f, 
+        Default = 0.1f, Visible = true
+    )]
     public float minViewScale = 0.1f;
-    [SerializeField, ExposedParameter(Category = "Scaling", Description = "Maximum allowed scale", Min = 1f, Max = 20f, Step = 0.1f)]
+    
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Scaling", 
+        Description = "Maximum allowed scale", 
+        Min = 1f, Max = 20f, Step = 0.1f, 
+        Default = 3f, Visible = true
+    )]
     public float maxViewScale = 3.0f;
 
     // Mesh and Cover fields - Public for direct bridge access
     [Header("Mesh and Cover")]
-    [SerializeField, ExposedParameter(Category = "Mesh", Description = "Width to height ratio", Min = 0.1f, Max = 10f, Step = 0.1f)]
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Mesh", 
+        Description = "Width to height ratio", 
+        Min = 0.1f, Max = 10f, Step = 0.1f, 
+        Default = 1f, Visible = true
+    )]
     public float aspectRatio = 1.0f; // Width/Height ratio for the main mesh
+    
     [SerializeField] public float currentWidth = 1.0f;
     [SerializeField] public float currentHeight = 1.0f;
 
@@ -34,38 +69,84 @@ public abstract class BaseView : BridgeObject
     [Header("Label and Materials")]
     [SerializeField] protected TextMeshPro labelText; // Direct TextMeshPro reference
     [SerializeField] protected Material loadingMaterial; // Keep protected - complex type
-    [SerializeField, ExposedParameter(Category = "Display", Description = "Text to display", Unit = "")]
+    
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Display", 
+        Description = "Text to display", 
+        Unit = "", 
+        Default = "", Visible = true
+    )]
     public string displayText = "";
 
     // Physics Properties (shared by all objects) - Public for direct bridge access
     [Header("Physics Properties")]
     [NonSerialized]
-    [SerializeField, ExposedParameter(Category = "Physics", Description = "Physical mass for rigidbody physics and inertia", Min = 0.1f, Max = 100f, Step = 0.1f, Unit = "kg")]
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Physics", 
+        Description = "Physical mass for rigidbody physics and inertia", 
+        Min = 0.1f, Max = 1000000f, Step = 0.1f, Unit = "kg",
+        Default = 1f, Visible = true
+    )]
     [Tooltip("Physical mass for rigidbody physics and inertia")]
-    [Range(0.1f, 50f)]
+    [Range(0.1f, 1000000f)]
     public float mass = 1.0f;
 
     [NonSerialized]
-    [SerializeField, ExposedParameter(Category = "Physics", Description = "Resistance to start moving when at rest", Min = 0f, Max = 50f, Step = 0.1f)]
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Physics", 
+        Description = "Resistance to start moving when at rest", 
+        Min = 0f, Max = 50f, Step = 0.1f, 
+        Default = 0.5f, Visible = true
+    )]
     [Tooltip("Resistance to start moving when at rest")]
     [Range(0f, 50f)]
     public float staticFriction = 0.5f;
 
     [NonSerialized]
-    [SerializeField, ExposedParameter(Category = "Physics", Description = "Resistance while moving", Min = 0f, Max = 50f, Step = 0.1f)]
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Physics", 
+        Description = "Resistance while moving", 
+        Min = 0f, Max = 50f, Step = 0.1f, 
+        Default = 0.3f, Visible = true
+    )]
     [Tooltip("Resistance while moving")]
     [Range(0f, 50f)]
     public float dynamicFriction = 0.3f;
 
-    [SerializeField, ExposedParameter(Category = "Physics", Description = "Air resistance while moving", Min = 0f, Max = 20f, Step = 0.1f)]
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Physics", 
+        Description = "Air resistance while moving", 
+        Min = 0f, Max = 1000f, Step = 0.1f, 
+        Default = 1f, Visible = true
+    )]
     [Tooltip("Air resistance while moving")]
-    [Range(0f, 20f)]
+    [Range(0f, 1000f)]
     public float linearDrag = 1.0f;
 
-    [SerializeField, ExposedParameter(Category = "Physics", Description = "Rotational air resistance", Min = 0f, Max = 20f, Step = 0.1f)]
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Physics", 
+        Description = "Rotational air resistance", 
+        Min = 0f, Max = 1000f, Step = 0.1f, 
+        Default = 5f, Visible = true
+    )]
     [Tooltip("Rotational air resistance")]
-    [Range(0f, 20f)]
+    [Range(0f, 1000f)]
     public float angularDrag = 5.0f;
+
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Physics", 
+        Description = "Whether rigidbody is kinematic (ignores physics forces)", 
+        Default = false, Visible = true
+    )]
+    [Tooltip("Kinematic rigidbodies ignore physics forces")]
+    public bool isKinematic = false;
 
     // Cached component references (protected so subclasses can access them)
     protected MeshFilter meshFilter;
@@ -89,14 +170,42 @@ public abstract class BaseView : BridgeObject
 
     // Highlighting and Selecting fields - Public for direct bridge access
     [Header("Highlighting and Selecting")]
-    [SerializeField, ExposedParameter(Category = "Visual", Description = "Z-offset for highlight mesh", Min = -1f, Max = 1f, Step = 0.001f)]
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Visual", 
+        Description = "Z-offset for highlight mesh", 
+        Min = -1f, Max = 1f, Step = 0.001f, 
+        Default = -0.01f, Visible = true
+    )]
     public float highlightElevation = -0.01f; // Slight back offset for highlight mesh
-    [SerializeField, ExposedParameter(Category = "Visual", Description = "Margin around object for highlight", Min = 0f, Max = 1f, Step = 0.01f)]
+    
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Visual", 
+        Description = "Margin around object for highlight", 
+        Min = 0f, Max = 1f, Step = 0.01f, 
+        Default = 0.1f, Visible = true
+    )]
     public float highlightMargin = 0.1f; // Margin around the object for highlight mesh
+    
     [SerializeField] public Color highlightColor = new Color(1f, 0.8f, 0.2f, 0.7f);
-    [SerializeField, ExposedParameter(Category = "Visual", Description = "Z-offset for selection mesh", Min = -1f, Max = 1f, Step = 0.001f)]
+    
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Visual", 
+        Description = "Z-offset for selection mesh", 
+        Min = -1f, Max = 1f, Step = 0.001f, 
+        Default = -0.02f, Visible = true
+    )]
     public float selectionElevation = -0.02f; // Further back offset for selection mesh
-    [SerializeField, ExposedParameter(Category = "Visual", Description = "Margin around object for selection", Min = 0f, Max = 1f, Step = 0.01f)]
+    
+    [SerializeField]
+    [ExposedParameter(
+        Category = "Visual", 
+        Description = "Margin around object for selection", 
+        Min = 0f, Max = 1f, Step = 0.01f, 
+        Default = 0.2f, Visible = true
+    )]
     public float selectionMargin = 0.2f; // Larger margin around the object for selection mesh
     [SerializeField] public Color selectionColor = new Color(0f, 0.5f, 0f, 1.0f);
 
@@ -184,6 +293,32 @@ public abstract class BaseView : BridgeObject
             if (Mathf.Abs(currentScale - targetScale) < 0.01f)
             {
                 UpdatePhysicsForScale();
+            }
+        }
+
+        // Always sync rigidbody properties from exposed parameters so controller adjustments apply live
+        if (rigidBody != null)
+        {
+            // AGGRESSIVE DEBUGGING - Log every frame for magnets
+            if (name.Contains("Magnet") && Time.frameCount % 60 == 0)
+            {
+                Debug.LogError($"[DRAG DEBUG] {name}: linearDrag={linearDrag}, rigidBody.drag={rigidBody.linearDamping}, isKinematic={rigidBody.isKinematic}, velocity={rigidBody.linearVelocity.magnitude:F3}");
+            }
+            
+            if (!Mathf.Approximately(rigidBody.linearDamping, linearDrag)) 
+            {
+                Debug.LogError($"[BaseView] DRAG SYNC: Setting drag from {rigidBody.linearDamping} to {linearDrag} on {name}");
+                rigidBody.linearDamping = linearDrag;
+            }
+            if (!Mathf.Approximately(rigidBody.angularDamping, angularDrag)) 
+            {
+                Debug.LogError($"[BaseView] ANGULAR DRAG SYNC: Setting angularDrag from {rigidBody.angularDamping} to {angularDrag} on {name}");
+                rigidBody.angularDamping = angularDrag;
+            }
+            if (rigidBody.isKinematic != isKinematic) 
+            {
+                Debug.LogError($"[BaseView] KINEMATIC SYNC: Setting isKinematic from {rigidBody.isKinematic} to {isKinematic} on {name}");
+                rigidBody.isKinematic = isKinematic;
             }
         }
     }
@@ -361,12 +496,22 @@ public abstract class BaseView : BridgeObject
         rigidBody.linearDamping = linearDrag;
         rigidBody.angularDamping = angularDrag;
         
+        // AGGRESSIVE DEBUGGING
+        Debug.LogError($"[PHYSICS SETUP] {name}: Applied mass={mass}, drag={linearDrag}, angularDrag={angularDrag}");
+        
         // Update physics material properties
         UpdatePhysicsMaterial();
         
-        // Start with kinematic, then enable physics after settling
-        rigidBody.isKinematic = true;
-        StartCoroutine(EnablePhysicsAfterSettling());
+        // Only do kinematic settling if isKinematic is false; otherwise keep kinematic
+        if (!isKinematic)
+        {
+            rigidBody.isKinematic = true;
+            StartCoroutine(EnablePhysicsAfterSettling());
+        }
+        else
+        {
+            rigidBody.isKinematic = true;
+        }
     }
 
     /// <summary>
@@ -393,7 +538,7 @@ public abstract class BaseView : BridgeObject
         // Wait for a short period to let positioning settle
         yield return new WaitForSeconds(0.1f);
         
-        if (rigidBody != null)
+        if (rigidBody != null && !isKinematic)
         {
             rigidBody.isKinematic = false;
         }
