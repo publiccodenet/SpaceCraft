@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d39d101d0e6b42fb84539ac7fa3f101, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellWidth: 1.8
+  cellWidth: 2.8
   cellHeight: 2.8
   startOffsetX: 0.8
   startOffsetY: -0.6

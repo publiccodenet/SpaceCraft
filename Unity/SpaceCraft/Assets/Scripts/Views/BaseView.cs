@@ -86,11 +86,11 @@ public abstract class BaseView : BridgeObject
     [ExposedParameter(
         Category = "Physics", 
         Description = "Physical mass for rigidbody physics and inertia", 
-        Min = 0.1f, Max = 1000000f, Step = 0.1f, Unit = "kg",
+        Min = 0.1f, Max = 1000f, Step = 0.1f, Unit = "kg",
         Default = 1f, Visible = true
     )]
     [Tooltip("Physical mass for rigidbody physics and inertia")]
-    [Range(0.1f, 1000000f)]
+    [Range(0.1f, 1000f)]
     public float mass = 1.0f;
 
     [NonSerialized]
@@ -283,41 +283,36 @@ public abstract class BaseView : BridgeObject
 
     protected virtual void Update()
     {
+        // Visual-only work here (no physics changes)
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        // Apply scale during physics step
         float targetScale = CalculateTargetScale();
         if (!Mathf.Approximately(currentScale, targetScale))
         {
-            currentScale = Mathf.Lerp(currentScale, targetScale, viewScaleSlerpRate * Time.deltaTime);
+            currentScale = Mathf.Lerp(currentScale, targetScale, viewScaleSlerpRate * Time.fixedDeltaTime);
             transform.localScale = Vector3.one * currentScale;
-            
-            // Update physics when scale changes significantly
-            if (Mathf.Abs(currentScale - targetScale) < 0.01f)
-            {
-                UpdatePhysicsForScale();
-            }
         }
 
-        // Always sync rigidbody properties from exposed parameters so controller adjustments apply live
+        // Sync rigidbody properties during physics step
         if (rigidBody != null)
         {
-            // AGGRESSIVE DEBUGGING - Log every frame for magnets
-            if (name.Contains("Magnet") && Time.frameCount % 60 == 0)
+            if (!Mathf.Approximately(rigidBody.mass, mass))
             {
-                Debug.LogError($"[DRAG DEBUG] {name}: linearDrag={linearDrag}, rigidBody.drag={rigidBody.linearDamping}, isKinematic={rigidBody.isKinematic}, velocity={rigidBody.linearVelocity.magnitude:F3}");
+                rigidBody.mass = mass;
             }
-            
             if (!Mathf.Approximately(rigidBody.linearDamping, linearDrag)) 
             {
-                Debug.LogError($"[BaseView] DRAG SYNC: Setting drag from {rigidBody.linearDamping} to {linearDrag} on {name}");
                 rigidBody.linearDamping = linearDrag;
             }
             if (!Mathf.Approximately(rigidBody.angularDamping, angularDrag)) 
             {
-                Debug.LogError($"[BaseView] ANGULAR DRAG SYNC: Setting angularDrag from {rigidBody.angularDamping} to {angularDrag} on {name}");
                 rigidBody.angularDamping = angularDrag;
             }
             if (rigidBody.isKinematic != isKinematic) 
             {
-                Debug.LogError($"[BaseView] KINEMATIC SYNC: Setting isKinematic from {rigidBody.isKinematic} to {isKinematic} on {name}");
                 rigidBody.isKinematic = isKinematic;
             }
         }
@@ -496,8 +491,7 @@ public abstract class BaseView : BridgeObject
         rigidBody.linearDamping = linearDrag;
         rigidBody.angularDamping = angularDrag;
         
-        // AGGRESSIVE DEBUGGING
-        Debug.LogError($"[PHYSICS SETUP] {name}: Applied mass={mass}, drag={linearDrag}, angularDrag={angularDrag}");
+        // Debug removed: normal setup should not log as error
         
         // Update physics material properties
         UpdatePhysicsMaterial();
@@ -553,16 +547,6 @@ public abstract class BaseView : BridgeObject
         }
     }
 
-    protected virtual void UpdatePhysicsForScale()
-    {
-        if (rigidBody != null)
-        {
-            // Mass scales with volume (scale cubed) but clamped for gameplay
-            float scaledMass = mass * Mathf.Pow(currentScale, 1.5f);
-            rigidBody.mass = Mathf.Clamp(scaledMass, 0.1f, 50f);
-        }
-    }
-
     // Physics property accessors
     public virtual float GetPhysicsMass()
     {
@@ -571,10 +555,10 @@ public abstract class BaseView : BridgeObject
 
     public virtual void SetPhysicsMass(float newMass)
     {
-        mass = Mathf.Clamp(newMass, 0.1f, 100f);
+        mass = Mathf.Clamp(newMass, 0.1f, 1000000f);
         if (rigidBody != null)
         {
-            UpdatePhysicsForScale();
+            // UpdatePhysicsForScale(); // Removed
         }
     }
 
@@ -586,7 +570,6 @@ public abstract class BaseView : BridgeObject
         viewScale = Mathf.Clamp(scale, minViewScale, maxViewScale);
         currentScale = viewScale;
         transform.localScale = Vector3.one * currentScale;
-        UpdatePhysicsForScale();
     }
 
     // Highlighting and Selection methods (virtual so subclasses can override if needed)

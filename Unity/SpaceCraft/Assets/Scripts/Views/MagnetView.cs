@@ -66,32 +66,6 @@ public class MagnetView : BaseView
     )]
     public new bool enabled = true;
     
-    // ================== PHYSICS ==================
-    [ExposedParameter(
-        "Mass", 
-        Category = "Physics", 
-        Description = "Mass of the magnet", 
-        Default = 1f, 
-        Visible = true,
-        Min = 0.1f, Max = 100f, Step = 0.1f
-    )]
-    [Range(0.1f, 100f)]
-    [SerializeField] public new float mass = 1.0f;
-    
-    [ExposedParameter("Static Friction", 
-        Category = "Physics", 
-        Description = "Static friction coefficient", Default = 0.5f, Visible = true,
-        Min = 0f, Max = 100f, Step = 0.1f)]
-    [Range(0f, 100f)]
-    [SerializeField] public new float staticFriction = 0.5f;
-    
-    [ExposedParameter("Dynamic Friction", 
-        Category = "Physics", 
-        Description = "Dynamic friction coefficient", Default = 0.3f, Visible = true,
-        Min = 0f, Max = 100f, Step = 0.1f)]
-    [Range(0f, 100f)]
-    [SerializeField] public new float dynamicFriction = 0.3f;
-    
     // ================== MAGNETIC FIELD ==================
 
     [ExposedParameter("Magnet Enabled", 
@@ -134,12 +108,12 @@ public class MagnetView : BaseView
         Category = "Magnetic Field",
         Description = "Strength of force inside the hole (0 disables). Can be negative to push outward and form rings.", Default = 0f, Visible = true,
         Min = -100f, Max = 100f, Step = 0.1f)]
-    [SerializeField] public float magnetHoleStrength = 0f;
+    [SerializeField] public float magnetHoleStrength = -50f;
     
-    [SerializeField] private float _scoreMin = 0.0f;
+    [SerializeField] private float _scoreMin = 0.25f;
     [ExposedParameter("Score Min", 
         Category = "Magnetic Field", 
-        Description = "Minimum relevance score for items to be affected by this magnet", Default = 0f, Visible = true,
+        Description = "Minimum relevance score for items to be affected by this magnet", Default = 0.25f, Visible = true,
         Min = 0f, Max = 1f, Step = 0.01f)]
     [Range(0f, 1f)]
     public float scoreMin
@@ -613,8 +587,15 @@ public class MagnetView : BaseView
     /// <summary>
     /// FixedUpdate - Updates physics properties each fixed timestep
     /// </summary>
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
+        base.FixedUpdate();
+        // No magnet-specific override of Rigidbody mass/drag here; BaseView handles sync.
+        // Ensure non-kinematic if not explicitly kinematic
+        if (rigidBody != null && !isKinematic && rigidBody.isKinematic)
+        {
+            rigidBody.isKinematic = false;
+        }
         // Physics material is now handled by BaseView
         // Just ensure our material is up to date
         UpdatePhysicsMaterial();

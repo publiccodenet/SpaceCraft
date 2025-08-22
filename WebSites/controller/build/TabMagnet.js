@@ -64,11 +64,15 @@ let TabMagnet = class TabMagnet extends TabBase {
             magnetData.title = title;
             magnetData.searchExpression = title;
             magnetData.searchType = 'fuzzy';
-            magnetData.isKinematic = true;
-            // Magnet-specific overrides for physics behavior
-            magnetData.mass = 1000000; // Heavy magnets resist being pushed by books
-            magnetData.linearDrag = 1000000.0; // Very high drag so magnets stop immediately
-            magnetData.angularDrag = 1000000.0; // Very high angular drag
+            magnetData.viewScale = 3;
+            magnetData.mass = 1000; // Heavy magnets resist being pushed by books
+            magnetData.linearDrag = 1000; // Very high drag so magnets stop immediately
+            magnetData.angularDrag = 1000; // Very high angular drag
+            magnetData.magnetRadius = 500;
+            magnetData.magnetHoleStrength = 1;
+            magnetData.magnetHoleRadius = 0;
+            magnetData.magnetHoleStrength = -1;
+            magnetData.scoreMin = 0.75;
             this.controller.sendCreateMagnetEvent(magnetData);
         }
     }
