@@ -1,4 +1,4 @@
-import { IoElement, IoElementProps, Register, ReactiveProperty, h3, ioNumberSlider, ioSlider2d, IoSlider2d, ioObject, ioButton, PropertyConfig, ioString, ioBoolean } from 'io-gui';
+import { IoElement, IoElementProps, Register, ReactiveProperty, h3, ioNumberSlider, ioSlider2d, IoSlider2d, ioObject, ioButton, PropertyConfig, ioString, ioBoolean, PropertyGroups } from 'io-gui';
 // Note: io-menus not available in this build; using fallback for booleans
 import { SpacetimeController, ViewMetadata } from './SpacetimeController';
 import type { Magnet } from './types/Magnet';
@@ -20,7 +20,7 @@ function generateMagnetEditorConfig(metadata: Array<ViewMetadata>) {
         })]);
         break;
       case 'bool':
-        viewConfig.push([field.name, ioBoolean({true: 'io:circle_fill_checked', false: 'io:circle_fill'})]);
+        viewConfig.push([field.name, ioBoolean({true: 'io:box_fill_checked', false: 'io:box'})]);
         break;
       case 'string':
         viewConfig.push([field.name, ioString({})]);
@@ -30,6 +30,18 @@ function generateMagnetEditorConfig(metadata: Array<ViewMetadata>) {
     }
   });
   return new Map([[Object, viewConfig]]);
+}
+
+function generateMagnetEditorGroups(metadata: Array<ViewMetadata>) {
+  const groups: PropertyGroups = {};
+  metadata.forEach(field => {
+    groups[field.category] = groups[field.category] || [];
+    groups[field.category].push(field.name);
+  });
+  // groups.Main
+  return new Map([
+    [Object, groups],
+  ])
 }
 
 @Register
@@ -97,10 +109,12 @@ export class MagnetItem extends IoElement {
 
     changed() {
         const magnetEditorConfig = generateMagnetEditorConfig(this.controller.magnetViewMetadata);
+        const magnetEditorGroups = generateMagnetEditorGroups(this.controller.magnetViewMetadata);
+      
         this.render([
             h3(this.magnet.title),
             ioSlider2d({id: 'moveslider', value: [0, 0], min: [-1, -1], max: [1, 1], '@value-input': this.onPushMagnet}),
-            ioObject({value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig}),
+            ioObject({value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups}),
             ioButton({label: 'Delete', action: this.onDeleteMagnet, class: 'red'})
         ]);
     }

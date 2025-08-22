@@ -1,4 +1,4 @@
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps } from 'io-gui';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton } from 'io-gui';
 import { tabNavigate } from './TabNavigate.js';
 import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
@@ -7,6 +7,7 @@ import { tabAdjust } from './TabAdjust.js';
 import { SimulatorState } from './SimulatorState.js';
 import type { Magnet } from './types/Magnet';
 
+ThemeSingleton.themeID = 'dark';
 
 function generateClientId() {
     return 'controller-' + Math.random().toString(36).substr(2, 9);
