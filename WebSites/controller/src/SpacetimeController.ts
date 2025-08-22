@@ -1,11 +1,13 @@
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps } from 'io-gui';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton } from 'io-gui';
 import { tabNavigate } from './TabNavigate.js';
 import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
 import { tabMagnet } from './TabMagnet.js';
 import { tabAdjust } from './TabAdjust.js';
 import { SimulatorState } from './SimulatorState.js';
-import { Magnet } from './MagnetItem.js';
+import type { Magnet } from './types/Magnet';
+
+ThemeSingleton.themeID = 'dark';
 
 function generateClientId() {
     return 'controller-' + Math.random().toString(36).substr(2, 9);
@@ -171,6 +173,11 @@ export class SpacetimeController extends IoElement {
     }
 
     sendCreateMagnetEvent(magnetData: Magnet) {
+        try {
+            console.log('[Controller] sendCreateMagnetEvent magnetData:', JSON.parse(JSON.stringify(magnetData)));
+        } catch (e) {
+            console.log('[Controller] sendCreateMagnetEvent magnetData (raw):', magnetData);
+        }
         this.sendEventToSimulator('createMagnet', { magnetData });
     }
 

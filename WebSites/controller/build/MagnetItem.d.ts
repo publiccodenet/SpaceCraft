@@ -1,24 +1,6 @@
 import { IoElement, IoElementProps } from 'io-gui';
 import { SpacetimeController } from './SpacetimeController';
-export type Magnet = {
-    dynamicFriction: number;
-    enabled: boolean;
-    magnetEnabled: boolean;
-    magnetHoleRadius: number;
-    magnetId: string;
-    magnetRadius: number;
-    magnetSoftness: number;
-    magnetStrength: number;
-    mass: number;
-    scoreMax: number;
-    scoreMin: number;
-    searchExpression: string;
-    searchType: string;
-    staticFriction: number;
-    title: string;
-    viewScale: number;
-    viewScaleInitial: number;
-};
+import type { Magnet } from './types/Magnet';
 export type MagnetItemProps = IoElementProps & {
     magnet: Magnet;
     controller: SpacetimeController;
