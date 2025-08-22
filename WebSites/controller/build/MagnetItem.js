@@ -4,21 +4,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { IoElement, Register, ReactiveProperty, h3, ioNumberSlider, ioSlider2d, ioObject, ioButton } from 'io-gui';
+import { IoElement, Register, ReactiveProperty, h3, ioNumberSlider, ioSlider2d, ioObject, ioButton, ioString, ioBoolean } from 'io-gui';
 function generateMagnetEditorConfig(metadata) {
     const viewConfig = [];
     metadata.forEach(field => {
-        if (field.type === 'float') {
-            viewConfig.push([field.name, ioNumberSlider({
-                    min: field.min ?? 0,
-                    max: field.max ?? 1,
-                    step: field.step ?? 0.001,
-                })]);
+        switch (field.type) {
+            case 'float':
+                viewConfig.push([field.name, ioNumberSlider({
+                        min: field.min ?? 0,
+                        max: field.max ?? 1,
+                        step: field.step ?? 0.001,
+                    })]);
+                break;
+            case 'bool':
+                viewConfig.push([field.name, ioBoolean({ true: 'io:circle_fill_checked', false: 'io:circle_fill' })]);
+                break;
+            case 'string':
+                viewConfig.push([field.name, ioString({})]);
+                break;
+            default:
+                break;
         }
     });
-    return new Map([
-        [Object, viewConfig]
-    ]);
+    return new Map([[Object, viewConfig]]);
 }
 let MagnetItem = class MagnetItem extends IoElement {
     static get Style() {
@@ -55,13 +63,25 @@ let MagnetItem = class MagnetItem extends IoElement {
     `;
     }
     onDeleteMagnet() {
-        this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
+        if (this.magnet?.magnetId)
+            this.controller.sendDeleteMagnetEvent(this.magnet.magnetId);
     }
     onPushMagnet() {
         const slider = this.$.moveslider;
-        this.controller.sendPushMagnetEvent(this.magnet.magnetId, slider.value[0], slider.value[1]);
+        try {
+            console.log('[Controller] pushMagnet', this.magnet?.magnetId, 'delta', slider.value);
+        }
+        catch { }
+        if (this.magnet?.magnetId)
+            this.controller.sendPushMagnetEvent(this.magnet.magnetId, slider.value[0], slider.value[1]);
     }
     magnetMutated() {
+        try {
+            console.log('[Controller] magnetMutated -> sendUpdateMagnetEvent:', JSON.parse(JSON.stringify(this.magnet)));
+        }
+        catch {
+            console.log('[Controller] magnetMutated -> sendUpdateMagnetEvent:', this.magnet);
+        }
         this.controller.sendUpdateMagnetEvent(this.magnet);
     }
     changed() {

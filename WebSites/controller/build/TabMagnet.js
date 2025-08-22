@@ -10,19 +10,9 @@ import { magnetItem } from './MagnetItem.js';
 function generateMagnetDataFromMetadata(metadata) {
     const data = {};
     metadata.forEach((field) => {
-        data[field.name] = field.defaultValue;
-        if (data[field.name] === null) {
-            switch (field.type) {
-                case 'string':
-                    data[field.name] = '';
-                    break;
-                case 'float':
-                    data[field.name] = 0;
-                    break;
-                case 'bool':
-                    data[field.name] = false;
-                    break;
-            }
+        // Only set fields with non-null defaults; otherwise omit so Unity prefab values remain
+        if (field.defaultValue !== null && field.defaultValue !== undefined) {
+            data[field.name] = field.defaultValue;
         }
     });
     return data;
@@ -74,6 +64,14 @@ let TabMagnet = class TabMagnet extends TabBase {
             magnetData.title = title;
             magnetData.searchExpression = title;
             magnetData.searchType = 'fuzzy';
+            magnetData.viewScale = 3;
+            magnetData.mass = 1000; // Heavy magnets resist being pushed by books
+            magnetData.linearDrag = 1000; // Very high drag so magnets stop immediately
+            magnetData.angularDrag = 1000; // Very high angular drag
+            magnetData.magnetRadius = 500;
+            magnetData.magnetHoleRadius = 0;
+            magnetData.magnetHoleStrength = -1;
+            magnetData.scoreMin = 0.75;
             this.controller.sendCreateMagnetEvent(magnetData);
         }
     }

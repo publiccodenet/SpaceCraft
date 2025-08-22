@@ -5,7 +5,8 @@ import { tabInspect } from './TabInspect.js';
 import { tabMagnet } from './TabMagnet.js';
 import { tabAdjust } from './TabAdjust.js';
 import { SimulatorState } from './SimulatorState.js';
-import { Magnet } from './MagnetItem.js';
+import type { Magnet } from './types/Magnet';
+
 
 function generateClientId() {
     return 'controller-' + Math.random().toString(36).substr(2, 9);
@@ -171,6 +172,11 @@ export class SpacetimeController extends IoElement {
     }
 
     sendCreateMagnetEvent(magnetData: Magnet) {
+        try {
+            console.log('[Controller] sendCreateMagnetEvent magnetData:', JSON.parse(JSON.stringify(magnetData)));
+        } catch (e) {
+            console.log('[Controller] sendCreateMagnetEvent magnetData (raw):', magnetData);
+        }
         this.sendEventToSimulator('createMagnet', { magnetData });
     }
 

@@ -596,6 +596,11 @@ class SpaceCraftSim {
                 magnets: new Map(),
                 
                 createMagnet: function (magnetData) {
+                    try {
+                        console.log('[Sim JS] createMagnet received magnetData:', JSON.parse(JSON.stringify(magnetData)));
+                    } catch (e) {
+                        console.log('[Sim JS] createMagnet received magnetData (raw):', magnetData);
+                    }
                     let magnetId = magnetData.magnetId;
                     if (!magnetId) {
                         const timestamp = Date.now();
@@ -621,6 +626,11 @@ class SpaceCraftSim {
                 },
 
                 updateMagnet: function (magnetData) {
+                    try {
+                        console.log('[Sim JS] updateMagnet received magnetData:', JSON.parse(JSON.stringify(magnetData)));
+                    } catch (e) {
+                        console.log('[Sim JS] updateMagnet received magnetData (raw):', magnetData);
+                    }
                     const magnetId = magnetData.magnetId;
                     if (!magnetId) {
                         console.warn(`[Bridge] updateMagnet: magnetId is required`);
@@ -689,6 +699,7 @@ class SpaceCraftSim {
                     handler: (obj, results) => {
                         console.log("[SpaceCraft] ContentLoaded event received from Unity");
                         console.log("[SpaceCraft] unityMetaData:", results.unityMetaData);
+                        console.log("[SpaceCraft] MagnetView metadata sample:", results.unityMetaData.MagnetView?.slice(0, 3));
                         this.state.unityMetaData = results.unityMetaData;
                     }
                 },
@@ -918,6 +929,9 @@ class SpaceCraftSim {
                 const clientId = data.payload.clientId;
                 const clientName = data.payload.clientName || "";
                 const magnetData = data.payload.magnetData;
+                try {
+                    console.log('[Sim JS] broadcast createMagnet payload magnetData:', JSON.parse(JSON.stringify(magnetData)));
+                } catch {}
                 const magnetId = magnetData.magnetId;
 
                 this.updateClientInfo(clientId, data.payload.clientType, clientName);
@@ -948,6 +962,9 @@ class SpaceCraftSim {
                 const clientId = data.payload.clientId;
                 const clientName = data.payload.clientName || "";
                 const magnetData = data.payload.magnetData;
+                try {
+                    console.log('[Sim JS] broadcast updateMagnet payload magnetData:', JSON.parse(JSON.stringify(magnetData)));
+                } catch {}
                 const magnetId = magnetData.magnetId;
 
                 this.updateClientInfo(clientId, data.payload.clientType, clientName);

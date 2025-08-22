@@ -20,6 +20,10 @@ public class ExposedParameterAttribute : Attribute
     public float Step { get; set; } = 0.01f;
     public string Unit { get; set; }
     public bool ReadOnly { get; set; } = false;
+    // NEW: optional default value used for metadata (does not force-assign in runtime)
+    public object Default { get; set; } = null;
+    // NEW: whether the parameter should be shown by default in editors
+    public bool Visible { get; set; } = true;
     
     public ExposedParameterAttribute(string displayName = null)
     {
@@ -208,19 +212,8 @@ public class SpaceCraft : BridgeObject
                     description = tooltipAttr.tooltip;
             }
             
-            // Get default value for the type (no current value since we don't have an instance)
-            object defaultValue = null;
-            try
-            {
-                if (memberType.IsValueType)
-                {
-                    defaultValue = Activator.CreateInstance(memberType);
-                }
-            }
-            catch
-            {
-                // If we can't create a default value, just leave it null
-            }
+            // Use only the annotation-provided Default; otherwise leave null
+            object defaultValue = attr.Default;
             
             // Create metadata object
             var metadata = new JObject
@@ -233,7 +226,8 @@ public class SpaceCraft : BridgeObject
                 ["canWrite"] = canWrite && !attr.ReadOnly,
                 ["category"] = attr.Category ?? "General",
                 ["unityType"] = "unity",
-                ["path"] = memberName
+                ["path"] = memberName,
+                ["visible"] = attr.Visible
             };
             
             // Add optional fields if they have values
@@ -323,60 +317,103 @@ public class SpaceCraft : BridgeObject
     
     private void FixedUpdate()
     {
-        // Check if content has been updated via the Bridge
-        if (content == null)
+        // 1) Content integration when content arrives from JS
+        if (content != null)
         {
-            return;
-        }
+            Debug.Log("SpaceCraft FixedUpdate processing new content");
 
-        Debug.Log("SpaceCraft FixedUpdate processing new content");
+            var newContent = content;
+            content = null; // Prevent reprocessing in the next frame
 
-        // Store the new content and clear the input field immediately
-        var newContent = content;
-        content = null; // Prevent reprocessing in the next frame
-        
-        // Clear any existing views before loading new data
-        collectionsView?.ClearAllViews();
-        
-        // Load the content data into Brewster
-        brewster?.LoadContentFromJson(newContent);
-            
-        // Display all collections after loading is complete (assuming Brewster organizes it)
-        collectionsView?.DisplayAllCollections();
+            // Clear any existing views before loading new data
+            collectionsView?.ClearAllViews();
 
-        // --- Select the first item automatically ---
-        if (collectionsView != null) 
-        {
-            string firstItemId = collectionsView.GetFirstDisplayedItemId(); // Assumes this method exists
-            if (!string.IsNullOrEmpty(firstItemId))
+            // Load the content data into Brewster
+            brewster?.LoadContentFromJson(newContent);
+
+            // Display all collections after loading is complete (assuming Brewster organizes it)
+            collectionsView?.DisplayAllCollections();
+
+            // --- Select the first item automatically ---
+            if (collectionsView != null)
             {
-                Debug.Log($"[SpaceCraft] Automatically selecting first item: {firstItemId}");
-                // Ensure selection list is clear before selecting the first item
-                if (SelectedItemIds.Count > 0) { 
-                     SelectedItemIds.Clear(); // Use internal field to avoid immediate visual update loop
-                     selectedItemsChanged = true; // Ensure the change is flagged
-                     Debug.Log($"[SpaceCraft] Setter: SelectedItemIds cleared to {string.Join(", ", SelectedItemIds)}");
+                string firstItemId = collectionsView.GetFirstDisplayedItemId();
+                if (!string.IsNullOrEmpty(firstItemId))
+                {
+                    Debug.Log($"[SpaceCraft] Automatically selecting first item: {firstItemId}");
+                    if (SelectedItemIds.Count > 0)
+                    {
+                        SelectedItemIds.Clear();
+                        selectedItemsChanged = true;
+                        Debug.Log($"[SpaceCraft] Setter: SelectedItemIds cleared to {string.Join(", ", SelectedItemIds)}");
+                    }
+                    SelectItem("auto_select", "System", firstItemId);
                 }
-                // Update call to pass default controller info
-                SelectItem("auto_select", "System", firstItemId);
-                
-                // SelectItem now automatically highlights the selected item, no need for separate highlight
+                else
+                {
+                    Debug.Log("[SpaceCraft] No first item found to select automatically.");
+                }
             }
-            else
+
+            // Notify JS that the content has been loaded and processed
+            SendEventName(ContentLoadedEvent);
+
+            // Clear the title display after loading
+            if (collectionsView?.itemInfoPanel != null)
             {
-                Debug.Log("[SpaceCraft] No first item found to select automatically.");
+                collectionsView.itemInfoPanel.ClearInfo();
+                collectionsView.itemInfoPanel.gameObject.SetActive(true);
             }
         }
-        // -------------------------------------------
 
-        // Notify JS that the content has been loaded and processed
-        SendEventName(ContentLoadedEvent);
-        
-        // Clear the title display after loading
-        if (collectionsView?.itemInfoPanel != null)
+        // 2) Magnet cartoon physics simulation (always runs during physics)
+        RunMagnetSimulation();
+    }
+
+    private void RunMagnetSimulation()
+    {
+        // Gather magnets and items
+        var magnets = UnityEngine.Object.FindObjectsByType<MagnetView>(UnityEngine.FindObjectsSortMode.None);
+        if (magnets == null || magnets.Length == 0) return;
+
+        var items = UnityEngine.Object.FindObjectsByType<ItemView>(UnityEngine.FindObjectsSortMode.None);
+        if (items == null || items.Length == 0) return;
+
+        // Apply forces to each item
+        foreach (var item in items)
         {
-            collectionsView.itemInfoPanel.ClearInfo();
-            collectionsView.itemInfoPanel.gameObject.SetActive(true); // Keep it active but empty
+            if (item == null) continue;
+
+            var rb = item.GetComponent<Rigidbody>();
+            if (rb == null) continue;
+
+            Vector3 pos = item.transform.position;
+            Vector3 totalForce = Vector3.zero;
+
+            // Optional: Limit magnets considered by distance (simple broad-phase)
+            foreach (var magnet in magnets)
+            {
+                if (magnet == null) continue;
+                if (!magnet.magnetEnabled) continue;
+
+                // Broad-phase distance culling using (magnetRadius + padding)^2
+                const float distanceCullPadding = 5.0f; // small extra margin around magnet radius
+                Vector3 toMagnet = magnet.transform.position - pos;
+                float maxRange = magnet.magnetRadius + distanceCullPadding;
+                if (toMagnet.sqrMagnitude > (maxRange * maxRange)) continue;
+
+                // Calculate force; method internally checks eligibility and caches scores lazily
+                Vector3 f = magnet.CalculateMagneticForce(item, pos);
+                if (f.sqrMagnitude > 0f) totalForce += f;
+            }
+
+            if (totalForce.sqrMagnitude > 0f)
+            {
+                // Clamp to avoid instability
+                float maxAccel = 50f; // tune as needed
+                if (totalForce.magnitude > maxAccel) totalForce = totalForce.normalized * maxAccel;
+                rb.AddForce(totalForce, ForceMode.Acceleration);
+            }
         }
     }
     
@@ -902,6 +939,24 @@ public class SpaceCraft : BridgeObject
                 Debug.LogWarning($"{logPrefix} Cannot highlight and scale because CollectionsView is null.");
             }
         }
+    }
+
+    // ================== MAGNET SCORE INVALIDATION ======================
+    // Global invalidation epoch for magnets. Any change to items or magnet-affecting
+    // parameters can bump this epoch to lazily invalidate all per-magnet caches.
+    public static int MagnetScoresEpoch { get; private set; } = 0;
+    public static void BumpMagnetScoresEpoch()
+    {
+        unchecked { MagnetScoresEpoch++; }
+    }
+
+    /// <summary>
+    /// Call this when items are newly created, deleted, or bulk-updated in ways
+    /// that can affect magnet scoring (e.g., titles/tags changed).
+    /// </summary>
+    public void InvalidateAllMagnetScores()
+    {
+        BumpMagnetScoresEpoch();
     }
 
     /// <summary>

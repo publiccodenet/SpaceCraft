@@ -37,8 +37,6 @@ public class ItemView : BaseView, IModelView<Item>
     
     // Public accessors for state are now inherited from BaseView
     
-
-    
     protected override void Awake()
     {
         // Set book-appropriate physics defaults before calling base
@@ -192,6 +190,9 @@ public class ItemView : BaseView, IModelView<Item>
         
         // Trigger event for external listeners
         onItemChanged.Invoke(model);
+
+        // Item content change can affect magnet scoring (title/desc/creator/subject)
+        SpaceCraft.BumpMagnetScoresEpoch();
     }
     
 
