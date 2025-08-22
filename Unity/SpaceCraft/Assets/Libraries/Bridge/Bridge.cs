@@ -40,7 +40,7 @@ public class Bridge : MonoBehaviour {
     public Transform targetTransform;
     public Dictionary<string, object> idToObject = new Dictionary<string, object>();
     public Dictionary<object, string> objectToID = new Dictionary<object, string>();
-    public Dictionary<string, object> keyToGlobal = new Dictionary<string, object>();
+
     public Dictionary<string, TextureChannelDelegate> textureChannels = new Dictionary<string, TextureChannelDelegate>();
     public string gameID = "";
     public string deployment = "";
@@ -288,7 +288,7 @@ public class Bridge : MonoBehaviour {
 
     public void SendEvent(JObject ev)
     {
-        Debug.Log("Bridge: SendEvent: ev: " + ev);
+        //Debug.Log("Bridge: SendEvent: ev: " + ev);
 
         string evString = ev.ToString();
 
@@ -632,8 +632,6 @@ public class Bridge : MonoBehaviour {
 
         restarting = true;
 
-        ClearGlobals();
-
         string[] keys = new string[idToObject.Keys.Count];
         idToObject.Keys.CopyTo(keys, 0);
         foreach (string objectID in keys) {
@@ -755,67 +753,7 @@ public class Bridge : MonoBehaviour {
     }
 
 
-    public bool CheckGlobal(string key)
-    {
-        return keyToGlobal.ContainsKey(key);
-    }
-    
 
-    public bool GetGlobal(string key, out object value)
-    {
-        if (keyToGlobal.ContainsKey(key)) {
-            value = keyToGlobal[key];
-            //Debug.Log("Bridge: GetGlobal: found key: " + key + " value: " + value);
-            return true;
-        } else {
-            value = null;
-            Debug.Log("Bridge: GetGlobal: undefined key: " + key);
-            return false;
-        }
-    }
-
-
-    public void SetGlobal(string key, object value)
-    {
-        //Debug.Log("Bridge: SetGlobal: key: " + key + " value: " + value);
-        keyToGlobal[key] = value;
-    }
-
-
-    public void DeleteGlobal(string key)
-    {
-        //Debug.Log("Bridge: DeleteGlobal: key: " + key);
-        if (keyToGlobal.ContainsKey(key)) {
-            keyToGlobal.Remove(key);
-        }
-    }
-
-
-    public void ClearGlobals()
-    {
-        //Debug.Log("Bridge: ClearGlobals");
-        keyToGlobal.Clear();
-    }
-
-
-    public void SetGlobals(object obj, JObject globals)
-    {
-        //Debug.Log("Bridge: SetGlobals: globals: " + globals);
-
-        foreach (var item in globals) {
-            string key = item.Key;
-            string path = (string)item.Value;
-            object value = null;
-
-            //Debug.Log("Bridge: SetGlobals: obj: " + obj + " key: " + key + " path: " + path);
-
-            Accessor accessor = null;
-            if (Accessor.FindAccessor(obj, path, ref accessor) &&
-                accessor.Get(ref value)) {
-                SetGlobal(key, value);
-            }
-        }
-    }
 
 
     public void SendCallbackData(string callbackID, JToken data)
@@ -829,6 +767,13 @@ public class Bridge : MonoBehaviour {
         //Debug.Log("Bridge: SendCallbackData: sending ev: " + ev);
 
         SendEvent(ev);
+    }
+
+    
+    public void InvokeCallback(string callbackID, JToken data)
+    {
+        // Simple wrapper around SendCallbackData for backwards compatibility
+        SendCallbackData(callbackID, data);
     }
 
 

@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "lib": ["esnext", "dom"],
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "outDir": "build",
+    "paths": {
+      "io-gui": [
+        "./lib/io-gui/packages/io-gui/build/index.d.ts",
+        "./lib/io-gui/packages/io-gui/build/index.js"
+      ],
+      "io-core": ["./lib/io-gui/packages/io-core"],
+      "io-menus": ["./lib/io-gui/packages/io-menus"],
+      "io-colors": ["./lib/io-gui/packages/io-colors"],
+      "io-navigation": ["./lib/io-gui/packages/io-navigation"],
+      "io-sliders": ["./lib/io-gui/packages/io-sliders"],
+      "io-inputs": ["./lib/io-gui/packages/io-inputs"],
+      "io-markdown": ["./lib/io-gui/packages/io-markdown"],
+      "io-editors": ["./lib/io-gui/packages/io-editors"],
+      "io-icons": ["./lib/io-gui/packages/io-icons"]
+    }
+  },
+
+  "include": ["./src", "./global.d.ts"]
+}

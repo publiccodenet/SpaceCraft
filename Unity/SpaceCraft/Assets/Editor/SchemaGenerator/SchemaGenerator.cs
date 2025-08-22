@@ -42,7 +42,7 @@ public class SchemaGenerator
 {
     // Constants
     private static readonly string SCHEMA_DIR = Path.Combine(Application.streamingAssetsPath, "Content/schemas");
-    private static readonly string OUTPUT_DIR = "Assets/Scripts/Schemas/Generated";
+    private static readonly string OUTPUT_DIR = "Assets/Scripts/Views/Schemas/Generated";
 
     // Ensures this menu item runs the direct generation logic.
     [MenuItem("SpaceCraft/Import All Schemas")] 

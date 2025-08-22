@@ -151,7 +151,7 @@ SpaceCraft/
 2. **Run Pre-built Example**:
    ```bash
    # Serve the existing build
-   cd ../../WebSites/spacetime
+   cd ../../WebSites
    python3 -m http.server 8080
    # Open http://localhost:8080
    ```

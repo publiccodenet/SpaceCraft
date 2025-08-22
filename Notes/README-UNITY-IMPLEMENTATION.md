@@ -371,10 +371,10 @@ A properly configured scene requires these key components:
 Ensure these prefabs are created and assigned:
 
 1. **ItemViewPrefab**
-2. **ItemViewsContainerPrefab**
-3. **CollectionViewPrefab**
-4. **SingleImageItemViewPrefab**
-5. **ItemLabelViewPrefab**
+2. **ItemViewsContainer**
+3. **CollectionView**
+4. **SingleImageItemView**
+5. **ItemLabelView**
 
 ### Component Configuration
 

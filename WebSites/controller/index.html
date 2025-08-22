@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>SpaceCraft Controller</title>
+    <link rel="icon" href="https://brand.publiccode.net/logo/mark-128w128h.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Mulish:400italic,400,600italic,600,700italic,700" rel="stylesheet">
+    <script type="importmap">
+      {
+        "imports": {
+          "io-gui": "./lib/io-gui/packages/io-gui/build/index.js",
+          "io-core": "./lib/io-gui/packages/io-core/build/index.js",
+          "io-colors": "./lib/io-gui/packages/io-colors/build/index.js",
+          "io-editors": "./lib/io-gui/packages/io-editors/build/index.js",
+          "io-icons": "./lib/io-gui/packages/io-icons/build/index.js",
+          "io-inputs": "./lib/io-gui/packages/io-inputs/build/index.js",
+          "io-layout": "./lib/io-gui/packages/io-layout/build/index.js",
+          "io-markdown": "./lib/io-gui/packages/io-markdown/build/index.js",
+          "io-menus": "./lib/io-gui/packages/io-menus/build/index.js",
+          "io-navigation": "./lib/io-gui/packages/io-navigation/build/index.js",
+          "io-sliders": "./lib/io-gui/packages/io-sliders/build/index.js",
+          "marked": "./lib/io-gui/node_modules/marked/lib/marked.esm.js",
+          "marked-highlight": "./lib/io-gui/node_modules/marked-highlight/src/index.js",
+          "dompurify": "./lib/io-gui/node_modules/dompurify/dist/purify.es.mjs"
+        }
+      }
+    </script>
+    <style>
+      html, body {
+          margin: 0;
+          padding: 0;
+          width: 100vw;
+          height: 100vh;
+          overflow: hidden;
+          background-color: #111;
+          color: #eee;
+          font-family: 'Mulish', 'Roboto', sans-serif;
+          
+          /* Prevent mobile browser behaviors */
+          overscroll-behavior: none;
+          touch-action: none;
+          -webkit-text-size-adjust: 100%;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          user-select: none;
+      }
+    </style>
+    <script src="./lib/supabase.min.js"></script>
+    <script type="module">
+      import './build/SpacetimeController.js';
+    </script>
+  </head>
+  <body>
+    <spacetime-controller></spacetime-controller>
+  </body>
+</html> 

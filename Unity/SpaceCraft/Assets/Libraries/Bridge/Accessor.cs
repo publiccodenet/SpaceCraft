@@ -30,7 +30,6 @@ public class Accessor {
         Resource,
         Object,
         Method,
-        Global,
         Id,
     };
 
@@ -397,11 +396,7 @@ public class Accessor {
 
                     break;
 
-                case "global": // global name
 
-                    accessor.Init_Global(nextObj, rest, conditional, excited);
-
-                    break;
 
                 case "id": // id of object
 
@@ -801,15 +796,7 @@ public class Accessor {
     }
 
 
-    public void Init_Global(object obj0, string globalName0, bool conditional0, bool excited0)
-    {
-        Clear();
-        type = AccessorType.Global;
-        obj = obj0;
-        str = globalName0;
-        conditional = conditional0;
-        excited = excited0;
-    }
+
 
 
     public void Init_Id(object obj0, string globalName0, bool conditional0, bool excited0)
@@ -869,8 +856,7 @@ public class Accessor {
             case AccessorType.Method:
                 return true;
 
-            case AccessorType.Global:
-                return true;
+
 
             case AccessorType.Id:
                 return true;
@@ -932,8 +918,7 @@ public class Accessor {
             case AccessorType.Method:
                 return Get_Method(ref result);
 
-            case AccessorType.Global:
-                return Get_Global(ref result);
+
 
             case AccessorType.Id:
                 return Get_Id(ref result);
@@ -1228,12 +1213,7 @@ public class Accessor {
     }
 
 
-    public bool Get_Global(ref object result)
-    {
-        bool found = Bridge.bridge.GetGlobal(str, out result);
-        //Debug.Log("Accessor: Get_Global: str: " + str + " found: " + found + " result: " + result);
-        return found;
-    }
+
 
 
     public bool Get_Id(ref object result)
@@ -1291,8 +1271,7 @@ public class Accessor {
             case AccessorType.Method:
                 return true;
 
-            case AccessorType.Global:
-                return true;
+
 
             case AccessorType.Id:
                 return false;
@@ -1355,8 +1334,7 @@ public class Accessor {
             case AccessorType.Method:
                 return Set_Method(obj, value);
 
-            case AccessorType.Global:
-                return Set_Global(obj, value);
+
 
             case AccessorType.Id:
                 Debug.LogError("Accessor: Set: can't set type: Id str: " + str);
@@ -1545,12 +1523,7 @@ public class Accessor {
     }
 
 
-    public bool Set_Global(object obj, object value)
-    {
-        Bridge.bridge.SetGlobal(str, value);
 
-        return true;
-    }
 
 
     public Type GetTargetType()
@@ -1603,8 +1576,7 @@ public class Accessor {
             case AccessorType.Method:
                 return typeof(object);
 
-            case AccessorType.Global:
-                return typeof(object);
+
 
             case AccessorType.Id:
                 return typeof(string);
