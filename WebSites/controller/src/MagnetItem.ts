@@ -11,24 +11,26 @@ export type MagnetItemProps = IoElementProps & {
 function generateMagnetEditorConfig(metadata: Array<ViewMetadata>) {
   const viewConfig: PropertyConfig[] = [];
   metadata.forEach(field => {
+    console.log('[MagnetItem] generateMagnetEditorConfig', "name", field.name, "displayName", field.displayName, "type", field.type, "field", field);
     switch (field.type) {
       case 'float':
-        viewConfig.push([field.name, ioNumberSlider({
+        viewConfig.push([field.displayName, ioNumberSlider({
           min: field.min ?? 0,
           max: field.max ?? 1,
           step: field.step ?? 0.001,
         })]);
         break;
       case 'bool':
-        viewConfig.push([field.name, ioBoolean({true: 'io:box_fill_checked', false: 'io:box'})]);
+        viewConfig.push([field.displayName, ioBoolean({true: 'io:box_fill_checked', false: 'io:box'})]);
         break;
       case 'string':
-        viewConfig.push([field.name, ioString({})]);
+        viewConfig.push([field.displayName, ioString({})]);
         break;
       default:
         break;
     }
   });
+  
   return new Map([[Object, viewConfig]]);
 }
 
@@ -36,7 +38,7 @@ function generateMagnetEditorGroups(metadata: Array<ViewMetadata>) {
   const groups: PropertyGroups = {};
   metadata.forEach(field => {
     groups[field.category] = groups[field.category] || [];
-    groups[field.category].push(field.name);
+    groups[field.category].push(field.displayName);
   });
   // groups.Main
   return new Map([
@@ -50,7 +52,7 @@ export class MagnetItem extends IoElement {
         return /* css */`
             :host {
                 display: flex;
-                flex-direction: row;
+                flex-direction: column;
                 gap: 0.5em;
                 border: var(--io_border);
                 border-color: var(--io_borderColorOutset);
@@ -116,7 +118,7 @@ export class MagnetItem extends IoElement {
       
         this.render([
             h3(this.magnet.title),
-            ioSlider2d({id: 'moveslider', value: [0, 0], min: [-1, -1], max: [1, 1], '@value-input': this.onPushMagnet}),
+            //ioSlider2d({$: 'moveslider', value: [0, 0], min: [-1, -1], max: [1, 1], '@value-input': this.onPushMagnet}),
             ioObject({value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups}),
             ioButton({label: 'Delete', action: this.onDeleteMagnet, class: 'red'})
         ]);

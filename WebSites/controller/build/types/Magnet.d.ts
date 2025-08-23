@@ -16,6 +16,8 @@ export type Magnet = Partial<{
     magnetHoleStrength: number;
     orbitForce: number;
     orbitWidth: number;
+    orbitEjectStrength: number;
+    orbitEjectRadius: number;
     scoreMin: number;
     scoreMax: number;
     mass: number;
@@ -35,5 +37,6 @@ export type Magnet = Partial<{
     highlightMargin: number;
     selectionElevation: number;
     selectionMargin: number;
+    [key: string]: any;
 }>;
 //# sourceMappingURL=Magnet.d.ts.map

@@ -90,11 +90,32 @@ public class InputManager : MonoBehaviour
     public float throwSensitivity = 2f;
 
     [Header("Navigator Controller")]
-    [ExposedParameter("Navigator Pan Sensitivity", Category = "Navigator Controller", Description = "Scales pan movement from navigator.", Min = 0.01f, Max = 1f, Default = 0.1f)]
+    [ExposedParameter(
+        "Navigator Pan Sensitivity", 
+        Category = "Navigator Controller", 
+        Description = "Scales pan movement from navigator.", 
+        Min = 0.01f, 
+        Max = 1f, 
+        Default = 0.1f
+    )]
     public float navigatorPanScaleFactor = 0.1f;
-    [ExposedParameter("Navigator Zoom Sensitivity", Category = "Navigator Controller", Description = "Zoom speed from navigator input.", Min = 0.1f, Max = 5f, Default = 1f)]
+    [ExposedParameter(
+        "Navigator Zoom Sensitivity", 
+        Category = "Navigator Controller", 
+        Description = "Zoom speed from navigator input.", 
+        Min = 0.1f, 
+        Max = 5f, 
+        Default = 1f
+    )]
     public float navigatorZoomFactor = 1f;
-    [ExposedParameter("Navigator Velocity Factor", Category = "Navigator Controller", Description = "Multiplier for velocity-based pan.", Min = 0.1f, Max = 5f, Default = 1f)]
+    [ExposedParameter(
+        "Navigator Velocity Factor", 
+        Category = "Navigator Controller", 
+        Description = "Multiplier for velocity-based pan.", 
+        Min = 0.1f, 
+        Max = 5f, 
+        Default = 1f
+    )]
     public float navigatorVelocityFactor = 1f;
 
     // Missing properties that other classes depend on
@@ -448,10 +469,13 @@ public class InputManager : MonoBehaviour
         // to keep the initial point under the cursor
 
         // Directly move the camera rig
+        Vector3 positionBeforeMove = cameraController.cameraRig.position;
         MoveCameraRig(worldDelta); 
+        Vector3 positionAfterMove = cameraController.cameraRig.position;
+        Vector3 actualWorldDelta = positionAfterMove - positionBeforeMove;
 
         // Update velocity tracking for potential physics release
-        Vector3 instantVelocity = worldDelta / deltaTime;
+        Vector3 instantVelocity = actualWorldDelta / deltaTime;
         filteredVelocity = Vector3.Lerp(filteredVelocity, instantVelocity, cameraVelocitySmoothingFactor);
         
         previousMousePosition = currentMousePos;
@@ -637,10 +661,9 @@ public class InputManager : MonoBehaviour
         cameraController.cameraRig.position = targetPosition;
     }
     
-    // Missing methods that other classes depend on
-    public Vector3 GetPanCenter()
+    public Vector2 GetPanCenter()
     {
-        return Vector3.zero; // Simple implementation
+        return new Vector2(cameraController.cameraRig.position.x, cameraController.cameraRig.position.z);
     }
     
     private ItemView GetItemUnderMouse()

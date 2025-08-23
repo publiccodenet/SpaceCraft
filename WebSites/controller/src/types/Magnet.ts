@@ -20,6 +20,8 @@ export type Magnet = Partial<{
   magnetHoleStrength: number;
   orbitForce: number;
   orbitWidth: number;
+  orbitEjectStrength: number;
+  orbitEjectRadius: number;
   scoreMin: number;
   scoreMax: number;
 
@@ -43,4 +45,7 @@ export type Magnet = Partial<{
   highlightMargin: number;
   selectionElevation: number;
   selectionMargin: number;
+
+  // Allow any other string keys
+  [key: string]: any;
 }>;
