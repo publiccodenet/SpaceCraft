@@ -18,6 +18,8 @@ export type Magnet = Partial<{
   magnetSoftness: number;
   magnetHoleRadius: number;
   magnetHoleStrength: number;
+  orbitForce: number;
+  orbitWidth: number;
   scoreMin: number;
   scoreMax: number;
 

@@ -109,6 +109,18 @@ public class MagnetView : BaseView
         Description = "Strength of force inside the hole (0 disables). Can be negative to push outward and form rings.", Default = 0f, Visible = true,
         Min = -100f, Max = 100f, Step = 0.1f)]
     [SerializeField] public float magnetHoleStrength = -50f;
+
+    [ExposedParameter("Orbit Force",
+        Category = "Magnetic Field",
+        Description = "Tangential force to create an orbit. Positive for clockwise, negative for counter-clockwise.", Default = 0f, Visible = true,
+        Min = -100f, Max = 100f, Step = 0.1f)]
+    [SerializeField] public float orbitForce = 0f;
+
+    [ExposedParameter("Orbit Width",
+        Category = "Magnetic Field",
+        Description = "The width of the orbital band around the magnet's hole.", Default = 10f, Visible = true,
+        Min = 0f, Max = 100f, Step = 0.1f, Unit = "units")]
+    [SerializeField] public float orbitWidth = 10f;
     
     [SerializeField] private float _scoreMin = 0.25f;
     [ExposedParameter("Score Min", 
@@ -307,12 +319,13 @@ public class MagnetView : BaseView
         // Radial boundaries
         float innerR = Mathf.Max(0f, magnetHoleRadius);
         float outerR = Mathf.Max(innerR, magnetRadius);
-        if (distance >= outerR) return Vector3.zero; // beyond influence
         
         // Modulate by similarity score (0..1)
         float score = CalculateItemScore(itemView.Model);
         float scoreMultiplier = Mathf.Clamp01(score);
-        
+
+        Vector3 radialForce = Vector3.zero;
+
         // HANDLE HOLE FORCE (inside the hole)
         if (distance < innerR && Mathf.Abs(magnetHoleStrength) > 0.001f)
         {
@@ -336,7 +349,7 @@ public class MagnetView : BaseView
             }
             
             float holeForceStrength = magnetHoleStrength * holeEdgeFactor * scoreMultiplier;
-            return toMagnet.normalized * holeForceStrength;
+            radialForce = toMagnet.normalized * holeForceStrength;
         }
         
         // HANDLE OUTER RING FORCE (between hole and outer radius)
@@ -375,10 +388,32 @@ public class MagnetView : BaseView
             float edgeFactor = Mathf.Clamp01(a * b);
             
             float forceStrength = magnetStrength * edgeFactor * scoreMultiplier;
-            return toMagnet.normalized * forceStrength;
+            radialForce = toMagnet.normalized * forceStrength;
         }
         
-        return Vector3.zero;
+        // HANDLE ORBIT FORCE
+        Vector3 tangentialForce = Vector3.zero;
+        if (Mathf.Abs(orbitForce) > 0.001f && orbitWidth > 0f)
+        {
+            float orbitCenterRadius = innerR;
+            float orbitStart = Mathf.Max(0, orbitCenterRadius - orbitWidth / 2f);
+            float orbitEnd = orbitCenterRadius + orbitWidth / 2f;
+
+            if (distance > orbitStart && distance < orbitEnd)
+            {
+                // Tangential direction (perpendicular to toMagnet vector in XZ plane)
+                Vector3 tangent = new Vector3(toMagnet.z, 0, -toMagnet.x).normalized;
+
+                // Apply a smooth falloff across the orbit band
+                float orbitU = (distance - orbitStart) / orbitWidth;
+                float orbitFalloff = Mathf.Sin(orbitU * Mathf.PI);
+
+                float tangentialStrength = orbitForce * scoreMultiplier * orbitFalloff;
+                tangentialForce = tangent * tangentialStrength;
+            }
+        }
+        
+        return radialForce + tangentialForce;
     }
 
     // Cubic Hermite smoothstep
