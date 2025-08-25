@@ -73,9 +73,6 @@ export class TabMagnet extends TabBase {
             magnetData.mass = 1000;  // Heavy magnets resist being pushed by books
             magnetData.linearDrag = 1000;  // Very high drag so magnets stop immediately
             magnetData.angularDrag = 1000;  // Very high angular drag
-
-            magnetData['method:MoveToPanCenter'] = [];
-
             this.controller.sendCreateMagnetEvent(magnetData);
         }
     }
