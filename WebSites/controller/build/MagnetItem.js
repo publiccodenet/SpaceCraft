@@ -4,23 +4,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { IoElement, Register, ReactiveProperty, h3, ioNumberSlider, ioSlider2d, ioObject, ioButton, ioString, ioBoolean } from 'io-gui';
+import { IoElement, Register, ReactiveProperty, h3, ioNumberSlider, ioObject, ioButton, ioString, ioBoolean } from 'io-gui';
 function generateMagnetEditorConfig(metadata) {
     const viewConfig = [];
     metadata.forEach(field => {
+        console.log('[MagnetItem] generateMagnetEditorConfig', "name", field.name, "displayName", field.displayName, "type", field.type, "field", field);
         switch (field.type) {
             case 'float':
-                viewConfig.push([field.name, ioNumberSlider({
+                viewConfig.push([field.displayName, ioNumberSlider({
                         min: field.min ?? 0,
                         max: field.max ?? 1,
                         step: field.step ?? 0.001,
                     })]);
                 break;
             case 'bool':
-                viewConfig.push([field.name, ioBoolean({ true: 'io:box_fill_checked', false: 'io:box' })]);
+                viewConfig.push([field.displayName, ioBoolean({ true: 'io:box_fill_checked', false: 'io:box' })]);
                 break;
             case 'string':
-                viewConfig.push([field.name, ioString({})]);
+                viewConfig.push([field.displayName, ioString({})]);
                 break;
             default:
                 break;
@@ -32,7 +33,7 @@ function generateMagnetEditorGroups(metadata) {
     const groups = {};
     metadata.forEach(field => {
         groups[field.category] = groups[field.category] || [];
-        groups[field.category].push(field.name);
+        groups[field.category].push(field.displayName);
     });
     // groups.Main
     return new Map([
@@ -44,7 +45,7 @@ let MagnetItem = class MagnetItem extends IoElement {
         return /* css */ `
             :host {
                 display: flex;
-                flex-direction: row;
+                flex-direction: column;
                 gap: 0.5em;
                 border: var(--io_border);
                 border-color: var(--io_borderColorOutset);
@@ -103,7 +104,7 @@ let MagnetItem = class MagnetItem extends IoElement {
         const magnetEditorGroups = generateMagnetEditorGroups(this.controller.magnetViewMetadata);
         this.render([
             h3(this.magnet.title),
-            ioSlider2d({ id: 'moveslider', value: [0, 0], min: [-1, -1], max: [1, 1], '@value-input': this.onPushMagnet }),
+            //ioSlider2d({$: 'moveslider', value: [0, 0], min: [-1, -1], max: [1, 1], '@value-input': this.onPushMagnet}),
             ioObject({ value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups }),
             ioButton({ label: 'Delete', action: this.onDeleteMagnet, class: 'red' })
         ]);
