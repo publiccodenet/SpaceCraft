@@ -148,7 +148,7 @@ public class MagnetView : BaseView
         "Magnet Hole Radius", 
         Category = "Magnetic Field", 
         Description = "Radius of the magnet's hole/center", 
-        Default = 5f, 
+        Default = 0f, 
         Visible = true,
         Min = 0f, 
         Max = 100f, 
@@ -156,7 +156,7 @@ public class MagnetView : BaseView
         Unit = "units"
     )]
     [Range(0f, 100f)]
-    [SerializeField] public float magnetHoleRadius = 5f;
+    [SerializeField] public float magnetHoleRadius = 0f;
 
     [ExposedParameter(
         "Magnet Hole Strength",
@@ -174,13 +174,13 @@ public class MagnetView : BaseView
         "Orbit Force",
         Category = "Magnetic Field",
         Description = "Tangential force to create an orbit. Positive for clockwise, negative for counter-clockwise.", 
-        Default = 10f, 
+        Default = 0f, 
         Visible = true,
         Min = -100f, 
         Max = 100f, 
         Step = 0.1f
     )]
-    [SerializeField] public float orbitForce = 10f;
+    [SerializeField] public float orbitForce = 0f;
 
     [ExposedParameter(
         "Orbit Width",
