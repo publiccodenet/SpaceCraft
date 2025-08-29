@@ -18,21 +18,21 @@ export class MagnetJoystick extends IoSlider2d {
   @ReactiveProperty({type: Number, value: 25})
   declare ctrlTtimeout: number;
 
-  #active = false;
+  private _isLooping = false;
 
   constructor(args: MagnetJoystickProps = {}) {
     super(args);
     this.controlLoop = this.controlLoop.bind(this);
   }
   controlLoop() {
-    if (this.#active) {
+    if (this._isLooping) {
       this.dispatch('control');
       setTimeout(this.controlLoop, this.ctrlTtimeout);
     }
   }
   onPointerdown(event: PointerEvent) {
     super.onPointerdown(event);
-    this.#active = true;
+    this._isLooping = true;
     this.controlLoop();
   }
   onPointermove(event: PointerEvent) {
@@ -43,7 +43,7 @@ export class MagnetJoystick extends IoSlider2d {
     this.value[0] = 0;
     this.value[1] = 0;
     this.dispatchMutation(this.value);
-    this.#active = false;
+    this._isLooping = false;
   }
 }
 
