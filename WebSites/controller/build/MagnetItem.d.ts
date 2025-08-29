@@ -1,7 +1,6 @@
-import { IoElement, IoElementProps } from 'io-gui';
-import { SpacetimeController } from './SpacetimeController.js';
-import type { Magnet } from './types/Magnet';
-export type MagnetItemProps = IoElementProps & {
+import { IoElement } from 'io-gui';
+import { Magnet } from './types/Magnet.js';
+export type MagnetItemProps = {
     magnet: Magnet;
     controller: SpacetimeController;
 };
