@@ -1,4 +1,4 @@
-import { IoElement, IoElementProps, Register, ReactiveProperty, h3, ioNumberSlider, ioObject, ioButton, PropertyConfig, ioString, ioBoolean, PropertyGroups } from 'io-gui';
+import { IoElement, IoElementProps, Register, ReactiveProperty, h2, ioNumberSlider, ioObject, ioButton, PropertyConfig, ioString, ioBoolean, PropertyGroups } from 'io-gui';
 // Note: io-menus not available in this build; using fallback for booleans
 import { SpacetimeController, ViewMetadata } from './SpacetimeController.js';
 import type { Magnet } from './types/Magnet';
@@ -109,7 +109,7 @@ export class MagnetItem extends IoElement {
         const magnetEditorConfig = generateMagnetEditorConfig(this.controller.magnetViewMetadata);
         const magnetEditorGroups = generateMagnetEditorGroups(this.controller.magnetViewMetadata);
         this.render([
-            h3(this.magnet.title),
+            h2(this.magnet.title),
             ioObject({value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups,
               widgets: new Map([[
                 Object, magnetJoystick({value: [0, 0], min: [-1, -1], max: [1, 1], '@control': this.onJoystickControl, ctrlTtimeout: 20})
