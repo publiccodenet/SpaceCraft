@@ -5,13 +5,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var SpacetimeController_1;
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty } from 'io-gui';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, ThemeSingleton } from 'io-gui';
 import { tabNavigate } from './TabNavigate.js';
 import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
 import { tabMagnet } from './TabMagnet.js';
 import { tabAdjust } from './TabAdjust.js';
 import { SimulatorState } from './SimulatorState.js';
+ThemeSingleton.themeID = 'dark';
 function generateClientId() {
     return 'controller-' + Math.random().toString(36).substr(2, 9);
 }
@@ -159,7 +160,7 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             const presenceState = this.clientChannel.presenceState();
             const simulator = this.findLatestSimulator(presenceState);
             if (simulator) {
-                this.magnetViewMetadata = simulator.shared.unityMetaData.MagnetView;
+                this.magnetViewMetadata = simulator.shared.unityMetaData?.MagnetView || [];
                 this.currentSimulatorId = simulator.clientId;
                 this.simulatorState.update(simulator.shared);
             }

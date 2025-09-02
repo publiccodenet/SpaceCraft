@@ -1,4 +1,4 @@
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps } from 'io-gui';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton } from 'io-gui';
 import { tabNavigate } from './TabNavigate.js';
 import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
@@ -6,6 +6,8 @@ import { tabMagnet } from './TabMagnet.js';
 import { tabAdjust } from './TabAdjust.js';
 import { SimulatorState } from './SimulatorState.js';
 import type { Magnet } from './types/Magnet';
+
+ThemeSingleton.themeID = 'dark';
 
 function generateClientId() {
     return 'controller-' + Math.random().toString(36).substr(2, 9);
@@ -227,7 +229,7 @@ export class SpacetimeController extends IoElement {
                 const simulator = this.findLatestSimulator(presenceState);
                 
                 if (simulator) {
-                    this.magnetViewMetadata = (simulator.shared as any).unityMetaData.MagnetView;
+                    this.magnetViewMetadata = (simulator.shared as any).unityMetaData?.MagnetView || [];
                     this.currentSimulatorId = simulator.clientId;
                     this.simulatorState.update(simulator.shared);
                 }

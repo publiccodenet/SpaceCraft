@@ -11,6 +11,7 @@ export class TabSelect extends TabBase {
                 text-align: justify;
             }
             :host .cover-image {
+                pointer-events: none;
                 float: right;
                 margin: 4.2em 0 0.5em 1em;
             }

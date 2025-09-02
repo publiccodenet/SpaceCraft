@@ -644,6 +644,19 @@ class SpaceCraftSim {
                     }
                     
                     window.bridge.updateObject(magnetBridge, magnetData);
+
+                    // Remove any method keys from magnetData to avoid sending them to Unity
+                    const methodKeys = [];
+                    for (const key in magnetData) {
+                        if (key.startsWith("method:")) {
+                            methodKeys.push(key);
+                        }
+                    }
+                    
+                    // Delete the method keys from magnetData
+                    methodKeys.forEach(key => {
+                        delete magnetData[key];
+                    });
                     
                     return true;
                 },

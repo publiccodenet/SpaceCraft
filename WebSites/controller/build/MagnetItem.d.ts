@@ -1,5 +1,5 @@
 import { IoElement, IoElementProps } from 'io-gui';
-import { SpacetimeController } from './SpacetimeController';
+import { SpacetimeController } from './SpacetimeController.js';
 import type { Magnet } from './types/Magnet';
 export type MagnetItemProps = IoElementProps & {
     magnet: Magnet;
@@ -10,7 +10,7 @@ export declare class MagnetItem extends IoElement {
     magnet: Magnet;
     controller: SpacetimeController;
     onDeleteMagnet(): void;
-    onPushMagnet(): void;
+    onJoystickControl(event: CustomEvent): void;
     magnetMutated(): void;
     changed(): void;
 }

@@ -15,10 +15,14 @@ public abstract class BaseView : BridgeObject
     [NonSerialized]
     [SerializeField]
     [ExposedParameter(
+        "View Scale",
         Category = "Scaling", 
         Description = "Target scale for this object", 
-        Min = 0.1f, Max = 10f, Step = 0.1f, 
-        Default = 1f, Visible = true
+        Min = 0.1f, 
+        Max = 10f, 
+        Step = 0.1f, 
+        Default = 1f, 
+        Visible = true
     )]
     public float viewScale = 1.0f;
     
@@ -26,28 +30,40 @@ public abstract class BaseView : BridgeObject
     
     [SerializeField]
     [ExposedParameter(
+        "View Scale Slerp Rate",
         Category = "Scaling", 
         Description = "Speed of scale animation", 
-        Min = 0.1f, Max = 10f, Step = 0.1f, 
-        Default = 1.2f, Visible = true
+        Min = 0.1f, 
+        Max = 10f, 
+        Step = 0.1f, 
+        Default = 1.2f, 
+        Visible = true
     )]
     public float viewScaleSlerpRate = 1.2f;
     
     [SerializeField]
     [ExposedParameter(
+        "Min View Scale",
         Category = "Scaling", 
         Description = "Minimum allowed scale", 
-        Min = 0.01f, Max = 1f, Step = 0.01f, 
-        Default = 0.1f, Visible = true
+        Min = 0.01f, 
+        Max = 1f, 
+        Step = 0.01f, 
+        Default = 0.1f, 
+        Visible = true
     )]
     public float minViewScale = 0.1f;
     
     [SerializeField]
     [ExposedParameter(
+        "Max View Scale",
         Category = "Scaling", 
         Description = "Maximum allowed scale", 
-        Min = 1f, Max = 20f, Step = 0.1f, 
-        Default = 3f, Visible = true
+        Min = 1f, 
+        Max = 20f, 
+        Step = 0.1f, 
+        Default = 3f, 
+        Visible = true
     )]
     public float maxViewScale = 3.0f;
 
@@ -55,10 +71,14 @@ public abstract class BaseView : BridgeObject
     [Header("Mesh and Cover")]
     [SerializeField]
     [ExposedParameter(
+        "Aspect Ratio",
         Category = "Mesh", 
         Description = "Width to height ratio", 
-        Min = 0.1f, Max = 10f, Step = 0.1f, 
-        Default = 1f, Visible = true
+        Min = 0.1f, 
+        Max = 10f, 
+        Step = 0.1f, 
+        Default = 1f, 
+        Visible = true
     )]
     public float aspectRatio = 1.0f; // Width/Height ratio for the main mesh
     
@@ -72,10 +92,12 @@ public abstract class BaseView : BridgeObject
     
     [SerializeField]
     [ExposedParameter(
+        "Display Text",
         Category = "Display", 
         Description = "Text to display", 
         Unit = "", 
-        Default = "", Visible = true
+        Default = "", 
+        Visible = true
     )]
     public string displayText = "";
 
@@ -84,10 +106,15 @@ public abstract class BaseView : BridgeObject
     [NonSerialized]
     [SerializeField]
     [ExposedParameter(
+        "Mass",
         Category = "Physics", 
         Description = "Physical mass for rigidbody physics and inertia", 
-        Min = 0.1f, Max = 1000f, Step = 0.1f, Unit = "kg",
-        Default = 1f, Visible = true
+        Min = 0.1f, 
+        Max = 1000f, 
+        Step = 0.1f, 
+        Unit = "kg",
+        Default = 1f, 
+        Visible = true
     )]
     [Tooltip("Physical mass for rigidbody physics and inertia")]
     [Range(0.1f, 1000f)]
@@ -96,10 +123,14 @@ public abstract class BaseView : BridgeObject
     [NonSerialized]
     [SerializeField]
     [ExposedParameter(
+        "Static Friction",
         Category = "Physics", 
         Description = "Resistance to start moving when at rest", 
-        Min = 0f, Max = 50f, Step = 0.1f, 
-        Default = 0.5f, Visible = true
+        Min = 0f, 
+        Max = 50f, 
+        Step = 0.1f, 
+        Default = 0.5f, 
+        Visible = true
     )]
     [Tooltip("Resistance to start moving when at rest")]
     [Range(0f, 50f)]
@@ -108,10 +139,14 @@ public abstract class BaseView : BridgeObject
     [NonSerialized]
     [SerializeField]
     [ExposedParameter(
+        "Dynamic Friction",
         Category = "Physics", 
         Description = "Resistance while moving", 
-        Min = 0f, Max = 50f, Step = 0.1f, 
-        Default = 0.3f, Visible = true
+        Min = 0f, 
+        Max = 50f, 
+        Step = 0.1f, 
+        Default = 0.3f, 
+        Visible = true
     )]
     [Tooltip("Resistance while moving")]
     [Range(0f, 50f)]
@@ -119,10 +154,14 @@ public abstract class BaseView : BridgeObject
 
     [SerializeField]
     [ExposedParameter(
+        "Linear Drag",
         Category = "Physics", 
         Description = "Air resistance while moving", 
-        Min = 0f, Max = 1000f, Step = 0.1f, 
-        Default = 1f, Visible = true
+        Min = 0f, 
+        Max = 1000f, 
+        Step = 0.1f, 
+        Default = 1f, 
+        Visible = true
     )]
     [Tooltip("Air resistance while moving")]
     [Range(0f, 1000f)]
@@ -130,10 +169,14 @@ public abstract class BaseView : BridgeObject
 
     [SerializeField]
     [ExposedParameter(
+        "Angular Drag",
         Category = "Physics", 
         Description = "Rotational air resistance", 
-        Min = 0f, Max = 1000f, Step = 0.1f, 
-        Default = 5f, Visible = true
+        Min = 0f, 
+        Max = 1000f, 
+        Step = 0.1f, 
+        Default = 5f, 
+        Visible = true
     )]
     [Tooltip("Rotational air resistance")]
     [Range(0f, 1000f)]
@@ -141,9 +184,11 @@ public abstract class BaseView : BridgeObject
 
     [SerializeField]
     [ExposedParameter(
+        "Is Kinematic",
         Category = "Physics", 
         Description = "Whether rigidbody is kinematic (ignores physics forces)", 
-        Default = false, Visible = true
+        Default = false, 
+        Visible = true
     )]
     [Tooltip("Kinematic rigidbodies ignore physics forces")]
     public bool isKinematic = false;
@@ -172,19 +217,27 @@ public abstract class BaseView : BridgeObject
     [Header("Highlighting and Selecting")]
     [SerializeField]
     [ExposedParameter(
+        "Highlight Elevation",
         Category = "Visual", 
         Description = "Z-offset for highlight mesh", 
-        Min = -1f, Max = 1f, Step = 0.001f, 
-        Default = -0.01f, Visible = true
+        Min = -1f, 
+        Max = 1f, 
+        Step = 0.001f, 
+        Default = -0.01f, 
+        Visible = true
     )]
     public float highlightElevation = -0.01f; // Slight back offset for highlight mesh
     
     [SerializeField]
     [ExposedParameter(
+        "Highlight Margin",
         Category = "Visual", 
         Description = "Margin around object for highlight", 
-        Min = 0f, Max = 1f, Step = 0.01f, 
-        Default = 0.1f, Visible = true
+        Min = 0f, 
+        Max = 1f, 
+        Step = 0.01f, 
+        Default = 0.1f, 
+        Visible = true
     )]
     public float highlightMargin = 0.1f; // Margin around the object for highlight mesh
     
@@ -192,19 +245,27 @@ public abstract class BaseView : BridgeObject
     
     [SerializeField]
     [ExposedParameter(
+        "Selection Elevation",
         Category = "Visual", 
         Description = "Z-offset for selection mesh", 
-        Min = -1f, Max = 1f, Step = 0.001f, 
-        Default = -0.02f, Visible = true
+        Min = -1f, 
+        Max = 1f, 
+        Step = 0.001f, 
+        Default = -0.02f, 
+        Visible = true
     )]
     public float selectionElevation = -0.02f; // Further back offset for selection mesh
     
     [SerializeField]
     [ExposedParameter(
+        "Selection Margin",
         Category = "Visual", 
         Description = "Margin around object for selection", 
-        Min = 0f, Max = 1f, Step = 0.01f, 
-        Default = 0.2f, Visible = true
+        Min = 0f, 
+        Max = 1f, 
+        Step = 0.01f, 
+        Default = 0.2f, 
+        Visible = true
     )]
     public float selectionMargin = 0.2f; // Larger margin around the object for selection mesh
     [SerializeField] public Color selectionColor = new Color(0f, 0.5f, 0f, 1.0f);

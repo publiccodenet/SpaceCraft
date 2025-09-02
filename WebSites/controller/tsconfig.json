@@ -14,10 +14,7 @@
     "experimentalDecorators": true,
     "outDir": "build",
     "paths": {
-      "io-gui": [
-        "./lib/io-gui/packages/io-gui/build/index.d.ts",
-        "./lib/io-gui/packages/io-gui/build/index.js"
-      ],
+      "io-gui": ["./lib/io-gui/packages/io-gui/build"],
       "io-core": ["./lib/io-gui/packages/io-core"],
       "io-menus": ["./lib/io-gui/packages/io-menus"],
       "io-colors": ["./lib/io-gui/packages/io-colors"],
