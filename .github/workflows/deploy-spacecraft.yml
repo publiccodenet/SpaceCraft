@@ -3,9 +3,9 @@ name: Deploy Spacetime Website
 on:
   push:
     branches:
-      - main  # or master, depending on your default branch
+      - main
     paths:
-      - 'WebSites'  # Only trigger when files in this directory change
+      - 'WebSites/**'
   workflow_dispatch:
   repository_dispatch:
     types: [spacecraft-deploy]
@@ -28,15 +28,31 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
-        
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Build controller
+        run: |
+          cd ./WebSites/controller
+          pnpm install
+          pnpm build
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
-        
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './WebSites'
-          
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v4
