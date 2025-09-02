@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { IoElement, Register, ReactiveProperty, h3, ioNumberSlider, ioObject, ioButton, ioString, ioBoolean } from 'io-gui';
+import { IoElement, Register, ReactiveProperty, h2, ioNumberSlider, ioObject, ioButton, ioString, ioBoolean } from 'io-gui';
 import { magnetJoystick } from './MagnetJoystick.js';
 function generateMagnetEditorConfig(metadata) {
     const viewConfig = [];
@@ -94,7 +94,7 @@ let MagnetItem = class MagnetItem extends IoElement {
         const magnetEditorConfig = generateMagnetEditorConfig(this.controller.magnetViewMetadata);
         const magnetEditorGroups = generateMagnetEditorGroups(this.controller.magnetViewMetadata);
         this.render([
-            h3(this.magnet.title),
+            h2(this.magnet.title),
             ioObject({ value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups,
                 widgets: new Map([[
                         Object, magnetJoystick({ value: [0, 0], min: [-1, -1], max: [1, 1], '@control': this.onJoystickControl, ctrlTtimeout: 20 })
