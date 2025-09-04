@@ -1,7 +1,7 @@
 import { IoElement, IoElementProps, Register, ReactiveProperty, h2, ioNumberSlider, ioObject, ioButton, PropertyConfig, ioString, ioBoolean, PropertyGroups } from 'io-gui';
-// Note: io-menus not available in this build; using fallback for booleans
-import { SpacetimeController, ViewMetadata } from './SpacetimeController.js';
+import { SpacetimeController } from './SpacetimeController.js';
 import type { Magnet } from './types/Magnet';
+import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
 import { magnetJoystick, MagnetJoystick } from './MagnetJoystick.js';
 
 export type MagnetItemProps = IoElementProps & {
@@ -9,7 +9,7 @@ export type MagnetItemProps = IoElementProps & {
   controller: SpacetimeController;
 }
 
-function generateMagnetEditorConfig(metadata: Array<ViewMetadata>) {
+function generateMagnetEditorConfig(metadata: Array<MagnetViewMetadata>) {
   const viewConfig: PropertyConfig[] = [];
   metadata.forEach(field => {
     switch (field.type) {
@@ -34,7 +34,7 @@ function generateMagnetEditorConfig(metadata: Array<ViewMetadata>) {
   return new Map([[Object, viewConfig]]);
 }
 
-function generateMagnetEditorGroups(metadata: Array<ViewMetadata>) {
+function generateMagnetEditorGroups(metadata: Array<MagnetViewMetadata>) {
   const groups: PropertyGroups = {};
   metadata.forEach(field => {
     groups[field.category] = groups[field.category] || [];
@@ -67,22 +67,6 @@ export class MagnetItem extends IoElement {
             :host > io-slider-2d {
                 align-self: flex-start;
             }
-            :host > io-object {
-                flex: 1 1 auto;
-            }
-            :host > io-object io-property-editor > .row > :first-child {
-                flex: 0 1 10em; 
-            }
-            :host > io-object io-property-editor > .row > :nth-child(2) {
-                flex: 0 1 20em;
-            }
-            :host > io-object io-number-slider {
-              
-              flex: 1 1 auto; 
-            }
-            :host > io-object io-number-slider > io-number {
-              flex-basis: 4em;
-            }
     `;
     }
 
@@ -112,7 +96,7 @@ export class MagnetItem extends IoElement {
             h2(this.magnet.title),
             ioObject({value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups,
               widgets: new Map([[
-                Object, magnetJoystick({value: [0, 0], min: [-1, -1], max: [1, 1], '@control': this.onJoystickControl, ctrlTtimeout: 20})
+                Object, magnetJoystick({value: [0, 0], min: [-0.1, -0.1], max: [0.1, 0.1], '@control': this.onJoystickControl, ctrlTtimeout: 20})
               ]])
             }),
             ioButton({label: 'Delete', action: this.onDeleteMagnet, class: 'red'})

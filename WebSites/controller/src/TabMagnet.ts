@@ -2,9 +2,9 @@ import { h2, p, Register, ioString, ioButton, div, IoString } from 'io-gui';
 import { TabBase, TabBaseProps } from './TabBase.js';
 import { magnetItem } from './MagnetItem.js';
 import type { Magnet } from './types/Magnet';
-import type { ViewMetadata } from './SpacetimeController.js';
+import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
 
-function generateMagnetDataFromMetadata(metadata: Array<ViewMetadata>): Magnet {
+function generateMagnetDataFromMetadata(metadata: Array<MagnetViewMetadata>): Magnet {
   const data = {} as any;
   metadata.forEach((field) => {
     // Only set fields with non-null defaults; otherwise omit so Unity prefab values remain

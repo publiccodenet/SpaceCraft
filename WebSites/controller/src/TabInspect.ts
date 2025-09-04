@@ -18,14 +18,10 @@ export class TabInspect extends TabBase {
 
     changed() {
         const selected = this.simulatorState.selectedItem;
-        let itemUrl = '';
-        if (selected) {
-            itemUrl = selected.url;
-
+        let itemUrl = selected.url ?? '';
+        if (!itemUrl && selected?.id) {
             // If no explicit URL found, construct from Internet Archive ID
-            if (!itemUrl && selected.id) {
-                itemUrl = `https://archive.org/details/${selected.id}`;
-            }
+            itemUrl = `https://archive.org/details/${selected.id}`;
         }
         this.render([
             iframe({src: itemUrl || 'about:blank'}),
