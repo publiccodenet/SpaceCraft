@@ -46,8 +46,10 @@ export declare class SpacetimeController extends IoElement {
     clientChannel: any;
     clientConnected: boolean;
     currentSimulatorId: string | null;
+    currentSimulators: Map<string, SimulatorPresence>;
     magnetViewMetadata: Array<ViewMetadata>;
     simulatorState: SimulatorState;
+    simulatorRosterTick: number;
     constructor(props: IoElementProps);
     connect(): void;
     ready(): void;
@@ -61,8 +63,9 @@ export declare class SpacetimeController extends IoElement {
     sendEventToSimulator(eventType: string, data: any): void;
     setupPresenceHandlers(): void;
     subscribeToChannel(): void;
+    setCurrentSimulator(simId: string): void;
     updatePresenceState(): Promise<void>;
-    findLatestSimulator(presenceState: PresenceState): SimulatorPresence | null;
+    findSimulator(presenceState: PresenceState): SimulatorPresence | null;
 }
 export {};
 //# sourceMappingURL=SpacetimeController.d.ts.map

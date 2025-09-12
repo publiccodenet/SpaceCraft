@@ -117,7 +117,7 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'id' with StringOrNullToStringConverter: {ex.Message}"); }
         } else {
-            Debug.Log($"ItemSchema: id is null" );
+            // Debug.Log($"ItemSchema: id is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -132,7 +132,7 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'title' with StringOrNullToStringConverter: {ex.Message}"); }
         } else {
-            Debug.Log($"ItemSchema: title is null" );
+            // Debug.Log($"ItemSchema: title is null" );
         }
 
         // Use converter: StringArrayOrStringOrNullToStringConverter
@@ -147,7 +147,7 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'description' with StringArrayOrStringOrNullToStringConverter: {ex.Message}"); }
         } else {
-            Debug.Log($"ItemSchema: description is null" );
+            // Debug.Log($"ItemSchema: description is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -162,7 +162,7 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'creator' with StringOrNullToStringConverter: {ex.Message}"); }
         } else {
-            Debug.Log($"ItemSchema: creator is null" );
+            // Debug.Log($"ItemSchema: creator is null" );
         }
 
         // Use converter: SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter
@@ -177,7 +177,7 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'subject' with SemicolonSplitStringOrStringArrayOrNullToStringArrayConverter: {ex.Message}"); }
         } else {
-            Debug.Log($"ItemSchema: subject is null" );
+            // Debug.Log($"ItemSchema: subject is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -192,7 +192,7 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'mediatype' with StringOrNullToStringConverter: {ex.Message}"); }
         } else {
-            Debug.Log($"ItemSchema: mediatype is null" );
+            // Debug.Log($"ItemSchema: mediatype is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -207,7 +207,7 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'coverImage' with StringOrNullToStringConverter: {ex.Message}"); }
         } else {
-            Debug.Log($"ItemSchema: coverImage is null" );
+            // Debug.Log($"ItemSchema: coverImage is null" );
         }
 
         // Use converter: StringOrNullToStringConverter
@@ -222,7 +222,7 @@ public class CollectionSchema : SchemaGeneratedObject
             }
             catch (Exception ex) { Debug.LogError($"Error converting 'query' with StringOrNullToStringConverter: {ex.Message}"); }
         } else {
-            Debug.Log($"ItemSchema: query is null" );
+            // Debug.Log($"ItemSchema: query is null" );
         }
 
     }

@@ -35,12 +35,6 @@ export class SimulatorState extends Node {
     @ReactiveProperty({type: String})
     declare currentScreenId: string;
 
-    @ReactiveProperty({type: Number})
-    declare currentSearchGravity: number;
-
-    @ReactiveProperty({type: String})
-    declare currentSearchString: string;
-
     @ReactiveProperty({type: Object})
     declare highlightedItem: any; // TODO: define type? // {collection: Array(2), coverHeight: 283, coverImage: 'https://archive.org/services/img/5thwave0000yanc', coverWidth: 180, creator: 'Yancey, Richard', …}
 
@@ -84,8 +78,6 @@ export class SimulatorState extends Node {
             currentCollectionId: state.currentCollectionId || '',
             currentCollectionItems: state.currentCollectionItems || [],
             currentScreenId: state.currentScreenId || '',
-            currentSearchGravity: state.currentSearchGravity || 0,
-            currentSearchString: state.currentSearchString || '',
             highlightedItem: state.highlightedItem || null,
             highlightedItemId: state.highlightedItemId || '',
             highlightedItemIds: state.highlightedItemIds || [],

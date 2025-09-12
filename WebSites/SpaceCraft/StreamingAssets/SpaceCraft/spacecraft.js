@@ -71,10 +71,6 @@
 //    - action can be "tap" or directional ("north","south","east","west","up","down")
 //    - "tap" applies a scale impulse to the highlighted item
 //    - Directions call MoveHighlight
-// 'broadcast' { event: 'simulatorTakeover' }:
-//    - {newSimulatorId, newSimulatorName, startTime}
-//    - Signals that a new simulator has taken control
-//    - Used to manage multiple simulator instances
 //
 // --- PRESENCE EVENTS (Client connection tracking) ---
 // 'presence' { event: 'sync' }: Full state of all connected clients
@@ -116,6 +112,7 @@ class SpaceCraftSim {
     static deepIndexPath = 'StreamingAssets/Content/index-deep.json';
     static controllerHtmlPath = '../controller/';
     static clientChannelName = 'spacecraft';
+    static simulatorNamePrefix = 'SpaceCraft';
     
     /**
      * Get the channel name from URL query parameter or use default
@@ -124,7 +121,10 @@ class SpaceCraftSim {
     static getChannelName() {
         const urlParams = new URLSearchParams(window.location.search);
         const channelFromUrl = urlParams.get('channel');
-        return channelFromUrl || this.clientChannelName;
+        if (channelFromUrl) return channelFromUrl;
+        // Fallback: use the host name of the web page URL instead of the hard-coded default
+        const host = window.location && window.location.hostname;
+        return host;
     }
 
     /**
@@ -138,7 +138,8 @@ class SpaceCraftSim {
         this.identity = {
             clientId: this.clientId, // Unique ID for this simulator instance
             clientType: "simulator", // Fixed type for simulator
-            clientName: "SpaceCraft Simulator", // Human-readable name
+            clientName: SpaceCraftSim.simulatorNamePrefix, // Start without a number; will assign on presence
+            simulatorIndex: 0,
             startTime: Date.now() // When this simulator instance started
         };
 
@@ -158,6 +159,8 @@ class SpaceCraftSim {
         
         // Supabase channel reference
         this.clientChannel = null;
+        this._indexClaims = [];
+        this._indexTimer = null;
         this.presenceVersion = 0; // For tracking changes to presence state
 
         // Fetch timeout reference
@@ -196,7 +199,7 @@ class SpaceCraftSim {
      * Initializes the content promise to fetch data early
      */
     initContentPromise() {
-        console.log("[SpaceCraft] Initiating early fetch for index-deep.json");
+        // console.log("[SpaceCraft] Initiating early fetch for index-deep.json");
         
         window.contentPromise = fetch(SpaceCraftSim.deepIndexPath)
             .then(response => {
@@ -218,7 +221,7 @@ class SpaceCraftSim {
         if (this.domContentLoaded) return; // Prevent double execution
 
         this.domContentLoaded = true;
-        console.log("[SpaceCraft] DOM loaded. Initializing QR code.");
+        // console.log("[SpaceCraft] DOM loaded. Initializing QR code.");
 
         // Check for QR Code library dependency
         if (typeof QRCode === 'undefined') {
@@ -226,12 +229,16 @@ class SpaceCraftSim {
             return; // Stop further initialization if QR code can't be generated
         }
         
-        // Generate QR code
-        this.generateQRCodes();
+        // Generate QR code only after simulatorIndex is assigned; otherwise defer
+        if (typeof this.simulatorIndex === 'number' && this.simulatorIndex > 0) {
+            this.generateQRCodes();
+        } else {
+            try { console.log('[Sim] QR generation deferred until simulatorIndex is assigned'); } catch {}
+        }
 
         // Basic initialization is considered complete after DOM/QR setup
         this.isInitialized = true; 
-        console.log("[SpaceCraft] DOM and QR code initialization complete.");
+        // console.log("[SpaceCraft] DOM and QR code initialization complete.");
         
         // Now that the DOM is ready, proceed to configure and load Unity
         this.configureAndLoadUnity();
@@ -241,7 +248,7 @@ class SpaceCraftSim {
      * Generate QR code for controller based on qrCodeDefinitions.
      */
     generateQRCodes() {
-        console.log("[SpaceCraft] Generating QR code based on definitions...");
+        // console.log("[SpaceCraft] Generating QR code based on definitions...");
         
         const qrContainer = document.getElementById('qrcodes-container');
         if (!qrContainer) {
@@ -273,6 +280,8 @@ class SpaceCraftSim {
             if (currentChannel !== SpaceCraftSim.clientChannelName) {
                 qrParams.set('channel', currentChannel);
             }
+            // Include simulator index so controllers target the right simulator
+            try { if (this.simulatorIndex != null) qrParams.set('simulatorIndex', String(this.simulatorIndex)); } catch {}
             
             const currentSearchParams = qrParams.toString() ? '?' + qrParams.toString() : '';
 
@@ -284,19 +293,19 @@ class SpaceCraftSim {
                 // Ensure it ends with a slash if not already present
                 baseDirectory = explicitBaseUrl.endsWith('/') ? explicitBaseUrl : explicitBaseUrl + '/';
                 usingExplicitUrl = true;
-                console.log(`[SpaceCraft QR] Using explicit base_url from parameter: ${baseDirectory}`);
+                // console.log(`[SpaceCraft QR] Using explicit base_url from parameter: ${baseDirectory}`);
             } else {
                 // Fallback: Calculate the base directory path from window.location
                 baseDirectory = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-                console.log(`[SpaceCraft QR] Using detected origin: ${window.location.origin}`);
-                console.log(`[SpaceCraft QR] Calculated Base Directory: ${baseDirectory}`);
+                // console.log(`[SpaceCraft QR] Using detected origin: ${window.location.origin}`);
+                // console.log(`[SpaceCraft QR] Calculated Base Directory: ${baseDirectory}`);
             }
             
-            if (!usingExplicitUrl) {
-                 console.log(`[SpaceCraft QR] Detected Origin: ${window.location.origin}`);
-                 console.log(`[SpaceCraft QR] Calculated Base Directory: ${baseDirectory}`);
-            }
-            console.log(`[SpaceCraft QR] Current Search Params: ${currentSearchParams || '(none)'}`);
+            // if (!usingExplicitUrl) {
+            //      console.log(`[SpaceCraft QR] Detected Origin: ${window.location.origin}`);
+            //      console.log(`[SpaceCraft QR] Calculated Base Directory: ${baseDirectory}`);
+            // }
+            // console.log(`[SpaceCraft QR] Current Search Params: ${currentSearchParams || '(none)'}`);
 
             // Loop through the defined QR codes
             this.qrCodeDefinitions.forEach(definition => {
@@ -307,6 +316,8 @@ class SpaceCraftSim {
                 if (definition.type) {
                     qrSpecificParams.set('type', definition.type);
                 }
+                // Always add simulator index to the QR links once assigned
+                try { if (typeof this.simulatorIndex === 'number' && this.simulatorIndex > 0) qrSpecificParams.set('simulatorIndex', String(this.simulatorIndex)); } catch {}
                 
                 // Build the complete search params string
                 const finalSearchParams = qrSpecificParams.toString() ? '?' + qrSpecificParams.toString() : '';
@@ -316,32 +327,25 @@ class SpaceCraftSim {
                 // Construct the full absolute URL for the QR code message
                 const fullAbsoluteUrl = new URL(targetRelativeUrl, baseDirectory).toString();
                 
-                console.log(`[SpaceCraft QR] Generating for ${definition.label} at position '${definition.position || 'default'}':`);
-                console.log(`  - Relative URL: ${targetRelativeUrl}`);
-                console.log(`  - Absolute URL (for QR & window): ${fullAbsoluteUrl}`);
+                // console.log(`[SpaceCraft QR] Generating for ${definition.label} at position '${definition.position || 'default'}':`);
+                // console.log(`  - Relative URL: ${targetRelativeUrl}`);
+                // console.log(`  - Absolute URL (for QR & window): ${fullAbsoluteUrl}`);
 
-                // 1. Create the link element (will act as a button/link)
+                // 1. Create the link element (standard anchor with href for accessibility/copyability)
                 const linkElement = document.createElement('a');
                 linkElement.classList.add('qrcode-link'); // Add a general class for styling
-                linkElement.style.cursor = 'pointer'; 
+                linkElement.style.cursor = 'pointer';
+                linkElement.href = fullAbsoluteUrl; // Allow right-click/copy link
+                linkElement.target = '_blank';
+                linkElement.rel = 'noopener noreferrer';
 
                 // Add position class if defined
                 if (definition.position) {
                     linkElement.classList.add(`qr-position-${definition.position}`);
                 }
 
-                // Define window features (optional, but helps encourage a new window)
-                const windowFeatures = 'resizable=yes,scrollbars=yes';
-                // Define a unique window name based on the definition ID
-                const windowName = definition.id + '-window'; // e.g., "navigator-qr-window"
-
-                // Add onclick handler to open in a new window
-                linkElement.onclick = (event) => {
-                    event.preventDefault(); // Prevent any default link behavior if href was somehow still present
-                    console.log(`[SpaceCraft QR Click] Opening ${windowName} for ${definition.label} with URL: ${fullAbsoluteUrl}`);
-                    window.open(fullAbsoluteUrl, windowName, windowFeatures);
-                    return false; // Prevent further event propagation
-                };
+                // Define a unique window name if needed (left unused since standard anchor navigation is enabled)
+                // const windowName = definition.id + '-window';
 
                 // 2. Generate the QR code SVG
                 const qrSvgElement = QRCode({ 
@@ -364,7 +368,8 @@ class SpaceCraftSim {
                 qrContainer.appendChild(linkElement);
             });
 
-            console.log("[SpaceCraft] QR code generated successfully.");
+            // console.log("[SpaceCraft] QR code generated successfully.");
+            this.qrCodesGenerated = true;
 
         } catch (error) {
             console.error("[SpaceCraft] Error generating QR code:", error);
@@ -376,7 +381,7 @@ class SpaceCraftSim {
      * Configure and initiate the loading of the Unity instance.
      */
     configureAndLoadUnity() {
-        console.log("[SpaceCraft] Configuring Unity...");
+        // console.log("[SpaceCraft] Configuring Unity...");
 
         // Ensure Bridge is available (should be loaded via script tag before this)
         window.bridge = window.bridge || new Bridge();
@@ -384,7 +389,7 @@ class SpaceCraftSim {
              console.error("[SpaceCraft] CRITICAL: Bridge object not found or invalid!");
              return; // Cannot proceed without the Bridge
         }
-        console.log("[SpaceCraft] Bridge instance checked/created.");
+        // console.log("[SpaceCraft] Bridge instance checked/created.");
 
         // --- Unity Loader Configuration ---
         // Note: Template variables like {{{ LOADER_FILENAME }}} are replaced by Unity during build.
@@ -392,7 +397,7 @@ class SpaceCraftSim {
 
         // IMPORTANT: Make sure these template variables match your Unity WebGL template settings
         const loaderUrl = buildUrl + "/SpaceCraft.loader.js"; // Assuming default naming
-        console.log("[SpaceCraft] Unity loader URL:", loaderUrl);
+        // console.log("[SpaceCraft] Unity loader URL:", loaderUrl);
 
         const config = {
             dataUrl: buildUrl + "/SpaceCraft.data",
@@ -406,7 +411,7 @@ class SpaceCraftSim {
             // memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}", 
             // symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}", 
         };
-        console.log("[SpaceCraft] Unity configuration prepared:", config);
+        // console.log("[SpaceCraft] Unity configuration prepared:", config);
 
         // --- Get DOM Elements ---
         const container = document.querySelector("#unity-container");
@@ -418,20 +423,20 @@ class SpaceCraftSim {
             console.error("[SpaceCraft] Required DOM elements (#unity-container, #unity-canvas, #unity-fullscreen-button) not found.");
             return; // Cannot proceed without essential DOM elements
         }
-        console.log("[SpaceCraft] Unity DOM elements retrieved.");
+        // console.log("[SpaceCraft] Unity DOM elements retrieved.");
 
         // Force canvas fullscreen sizing
         canvas.style.width = "100%";
         canvas.style.height = "100%";
 
         // --- Load Unity Script ---
-        console.log("[SpaceCraft] Creating Unity loader script element...");
+        // console.log("[SpaceCraft] Creating Unity loader script element...");
         const script = document.createElement("script");
         script.src = loaderUrl;
         
         // --- Define Unity Instance Creation Logic (runs after loader script loads) ---
         script.onload = () => {
-            console.log("[SpaceCraft] Unity loader script loaded. Creating Unity instance...");
+            // console.log("[SpaceCraft] Unity loader script loaded. Creating Unity instance...");
             
             // Check if createUnityInstance function exists (it should be defined by loaderUrl script)
             if (typeof createUnityInstance === 'undefined') {
@@ -441,20 +446,20 @@ class SpaceCraftSim {
 
             createUnityInstance(canvas, config, (progress) => {
                 // Optional: Update loading progress UI
-                 console.log(`[SpaceCraft] Unity loading progress: ${Math.round(progress * 100)}%`);
+                //console.log(`[SpaceCraft] Unity loading progress: ${Math.round(progress * 100)}%`);
                 // if (progressBarFull) {
                 //     progressBarFull.style.width = 100 * progress + "%";
                 // }
             }).then((unityInstance) => {
                 // Unity Instance Creation Complete
-                console.log("[SpaceCraft] Unity instance created successfully.");
+                // console.log("[SpaceCraft] Unity instance created successfully.");
 
                 // Store Unity instance globally for access
                 window.unityInstance = unityInstance;
 
                 // Setup fullscreen button functionality
                 fullscreenButton.onclick = () => {
-                    console.log("[SpaceCraft] Fullscreen button clicked.");
+                    // console.log("[SpaceCraft] Fullscreen button clicked.");
                     unityInstance.SetFullscreen(1);
                 };
 
@@ -462,9 +467,9 @@ class SpaceCraftSim {
                 // This tells the Bridge JS library that Unity is ready and provides the instance.
                 // The Bridge library internally handles linking with the Unity instance.
                 // Bridge C# code (BridgeTransportWebGL.Awake/Start) will eventually send "StartedUnity".
-                console.log("[SpaceCraft] Starting Bridge with WebGL driver (triggers C# setup).");
+                // console.log("[SpaceCraft] Starting Bridge with WebGL driver (triggers C# setup).");
                 window.bridge.start("WebGL", JSON.stringify({})); // Empty config for now
-                console.log("[SpaceCraft] Bridge start initiated. Waiting for 'StartedUnity' event from C#...");
+                // console.log("[SpaceCraft] Bridge start initiated. Waiting for 'StartedUnity' event from C#...");
 
             }).catch((message) => {
                 console.error("[SpaceCraft] Error creating Unity instance:", message);
@@ -473,7 +478,7 @@ class SpaceCraftSim {
         
         // --- Add Loader Script to Document ---
         document.body.appendChild(script);
-        console.log("[SpaceCraft] Unity loader script added to document.");
+        // console.log("[SpaceCraft] Unity loader script added to document.");
     }
 
     /**
@@ -487,7 +492,7 @@ class SpaceCraftSim {
                 try {
                     const content = await window.contentPromise;
                     if (content) {
-                        console.log("[SpaceCraft] Successfully loaded content from early fetch");
+                        // console.log("[SpaceCraft] Successfully loaded content from early fetch");
                         return content;
                     }
                 } catch (earlyFetchError) {
@@ -496,7 +501,7 @@ class SpaceCraftSim {
             }
             
             // Direct fetch if early fetch failed or wasn't available
-            console.log(`[SpaceCraft] Fetching content from ${SpaceCraftSim.deepIndexPath}`);
+            // console.log(`[SpaceCraft] Fetching content from ${SpaceCraftSim.deepIndexPath}`);
             const response = await fetch(SpaceCraftSim.deepIndexPath);
             
             if (!response.ok) {
@@ -504,9 +509,7 @@ class SpaceCraftSim {
             }
             
             const content = await response.json();
-            console.log("[SpaceCraft] Content fetch successful, got:", 
-                Object.keys(content).join(", ")
-            );
+            // console.log("[SpaceCraft] Content fetch successful, got:", Object.keys(content).join(", "));
             
             // Return the exact content as-is, expecting it to be correctly formatted
             return content;
@@ -522,7 +525,7 @@ class SpaceCraftSim {
      */
     async loadCollectionsAndCreateSpaceCraft() {
 
-        console.log("[SpaceCraft] 'StartedUnity' event received. Loading content and creating SpaceCraft object...");
+        // console.log("[SpaceCraft] 'StartedUnity' event received. Loading content and creating SpaceCraft object...");
 
         // Ensure basic initialization (DOM, QR code) happened. It should have by now.
         if (!this.isInitialized) {
@@ -559,11 +562,11 @@ class SpaceCraftSim {
         // Extract tags from loaded content items
         this.availableTags = this.createUnifiedTagsList();
         this.state.tags = this.availableTags;
-        console.log(`[SpaceCraft] Loaded ${this.availableTags.length} tags from content items`);
+        // console.log(`[SpaceCraft] Loaded ${this.availableTags.length} tags from content items`);
         if (this.availableTags.length > 0) {
-            console.log(`[SpaceCraft] Available tags (${this.availableTags.length}):`, this.availableTags.slice(0, 10));
+            // console.log(`[SpaceCraft] Available tags (${this.availableTags.length}):`, this.availableTags.slice(0, 10));
         } else {
-            console.log("[SpaceCraft] No tags found in content items");
+            // console.log("[SpaceCraft] No tags found in content items");
         }
         
         this.setupSupabase();
@@ -574,7 +577,7 @@ class SpaceCraftSim {
         // Create the SpaceCraft object via Bridge - pass content exactly as received
         this.createSpaceCraftObject(this.loadedContent);
         
-        console.log("[SpaceCraft] Content loaded and SpaceCraft object created.");
+        // console.log("[SpaceCraft] Content loaded and SpaceCraft object created.");
     }
 
     /**
@@ -582,7 +585,7 @@ class SpaceCraftSim {
      * @param {Object} content - The content data to initialize SpaceCraft with
      */
     createSpaceCraftObject(content) {
-        console.log("[SpaceCraft] Creating SpaceCraft object in Bridge with loaded content...");
+        // console.log("[SpaceCraft] Creating SpaceCraft object in Bridge with loaded content...");
         
         // Create the actual SpaceCraft object via Bridge with content data
         this.spaceCraft = window.bridge.createObject({
@@ -597,9 +600,9 @@ class SpaceCraftSim {
                 
                 createMagnet: function (magnetData) {
                     try {
-                        console.log('[Sim JS] createMagnet received magnetData:', JSON.parse(JSON.stringify(magnetData)));
+                        // console.log('[Sim JS] createMagnet received magnetData:', JSON.parse(JSON.stringify(magnetData)));
                     } catch (e) {
-                        console.log('[Sim JS] createMagnet received magnetData (raw):', magnetData);
+                        // console.log('[Sim JS] createMagnet received magnetData (raw):', magnetData);
                     }
                     let magnetId = magnetData.magnetId;
                     if (!magnetId) {
@@ -627,9 +630,9 @@ class SpaceCraftSim {
 
                 updateMagnet: function (magnetData) {
                     try {
-                        console.log('[Sim JS] updateMagnet received magnetData:', JSON.parse(JSON.stringify(magnetData)));
+                        // console.log('[Sim JS] updateMagnet received magnetData:', JSON.parse(JSON.stringify(magnetData)));
                     } catch (e) {
-                        console.log('[Sim JS] updateMagnet received magnetData (raw):', magnetData);
+                        // console.log('[Sim JS] updateMagnet received magnetData (raw):', magnetData);
                     }
                     const magnetId = magnetData.magnetId;
                     if (!magnetId) {
@@ -672,7 +675,7 @@ class SpaceCraftSim {
 
                      window.bridge.destroyObject(magnetBridge);
 
-                     console.log(`[Bridge] Deleted magnet: "${magnetId}". Total magnets: ${this.magnets.size}`);
+                     // console.log(`[Bridge] Deleted magnet: "${magnetId}". Total magnets: ${this.magnets.size}`);
                      
                      return true;
                  },
@@ -710,9 +713,9 @@ class SpaceCraftSim {
                         "unityMetaData": "UnityMetaData"
                     },
                     handler: (obj, results) => {
-                        console.log("[SpaceCraft] ContentLoaded event received from Unity");
-                        console.log("[SpaceCraft] unityMetaData:", results.unityMetaData);
-                        console.log("[SpaceCraft] MagnetView metadata sample:", results.unityMetaData.MagnetView?.slice(0, 3));
+                        // console.log("[SpaceCraft] ContentLoaded event received from Unity");
+                        // console.log("[SpaceCraft] unityMetaData:", results.unityMetaData);
+                        // console.log("[SpaceCraft] MagnetView metadata sample:", results.unityMetaData.MagnetView?.slice(0, 3));
                         this.state.unityMetaData = results.unityMetaData;
                     }
                 },
@@ -753,7 +756,10 @@ class SpaceCraftSim {
         // Create the ground plane as a child of SpaceCraft
         this.groundPlane = window.bridge.createObject({
             prefab: "Prefabs/GroundPlane",
-            parent: this.spaceCraft
+            parent: this.spaceCraft,
+            update: {
+                "transform:Cube/component:MeshRenderer/material/color": { r: 0.0, g: .2, b: 0.0 },
+            }
         });
         
         // Store references globally
@@ -771,7 +777,8 @@ class SpaceCraftSim {
             // Client identity
             clientType: 'simulator',
             clientId: this.clientId,
-            clientName: 'Spacecraft Simulator',
+            clientName: 'Spacecraft',
+            simulatorIndex: 0,
             
             // Collection/screen state
             currentScreenId: 'main',
@@ -833,15 +840,26 @@ class SpaceCraftSim {
         }
     }
     
-    /**
-     * Syncs the current state to Supabase presence
-     */
+    mirrorIdentityToState() {
+        try {
+            if (!this.state) return;
+            this.state.clientId = this.identity.clientId;
+            this.state.clientType = this.identity.clientType;
+            this.state.clientName = this.identity.clientName;
+            // simulatorIndex may be undefined for non-simulators; default to 0
+            this.state.simulatorIndex = (typeof this.identity.simulatorIndex === 'number') ? this.identity.simulatorIndex : 0;
+            try { console.log('[Sim] mirrorIdentityToState:', { id: this.state.clientId, name: this.state.clientName, simulatorIndex: this.state.simulatorIndex }); } catch {}
+        } catch {}
+    }
+
     syncStateToPresence() {
         if (!this.clientChannel) {
-            console.warn("[SpaceCraft] Attempted to sync presence, but clientChannel is null.");
             return;
         }
-
+        // Ensure identity is reflected in state before publishing
+        this.mirrorIdentityToState();
+        
+        try { console.log('[Sim] syncStateToPresence track shared:', { simulatorIndex: this.state && this.state.simulatorIndex, clientName: this.state && this.state.clientName }); } catch {}
         this.clientChannel.track({
             ...this.identity,
             shared: { ...this.state } 
@@ -852,7 +870,11 @@ class SpaceCraftSim {
 
     setupSupabase() {
         const channelName = SpaceCraftSim.getChannelName();
-        console.log(`[SpaceCraft] Setting up Supabase client with channel: ${channelName}`);
+        try { console.log('[Sim] setupSupabase channel =', channelName); } catch {}
+        if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+            console.error('[Sim] Supabase JS library missing or invalid on simulator page');
+            return;
+        }
         
         // Create a Supabase client
         const client = window.supabase.createClient(
@@ -861,14 +883,38 @@ class SpaceCraftSim {
         );
         
         // Create a channel for client communication
-        this.clientChannel = client.channel(channelName);
-    
+        this.clientChannel = client.channel(channelName, { config: { presence: { key: this.identity.clientId } } });
+        try { console.log('[Sim] clientChannel created for', channelName, 'with presence key', this.identity.clientId); } catch {}
+        this._indexClaims = [];
+        this._indexTimer = null;
+
         this.clientChannel
 
             .on('broadcast', {}, (data) => {
-                console.log(`[SpaceCraft] RECEIVED BROADCAST EVENT: ${data.event}`, data);
+                // console.log(`[SpaceCraft] RECEIVED BROADCAST EVENT: ${data.event}`, data);
                 if (data.payload && data.payload.targetSimulatorId) {
-                    console.log(`[SpaceCraft] Event targeted at simulator: ${data.payload.targetSimulatorId}, my ID: ${this.identity.clientId}`);
+                    // console.log(`[SpaceCraft] Event targeted at simulator: ${data.payload.targetSimulatorId}, my ID: ${this.identity.clientId}`);
+                }
+            })
+
+            .on('broadcast', { event: 'indexClaim' }, (data) => {
+                try {
+                    const claim = data && data.payload || {};
+                    if (!claim.clientId || typeof claim.index !== 'number') return;
+                    const now = Date.now();
+                    this._indexClaims.push({ clientId: claim.clientId, index: claim.index, ts: now });
+                    // keep recent 2s
+                    this._indexClaims = this._indexClaims.filter(c => now - c.ts < 2000);
+                    try {
+                        console.log('[Sim] received indexClaim:', { clientId: claim.clientId, index: claim.index, ts: now });
+                        console.log('[Sim] indexClaim window (<=2s):', this._indexClaims);
+                    } catch {}
+                } catch {}
+            })
+
+            .on('presence', { event: 'sync' }, () => {
+                try { console.log('[Sim] presence:sync received'); this.ensureUniqueSimulatorName(); } catch (e) {
+                    console.warn('[SpaceCraft] ensureUniqueSimulatorName error:', e);
                 }
             })
 
@@ -943,7 +989,7 @@ class SpaceCraftSim {
                 const clientName = data.payload.clientName || "";
                 const magnetData = data.payload.magnetData;
                 try {
-                    console.log('[Sim JS] broadcast createMagnet payload magnetData:', JSON.parse(JSON.stringify(magnetData)));
+                    // console.log('[Sim JS] broadcast createMagnet payload magnetData:', JSON.parse(JSON.stringify(magnetData)));
                 } catch {}
                 const magnetId = magnetData.magnetId;
 
@@ -976,7 +1022,7 @@ class SpaceCraftSim {
                 const clientName = data.payload.clientName || "";
                 const magnetData = data.payload.magnetData;
                 try {
-                    console.log('[Sim JS] broadcast updateMagnet payload magnetData:', JSON.parse(JSON.stringify(magnetData)));
+                    // console.log('[Sim JS] broadcast updateMagnet payload magnetData:', JSON.parse(JSON.stringify(magnetData)));
                 } catch {}
                 const magnetId = magnetData.magnetId;
 
@@ -1064,36 +1110,15 @@ class SpaceCraftSim {
                 this.spaceCraft.pushMagnet(magnetId, deltaX, deltaY);
             })
 
-            .on('broadcast', { event: 'simulatorTakeover' }, (data) => {
-                // Another simulator is trying to take over
-                if (data.payload.newSimulatorId === this.identity.clientId) {
-                    return; // Our own takeover message, ignore
-                }
-                
-                // If this simulator started later than the new one, let it take over
-                if (this.identity.startTime < data.payload.startTime) {
-                    console.log(`[SpaceCraft] Another simulator has taken over: ${data.payload.newSimulatorId}`);
-                    this.shutdown();
-                } else {
-                    console.log(`[SpaceCraft] Ignoring takeover from older simulator: ${data.payload.newSimulatorId}`);
-                    this.sendTakeoverEvent();
-                }
-            })
-
-            .on('presence', { event: 'sync' }, () => {
-                const allPresences = this.clientChannel.presenceState();
-            })
-
             .on('presence', { event: 'join' }, ({ newPresences }) => {                
                 for (const presence of newPresences) {
                     // Skip our own presence
                     if (presence.clientId === this.identity.clientId) continue;
                     
+                    // console.log(`[SpaceCraft] Another ${presence.clientType} joined: ${presence.clientId} ${presence.clientName}`);
+                    
                     // Check if this is a simulator joining
                     if (presence.clientType === "simulator") {
-                        console.log(`[SpaceCraft] Another simulator joined: ${presence.clientId}`);
-                        // Send takeover event to establish dominance
-                        this.sendTakeoverEvent();
                     } else {
                         // A controller client joined
                         this.updateClientInfo(
@@ -1109,72 +1134,132 @@ class SpaceCraftSim {
                 for (const presence of leftPresences) {
                     // Remove from our client registry
                     if (this.clients[presence.clientId]) {
-                        console.log(`[SpaceCraft] Client left: ${presence.clientId} (${presence.clientType || 'unknown type'})`);
+                        // console.log(`[SpaceCraft] Client left: ${presence.clientId} (${presence.clientType || 'unknown type'})`);
                         delete this.clients[presence.clientId];
                     }
                 }
             })
 
-            .subscribe((status) => { 
+            .subscribe((status) => {
+                try { console.log('[Sim] subscribe status:', status); } catch {}
                  if (status === 'SUBSCRIBED') {
-                    console.log("[SpaceCraft] Successfully subscribed to client channel");
-                    
+                    try { console.log('[Sim] SUBSCRIBED: tracking presence and starting index negotiation'); } catch {}
+                    try { console.log('[Sim] track identity:', { clientId: this.identity.clientId, clientName: this.identity.clientName, simulatorIndex: this.identity.simulatorIndex }); } catch {}
                     this.clientChannel.track({
                         ...this.identity,
-                        shared: { ...this.state } // Nest state under 'shared'
+                        shared: { ...this.state }
                     });
-                    
-                    this.sendTakeoverEvent();
+                    try { this.ensureUniqueSimulatorName(); } catch {}
                 }
             });
+
+        // Attempt to restore previously assigned simulator index for this channel (persists across reconnects)
+        // Intentionally NOT restoring simulatorIndex from localStorage to avoid duplicate indices across tabs
+        try { console.log('[Sim] init: not restoring simulatorIndex from localStorage; will negotiate via presence'); } catch {}
 
         this.syncStateToPresence();
     }
 
-    /**
-     * Sends a takeover event to notify other simulators and clients
-     */
-    sendTakeoverEvent() {
-        if (!this.clientChannel) {
-            console.warn("[SpaceCraft] Cannot send takeover event: Client channel not initialized.");
-            return;
-        }
-        
-                        // console.log(`[SpaceCraft] Sending simulator takeover notification`);
-        
-        this.clientChannel.send({
-            type: 'broadcast',
-            event: 'simulatorTakeover',
-            payload: {
-                newSimulatorId: this.identity.clientId,
-                newSimulatorName: this.identity.clientName,
-                startTime: this.identity.startTime
-            }
-        }).catch(err => console.error("[SpaceCraft] Error sending takeover event:", err));
-    }
-    
-    /**
-     * Gracefully shuts down this simulator instance
-     */
-    shutdown() {
-        console.log("[SpaceCraft] Shutting down simulator due to takeover");
-        
-        // Clean up resources - no try/catch, just direct error logging
-        if (this.clientChannel) {
-            this.clientChannel.unsubscribe().catch(err => {
-                console.error("[SpaceCraft] Error unsubscribing from channel:", err);
+    broadcastIndexClaim(index) {
+        try {
+            console.log('[Sim] broadcastIndexClaim sending', { index, clientId: this.identity && this.identity.clientId });
+            this.clientChannel && this.clientChannel.send({
+                type: 'broadcast',
+                event: 'indexClaim',
+                payload: { clientId: this.identity.clientId, index }
             });
-        }
-        
-        // Redirect to a shutdown page or reload
-        alert("Another SpaceCraft simulator has taken control. This window will now close.");
-        window.close();
-        
-        // If window doesn't close (e.g., window not opened by script), reload
-        setTimeout(() => {
-            window.location.reload();
-        }, 1000);
+        } catch {}
     }
+
+    ensureUniqueSimulatorName() {
+        try {
+            // If already assigned, nothing to do
+            if (this.simulatorIndex && this.simulatorIndex > 0) return;
+            const state = this.clientChannel && this.clientChannel.presenceState ? this.clientChannel.presenceState() : null;
+            if (!state) return;
+            const prefix = SpaceCraftSim.simulatorNamePrefix;
+            // Compute observed max from presence (explicit index, name suffix) and shared maxIndexSeen
+            try { console.log('[Sim] ensureUniqueSimulatorName start; presence keys=', Object.keys(state || {})); } catch {}
+            let totalSimulators = 0;
+            let presenceMax = 0;
+            let maxSeenShared = 0;
+            Object.values(state).forEach((arr) => {
+                (arr || []).forEach((p) => {
+                    if (p.clientType === 'simulator') {
+                        totalSimulators += 1;
+                        try { console.log('[Sim] presence simulator:', { clientId: p.clientId, nameTop: p.clientName, nameShared: p.shared && p.shared.clientName, idxTop: p.simulatorIndex, idxShared: p.shared && p.shared.simulatorIndex, maxIndexSeen: p.shared && p.shared.maxIndexSeen }); } catch {}
+                        if (typeof p.simulatorIndex === 'number' && p.simulatorIndex > presenceMax) presenceMax = p.simulatorIndex;
+                        if (p.shared && typeof p.shared.simulatorIndex === 'number' && p.shared.simulatorIndex > presenceMax) presenceMax = p.shared.simulatorIndex;
+                        if (typeof p.clientName === 'string') {
+                            const m = p.clientName.match(/(\d+)\s*$/);
+                            if (m) {
+                                const n = parseInt(m[1], 10);
+                                if (n > presenceMax) presenceMax = n;
+                            }
+                        }
+                        if (p.shared && typeof p.shared.maxIndexSeen === 'number' && p.shared.maxIndexSeen > maxSeenShared) maxSeenShared = p.shared.maxIndexSeen;
+                    }
+                });
+            });
+            // Do not read maxIndexSeen from localStorage; avoid cross-tab coupling
+            const now = Date.now();
+            this._indexClaims = (this._indexClaims || []).filter(c => now - c.ts < 2000);
+            const claimsMax = this._indexClaims.reduce((a, c) => Math.max(a, c.index), 0);
+            const base = Math.max(presenceMax, maxSeenShared, claimsMax);
+            const sameBaseClaims = this._indexClaims.filter(c => c.index === base);
+            const rank = sameBaseClaims.filter(c => String(c.clientId) < String(this.identity.clientId)).length;
+            const proposed = (totalSimulators <= 1 && base === 0) ? 1 : (base + rank + 1);
+            console.log(`[Sim] proposal: ts=${now} tot=${totalSimulators} presenceMax=${presenceMax} maxSeenShared=${maxSeenShared} claimsMax=${claimsMax} base=${base} rank=${rank} proposed=${proposed}`);
+            this.broadcastIndexClaim(proposed);
+            // finalize after a short coordination window
+            clearTimeout(this._indexTimer);
+            this._indexTimer = setTimeout(() => {
+                const now2 = Date.now();
+                this._indexClaims = (this._indexClaims || []).filter(c => now2 - c.ts < 2000);
+                const claimsMax2 = this._indexClaims.reduce((a, c) => Math.max(a, c.index), 0);
+                const presenceMax2 = (() => {
+                    let m = 0;
+                    Object.values(this.clientChannel.presenceState() || {}).forEach((arr) => {
+                        (arr || []).forEach((p) => {
+                            if (p.clientType === 'simulator') {
+                                if (typeof p.simulatorIndex === 'number' && p.simulatorIndex > m) m = p.simulatorIndex;
+                                if (p.shared && typeof p.shared.simulatorIndex === 'number' && p.shared.simulatorIndex > m) m = p.shared.simulatorIndex;
+                                if (typeof p.clientName === 'string') {
+                                    const mm = p.clientName.match(/(\d+)\s*$/);
+                                    if (mm) m = Math.max(m, parseInt(mm[1], 10));
+                                }
+                                if (p.shared && typeof p.shared.maxIndexSeen === 'number' && p.shared.maxIndexSeen > m) m = p.shared.maxIndexSeen;
+                            }
+                        });
+                    });
+                    return m;
+                })();
+                const base2 = Math.max(presenceMax2, claimsMax2);
+                const sameBase2 = this._indexClaims.filter(c => c.index === base2);
+                const rank2 = sameBase2.filter(c => String(c.clientId) < String(this.identity.clientId)).length;
+                const finalIndex = (final => (final > 0 ? final : 1))( (base2 + rank2 + 1) );
+                console.log(`[Sim] finalize: claimsMax2=${claimsMax2} presenceMax2=${presenceMax2} base2=${base2} rank2=${rank2} finalIndex=${finalIndex}`);
+                if (!this.simulatorIndex || this.simulatorIndex === 0) {
+                    this.simulatorIndex = finalIndex;
+                    const nextName = `${prefix} ${this.simulatorIndex}`;
+                    this.identity.clientName = nextName;
+                    this.identity.simulatorIndex = this.simulatorIndex;
+                    this.state.clientName = nextName;
+                    this.state.simulatorIndex = this.simulatorIndex;
+                    const newMaxSeen = Math.max(base2, this.simulatorIndex);
+                    this.state.maxIndexSeen = newMaxSeen;
+                    // Do not persist indices to localStorage to avoid cross-tab duplication
+                    console.log(`[Sim] assigned: simulatorIndex=${this.simulatorIndex} clientName="${this.identity.clientName}"`);
+                    this.syncStateToPresence();
+                    if (this.domContentLoaded) {
+                        this.generateQRCodes();
+                    }
+                }
+            }, 400);
+        } catch {}
+    }
+
+    // Takeover functionality removed: multi-simulator is supported
 
     /**
      * Sends a Supabase broadcast event on the channel.
@@ -1194,7 +1279,7 @@ class SpaceCraftSim {
             return;
         }
 
-        console.log(`[SpaceCraft] Sending '${eventName}' event to client ${clientId}`);
+        // console.log(`[SpaceCraft] Sending '${eventName}' event to client ${clientId}`);
         
         // Add simulator ID to payload so client knows who sent it
         const fullPayload = {
@@ -1220,7 +1305,7 @@ class SpaceCraftSim {
             return;
         }
 
-        console.log(`[SpaceCraft] Broadcasting '${eventName}' event to all clients`);
+        // console.log(`[SpaceCraft] Broadcasting '${eventName}' event to all clients`);
         
         // Add simulator ID to payload so clients know who sent it
         const fullPayload = {
@@ -1272,13 +1357,7 @@ class SpaceCraftSim {
      * Logs the current status of the SpaceCraft instance
      */
     logStatus() {
-        console.log("[SpaceCraft Debug] Status:", {
-             DOMReady: this.domContentLoaded,
-             BasicInitialized: this.isInitialized,
-             BridgeAvailable: !!window.bridge,
-             SpaceCraft: !!this.spaceCraft,
-             SupabaseLoaded: typeof window.supabase !== 'undefined'
-        });
+        // console.log("[SpaceCraft Debug] Status:", { DOMReady: this.domContentLoaded, BasicInitialized: this.isInitialized, BridgeAvailable: !!window.bridge, SpaceCraft: !!this.spaceCraft, SupabaseLoaded: typeof window.supabase !== 'undefined' });
     }
 
     /**
@@ -1354,7 +1433,7 @@ class SpaceCraftSim {
      */
     createUnifiedTagsList() {
         if (!this.loadedContent || !this.loadedContent.collections) {
-            console.log("[SpaceCraft] No collections data available for creating tags list");
+            // console.log("[SpaceCraft] No collections data available for creating tags list");
             return [];
         }
 
@@ -1380,7 +1459,7 @@ class SpaceCraftSim {
         }
 
         const sortedTags = Array.from(allTags).sort();
-        console.log(`[SpaceCraft] Created unified tags list with ${sortedTags.length} unique tags`);
+        // console.log(`[SpaceCraft] Created unified tags list with ${sortedTags.length} unique tags`);
         return sortedTags;
     }
 }
@@ -1408,4 +1487,4 @@ if (document.readyState === 'loading') {
     // setInterval(() => window.SpaceCraft.logStatus(), 5000);
 }
 
-console.log("[SpaceCraft] spacecraft.js loaded. Waiting for DOMContentLoaded to initialize...");
+// console.log("[SpaceCraft] spacecraft.js loaded. Waiting for DOMContentLoaded to initialize...");

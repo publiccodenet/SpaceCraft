@@ -96,7 +96,7 @@ public class Brewster : MonoBehaviour
             return;
         }
             
-        Debug.Log("Brewster: Starting to load content from JSON");
+        // Debug.Log("Brewster: Starting to load content from JSON");
         //Debug.Log($"Brewster: Content JSON structure: {content}");
             
         // Clear existing content first
@@ -144,24 +144,24 @@ public class Brewster : MonoBehaviour
             Collection collection = ScriptableObject.CreateInstance<Collection>();
             
             // Debug the JSON before import
-            Debug.Log($"Brewster: About to import collection '{collectionId}' from JSON: {collectionJson}");
+            // Debug.Log($"Brewster: About to import collection '{collectionId}' from JSON: {collectionJson}");
             
             // Import from the nested collection object
             collection.ImportFromJToken(collectionJson);
             
             // Debug the collection after import
-            Debug.Log($"Brewster: After import - collection ID='{collection.Id}', Title='{collection.Title}'");
+            // Debug.Log($"Brewster: After import - collection ID='{collection.Id}', Title='{collection.Title}'");
             
             // Collection should already have ID from ImportFromJToken,
             // but if not, use the collection ID from the JSON key
             if (string.IsNullOrEmpty(collection.Id))
             {
-                Debug.Log($"Brewster: Setting explicit ID for collection '{collectionId}' as it was not found in metadata");
+                // Debug.Log($"Brewster: Setting explicit ID for collection '{collectionId}' as it was not found in metadata");
                 collection.Id = collectionId;
             }
 
             _collections[collectionId] = collection;
-            Debug.Log($"Brewster: Successfully added collection '{collectionId}' with ID '{collection.Id}'");
+            // Debug.Log($"Brewster: Successfully added collection '{collectionId}' with ID '{collection.Id}'");
 
             // Check for itemsIndex in the collection
             JArray itemsIndex = collectionDir["itemsIndex"] as JArray;
@@ -238,7 +238,7 @@ public class Brewster : MonoBehaviour
                     // If no ID from JSON, use the key as ID
                     if (string.IsNullOrEmpty(item.Id))
                     {
-                        Debug.Log($"Brewster: Setting explicit ID for item '{itemId}' as it was not found in metadata");
+                        // Debug.Log($"Brewster: Setting explicit ID for item '{itemId}' as it was not found in metadata");
                         item.Id = itemId;
                     }
 
@@ -256,7 +256,7 @@ public class Brewster : MonoBehaviour
         }
         
         // Notify that content is loaded
-        Debug.Log($"Brewster: Content loading complete. Loaded {_collections.Count} collections and {_items.Count} items from provided JSON.");
+        // Debug.Log($"Brewster: Content loading complete. Loaded {_collections.Count} collections and {_items.Count} items from provided JSON.");
 
         // Fire the event to notify all listeners
         OnAllContentLoaded?.Invoke();

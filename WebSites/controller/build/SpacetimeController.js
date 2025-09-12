@@ -51,7 +51,9 @@ let SpacetimeController = class SpacetimeController extends IoElement {
         this.clientChannel = null;
         this.clientConnected = false;
         this.currentSimulatorId = null;
+        this.currentSimulators = new Map();
         this.magnetViewMetadata = [];
+        this.simulatorRosterTick = 0;
         this.connect();
     }
     connect() {
@@ -60,13 +62,19 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             return;
         }
         try {
-            const channelName = new URLSearchParams(window.location.search).get('channel') || SpacetimeController_1.clientChannelName;
+            const params = new URLSearchParams(window.location.search);
+            const channelName = params.get('channel') || SpacetimeController_1.clientChannelName;
             this.supabaseClient = supabase.createClient(SpacetimeController_1.supabaseUrl, SpacetimeController_1.supabaseAnonKey);
             this.clientChannel = this.supabaseClient.channel(channelName, {
                 config: { presence: { key: this.clientId } }
             });
             this.setupPresenceHandlers();
             this.subscribeToChannel();
+            // Only honor simulatorIndex param (no legacy)
+            const simIndexFromUrl = params.get('simulatorIndex');
+            if (simIndexFromUrl) {
+                this._preselectSimulatorIndex = parseInt(simIndexFromUrl, 10);
+            }
         }
         catch (error) {
             console.error('Controller connection failed:', error);
@@ -158,15 +166,52 @@ let SpacetimeController = class SpacetimeController extends IoElement {
         this.clientChannel
             .on('presence', { event: 'sync' }, () => {
             const presenceState = this.clientChannel.presenceState();
-            const simulator = this.findLatestSimulator(presenceState);
-            if (simulator) {
-                this.magnetViewMetadata = simulator.shared.unityMetaData?.MagnetView || [];
-                this.currentSimulatorId = simulator.clientId;
-                this.simulatorState.update(simulator.shared);
+            try {
+                const raw = Object.values(presenceState || {}).flat();
+                const sims = raw.filter((p) => p && p.clientType === 'simulator');
+                console.log('[Controller][presence:sync] presences:', raw.length, 'simulators:', sims.length);
+                console.log('[Controller][presence:sync] simulators raw:', sims.map((p) => ({
+                    clientId: p.clientId,
+                    nameTop: p.clientName,
+                    nameShared: p.shared && p.shared.clientName,
+                    idxTop: typeof p.simulatorIndex === 'number' ? p.simulatorIndex : 0,
+                    idxShared: p.shared && typeof p.shared.simulatorIndex === 'number' ? p.shared.simulatorIndex : 0
+                })));
             }
-        })
-            .on('broadcast', { event: 'simulatorTakeover' }, (payload) => {
-            this.currentSimulatorId = payload.newSimulatorId;
+            catch { }
+            const simulator = this.findSimulator(presenceState);
+            if (simulator) {
+                // If preselect by index requested, override with match when available
+                if (this._preselectSimulatorIndex) {
+                    for (const sim of this.currentSimulators.values()) {
+                        const idx = sim.simulatorIndex || (sim.shared && sim.shared.simulatorIndex);
+                        if (idx === this._preselectSimulatorIndex) {
+                            this.currentSimulatorId = sim.clientId;
+                            break;
+                        }
+                    }
+                    this._preselectSimulatorIndex = null;
+                }
+                this.magnetViewMetadata = simulator.shared.unityMetaData?.MagnetView || [];
+                this.currentSimulatorId = this.currentSimulatorId || simulator.clientId;
+                this.simulatorState.update(simulator.shared);
+                // bump tick so UI re-renders simulator menus
+                this.simulatorRosterTick = (this.simulatorRosterTick || 0) + 1;
+                try {
+                    const list = Array.from(this.currentSimulators.values()).map((s) => ({
+                        clientId: s.clientId,
+                        clientName: s.clientName || (s.shared && s.shared.clientName),
+                        simulatorIndex: s.simulatorIndex || (s.shared && s.shared.simulatorIndex)
+                    }));
+                    console.log('[Controller] roster updated (tick', this.simulatorRosterTick, '):', list);
+                    console.log('[Controller] currentSimulatorId:', this.currentSimulatorId);
+                }
+                catch { }
+            }
+            else {
+                // No simulator selected yet; still bump tick to refresh menu state
+                this.simulatorRosterTick = (this.simulatorRosterTick || 0) + 1;
+            }
         });
     }
     subscribeToChannel() {
@@ -181,6 +226,35 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 });
             }
         });
+    }
+    setCurrentSimulator(simId) {
+        this.currentSimulatorId = simId;
+        if (!this.clientChannel)
+            return;
+        // Pull fresh presence state from Supabase and switch to the selected simulator's state
+        const presenceState = this.clientChannel.presenceState();
+        const sim = this.findSimulator(presenceState);
+        if (sim) {
+            this.magnetViewMetadata = sim.shared.unityMetaData?.MagnetView || [];
+            this.simulatorState.update(sim.shared);
+        }
+        try {
+            const sel = this.currentSimulators.get(simId);
+            console.log('[Controller] setCurrentSimulator:', simId, 'name=', sel && (sel.clientName || (sel.shared && sel.shared.clientName)), 'index=', sel && (sel.simulatorIndex || (sel.shared && sel.shared.simulatorIndex)));
+        }
+        catch { }
+        // Persist simulatorIndex in URL
+        try {
+            const selected = this.currentSimulators.get(simId);
+            const simIndex = selected && (selected.simulatorIndex || (selected.shared && selected.shared.simulatorIndex));
+            if (simIndex) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('simulatorIndex', String(simIndex));
+                window.history.replaceState({}, '', url.toString());
+                console.log('[Controller] URL simulatorIndex set to', simIndex);
+            }
+        }
+        catch { }
     }
     async updatePresenceState() {
         if (this.clientConnected && this.clientChannel) {
@@ -197,23 +271,65 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             }
         }
     }
-    findLatestSimulator(presenceState) {
-        let latestSimulator = null;
-        let latestStartTime = 0;
-        Object.values(presenceState).forEach(presences => {
-            presences.forEach((presence) => {
-                if (presence.clientType === 'simulator' && presence.startTime > latestStartTime) {
-                    latestSimulator = presence;
-                    latestStartTime = presence.startTime;
+    findSimulator(presenceState) {
+        let lastSimulator = null;
+        let simulator = null;
+        const values = Object.values(presenceState);
+        this.currentSimulators = new Map();
+        for (const presences of values) {
+            for (const presence of presences) {
+                // Only count fully-initialized simulators (index assigned)
+                const meta = presence;
+                const simIndexTop = typeof meta.simulatorIndex === 'number' ? meta.simulatorIndex : 0;
+                const simIndexShared = meta.shared && typeof meta.shared.simulatorIndex === 'number' ? meta.shared.simulatorIndex : 0;
+                const simIndex = simIndexTop || simIndexShared;
+                if (meta.clientType === 'simulator' && simIndex > 0) {
+                    // Prefer shared view of fields if available
+                    const merged = {
+                        ...meta,
+                        clientName: (meta.shared && meta.shared.clientName) ? meta.shared.clientName : meta.clientName,
+                        simulatorIndex: simIndex,
+                        shared: meta.shared || {}
+                    };
+                    lastSimulator = merged;
+                    this.currentSimulators.set(meta.clientId, merged);
+                    if (meta.clientId == this.currentSimulatorId) {
+                        simulator = lastSimulator;
+                    }
                 }
-            });
-        });
-        return latestSimulator;
+                else if (meta.clientType === 'simulator') {
+                    console.log('[Controller] ignoring simulator without index yet:', {
+                        clientId: meta.clientId,
+                        nameTop: meta.clientName,
+                        nameShared: meta.shared && meta.shared.clientName,
+                        idxTop: simIndexTop,
+                        idxShared: simIndexShared
+                    });
+                }
+            }
+        }
+        if (!simulator) {
+            simulator = lastSimulator;
+        }
+        this.currentSimulatorId = simulator?.clientId || null;
+        try {
+            const list = Array.from(this.currentSimulators.values()).map((s) => ({
+                clientId: s.clientId,
+                clientName: s.clientName || (s.shared && s.shared.clientName),
+                simulatorIndex: s.simulatorIndex || (s.shared && s.shared.simulatorIndex)
+            }));
+            console.log('[Controller] currentSimulators:', list);
+        }
+        catch { }
+        return simulator;
     }
 };
 __decorate([
     ReactiveProperty({ type: SimulatorState, init: null })
 ], SpacetimeController.prototype, "simulatorState", void 0);
+__decorate([
+    ReactiveProperty({ type: Number })
+], SpacetimeController.prototype, "simulatorRosterTick", void 0);
 SpacetimeController = SpacetimeController_1 = __decorate([
     Register
 ], SpacetimeController);

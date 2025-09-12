@@ -35,7 +35,7 @@ public class CollectionsView : MonoBehaviour
         }
         else
         {
-            Debug.Log($"CollectionsView: itemInfoPanel is assigned: {itemInfoPanel.name}");
+            // Debug.Log($"CollectionsView: itemInfoPanel is assigned: {itemInfoPanel.name}");
         }
         
         // Ensure Brewster instance exists
@@ -115,7 +115,7 @@ public class CollectionsView : MonoBehaviour
             }
         }
         
-        Debug.Log($"CollectionsView: Displayed {collectionViews.Count} collections.");
+        // Debug.Log($"CollectionsView: Displayed {collectionViews.Count} collections.");
     }
     
     /// <summary>
@@ -177,7 +177,7 @@ public class CollectionsView : MonoBehaviour
     /// </summary>
     private void HandleAllContentLoaded()
     {
-        Debug.Log("CollectionsView: Received OnAllContentLoaded event.");
+        // Debug.Log("CollectionsView: Received OnAllContentLoaded event.");
         
         // Hide details panel initially
         HideItemDetails();
@@ -215,7 +215,7 @@ public class CollectionsView : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning($"CollectionsView: UpdateDetailPanel - Could not find ItemView for selected id: {selectedId}");
+                    // Debug.LogWarning($"CollectionsView: UpdateDetailPanel - Could not find ItemView for selected id: {selectedId}");
                 }
             }
         }
@@ -227,7 +227,7 @@ public class CollectionsView : MonoBehaviour
             if (currentDisplayedItem != itemToDisplay)
             {
                 currentDisplayedItem = itemToDisplay;
-                Debug.Log($"CollectionsView: UpdateDetailPanel - Displaying item details for: {itemToDisplay.Title}");
+                // Debug.Log($"CollectionsView: UpdateDetailPanel - Displaying item details for: {itemToDisplay.Title}");
                 DisplayItemDetails(itemToDisplay);
             }
         }
@@ -237,7 +237,7 @@ public class CollectionsView : MonoBehaviour
             if (currentDisplayedItem != null)
             {
                 currentDisplayedItem = null;
-                Debug.Log("CollectionsView: UpdateDetailPanel - Hiding item details (no item to display)");
+                // Debug.Log("CollectionsView: UpdateDetailPanel - Hiding item details (no item to display)");
                 HideItemDetails();
             }
         }
@@ -269,12 +269,12 @@ public class CollectionsView : MonoBehaviour
                 if (itemView != null && !string.IsNullOrEmpty(itemView.collectionId))
                 {
                     Collection collection = Brewster.Instance.GetCollection(itemView.collectionId);
-                    Debug.Log($"CollectionsView: Retrieved collection with ID='{collection?.Id}', Title='{collection?.Title}', Type={collection?.GetType().Name}");
+                    // Debug.Log($"CollectionsView: Retrieved collection with ID='{collection?.Id}', Title='{collection?.Title}', Type={collection?.GetType().Name}");
                     if (collection != null)
                     {
-                        Debug.Log($"CollectionsView: About to format title - collection.Title='{collection.Title}', item.Title='{item.Title}'");
+                        // Debug.Log($"CollectionsView: About to format title - collection.Title='{collection.Title}', item.Title='{item.Title}'");
                         displayTitle = $"{collection.Title}\n{item.Title}";
-                        Debug.Log($"CollectionsView: Final formatted displayTitle='{displayTitle}'");
+                        // Debug.Log($"CollectionsView: Final formatted displayTitle='{displayTitle}'");
                     }
                     else
                     {

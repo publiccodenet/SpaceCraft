@@ -16,8 +16,6 @@ let SimulatorState = class SimulatorState extends Node {
             currentCollectionId: state.currentCollectionId || '',
             currentCollectionItems: state.currentCollectionItems || [],
             currentScreenId: state.currentScreenId || '',
-            currentSearchGravity: state.currentSearchGravity || 0,
-            currentSearchString: state.currentSearchString || '',
             highlightedItem: state.highlightedItem || null,
             highlightedItemId: state.highlightedItemId || '',
             highlightedItemIds: state.highlightedItemIds || [],
@@ -56,12 +54,6 @@ __decorate([
 __decorate([
     ReactiveProperty({ type: String })
 ], SimulatorState.prototype, "currentScreenId", void 0);
-__decorate([
-    ReactiveProperty({ type: Number })
-], SimulatorState.prototype, "currentSearchGravity", void 0);
-__decorate([
-    ReactiveProperty({ type: String })
-], SimulatorState.prototype, "currentSearchString", void 0);
 __decorate([
     ReactiveProperty({ type: Object })
 ], SimulatorState.prototype, "highlightedItem", void 0);
