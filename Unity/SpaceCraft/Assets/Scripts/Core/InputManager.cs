@@ -7,6 +7,15 @@ using System.Collections.Generic;
 /// </summary>
 public class InputManager : MonoBehaviour
 {
+    [Header("View")]
+    [ExposedParameter(
+        "View Mode",
+        Category = "View",
+        Description = "Current view mode: magnets, selection or manual",
+        Default = "magnets",
+        Visible = true
+    )]
+    public string viewMode = "magnets";
     [Header("Physics Materials")]
     [ExposedParameter(
         "Static Friction", 

@@ -1,4 +1,5 @@
 import { Node, Register, ReactiveProperty, NodeProps } from 'io-gui';
+import type { ViewMode } from './types/ViewMode.js';
 
 export type Collection = {
   description: string;
@@ -68,6 +69,9 @@ export class SimulatorState extends Node {
     @ReactiveProperty({type: Number})
     declare updateCounter: number;
 
+    @ReactiveProperty({type: String})
+    declare viewMode: ViewMode;
+
     update(state: SimulatorState) {
         this.setProperties({
             clientId: state.clientId || '',
@@ -89,6 +93,7 @@ export class SimulatorState extends Node {
             lastUpdated: state.lastUpdated,
             tags: state.tags || [],
             updateCounter: state.updateCounter,
+            viewMode: (state as any).viewMode || 'magnets',
         });
     }
 

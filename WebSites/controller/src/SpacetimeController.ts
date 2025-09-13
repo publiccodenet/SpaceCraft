@@ -1,5 +1,5 @@
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton } from 'io-gui';
-import { tabNavigate } from './TabNavigate.js';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton, div, IoOptionSelect, IoOptionSelectProps } from 'io-gui';
+import { tabView } from './TabView.js';
 import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
 import { tabMagnet } from './TabMagnet.js';
@@ -70,6 +70,40 @@ export class SpacetimeController extends IoElement {
                 flex-direction: column;
                 height: 100%;
                 width: 100%;
+            }
+            :host .top-controls {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 6px;
+                flex-wrap: wrap;
+            }
+            :host .sim-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            :host .sim-btn {
+                display: inline-flex;
+                align-items: center;
+                padding: 4px 10px;
+                border-radius: 12px;
+                border: 1px solid var(--io-color-2, #555);
+                background: var(--io-bg-1, #222);
+                color: var(--io-fg-1, #ddd);
+                cursor: pointer;
+                user-select: none;
+                -webkit-user-select: none;
+                white-space: nowrap;
+                transition: none;
+            }
+            :host .sim-btn[selected] {
+                font-weight: 700;
+                filter: brightness(1.6) saturate(1.4);
+                box-shadow: 0 0 0 2px rgba(255,255,255,0.8) inset,
+                            0 0 6px rgba(255,255,255,0.35);
+                outline: 2px solid rgba(255,255,255,0.6);
+                outline-offset: -2px;
             }
             :host > io-navigator {
                 flex: 1 1 auto;
@@ -143,7 +177,38 @@ export class SpacetimeController extends IoElement {
 
     
     ready() {
+        this.changed();
+    }
+
+    changed() {
+        // Force re-render of simulator menu on roster updates
+        void this.simulatorRosterTick;
+
+        const simList = Array.from((this.currentSimulators && this.currentSimulators.values && this.currentSimulators.values()) ? this.currentSimulators.values() : []) as any[];
+        const hasSims = simList.length > 0;
+        const simOptions = simList
+            .map((s: any) => ({ id: (s.clientName || s.clientId), value: s.clientId, hue: ((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) ? (((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) - 1) % 8) / 8 : 0) }))
+            .sort((a, b) => a.id.localeCompare(b.id, undefined, { sensitivity: 'base' }));
+        if (!hasSims) simOptions.push({ id: '(none)', value: '(none)', hue: 0 });
+
         this.render([
+            // Top simulator control row (always visible)
+            div({ class: 'top-controls' }, [
+                div({ class: 'sim-list' }, [
+                    ...simOptions.map(opt => {
+                        const hueDeg = Math.round(opt.hue * 360);
+                        return div({
+                            class: 'sim-btn',
+                            selected: (opt.value === (this.currentSimulatorId || '')) ? true : undefined,
+                            style: {
+                                background: `hsl(${hueDeg} 60% 20%)`,
+                                borderColor: `hsl(${hueDeg} 60% 45%)`,
+                            },
+                            '@click': () => this.onTopBarSimulatorClick(opt.value)
+                        }, `🚀 ${opt.id}`);
+                    })
+                ]),
+            ]),
             ioNavigator({
                 menu: 'top',
                 caching: 'proactive',
@@ -151,7 +216,7 @@ export class SpacetimeController extends IoElement {
                     id: 'root',
                     options: [
                         {id: 'About', icon: '📖'},
-                        {id: 'Navigate', icon: '🧭'},
+                        {id: 'View', icon: '👀'},
                         {id: 'Select', icon: '👆'},
                         {id: 'Inspect', icon: '🔍'},
                         {id: 'Magnet', icon: '🧲'},
@@ -161,7 +226,7 @@ export class SpacetimeController extends IoElement {
                 }),
                 elements: [
                     ioMarkdown({id: 'About', src: './docs/About.md'}),
-                    tabNavigate({id: 'Navigate', controller: this, simulatorState: this.simulatorState}),
+                    tabView({id: 'View', controller: this, simulatorState: this.simulatorState}),
                     tabSelect({id: 'Select', controller: this, simulatorState: this.simulatorState}),
                     tabInspect({id: 'Inspect', controller: this, simulatorState: this.simulatorState}),
                     tabMagnet({id: 'Magnet', controller: this, simulatorState: this.simulatorState}),
@@ -169,6 +234,19 @@ export class SpacetimeController extends IoElement {
                 ]
             })
         ]);
+    }
+
+    onTopBarSimulatorChange(event: CustomEvent) {
+        const newId = (event as any).detail?.value;
+        if (newId && newId !== this.currentSimulatorId && newId !== '(none)') {
+            (this as any).setCurrentSimulator?.(newId);
+        }
+    }
+
+    onTopBarSimulatorClick(simId: string) {
+        if (simId && simId !== this.currentSimulatorId) {
+            (this as any).setCurrentSimulator?.(simId);
+        }
     }
 
     // === UNITY COMMUNICATION ===

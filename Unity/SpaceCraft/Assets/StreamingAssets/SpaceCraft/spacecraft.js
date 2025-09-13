@@ -231,7 +231,7 @@ class SpaceCraftSim {
         
         // Generate QR code only after simulatorIndex is assigned; otherwise defer
         if (typeof this.simulatorIndex === 'number' && this.simulatorIndex > 0) {
-            this.generateQRCodes();
+        this.generateQRCodes();
         } else {
             try { console.log('[Sim] QR generation deferred until simulatorIndex is assigned'); } catch {}
         }
@@ -334,7 +334,7 @@ class SpaceCraftSim {
                 // 1. Create the link element (standard anchor with href for accessibility/copyability)
                 const linkElement = document.createElement('a');
                 linkElement.classList.add('qrcode-link'); // Add a general class for styling
-                linkElement.style.cursor = 'pointer';
+                linkElement.style.cursor = 'pointer'; 
                 linkElement.href = fullAbsoluteUrl; // Allow right-click/copy link
                 linkElement.target = '_blank';
                 linkElement.rel = 'noopener noreferrer';
@@ -858,7 +858,7 @@ class SpaceCraftSim {
         }
         // Ensure identity is reflected in state before publishing
         this.mirrorIdentityToState();
-        
+
         try { console.log('[Sim] syncStateToPresence track shared:', { simulatorIndex: this.state && this.state.simulatorIndex, clientName: this.state && this.state.clientName }); } catch {}
         this.clientChannel.track({
             ...this.identity,
@@ -887,7 +887,7 @@ class SpaceCraftSim {
         try { console.log('[Sim] clientChannel created for', channelName, 'with presence key', this.identity.clientId); } catch {}
         this._indexClaims = [];
         this._indexTimer = null;
-
+    
         this.clientChannel
 
             .on('broadcast', {}, (data) => {
@@ -977,6 +977,24 @@ class SpaceCraftSim {
                     });
                 } else {
                     console.warn(`[SpaceCraft] Invalid select action received: ${action}`);
+                }
+            })
+
+            .on('broadcast', { event: 'setViewMode' }, (data) => {
+                if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
+                    return;
+                }
+                const mode = (data.payload && data.payload.mode) || 'magnets';
+                if (!this.state) return;
+                if (mode !== this.state.viewMode) {
+                    this.state.viewMode = mode;
+                    try { console.log('[Sim] viewMode set via controller to', mode); } catch {}
+                    try {
+                        bridge.updateObject(this.spaceCraft, {
+                            "inputManager/viewMode": mode
+                        });
+                    } catch {}
+                    this.syncStateToPresence();
                 }
             })
 
@@ -1140,7 +1158,7 @@ class SpaceCraftSim {
                 }
             })
 
-            .subscribe((status) => {
+            .subscribe((status) => { 
                 try { console.log('[Sim] subscribe status:', status); } catch {}
                  if (status === 'SUBSCRIBED') {
                     try { console.log('[Sim] SUBSCRIBED: tracking presence and starting index negotiation'); } catch {}
@@ -1241,15 +1259,24 @@ class SpaceCraftSim {
                 console.log(`[Sim] finalize: claimsMax2=${claimsMax2} presenceMax2=${presenceMax2} base2=${base2} rank2=${rank2} finalIndex=${finalIndex}`);
                 if (!this.simulatorIndex || this.simulatorIndex === 0) {
                     this.simulatorIndex = finalIndex;
+                    // Derive a stable hue from index (wrap 8 hues): 0..1
+                    // Order: Green, Blue, Yellow, Cyan, Magenta, Orange, Violet, Red (last)
+                    const hueDegs = [120, 210, 55, 180, 300, 30, 270, 0];
+                    const hues = hueDegs.map(d => (d % 360) / 360);
+                    this.simulatorHue = hues[(this.simulatorIndex - 1) % hues.length];
                     const nextName = `${prefix} ${this.simulatorIndex}`;
                     this.identity.clientName = nextName;
                     this.identity.simulatorIndex = this.simulatorIndex;
+                    this.identity.simulatorHue = this.simulatorHue;
                     this.state.clientName = nextName;
                     this.state.simulatorIndex = this.simulatorIndex;
+                    this.state.simulatorHue = this.simulatorHue;
                     const newMaxSeen = Math.max(base2, this.simulatorIndex);
                     this.state.maxIndexSeen = newMaxSeen;
                     // Do not persist indices to localStorage to avoid cross-tab duplication
                     console.log(`[Sim] assigned: simulatorIndex=${this.simulatorIndex} clientName="${this.identity.clientName}"`);
+                    // Push to Unity immediately as well
+                    try { bridge.updateObject(this.spaceCraft, { simulatorIndex: this.simulatorIndex, simulatorHue: this.simulatorHue }); } catch {}
                     this.syncStateToPresence();
                     if (this.domContentLoaded) {
                         this.generateQRCodes();

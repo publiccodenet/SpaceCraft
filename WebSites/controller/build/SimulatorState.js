@@ -27,6 +27,7 @@ let SimulatorState = class SimulatorState extends Node {
             lastUpdated: state.lastUpdated,
             tags: state.tags || [],
             updateCounter: state.updateCounter,
+            viewMode: state.viewMode || 'magnets',
         });
     }
 };
@@ -87,6 +88,9 @@ __decorate([
 __decorate([
     ReactiveProperty({ type: Number })
 ], SimulatorState.prototype, "updateCounter", void 0);
+__decorate([
+    ReactiveProperty({ type: String })
+], SimulatorState.prototype, "viewMode", void 0);
 SimulatorState = __decorate([
     Register
 ], SimulatorState);

@@ -1,4 +1,5 @@
 import { Node, NodeProps } from 'io-gui';
+import type { ViewMode } from './types/ViewMode.js';
 export type Collection = {
     description: string;
     id: string;
@@ -24,6 +25,7 @@ export declare class SimulatorState extends Node {
     lastUpdated: string;
     tags: Array<string>;
     updateCounter: number;
+    viewMode: ViewMode;
     update(state: SimulatorState): void;
 }
 //# sourceMappingURL=SimulatorState.d.ts.map
