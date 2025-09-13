@@ -24,11 +24,11 @@ let TabView = class TabView extends TabBase {
                 margin: 0 0 6px 0;
             }
             :host .view-controls {
-                align-self: flex-end;
+                align-self: flex-start;
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                margin: 6px 8px 6px 8px;
+                margin: 2px 8px 4px 8px;
             }
         `;
     }

@@ -569,6 +569,23 @@ class SpaceCraftSim {
             // console.log("[SpaceCraft] No tags found in content items");
         }
         
+        // Publish content identity for controllers (URLs + hashes only)
+        try {
+            const base = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            // Built-in content key: where StreamingAssets are served from
+            const streamingBase = base + 'StreamingAssets/';
+            this.state.contentKey = streamingBase;
+            // Deep index URL derived from the key
+            this.state.contentIndexUrl = streamingBase + 'Content/index-deep.json';
+            // Example hash placeholder (should be produced by the content pipeline)
+            this.state.contentHash = (this.loadedContent && this.loadedContent.hash) || 'dev-example-hash';
+            // Assets base lives under StreamingAssets/Content/
+            this.state.assetsBaseUrl = streamingBase + 'Content/';
+            // Unity meta placeholders
+            this.state.unityMetaKey = 'UnityMeta@dev';
+            this.state.unityMetaHash = 'dev-meta-hash';
+        } catch {}
+
         this.setupSupabase();
 
         // Sync tags to presence immediately after loading

@@ -569,6 +569,23 @@ class SpaceCraftSim {
             // console.log("[SpaceCraft] No tags found in content items");
         }
         
+        // Publish content identity for controllers (URLs + hashes only)
+        try {
+            const base = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            // Built-in content key: where StreamingAssets are served from
+            const streamingBase = base + 'StreamingAssets/';
+            this.state.contentKey = streamingBase;
+            // Deep index URL derived from the key
+            this.state.contentIndexUrl = streamingBase + 'Content/index-deep.json';
+            // Example hash placeholder (should be produced by the content pipeline)
+            this.state.contentHash = (this.loadedContent && this.loadedContent.hash) || 'dev-example-hash';
+            // Assets base lives under StreamingAssets/Content/
+            this.state.assetsBaseUrl = streamingBase + 'Content/';
+            // Unity meta placeholders
+            this.state.unityMetaKey = 'UnityMeta@dev';
+            this.state.unityMetaHash = 'dev-meta-hash';
+        } catch {}
+
         this.setupSupabase();
 
         // Sync tags to presence immediately after loading
@@ -1260,7 +1277,9 @@ class SpaceCraftSim {
                 if (!this.simulatorIndex || this.simulatorIndex === 0) {
                     this.simulatorIndex = finalIndex;
                     // Derive a stable hue from index (wrap 8 hues): 0..1
-                    const hues = [0/8, 1/8, 2/8, 3/8, 4/8, 5/8, 6/8, 7/8];
+                    // Order: Green, Blue, Yellow, Cyan, Magenta, Orange, Violet, Red (last)
+                    const hueDegs = [120, 210, 55, 180, 300, 30, 270, 0];
+                    const hues = hueDegs.map(d => (d % 360) / 360);
                     this.simulatorHue = hues[(this.simulatorIndex - 1) % hues.length];
                     const nextName = `${prefix} ${this.simulatorIndex}`;
                     this.identity.clientName = nextName;

@@ -6,6 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { h2, p, Register, div, img, h4 } from 'io-gui';
 import { TabBase } from './TabBase.js';
+import { contentStore } from './services/ContentStore.js';
 const GESTURE_THRESHOLD = 20;
 let TabSelect = class TabSelect extends TabBase {
     static get Style() {
@@ -67,10 +68,15 @@ let TabSelect = class TabSelect extends TabBase {
                 .map((line) => `<p>${line.trim()}</p>`) // Create paragraph for each line
                 .join('');
         }
+        // Resolve cover base from content store (built-in StreamingAssets path or external)
+        const shared = this.controller.simulatorState || {};
+        const contentKey = shared.contentKey || shared.contentIndexUrl;
+        const contentRec = contentStore.getContent(contentKey);
+        const assetsBase = shared.assetsBaseUrl || '../SpaceCraft/StreamingAssets/Content/';
         this.render([
             h2('TAP or SWIPE to select items'),
             selected ? div([
-                img({ src: `../SpaceCraft/StreamingAssets/Content/collections/scifi/items/${selected.id}/cover.jpg`, alt: `Cover for ${selected.title}`, class: 'cover-image' }),
+                img({ src: `${assetsBase}collections/scifi/items/${selected.id}/cover.jpg`, alt: `Cover for ${selected.title}`, class: 'cover-image' }),
                 h4(selected.title || 'Untitled'),
                 div({ class: 'description', innerHTML: description }),
             ]) : p('No item selected'),
