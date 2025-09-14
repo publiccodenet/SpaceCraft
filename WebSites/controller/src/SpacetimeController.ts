@@ -6,6 +6,7 @@ import { tabMagnet } from './TabMagnet.js';
 import { tabAdjust } from './TabAdjust.js';
 import { SimulatorState } from './SimulatorState.js';
 import type { Magnet } from './types/Magnet';
+import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
 
 ThemeSingleton.themeID = 'dark';
 
@@ -45,22 +46,6 @@ type SimulatorTakeoverPayload = {
   startTime: number;
 }
 
-export type ViewMetadata = {
-  canWrite: boolean;
-  category: string;
-  component: string;
-  defaultValue: any;
-  description: string;
-  displayName: string;
-  name: string;
-  path: string;
-  type: 'bool' | 'float' | 'string';
-  unityType: string;
-  min?: number,
-  max?: number,
-  step?: number,
-}
-
 @Register
 export class SpacetimeController extends IoElement {
     static get Style() {
@@ -74,6 +59,21 @@ export class SpacetimeController extends IoElement {
             :host > io-navigator {
                 flex: 1 1 auto;
                 overflow: hidden;
+            }
+            :host io-object {
+                flex: 1 1 auto;
+            }
+            :host io-property-editor > .row > :first-child {
+                flex: 0 0 10em; 
+            }
+            :host io-property-editor > .row > :nth-child(2) {
+                flex: 0 1 20em;
+            }
+            :host io-property-editor io-number-slider {
+              flex: 1 1 auto; 
+            }
+            :host io-property-editor io-number-slider > io-number {
+              flex-basis: 4.5em;
             }
     `;
     }
@@ -91,7 +91,7 @@ export class SpacetimeController extends IoElement {
     declare currentSimulatorId: string | null;
     declare currentSimulators: Map<string, SimulatorPresence>;
 
-    declare magnetViewMetadata: Array<ViewMetadata>;
+    declare magnetViewMetadata: Array<MagnetViewMetadata>;
 
     @ReactiveProperty({type: SimulatorState, init: null})
     declare simulatorState: SimulatorState;

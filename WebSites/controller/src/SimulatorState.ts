@@ -1,95 +1,49 @@
-import { Node, Register, ReactiveProperty, NodeProps } from 'io-gui';
-
-export type Collection = {
-  description: string;
-  id: string;
-}
-
-export type SimulatorStateProps = NodeProps & {
-};
+import { Node, Register } from 'io-gui';
+import { Collection } from './types/Collection.js';
+import { Magnet } from './types/Magnet.js';
+import { Item } from './types/Item.js';
 
 @Register
 export class SimulatorState extends Node {
-
-    @ReactiveProperty({type: String})
-    declare clientId: string;
-
-    @ReactiveProperty({type: String})
-    declare clientName: string;
-
-    @ReactiveProperty({type: String})
-    declare clientType: string;
-
-    @ReactiveProperty()
-    declare connectedClients: Array<any>; // TODO: define type
-
-    @ReactiveProperty({type: Object})
-    declare currentCollection: Collection;
-
-    @ReactiveProperty()
-    declare currentCollectionId: string;
-
-    @ReactiveProperty({type: Array})
-    declare currentCollectionItems: Array<string>;
-
-    @ReactiveProperty({type: String})
-    declare currentScreenId: string;
-
-    @ReactiveProperty({type: Object})
-    declare highlightedItem: any; // TODO: define type? // {collection: Array(2), coverHeight: 283, coverImage: 'https://archive.org/services/img/5thwave0000yanc', coverWidth: 180, creator: 'Yancey, Richard', …}
-
-    @ReactiveProperty({type: String})
-    declare highlightedItemId: string;
-
-    @ReactiveProperty({type: Array})
-    declare highlightedItemIds: Array<string>;
-
-    @ReactiveProperty({type: Array})
-    declare magnets: Array<any>; // TODO: define type
-
-    @ReactiveProperty({type: Array})
-    declare screenIds: Array<string>;
-
-    @ReactiveProperty({type: Object})
-    declare selectedItem: any; // TODO: define type? // {collection: Array(2), coverHeight: 283, coverImage: 'https://archive.org/services/img/5thwave0000yanc', coverWidth: 180, creator: 'Yancey, Richard', …}
-
-    @ReactiveProperty({type: String})
-    declare selectedItemId: string; // {collection: Array(2), coverHeight: 283, coverImage: 'https://archive.org/services/img/5thwave0000yanc', coverWidth: 180, creator: 'Yancey, Richard', …}
-
-    @ReactiveProperty({type: Array})
-    declare selectedItemIds: Array<string>;
-
-    @ReactiveProperty({type: String})
-    declare lastUpdated: string;
-
-    @ReactiveProperty({type: Array})
-    declare tags: Array<string>;
-
-    @ReactiveProperty({type: Number})
-    declare updateCounter: number;
+    clientId: string = '';
+    clientName: string = '';
+    clientType: string = '';
+    currentCollection: Collection = {};
+    currentCollectionId: string = '';
+    currentCollectionItems: Array<string> = [];
+    currentScreenId: string = '';
+    highlightedItem: Item = {};
+    highlightedItemId: string = '';
+    highlightedItemIds: Array<string> = [];
+    magnets: Array<Magnet> = [];
+    screenIds: Array<string> = [];
+    selectedItem: Item = {};
+    selectedItemId: string = '';
+    selectedItemIds: Array<string> = [];
+    lastUpdated: string = '';
+    tags: Array<string> = [];
+    updateCounter: number = 0;
 
     update(state: SimulatorState) {
-        this.setProperties({
-            clientId: state.clientId || '',
-            clientName: state.clientName || '',
-            clientType: state.clientType || '',
-            connectedClients: state.connectedClients || [],
-            currentCollection: state.currentCollection || {},
-            currentCollectionId: state.currentCollectionId || '',
-            currentCollectionItems: state.currentCollectionItems || [],
-            currentScreenId: state.currentScreenId || '',
-            highlightedItem: state.highlightedItem || null,
-            highlightedItemId: state.highlightedItemId || '',
-            highlightedItemIds: state.highlightedItemIds || [],
-            magnets: state.magnets || [],
-            screenIds: state.screenIds || [],
-            selectedItem: state.selectedItem || null,
-            selectedItemId: state.selectedItemId || '',
-            selectedItemIds: state.selectedItemIds || [],
-            lastUpdated: state.lastUpdated,
-            tags: state.tags || [],
-            updateCounter: state.updateCounter,
-        });
-    }
+      this.clientId = state.clientId || '',
+      this.clientName = state.clientName || '',
+      this.clientType = state.clientType || '',
+      this.currentCollection = state.currentCollection || {},
+      this.currentCollectionId = state.currentCollectionId || '',
+      this.currentCollectionItems = state.currentCollectionItems || [],
+      this.currentScreenId = state.currentScreenId || '',
+      this.highlightedItem = state.highlightedItem || null,
+      this.highlightedItemId = state.highlightedItemId || '',
+      this.highlightedItemIds = state.highlightedItemIds || [],
+      this.magnets = state.magnets || [],
+      this.screenIds = state.screenIds || [],
+      this.selectedItem = state.selectedItem || null,
+      this.selectedItemId = state.selectedItemId || '',
+      this.selectedItemIds = state.selectedItemIds || [],
+      this.lastUpdated = state.lastUpdated,
+      this.tags = state.tags || [],
+      this.updateCounter = state.updateCounter,
 
+      this.dispatchMutation(this);
+    }
 }
