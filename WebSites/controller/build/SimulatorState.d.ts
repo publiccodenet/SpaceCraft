@@ -13,8 +13,6 @@ export declare class SimulatorState extends Node {
     currentCollectionId: string;
     currentCollectionItems: Array<string>;
     currentScreenId: string;
-    currentSearchGravity: number;
-    currentSearchString: string;
     highlightedItem: any;
     highlightedItemId: string;
     highlightedItemIds: Array<string>;
