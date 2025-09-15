@@ -270,7 +270,17 @@ jobs:
       - name: Install controller dependencies
         if: success()
         working-directory: WebSites/controller
-        run: npm ci
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "[controller] PWD=$(pwd) contents:" && ls -la
+          if [[ -f package-lock.json ]]; then
+            echo "[controller] Using npm ci"
+            npm ci
+          else
+            echo "[controller] package-lock.json not found; using npm install"
+            npm install
+          fi
 
       - name: Build controller
         if: success()
