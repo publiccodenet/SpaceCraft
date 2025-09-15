@@ -60,7 +60,7 @@ public class BridgePlugin : MonoBehaviour {
     public bool pluginRenderEventIssued;
     public List<string> messageQueue = new List<string>();
 
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IPHONE
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS
     IntPtr plugin;
 #elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
     // TODO
@@ -77,7 +77,7 @@ public class BridgePlugin : MonoBehaviour {
         get {
 #if UNITY_ANDROID
             return isKeyboardVisible;
-#elif UNITY_IPHONE
+#elif UNITY_IOS
             return TouchScreenKeyboard.visible;
 #else
             return false;
@@ -103,11 +103,11 @@ public class BridgePlugin : MonoBehaviour {
     private const string PLUGIN_DLL = "Bridge_Editor";
 #elif UNITY_STANDALONE_WIN
     private const string PLUGIN_DLL = "Bridge";
-#elif UNITY_IPHONE
+#elif UNITY_IOS
     private const string PLUGIN_DLL = "__Internal";
 #endif
 
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IPHONE
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS
 
     [DllImport(PLUGIN_DLL)]
     private static extern void _CBridgePlugin_SetUnitySendMessageCallback(IntPtr unitySendMessageCallback);
@@ -558,7 +558,7 @@ public class BridgePlugin : MonoBehaviour {
     public bool CanGoBack()
     {
 
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IPHONE
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS
 
         if (plugin == IntPtr.Zero) {
             return false;
@@ -578,6 +578,11 @@ public class BridgePlugin : MonoBehaviour {
         }
 
         return plugin.Get<bool>("canGoBack");
+
+#else
+
+			// Fallback for Linux/WebGL/other platforms
+			return false;
 
 #endif
 
@@ -607,6 +612,11 @@ public class BridgePlugin : MonoBehaviour {
         }
 
         return plugin.Get<bool>("canGoForward");
+
+#else
+
+			// Fallback for Linux/WebGL/other platforms
+			return false;
 
 #endif
 
@@ -729,6 +739,8 @@ public class BridgePlugin : MonoBehaviour {
         long newTextureHandle = 0;
 #elif UNITY_ANDROID
         long newTextureHandle = plugin.Call<long>("GetRenderTextureHandle");
+#elif UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_WEBGL
+        long newTextureHandle = 0;
 #endif
 
         //Debug.Log("BridgePlugin: CallOnTexture: newTextureHandle: " + newTextureHandle + " textureHandle: " + textureHandle);
@@ -750,6 +762,9 @@ public class BridgePlugin : MonoBehaviour {
 #elif UNITY_ANDROID
             textureWidth = plugin.Call<int>("GetRenderTextureWidth");
             textureHeight = plugin.Call<int>("GetRenderTextureHeight");
+#elif UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_WEBGL
+            textureWidth = 0;
+            textureHeight = 0;
 #endif
 
             texture = Texture2D.CreateExternalTexture(textureWidth, textureHeight, TextureFormat.RGBA32, false, true, (IntPtr)textureHandle);
