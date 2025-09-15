@@ -239,6 +239,12 @@ jobs:
           echo "buildMethod=$METHOD" >> "$GITHUB_OUTPUT"
           echo "[compute] Selected build method: $METHOD"
 
+      - name: Prepare logs directory
+        shell: bash
+        run: |
+          mkdir -p Logs
+          mkdir -p "${{ steps.detect.outputs.projectPath }}/Logs"
+
       - name: Unity - Builder
         uses: game-ci/unity-builder@v4
         env:
@@ -250,6 +256,7 @@ jobs:
           targetPlatform: ${{ inputs.targetPlatform }}
           unityVersion: ${{ steps.detect.outputs.version }}
           buildMethod: ${{ steps.compute.outputs.buildMethod }}
+          customParameters: -logFile Logs/Editor.log -stackTraceLogType Full
           # Optional: enable Unity editor cache inside action (requires action support)
           # cacheUnity: true
           # cacheVersioning: semantic
@@ -262,4 +269,13 @@ jobs:
           path: |
             build
             ${{ steps.detect.outputs.projectPath }}/Build
+
+      - name: Upload Unity logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Unity-Logs
+          path: |
+            Logs
+            ${{ steps.detect.outputs.projectPath }}/Logs
 

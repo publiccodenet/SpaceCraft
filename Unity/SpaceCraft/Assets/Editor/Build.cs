@@ -196,12 +196,40 @@ public static class Build
 
     private static string[] GetBuildScenes()
     {
-        // Get all enabled scenes from the build settings
-        var scenes = new string[EditorBuildSettings.scenes.Length];
-        for (int i = 0; i < scenes.Length; i++)
+        // Prefer enabled scenes from Build Settings
+        var enabledScenes = System.Array.FindAll(EditorBuildSettings.scenes, s => s.enabled);
+        string[] scenes = new string[enabledScenes.Length];
+        for (int i = 0; i < enabledScenes.Length; i++)
         {
-            scenes[i] = EditorBuildSettings.scenes[i].path;
+            scenes[i] = enabledScenes[i].path;
         }
+
+        // Fallback: if none configured/enabled, include all .unity scenes under Assets
+        if (scenes.Length == 0)
+        {
+            Debug.LogWarning("[Build] No enabled scenes in Build Settings; falling back to discover all .unity scenes under Assets/");
+            try
+            {
+                var found = Directory.GetFiles("Assets", "*.unity", SearchOption.AllDirectories);
+                scenes = found;
+                foreach (var scene in scenes)
+                {
+                    Debug.Log($"[Build] Including scene: {scene}");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[Build] Failed to enumerate scenes: {ex.Message}");
+            }
+        }
+
+        // Validate
+        if (scenes == null || scenes.Length == 0)
+        {
+            Debug.LogError("[Build] No scenes found to build. Configure Build Settings or add scenes under Assets/.");
+            if (IsCommandLineBuild()) EditorApplication.Exit(1);
+        }
+
         return scenes;
     }
 
