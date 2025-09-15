@@ -110,22 +110,41 @@ jobs:
           lfs: true
           fetch-depth: 1
 
-      - name: Detect Unity version from ProjectVersion.txt
+      - name: Detect Unity version and resolve project path
         id: detect
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "${{ inputs.unityVersion }}" != "auto" && -n "${{ inputs.unityVersion }}" ]]; then
-            echo "Using provided unityVersion: ${{ inputs.unityVersion }}"
-            echo "version=${{ inputs.unityVersion }}" >> "$GITHUB_OUTPUT"
+          # If version provided, honor it and still resolve project path for later steps
+          REQ_VER="${{ inputs.unityVersion }}"
+          PROJ_PATH_IN="${{ inputs.projectPath }}"
+          CANDIDATE_FILE="${{ github.workspace }}/${PROJ_PATH_IN}/ProjectSettings/ProjectVersion.txt"
+
+          if [[ ! -f "$CANDIDATE_FILE" ]]; then
+            echo "Input projectPath not found: $CANDIDATE_FILE" >&2
+            echo "Searching for ProjectVersion.txt under workspace..."
+            MAPFILE -t FOUND < <(find "${{ github.workspace }}" -type f -path "*/ProjectSettings/ProjectVersion.txt" | sort)
+            if [[ ${#FOUND[@]} -eq 0 ]]; then
+              echo "No ProjectVersion.txt found in repository" >&2
+              exit 1
+            fi
+            CANDIDATE_FILE="${FOUND[0]}"
+            echo "Using detected ProjectVersion.txt: $CANDIDATE_FILE"
+          fi
+
+          # Derive resolved project path (folder containing ProjectSettings)
+          RESOLVED_PROJECT_PATH="$(cd "$(dirname "$CANDIDATE_FILE")/.." && pwd)"
+          # Convert to path relative to workspace for downstream steps
+          RESOLVED_PROJECT_PATH_REL="${RESOLVED_PROJECT_PATH#"${{ github.workspace }}/"}"
+          echo "projectPath=$RESOLVED_PROJECT_PATH_REL" >> "$GITHUB_OUTPUT"
+
+          if [[ "$REQ_VER" != "auto" && -n "$REQ_VER" ]]; then
+            echo "Using provided unityVersion: $REQ_VER"
+            echo "version=$REQ_VER" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          FILE="${{ github.workspace }}/${{ inputs.projectPath }}/ProjectSettings/ProjectVersion.txt"
-          if [[ ! -f "$FILE" ]]; then
-            echo "ProjectVersion.txt not found at: $FILE" >&2
-            exit 1
-          fi
-          VERSION=$(grep -E "^m_EditorVersion:\s*" "$FILE" | sed -E 's/^m_EditorVersion:\s*([^[:space:]]+).*/\1/')
+
+          VERSION=$(grep -E "^m_EditorVersion:\s*" "$CANDIDATE_FILE" | sed -E 's/^m_EditorVersion:\s*([^[:space:]]+).*/\1/')
           if [[ -z "$VERSION" ]]; then
             echo "Failed to parse Unity version from ProjectVersion.txt" >&2
             exit 1
@@ -137,8 +156,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ inputs.projectPath }}/Library
-          key: ${{ runner.os }}-unity-library-${{ steps.detect.outputs.version }}-${{ hashFiles(format('{0}/Packages/manifest.json', inputs.projectPath)) }}
+            ${{ steps.detect.outputs.projectPath }}/Library
+          key: ${{ runner.os }}-unity-library-${{ steps.detect.outputs.version }}-${{ hashFiles(format('{0}/Packages/manifest.json', steps.detect.outputs.projectPath)) }}
           restore-keys: |
             ${{ runner.os }}-unity-library-${{ steps.detect.outputs.version }}-
 
@@ -172,7 +191,7 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          projectPath: ${{ inputs.projectPath }}
+          projectPath: ${{ steps.detect.outputs.projectPath }}
           targetPlatform: ${{ inputs.targetPlatform }}
           unityVersion: ${{ steps.detect.outputs.version }}
           buildMethod: ${{ steps.compute.outputs.buildMethod }}
