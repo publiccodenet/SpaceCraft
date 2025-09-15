@@ -1,6 +1,7 @@
 import { IoElement, IoElementProps } from 'io-gui';
 import { SimulatorState } from './SimulatorState.js';
 import type { Magnet } from './types/Magnet';
+import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
 type PresenceState = {
     [key: string]: Presence[];
 };
@@ -19,21 +20,6 @@ type SimulatorPresence = {
     shared: SimulatorState;
     startTime: number;
 };
-export type ViewMetadata = {
-    canWrite: boolean;
-    category: string;
-    component: string;
-    defaultValue: any;
-    description: string;
-    displayName: string;
-    name: string;
-    path: string;
-    type: 'bool' | 'float' | 'string';
-    unityType: string;
-    min?: number;
-    max?: number;
-    step?: number;
-};
 export declare class SpacetimeController extends IoElement {
     static get Style(): string;
     static supabaseUrl: string;
@@ -47,12 +33,15 @@ export declare class SpacetimeController extends IoElement {
     clientConnected: boolean;
     currentSimulatorId: string | null;
     currentSimulators: Map<string, SimulatorPresence>;
-    magnetViewMetadata: Array<ViewMetadata>;
+    magnetViewMetadata: Array<MagnetViewMetadata>;
     simulatorState: SimulatorState;
     simulatorRosterTick: number;
     constructor(props: IoElementProps);
     connect(): void;
     ready(): void;
+    changed(): void;
+    onTopBarSimulatorChange(event: CustomEvent): void;
+    onTopBarSimulatorClick(simId: string): void;
     sendPanEvent(deltaX: number, deltaY: number): void;
     sendZoomEvent(zoomDelta: number): void;
     sendSelectEvent(action: string): void;

@@ -1,5 +1,6 @@
-import { h2, p, Register, div, img, h4 } from 'io-gui';
+import { h2, p, Register, div, img, h4, ListenerDefinition } from 'io-gui';
 import { TabBase, TabBaseProps } from './TabBase.js';
+import { contentStore } from './services/ContentStore.js';
 
 const GESTURE_THRESHOLD = 20;
 
@@ -21,14 +22,29 @@ export class TabSelect extends TabBase {
     declare startX: number;
     declare startY: number;
 
+    static get Listeners() {
+        return {
+            'pointerdown': 'onPointerdown',
+            'touchstart': ['preventDefault', {passive: false}] as ListenerDefinition,
+            'touchmove': ['preventDefault', {passive: false}] as ListenerDefinition,
+            'wheel': 'onScroll',
+        };
+    }
+
+    preventDefault(event: Event) {
+        event.preventDefault();
+    }
     onPointerdown(event: PointerEvent) {
-        super.onPointerdown(event);
+        this.setPointerCapture(event.pointerId);
+        this.addEventListener('pointerup', this.onPointerup);
+        this.addEventListener('pointercancel', this.onPointerup);
         this.startX = event.clientX;
         this.startY = event.clientY;
     }
     onPointerup(event: PointerEvent) {
-        super.onPointerup(event);
-
+        this.releasePointerCapture(event.pointerId);
+        this.removeEventListener('pointerup', this.onPointerup);
+        this.removeEventListener('pointercancel', this.onPointerup);
         const dx = event.clientX - this.startX;
         const dy = event.clientY - this.startY;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -62,10 +78,16 @@ export class TabSelect extends TabBase {
                 .join('');
         }
 
+        // Resolve cover base from content store (built-in StreamingAssets path or external)
+        const shared: any = (this.controller as any).simulatorState || {};
+        const contentKey = (shared as any).contentKey || (shared as any).contentIndexUrl;
+        const contentRec = contentStore.getContent(contentKey);
+        const assetsBase = (shared as any).assetsBaseUrl || '../SpaceCraft/StreamingAssets/Content/';
+
         this.render([
             h2('TAP or SWIPE to select items'),
             selected ? div([
-                img({src: `../SpaceCraft/StreamingAssets/Content/collections/scifi/items/${selected.id}/cover.jpg`, alt: `Cover for ${selected.title}`, class: 'cover-image'}),
+                img({src: `${assetsBase}collections/scifi/items/${selected.id}/cover.jpg`, alt: `Cover for ${selected.title}`, class: 'cover-image'}),
                 h4(selected.title || 'Untitled'),
                 div({class: 'description', innerHTML: description}),
             ]) : p('No item selected'),

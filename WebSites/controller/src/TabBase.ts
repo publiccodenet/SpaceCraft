@@ -29,34 +29,8 @@ export class TabBase extends IoElement {
     @ReactiveProperty({type: SimulatorState})
     declare simulatorState: SimulatorState;
 
-    static get Listeners() {
-        return {
-            'contextmenu': 'preventDefault',
-            'pointerdown': 'onPointerdown',
-            'touchstart': ['preventDefault', {passive: false}] as ListenerDefinition,
-            'touchmove': ['preventDefault', {passive: false}] as ListenerDefinition,
-        };
-    }
-
     constructor(props: TabBaseProps) {
         super(props);
-    }
-
-    preventDefault(event: Event) {
-        event.preventDefault();
-    }
-    onPointerdown(event: PointerEvent) {
-        this.setPointerCapture(event.pointerId);
-        this.addEventListener('pointerup', this.onPointerup);
-        this.addEventListener('pointermove', this.onPointermove);
-        this.addEventListener('pointercancel', this.onPointerup);
-    }
-    onPointermove(event: PointerEvent) {}
-    onPointerup(event: PointerEvent) {
-        this.releasePointerCapture(event.pointerId);
-        this.removeEventListener('pointerup', this.onPointerup);
-        this.removeEventListener('pointermove', this.onPointermove);
-        this.removeEventListener('pointercancel', this.onPointerup);
     }
 
     ready() {

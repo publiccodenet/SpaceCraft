@@ -60,22 +60,6 @@ let MagnetItem = class MagnetItem extends IoElement {
             :host > io-slider-2d {
                 align-self: flex-start;
             }
-            :host > io-object {
-                flex: 1 1 auto;
-            }
-            :host > io-object io-property-editor > .row > :first-child {
-                flex: 0 1 10em; 
-            }
-            :host > io-object io-property-editor > .row > :nth-child(2) {
-                flex: 0 1 20em;
-            }
-            :host > io-object io-number-slider {
-              
-              flex: 1 1 auto; 
-            }
-            :host > io-object io-number-slider > io-number {
-              flex-basis: 4em;
-            }
     `;
     }
     onDeleteMagnet() {
@@ -97,7 +81,7 @@ let MagnetItem = class MagnetItem extends IoElement {
             h2(this.magnet.title),
             ioObject({ value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups,
                 widgets: new Map([[
-                        Object, magnetJoystick({ value: [0, 0], min: [-1, -1], max: [1, 1], '@control': this.onJoystickControl, ctrlTtimeout: 20 })
+                        Object, magnetJoystick({ value: [0, 0], min: [-0.1, -0.1], max: [0.1, 0.1], '@control': this.onJoystickControl, ctrlTtimeout: 20 })
                     ]])
             }),
             ioButton({ label: 'Delete', action: this.onDeleteMagnet, class: 'red' })
