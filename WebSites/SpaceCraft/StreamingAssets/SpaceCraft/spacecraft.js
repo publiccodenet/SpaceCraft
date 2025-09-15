@@ -852,6 +852,9 @@ class SpaceCraftSim {
             highlightedItemId: null,
             highlightedItem: null,
             
+            // Connected clients tracking
+            connectedClients: [],
+            
             // Available tags from content items
             tags: [],
             
