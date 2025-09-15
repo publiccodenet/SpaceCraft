@@ -128,6 +128,41 @@ class SpaceCraftSim {
     }
 
     /**
+     * Parse supported configuration from URL query parameters.
+     * Only whitelisted keys are returned.
+     */
+    static parseUrlConfig() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const cfg = {};
+            const allowedViewModes = ['magnets','selection','manual','attract'];
+            const vm = params.get('viewMode');
+            if (vm && allowedViewModes.includes(vm)) cfg.viewMode = vm;
+            return cfg;
+        } catch {
+            return {};
+        }
+    }
+
+    /**
+     * Apply URL config to local state and Unity bridge, then publish via presence.
+     */
+    applyUrlConfig(cfg) {
+        try {
+            if (!cfg) return;
+            if (cfg.viewMode && this.state) {
+                if (this.state.viewMode !== cfg.viewMode) {
+                    this.state.viewMode = cfg.viewMode;
+                    try {
+                        bridge.updateObject(this.spaceCraft, { "inputManager/viewMode": cfg.viewMode });
+                    } catch {}
+                    this.syncStateToPresence();
+                }
+            }
+        } catch {}
+    }
+
+    /**
      * Constructor - initializes instance properties
      */
     constructor() {
@@ -782,6 +817,9 @@ class SpaceCraftSim {
         // Store references globally
         window.spaceCraft = this.spaceCraft;
         window.groundPlane = this.groundPlane;
+
+        // Apply any URL configuration (e.g., initial viewMode)
+        this.applyUrlConfig(SpaceCraftSim.parseUrlConfig());
     }
     
     /**
@@ -822,6 +860,9 @@ class SpaceCraftSim {
             
             // Magnet system
             magnets: [],
+
+            // View state (published to controllers)
+            viewMode: 'magnets',
 
             updateCounter: 0, // Add update counter
             
