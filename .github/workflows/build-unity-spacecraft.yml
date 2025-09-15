@@ -1,0 +1,120 @@
+name: Build Unity SpaceCraft
+
+on:
+  workflow_dispatch:
+    inputs:
+      unityVersion:
+        description: "Unity Editor version (e.g. 2022.3.45f1). Use 'auto' to detect from ProjectVersion.txt"
+        required: false
+        default: "auto"
+        type: string
+      projectPath:
+        description: "Unity project path"
+        required: false
+        default: "Unity/SpaceCraft"
+        type: string
+      targetPlatform:
+        description: "Unity target platform"
+        required: false
+        default: "WebGL"
+        type: choice
+        options:
+          - WebGL
+      buildProfile:
+        description: "Build profile token (maps to a Unity build method)"
+        required: false
+        default: "WebGLProductionBuild"
+        type: choice
+        options:
+          - WebGLProductionBuild
+          - WebGLDevelopmentBuild
+      buildMethod:
+        description: "Explicit Unity build method (overrides buildProfile). Example: SpaceCraft.Editor.Builds.BuildWebGLProduction"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  build:
+    name: Build ${{ inputs.targetPlatform }} (${{ inputs.buildProfile }})
+    runs-on: ubuntu-latest
+
+    env:
+      PROJECT_PATH: ${{ inputs.projectPath }}
+      TARGET_PLATFORM: ${{ inputs.targetPlatform }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect Unity version from ProjectVersion.txt
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ inputs.unityVersion }}" != "auto" && -n "${{ inputs.unityVersion }}" ]]; then
+            echo "Using provided unityVersion: ${{ inputs.unityVersion }}"
+            echo "version=${{ inputs.unityVersion }}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          FILE="${{ github.workspace }}/${{ inputs.projectPath }}/ProjectSettings/ProjectVersion.txt"
+          if [[ ! -f "$FILE" ]]; then
+            echo "ProjectVersion.txt not found at: $FILE" >&2
+            exit 1
+          fi
+          VERSION=$(grep -E "^m_EditorVersion:\s*" "$FILE" | sed -E 's/^m_EditorVersion:\s*([^[:space:]]+).*/\1/')
+          if [[ -z "$VERSION" ]]; then
+            echo "Failed to parse Unity version from ProjectVersion.txt" >&2
+            exit 1
+          fi
+          echo "Detected Unity version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Compute build method
+        id: compute
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${{ inputs.buildMethod }}" ]]; then
+            METHOD="${{ inputs.buildMethod }}"
+          else
+            case "${{ inputs.buildProfile }}" in
+              WebGLProductionBuild)
+                METHOD="SpaceCraft.Editor.Builds.BuildWebGLProduction"
+                ;;
+              WebGLDevelopmentBuild)
+                METHOD="SpaceCraft.Editor.Builds.BuildWebGLDevelopment"
+                ;;
+              *)
+                echo "Unknown buildProfile: ${{ inputs.buildProfile }}" >&2
+                exit 1
+                ;;
+            esac
+          fi
+          echo "buildMethod=$METHOD" >> "$GITHUB_OUTPUT"
+
+      - name: Unity - Builder
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: ${{ inputs.projectPath }}
+          targetPlatform: ${{ inputs.targetPlatform }}
+          unityVersion: ${{ steps.detect.outputs.version }}
+          buildMethod: ${{ steps.compute.outputs.buildMethod }}
+          uses_custom_image: false
+          # Optional: enable cache
+          # cacheUnity: true
+          # cacheVersioning: semantic
+
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: SpaceCraft-${{ inputs.targetPlatform }}-${{ inputs.buildProfile }}
+          path: |
+            build
+            ${{ inputs.projectPath }}/Build
+
