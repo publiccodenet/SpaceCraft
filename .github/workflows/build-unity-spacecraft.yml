@@ -267,10 +267,7 @@ jobs:
         with:
           name: SpaceCraft-${{ inputs.targetPlatform }}-${{ inputs.buildProfile }}
           path: |
-            build
-            ${{ steps.detect.outputs.projectPath }}/Build
             ${{ steps.detect.outputs.projectPath }}/Builds/SpaceCraft
-            WebSites/SpaceCraft
 
       - name: Upload Unity logs (always)
         if: always()
