@@ -98,6 +98,7 @@ jobs:
   build:
     name: Build ${{ inputs.targetPlatform }} (${{ inputs.buildProfile }})
     runs-on: ubuntu-latest
+    timeout-minutes: 90
 
     env:
       PROJECT_PATH: ${{ inputs.projectPath }}
@@ -192,6 +193,19 @@ jobs:
           echo "[config] targetPlatform='${{ inputs.targetPlatform }}'"
           echo "[config] buildProfile='${{ inputs.buildProfile }}'"
 
+      - name: Validate Unity activation secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          if [[ -z "${{ secrets.UNITY_LICENSE }}" ]]; then echo "[secrets] UNITY_LICENSE is missing" >&2; missing=1; fi
+          if [[ -z "${{ secrets.UNITY_EMAIL }}" ]]; then echo "[secrets] UNITY_EMAIL is missing" >&2; missing=1; fi
+          if [[ -z "${{ secrets.UNITY_PASSWORD }}" ]]; then echo "[secrets] UNITY_PASSWORD is missing" >&2; missing=1; fi
+          if [[ "$missing" -ne 0 ]]; then
+            echo "[secrets] One or more required secrets are missing. Per GameCI v4 Personal license activation, provide UNITY_LICENSE, UNITY_EMAIL, UNITY_PASSWORD." >&2
+            exit 1
+          fi
+
       - name: Cache Unity Library (project import cache)
         uses: actions/cache@v4
         with:
@@ -236,7 +250,6 @@ jobs:
           targetPlatform: ${{ inputs.targetPlatform }}
           unityVersion: ${{ steps.detect.outputs.version }}
           buildMethod: ${{ steps.compute.outputs.buildMethod }}
-          uses_custom_image: false
           # Optional: enable Unity editor cache inside action (requires action support)
           # cacheUnity: true
           # cacheVersioning: semantic

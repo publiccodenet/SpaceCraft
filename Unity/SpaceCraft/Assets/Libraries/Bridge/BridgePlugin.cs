@@ -772,10 +772,12 @@ public class BridgePlugin : MonoBehaviour {
             renderEventFunc =
 #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IPHONE
                 (IntPtr)_CBridgePlugin_GetRenderEventFunc();
-#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX
                 (IntPtr)0; // TODO
 #elif UNITY_ANDROID
                 (IntPtr)plugin.CallStatic<long>("GetRenderEventFunc");
+#else
+                (IntPtr)0; // Fallback
 #endif
             //Debug.Log("BridgePlugin: GetRenderEventFunc: Got renderEventFunc: " + renderEventFunc);
         }
