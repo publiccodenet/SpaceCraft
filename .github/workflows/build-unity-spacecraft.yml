@@ -257,9 +257,9 @@ jobs:
           unityVersion: ${{ steps.detect.outputs.version }}
           buildMethod: ${{ steps.compute.outputs.buildMethod }}
           customParameters: -logFile Logs/Editor.log -stackTraceLogType Full
-          # Optional: enable Unity editor cache inside action (requires action support)
-          # cacheUnity: true
-          # cacheVersioning: semantic
+          runAsHostUser: true
+          cacheUnity: true
+          cacheVersioning: semantic
 
       - name: Setup Node.js
         if: success()
