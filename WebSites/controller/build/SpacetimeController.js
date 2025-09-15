@@ -5,8 +5,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var SpacetimeController_1;
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, ThemeSingleton } from 'io-gui';
-import { tabNavigate } from './TabNavigate.js';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, ThemeSingleton, div } from 'io-gui';
+import { contentStore } from './services/ContentStore.js';
+import { tabView } from './TabView.js';
 import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
 import { tabMagnet } from './TabMagnet.js';
@@ -30,6 +31,48 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 flex-direction: column;
                 height: 100%;
                 width: 100%;
+            }
+            :host .top-controls {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 6px;
+                flex-wrap: wrap;
+            }
+            :host .sim-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            :host .sim-btn {
+                display: inline-flex;
+                align-items: center;
+                padding: 4px 10px;
+                border-radius: 12px;
+                border: 1px solid var(--io-color-2, #555);
+                background: var(--io-bg-1, #222);
+                color: var(--io-fg-1, #ddd);
+                cursor: pointer;
+                user-select: none;
+                -webkit-user-select: none;
+                white-space: nowrap;
+                transition: none;
+            }
+            :host .sim-btn[selected] {
+                font-weight: 700;
+                filter: brightness(1.6) saturate(1.4);
+                box-shadow: 0 0 0 2px rgba(255,255,255,0.8) inset,
+                            0 0 6px rgba(255,255,255,0.35);
+                outline: 2px solid rgba(255,255,255,0.6);
+                outline-offset: -2px;
+            }
+            :host .sim-btn.is-selected {
+                font-weight: 700;
+                filter: brightness(1.6) saturate(1.4);
+                box-shadow: 0 0 0 2px rgba(255,255,255,0.8) inset,
+                            0 0 6px rgba(255,255,255,0.35);
+                outline: 2px solid rgba(255,255,255,0.6);
+                outline-offset: -2px;
             }
             :host > io-navigator {
                 flex: 1 1 auto;
@@ -97,7 +140,37 @@ let SpacetimeController = class SpacetimeController extends IoElement {
         }
     }
     ready() {
+        this.changed();
+    }
+    changed() {
+        // Force re-render of simulator menu on roster updates
+        void this.simulatorRosterTick;
+        const simList = Array.from((this.currentSimulators && this.currentSimulators.values && this.currentSimulators.values()) ? this.currentSimulators.values() : []);
+        const hasSims = simList.length > 0;
+        const simOptions = simList
+            .map((s) => ({ id: (s.clientName || s.clientId), value: s.clientId, hue: ((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) ? (((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) - 1) % 8) / 8 : 0) }))
+            .sort((a, b) => a.id.localeCompare(b.id, undefined, { sensitivity: 'base' }));
+        if (!hasSims)
+            simOptions.push({ id: '(none)', value: '(none)', hue: 0 });
         this.render([
+            // Top simulator control row (always visible)
+            div({ class: 'top-controls' }, [
+                div({ class: 'sim-list' }, [
+                    ...simOptions.map(opt => {
+                        const hueDeg = Math.round(opt.hue * 360);
+                        const isSelected = (opt.value === (this.currentSimulatorId || ''));
+                        return div({
+                            class: `sim-btn${isSelected ? ' is-selected' : ''}`,
+                            selected: isSelected,
+                            style: {
+                                background: `hsl(${hueDeg} 60% 20%)`,
+                                borderColor: `hsl(${hueDeg} 60% 45%)`,
+                            },
+                            '@click': () => this.onTopBarSimulatorClick(opt.value)
+                        }, `🚀 ${opt.id}`);
+                    })
+                ]),
+            ]),
             ioNavigator({
                 menu: 'top',
                 caching: 'proactive',
@@ -105,7 +178,7 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                     id: 'root',
                     options: [
                         { id: 'About', icon: '📖' },
-                        { id: 'Navigate', icon: '🧭' },
+                        { id: 'View', icon: '👀' },
                         { id: 'Select', icon: '👆' },
                         { id: 'Inspect', icon: '🔍' },
                         { id: 'Magnet', icon: '🧲' },
@@ -115,7 +188,7 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 }),
                 elements: [
                     ioMarkdown({ id: 'About', src: './docs/About.md' }),
-                    tabNavigate({ id: 'Navigate', controller: this, simulatorState: this.simulatorState }),
+                    tabView({ id: 'View', controller: this, simulatorState: this.simulatorState }),
                     tabSelect({ id: 'Select', controller: this, simulatorState: this.simulatorState }),
                     tabInspect({ id: 'Inspect', controller: this, simulatorState: this.simulatorState }),
                     tabMagnet({ id: 'Magnet', controller: this, simulatorState: this.simulatorState }),
@@ -123,6 +196,17 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 ]
             })
         ]);
+    }
+    onTopBarSimulatorChange(event) {
+        const newId = event.detail?.value;
+        if (newId && newId !== this.currentSimulatorId && newId !== '(none)') {
+            this.setCurrentSimulator?.(newId);
+        }
+    }
+    onTopBarSimulatorClick(simId) {
+        if (simId && simId !== this.currentSimulatorId) {
+            this.setCurrentSimulator?.(simId);
+        }
     }
     // === UNITY COMMUNICATION ===
     sendPanEvent(deltaX, deltaY) {
@@ -196,6 +280,28 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             catch { }
             const simulator = this.findSimulator(presenceState);
             if (simulator) {
+                // Resolve content for current simulator (async, fire-and-forget)
+                const shared = (simulator.shared || {});
+                contentStore.ensureContent({
+                    contentKey: shared.contentKey,
+                    contentHash: shared.contentHash,
+                    contentIndexUrl: shared.contentIndexUrl,
+                }).catch(() => { });
+                contentStore.ensureUnityMeta({
+                    unityMetaKey: shared.unityMetaKey,
+                    unityMetaHash: shared.unityMetaHash,
+                    unityMetaUrl: shared.unityMetaUrl,
+                }).catch(() => { });
+                // Prefetch others in the background
+                const others = Array.from(this.currentSimulators.values())
+                    .map((s) => s.shared || {})
+                    .filter((s) => s && (s.contentKey || s.contentIndexUrl))
+                    .map((s) => ({
+                    contentKey: s.contentKey || s.contentIndexUrl,
+                    contentHash: s.contentHash || '',
+                    contentIndexUrl: s.contentIndexUrl || s.contentKey,
+                }));
+                contentStore.prefetch(others);
                 // If preselect by index requested, override with match when available
                 if (this._preselectSimulatorIndex) {
                     for (const sim of this.currentSimulators.values()) {
@@ -252,6 +358,18 @@ let SpacetimeController = class SpacetimeController extends IoElement {
         if (sim) {
             this.magnetViewMetadata = sim.shared.unityMetaData?.MagnetView || [];
             this.simulatorState.update(sim.shared);
+            // Ensure content for selected simulator
+            const shared = (sim.shared || {});
+            contentStore.ensureContent({
+                contentKey: shared.contentKey,
+                contentHash: shared.contentHash,
+                contentIndexUrl: shared.contentIndexUrl,
+            }).catch(() => { });
+            contentStore.ensureUnityMeta({
+                unityMetaKey: shared.unityMetaKey,
+                unityMetaHash: shared.unityMetaHash,
+                unityMetaUrl: shared.unityMetaUrl,
+            }).catch(() => { });
         }
         try {
             const sel = this.currentSimulators.get(simId);
@@ -270,6 +388,8 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             }
         }
         catch { }
+        // Force UI re-render so selection highlight updates immediately
+        this.simulatorRosterTick = (this.simulatorRosterTick || 0) + 1;
     }
     async updatePresenceState() {
         if (this.clientConnected && this.clientChannel) {

@@ -24,6 +24,7 @@ let SimulatorState = class SimulatorState extends Node {
     lastUpdated = '';
     tags = [];
     updateCounter = 0;
+    viewMode = '';
     update(state) {
         this.clientId = state.clientId || '',
             this.clientName = state.clientName || '',
@@ -43,6 +44,7 @@ let SimulatorState = class SimulatorState extends Node {
             this.lastUpdated = state.lastUpdated,
             this.tags = state.tags || [],
             this.updateCounter = state.updateCounter,
+            this.viewMode = state.viewMode || 'magnets',
             this.dispatchMutation(this);
     }
 };

@@ -57,8 +57,30 @@ public class SpaceCraft : BridgeObject
     // Backing fields for state lists
     private List<string> _selectedItemIds = new List<string>();
     private List<string> _highlightedItemIds = new List<string>(); // Can contain duplicates for multiple highlights
-    
 
+    // Simulator identity (index/hue) - updated from JS
+    [Header("Simulator Identity")]
+    [ExposedParameter(
+        "Simulator Index",
+        Category = "Simulator",
+        Description = "Unique simulator index assigned via presence",
+        Min = 0f,
+        Max = 999f,
+        Default = 0f,
+        Visible = true
+    )]
+    public int simulatorIndex = 0;
+
+    [ExposedParameter(
+        "Simulator Hue",
+        Category = "Simulator",
+        Description = "Simulator hue (0..1) used for controller UI coloring",
+        Min = 0f,
+        Max = 1f,
+        Default = 0f,
+        Visible = true
+    )]
+    public float simulatorHue = 0f;
 
     // Public properties with setters to trigger visual updates
     public List<string> SelectedItemIds

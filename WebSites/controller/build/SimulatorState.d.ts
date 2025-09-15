@@ -21,6 +21,7 @@ export declare class SimulatorState extends Node {
     lastUpdated: string;
     tags: Array<string>;
     updateCounter: number;
+    viewMode: string;
     update(state: SimulatorState): void;
 }
 //# sourceMappingURL=SimulatorState.d.ts.map

@@ -1,0 +1,1 @@
+{"version":3,"file":"ViewMode.d.ts","sourceRoot":"","sources":["../../src/types/ViewMode.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,QAAQ,GAAG,SAAS,GAAG,WAAW,GAAG,QAAQ,GAAG,SAAS,CAAC;AAEtE,eAAO,MAAM,iBAAiB,EAAE,QAAoB,CAAC;AAErD,eAAO,MAAM,iBAAiB,EAAE;IAAE,EAAE,EAAE,MAAM,CAAC;IAAC,KAAK,EAAE,QAAQ,CAAA;CAAE,EAK9D,CAAC"}

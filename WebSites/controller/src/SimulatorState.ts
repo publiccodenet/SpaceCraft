@@ -23,6 +23,7 @@ export class SimulatorState extends Node {
     lastUpdated: string = '';
     tags: Array<string> = [];
     updateCounter: number = 0;
+    viewMode: string = '';
 
     update(state: SimulatorState) {
       this.clientId = state.clientId || '',
@@ -43,6 +44,7 @@ export class SimulatorState extends Node {
       this.lastUpdated = state.lastUpdated,
       this.tags = state.tags || [],
       this.updateCounter = state.updateCounter,
+      this.viewMode = state.viewMode || 'magnets',
 
       this.dispatchMutation(this);
     }
