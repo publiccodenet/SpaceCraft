@@ -20,32 +20,8 @@ let TabBase = class TabBase extends IoElement {
             }
         `;
     }
-    static get Listeners() {
-        return {
-            'contextmenu': 'preventDefault',
-            'pointerdown': 'onPointerdown',
-            'touchstart': ['preventDefault', { passive: false }],
-            'touchmove': ['preventDefault', { passive: false }],
-        };
-    }
     constructor(props) {
         super(props);
-    }
-    preventDefault(event) {
-        event.preventDefault();
-    }
-    onPointerdown(event) {
-        this.setPointerCapture(event.pointerId);
-        this.addEventListener('pointerup', this.onPointerup);
-        this.addEventListener('pointermove', this.onPointermove);
-        this.addEventListener('pointercancel', this.onPointerup);
-    }
-    onPointermove(event) { }
-    onPointerup(event) {
-        this.releasePointerCapture(event.pointerId);
-        this.removeEventListener('pointerup', this.onPointerup);
-        this.removeEventListener('pointermove', this.onPointermove);
-        this.removeEventListener('pointercancel', this.onPointerup);
     }
     ready() {
         this.changed();

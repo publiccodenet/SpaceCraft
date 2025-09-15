@@ -32,11 +32,36 @@ let TabView = class TabView extends TabBase {
             }
         `;
     }
+    static get Listeners() {
+        return {
+            'pointerdown': 'onPointerdown',
+            'touchstart': ['preventDefault', { passive: false }],
+            'touchmove': ['preventDefault', { passive: false }],
+            'wheel': 'onWheel',
+        };
+    }
+    preventDefault(event) {
+        event.preventDefault();
+    }
+    onPointerdown(event) {
+        this.setPointerCapture(event.pointerId);
+        this.addEventListener('pointerup', this.onPointerup);
+        this.addEventListener('pointermove', this.onPointermove);
+        this.addEventListener('pointercancel', this.onPointerup);
+    }
     onPointermove(event) {
-        super.onPointermove(event);
         if (event.movementX || event.movementY) {
             this.controller.sendPanEvent(event.movementX * 0.03, event.movementY * 0.03);
         }
+    }
+    onPointerup(event) {
+        this.releasePointerCapture(event.pointerId);
+        this.removeEventListener('pointerup', this.onPointerup);
+        this.removeEventListener('pointermove', this.onPointermove);
+        this.removeEventListener('pointercancel', this.onPointerup);
+    }
+    onWheel(event) {
+        this.controller.sendZoomEvent(event.deltaY * 0.01);
     }
     onViewModeChange(event) {
         const newMode = event.detail?.value;
