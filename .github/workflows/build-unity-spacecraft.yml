@@ -1,3 +1,63 @@
+###################################################################################################
+# Build Unity SpaceCraft – GitHub Actions (Ubuntu runner)
+#
+# Overview
+# - Builds the Unity SpaceCraft project for WebGL on GitHub-hosted Linux runners.
+# - Auto-detects Unity version from ProjectVersion.txt (override via input).
+# - Supports Production/Development profiles or a fully custom build method.
+# - Caches the Unity Library folder for faster imports/compiles between runs.
+# - Downloads real LFS asset blobs for the checked-out commit (required for Unity).
+# - Uploads build artifacts for later download/deploy.
+#
+# Requirements (repo secrets)
+# - UNITY_LICENSE: Unity license file contents (game-ci format) or ULF text.
+# - UNITY_EMAIL: Unity account email (for legacy activation flows in builder).
+# - UNITY_PASSWORD: Unity account password (for legacy activation flows in builder).
+#
+# Inputs (workflow_dispatch)
+# - unityVersion: Unity Editor version (e.g., 2022.3.45f1). Use 'auto' to parse ProjectVersion.txt.
+# - projectPath: Path to the Unity project. Defaults to Unity/SpaceCraft.
+# - targetPlatform: Build target (WebGL). Extendable if needed.
+# - buildProfile: Convenience selector mapping to build methods (Production/Development).
+# - buildMethod: Explicit Unity C# method string, overrides buildProfile. Example:
+#     SpaceCraft.Editor.Builds.BuildWebGLProduction
+#
+# Build method expectations (Unity side)
+# - The selected build method should be a static C# function callable by Unity with:
+#     - No arguments (or signature supported by Unity batchmode).
+#     - It should configure build options and write the WebGL build output into the project Build/ path
+#       or another deterministic directory consumed by artifact upload below.
+# - Example namespace/class/method naming is provided here as a convention; implement accordingly.
+#
+# Caching strategy
+# - Caches the Library/ folder per (OS, Unity version, Packages/manifest.json hash) to reduce reimport.
+# - On cache hits, compilations and imports should be much faster.
+# - We intentionally do not cache Temp/ or final Build/ outputs; those are uploaded as artifacts.
+#
+# LFS and checkout
+# - actions/checkout is configured with lfs: true and fetch-depth: 1
+#   - Ensures real LFS blobs for the current commit are available to the build.
+#   - Uses shallow history for speed (no need for full Git history in CI).
+#
+# Artifacts
+# - Uploads the default game-ci build/ directory and the project Build/ directory.
+# - Adjust artifact paths if your build method writes to a different location.
+#
+# Invocation examples
+# - Production (auto-detect Unity, default project path):
+#     unityVersion: auto
+#     buildProfile: WebGLProductionBuild
+# - Development:
+#     unityVersion: auto
+#     buildProfile: WebGLDevelopmentBuild
+# - Explicit method (overrides profile mapping):
+#     buildMethod: SpaceCraft.Editor.Builds.BuildWebGLProduction
+#
+# Notes
+# - This workflow focuses on GitHub-hosted runners (no self-hosted required).
+# - For further speed-ups, consider enabling editor caching in the action if appropriate and supported
+#   by your environment, or splitting content generation into a separate, cacheable step.
+###################################################################################################
 name: Build Unity SpaceCraft
 
 on:
@@ -46,6 +106,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 1
 
       - name: Detect Unity version from ProjectVersion.txt
         id: detect
@@ -69,6 +132,15 @@ jobs:
           fi
           echo "Detected Unity version: $VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Unity Library (project import cache)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ inputs.projectPath }}/Library
+          key: ${{ runner.os }}-unity-library-${{ steps.detect.outputs.version }}-${{ hashFiles(format('{0}/Packages/manifest.json', inputs.projectPath)) }}
+          restore-keys: |
+            ${{ runner.os }}-unity-library-${{ steps.detect.outputs.version }}-
 
       - name: Compute build method
         id: compute
@@ -105,7 +177,7 @@ jobs:
           unityVersion: ${{ steps.detect.outputs.version }}
           buildMethod: ${{ steps.compute.outputs.buildMethod }}
           uses_custom_image: false
-          # Optional: enable cache
+          # Optional: enable Unity editor cache inside action (requires action support)
           # cacheUnity: true
           # cacheVersioning: semantic
 
