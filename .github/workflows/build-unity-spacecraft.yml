@@ -110,6 +110,16 @@ jobs:
           lfs: true
           fetch-depth: 1
 
+      - name: Ensure LFS files are materialized (smudged)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "[lfs] git lfs version:" && git lfs version || true
+          echo "[lfs] Pulling LFS objects (broad)"
+          git lfs pull --exclude="" --include="" || true
+          echo "[lfs] Forcing checkout (smudge) of LFS pointers"
+          git lfs checkout || true
+
       - name: Detect Unity version and resolve project path
         id: detect
         shell: bash
@@ -150,7 +160,15 @@ jobs:
           echo "[detect] RESOLVED_PROJECT_PATH=$RESOLVED_PROJECT_PATH"
           echo "[detect] RESOLVED_PROJECT_PATH_REL=$RESOLVED_PROJECT_PATH_REL"
           echo "[detect] ProjectSettings listing:" && ls -la "$RESOLVED_PROJECT_PATH/ProjectSettings" || true
-          echo "[detect] cat ProjectVersion.txt:" && cat "$CANDIDATE_FILE" || true
+          echo "[detect] cat ProjectVersion.txt (pre-smudge):" && cat "$CANDIDATE_FILE" || true
+
+          # If file still looks like an LFS pointer, try to smudge just this file and re-check
+          if head -n 1 "$CANDIDATE_FILE" | grep -q '^version https://git-lfs.github.com/spec/v1'; then
+            echo "[detect] ProjectVersion.txt appears to be an LFS pointer; attempting smudge"
+            git lfs checkout -- "$CANDIDATE_FILE" || true
+            git lfs pull --include="$RESOLVED_PROJECT_PATH_REL/ProjectSettings/ProjectVersion.txt" --exclude="" || true
+            echo "[detect] cat ProjectVersion.txt (post-smudge):" && cat "$CANDIDATE_FILE" || true
+          fi
 
           if [[ "$REQ_VER" != "auto" && -n "$REQ_VER" ]]; then
             echo "[detect] Using provided unityVersion: $REQ_VER"
