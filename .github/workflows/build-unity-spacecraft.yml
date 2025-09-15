@@ -282,10 +282,21 @@ jobs:
             npm install
           fi
 
+      - name: Install pnpm for build script
+        if: success()
+        working-directory: WebSites/controller
+        shell: bash
+        run: |
+          echo "[controller] Ensuring pnpm is available in $(pwd)"
+          npm i -g pnpm@8
+
       - name: Build controller
         if: success()
         working-directory: WebSites/controller
-        run: npm run build
+        shell: bash
+        run: |
+          echo "[controller] Building in $(pwd)"
+          npm run build
 
       - name: Assemble website bundle
         if: success()
