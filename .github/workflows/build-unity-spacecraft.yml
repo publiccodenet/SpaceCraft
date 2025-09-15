@@ -115,21 +115,31 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          echo "[detect] GITHUB_WORKSPACE=${{ github.workspace }}"
+          echo "[detect] inputs.projectPath='${{ inputs.projectPath }}' inputs.unityVersion='${{ inputs.unityVersion }}'"
+          echo "[detect] Workspace root listing:"
+          ls -la "${{ github.workspace }}" || true
+
           # If version provided, honor it and still resolve project path for later steps
           REQ_VER="${{ inputs.unityVersion }}"
           PROJ_PATH_IN="${{ inputs.projectPath }}"
           CANDIDATE_FILE="${{ github.workspace }}/${PROJ_PATH_IN}/ProjectSettings/ProjectVersion.txt"
+          echo "[detect] Initial candidate file: $CANDIDATE_FILE"
+          echo "[detect] Listing input project path: '${PROJ_PATH_IN}'"
+          ls -la "${{ github.workspace }}/${PROJ_PATH_IN}" || true
 
           if [[ ! -f "$CANDIDATE_FILE" ]]; then
-            echo "Input projectPath not found: $CANDIDATE_FILE" >&2
-            echo "Searching for ProjectVersion.txt under workspace..."
+            echo "[detect] Input projectPath not found: $CANDIDATE_FILE" >&2
+            echo "[detect] Searching for ProjectVersion.txt under workspace..."
             MAPFILE -t FOUND < <(find "${{ github.workspace }}" -type f -path "*/ProjectSettings/ProjectVersion.txt" | sort)
+            echo "[detect] Found ${#FOUND[@]} candidates"
             if [[ ${#FOUND[@]} -eq 0 ]]; then
-              echo "No ProjectVersion.txt found in repository" >&2
+              echo "[detect] No ProjectVersion.txt found in repository" >&2
               exit 1
             fi
             CANDIDATE_FILE="${FOUND[0]}"
-            echo "Using detected ProjectVersion.txt: $CANDIDATE_FILE"
+            echo "[detect] Using detected ProjectVersion.txt: $CANDIDATE_FILE"
+            echo "[detect] Candidates (up to 10):" && printf '%s\n' "${FOUND[@]:0:10}"
           fi
 
           # Derive resolved project path (folder containing ProjectSettings)
@@ -137,20 +147,32 @@ jobs:
           # Convert to path relative to workspace for downstream steps
           RESOLVED_PROJECT_PATH_REL="${RESOLVED_PROJECT_PATH#"${{ github.workspace }}/"}"
           echo "projectPath=$RESOLVED_PROJECT_PATH_REL" >> "$GITHUB_OUTPUT"
+          echo "[detect] RESOLVED_PROJECT_PATH=$RESOLVED_PROJECT_PATH"
+          echo "[detect] RESOLVED_PROJECT_PATH_REL=$RESOLVED_PROJECT_PATH_REL"
+          echo "[detect] ProjectSettings listing:" && ls -la "$RESOLVED_PROJECT_PATH/ProjectSettings" || true
+          echo "[detect] cat ProjectVersion.txt:" && cat "$CANDIDATE_FILE" || true
 
           if [[ "$REQ_VER" != "auto" && -n "$REQ_VER" ]]; then
-            echo "Using provided unityVersion: $REQ_VER"
+            echo "[detect] Using provided unityVersion: $REQ_VER"
             echo "version=$REQ_VER" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           VERSION=$(grep -E "^m_EditorVersion:\s*" "$CANDIDATE_FILE" | sed -E 's/^m_EditorVersion:\s*([^[:space:]]+).*/\1/')
           if [[ -z "$VERSION" ]]; then
-            echo "Failed to parse Unity version from ProjectVersion.txt" >&2
+            echo "[detect] Failed to parse Unity version from ProjectVersion.txt" >&2
             exit 1
           fi
-          echo "Detected Unity version: $VERSION"
+          echo "[detect] Detected Unity version: $VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Log build configuration
+        shell: bash
+        run: |
+          echo "[config] projectPath='${{ steps.detect.outputs.projectPath }}'"
+          echo "[config] unityVersion='${{ steps.detect.outputs.version }}'"
+          echo "[config] targetPlatform='${{ inputs.targetPlatform }}'"
+          echo "[config] buildProfile='${{ inputs.buildProfile }}'"
 
       - name: Cache Unity Library (project import cache)
         uses: actions/cache@v4
@@ -183,6 +205,7 @@ jobs:
             esac
           fi
           echo "buildMethod=$METHOD" >> "$GITHUB_OUTPUT"
+          echo "[compute] Selected build method: $METHOD"
 
       - name: Unity - Builder
         uses: game-ci/unity-builder@v4
@@ -207,5 +230,5 @@ jobs:
           name: SpaceCraft-${{ inputs.targetPlatform }}-${{ inputs.buildProfile }}
           path: |
             build
-            ${{ inputs.projectPath }}/Build
+            ${{ steps.detect.outputs.projectPath }}/Build
 
