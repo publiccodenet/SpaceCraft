@@ -261,13 +261,42 @@ jobs:
           # cacheUnity: true
           # cacheVersioning: semantic
 
+      - name: Setup Node.js
+        if: success()
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install controller dependencies
+        if: success()
+        working-directory: WebSites/controller
+        run: npm ci
+
+      - name: Build controller
+        if: success()
+        working-directory: WebSites/controller
+        run: npm run build
+
+      - name: Assemble website bundle
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT_DIR="${{ steps.detect.outputs.projectPath }}/Builds"
+          echo "[assemble] Output: $OUT_DIR"
+          mkdir -p "$OUT_DIR/controller"
+          cp -f WebSites/index.html "$OUT_DIR/index.html"
+          cp -f WebSites/controller/index.html "$OUT_DIR/controller/index.html"
+          cp -R WebSites/controller/lib "$OUT_DIR/controller/lib"
+          cp -R WebSites/controller/build "$OUT_DIR/controller/build"
+
       - name: Upload build artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: SpaceCraft-${{ inputs.targetPlatform }}-${{ inputs.buildProfile }}
           path: |
-            ${{ steps.detect.outputs.projectPath }}/Builds/SpaceCraft
+            ${{ steps.detect.outputs.projectPath }}/Builds
 
       - name: Upload Unity logs (always)
         if: always()
