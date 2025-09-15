@@ -1,9 +1,9 @@
-export type Magnet = Partial<{
+export type Magnet = {
   magnetId: string;
   title: string;
   searchExpression: string;
   searchType: string;
-
+} & Partial<{
   // Scoring parameters
   fuzzySimilarityThreshold: number;
   exactSubstringScore: number;
@@ -45,7 +45,4 @@ export type Magnet = Partial<{
   highlightMargin: number;
   selectionElevation: number;
   selectionMargin: number;
-
-  // Allow any other string keys
-  [key: string]: any;
 }>;

@@ -78,6 +78,21 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 flex: 1 1 auto;
                 overflow: hidden;
             }
+            :host io-object {
+                flex: 1 1 auto;
+            }
+            :host io-property-editor > .row > :first-child {
+                flex: 0 0 10em; 
+            }
+            :host io-property-editor > .row > :nth-child(2) {
+                flex: 0 1 20em;
+            }
+            :host io-property-editor io-number-slider {
+              flex: 1 1 auto; 
+            }
+            :host io-property-editor io-number-slider > io-number {
+              flex-basis: 4.5em;
+            }
     `;
     }
     static supabaseUrl = 'https://gwodhwyvuftyrvbymmvc.supabase.co';

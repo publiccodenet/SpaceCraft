@@ -1,31 +1,27 @@
-import { Node, NodeProps } from 'io-gui';
-import type { ViewMode } from './types/ViewMode.js';
-export type Collection = {
-    description: string;
-    id: string;
-};
-export type SimulatorStateProps = NodeProps & {};
+import { Node } from 'io-gui';
+import { Collection } from './types/Collection.js';
+import { Magnet } from './types/Magnet.js';
+import { Item } from './types/Item.js';
 export declare class SimulatorState extends Node {
     clientId: string;
     clientName: string;
     clientType: string;
-    connectedClients: Array<any>;
     currentCollection: Collection;
     currentCollectionId: string;
     currentCollectionItems: Array<string>;
     currentScreenId: string;
-    highlightedItem: any;
+    highlightedItem: Item;
     highlightedItemId: string;
     highlightedItemIds: Array<string>;
-    magnets: Array<any>;
+    magnets: Array<Magnet>;
     screenIds: Array<string>;
-    selectedItem: any;
+    selectedItem: Item;
     selectedItemId: string;
     selectedItemIds: Array<string>;
     lastUpdated: string;
     tags: Array<string>;
     updateCounter: number;
-    viewMode: ViewMode;
+    viewMode: string;
     update(state: SimulatorState): void;
 }
 //# sourceMappingURL=SimulatorState.d.ts.map
