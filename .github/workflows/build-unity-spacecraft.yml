@@ -225,10 +225,10 @@ jobs:
           else
             case "${{ inputs.buildProfile }}" in
               WebGLProductionBuild)
-                METHOD="SpaceCraft.Editor.Builds.BuildWebGLProduction"
+                METHOD="Build.WebGL_Prod"
                 ;;
               WebGLDevelopmentBuild)
-                METHOD="SpaceCraft.Editor.Builds.BuildWebGLDevelopment"
+                METHOD="Build.WebGL_Dev"
                 ;;
               *)
                 echo "Unknown buildProfile: ${{ inputs.buildProfile }}" >&2
