@@ -251,6 +251,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          SC_BUILD_OUTPUT: dist/SpaceCraft
         with:
           projectPath: ${{ steps.detect.outputs.projectPath }}
           targetPlatform: ${{ inputs.targetPlatform }}
@@ -298,18 +299,30 @@ jobs:
           echo "[controller] Building in $(pwd)"
           npm run build
 
-      - name: Assemble website bundle
+      - name: Assemble flat artifact (no wrapper directory)
         if: success()
         shell: bash
         run: |
           set -euo pipefail
-          OUT_DIR="${{ steps.detect.outputs.projectPath }}/Builds"
-          echo "[assemble] Output: $OUT_DIR"
-          mkdir -p "$OUT_DIR/controller"
-          cp -f WebSites/index.html "$OUT_DIR/index.html"
-          cp -f WebSites/controller/index.html "$OUT_DIR/controller/index.html"
-          cp -R WebSites/controller/lib "$OUT_DIR/controller/lib"
-          cp -R WebSites/controller/build "$OUT_DIR/controller/build"
+          STAGE="dist"
+          echo "[assemble] Using Unity output already at $STAGE/SpaceCraft"
+          mkdir -p "$STAGE/controller"
+          # Top-level site index
+          if [[ -f WebSites/index.html ]]; then
+            cp -f WebSites/index.html "$STAGE/index.html"
+          fi
+          # Controller site
+          if [[ -f WebSites/controller/index.html ]]; then
+            cp -f WebSites/controller/index.html "$STAGE/controller/index.html"
+          fi
+          if [[ -d WebSites/controller/lib ]]; then
+            cp -R WebSites/controller/lib "$STAGE/controller/lib"
+          fi
+          if [[ -d WebSites/controller/build ]]; then
+            cp -R WebSites/controller/build "$STAGE/controller/build"
+          fi
+          echo "[assemble] Final artifact layout:"
+          (cd "$STAGE" && find . -maxdepth 2 -type f | sed 's#^./##')
 
       - name: Upload build artifacts
         if: success()
@@ -317,14 +330,4 @@ jobs:
         with:
           name: SpaceCraft-${{ inputs.targetPlatform }}-${{ inputs.buildProfile }}
           path: |
-            ${{ steps.detect.outputs.projectPath }}/Builds
-
-      - name: Upload Unity logs (always)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Unity-Logs
-          path: |
-            Logs
-            ${{ steps.detect.outputs.projectPath }}/Logs
-
+            dist/**

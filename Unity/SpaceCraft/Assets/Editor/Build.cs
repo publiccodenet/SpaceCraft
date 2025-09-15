@@ -44,9 +44,15 @@ public static class Build
             PlayerSettings.WebGL.template = templateName;
         }
         
-        //string buildPath = Path.Combine("Builds", "SpaceCraft");
-        // Build directly into WebSites/SpaceCraft at top level of repo.
+        // Default dev output (existing behavior)
         string buildPath = Path.Combine("..", "..", "WebSites", "SpaceCraft");
+        // Allow CI override via env var
+        var envOut = Environment.GetEnvironmentVariable("SC_BUILD_OUTPUT");
+        if (!string.IsNullOrEmpty(envOut))
+        {
+            buildPath = envOut;
+            Debug.Log($"[Build] Overriding output via SC_BUILD_OUTPUT => {buildPath}");
+        }
         
         BuildPlayerOptions options = new BuildPlayerOptions
         {
@@ -87,7 +93,15 @@ public static class Build
         }
         // --- End Force --- 
         
+        // Default prod output (existing behavior)
         string buildPath = Path.Combine("Builds", "SpaceCraft");
+        // Allow CI override via env var
+        var envOut = Environment.GetEnvironmentVariable("SC_BUILD_OUTPUT");
+        if (!string.IsNullOrEmpty(envOut))
+        {
+            buildPath = envOut;
+            Debug.Log($"[Build] Overriding output via SC_BUILD_OUTPUT => {buildPath}");
+        }
         
         BuildPlayerOptions options = new BuildPlayerOptions
         {
