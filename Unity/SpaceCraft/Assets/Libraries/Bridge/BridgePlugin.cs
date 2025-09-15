@@ -770,14 +770,16 @@ public class BridgePlugin : MonoBehaviour {
     {
         if (renderEventFunc == (IntPtr)0) {
             renderEventFunc =
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IPHONE
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS
                 (IntPtr)_CBridgePlugin_GetRenderEventFunc();
-#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX
-                (IntPtr)0; // TODO
+#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_WEBGL
+                (IntPtr)0; // TODO (Windows)
 #elif UNITY_ANDROID
                 (IntPtr)plugin.CallStatic<long>("GetRenderEventFunc");
+#elif UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_WEBGL
+                (IntPtr)0; // Fallback for Linux/WebGL where native plugin call is not available
 #else
-                (IntPtr)0; // Fallback
+                (IntPtr)0; // Other platforms fallback
 #endif
             //Debug.Log("BridgePlugin: GetRenderEventFunc: Got renderEventFunc: " + renderEventFunc);
         }
@@ -790,12 +792,14 @@ public class BridgePlugin : MonoBehaviour {
     {
         //Debug.Log("BridgePlugin: RenderIntoTexture: time: " + Time.time + " width: " + width + " height: " + height);
 
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IPHONE
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS
         _CBridgePlugin_RenderIntoTextureSetup(plugin, width, height);
-#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_WEBGL
         // TODO
 #elif UNITY_ANDROID
         plugin.Call("RenderIntoTextureSetup", width, height);
+#else
+        // TODO (fallback)
 #endif
     }
 
@@ -803,7 +807,7 @@ public class BridgePlugin : MonoBehaviour {
     public void FlushCaches()
     {
 
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IPHONE
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS
 
         if (plugin == IntPtr.Zero) {
             return;
@@ -811,7 +815,7 @@ public class BridgePlugin : MonoBehaviour {
 
         _CBridgePlugin_FlushCaches(plugin);
 
-#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_WEBGL
 
         // TODO
 
@@ -855,7 +859,7 @@ public class BridgePlugin : MonoBehaviour {
     {
         //Debug.Log("BridgePlugin: IssuePluginRenderEvent: time: " + Time.time + " pluginID: " + pluginID + " this: " + this);
 
-#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX || UNITY_IOS || UNITY_ANDROID
         GL.IssuePluginEvent(GetRenderEventFunc(), 2);
 #endif
     }
