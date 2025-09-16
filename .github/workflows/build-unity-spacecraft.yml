@@ -251,7 +251,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          SC_BUILD_OUTPUT: dist/SpaceCraft
+          SC_BUILD_OUTPUT: ${{ github.workspace }}/dist/SpaceCraft
         with:
           projectPath: ${{ steps.detect.outputs.projectPath }}
           targetPlatform: ${{ inputs.targetPlatform }}
@@ -304,8 +304,25 @@ jobs:
         run: |
           set -euo pipefail
           STAGE="dist"
-          echo "[assemble] Using Unity output already at $STAGE/SpaceCraft"
+          echo "[assemble] Expecting Unity output at $STAGE/SpaceCraft"
+          test -d "$STAGE/SpaceCraft" || { echo "[assemble] ERROR: Unity output missing at $STAGE/SpaceCraft" >&2; exit 1; }
           mkdir -p "$STAGE/controller"
+          # If Unity output missing, try common fallback paths
+          if [[ ! -d "$STAGE/SpaceCraft" ]]; then
+            CAND1="${{ steps.detect.outputs.projectPath }}/Builds/SpaceCraft"
+            CAND2="WebSites/SpaceCraft"
+            if [[ -d "$CAND1" ]]; then
+              echo "[assemble] Fallback: copying from $CAND1"
+              mkdir -p "$STAGE/SpaceCraft"
+              rsync -a "$CAND1/" "$STAGE/SpaceCraft/"
+            elif [[ -d "$CAND2" ]]; then
+              echo "[assemble] Fallback: copying from $CAND2"
+              mkdir -p "$STAGE/SpaceCraft"
+              rsync -a "$CAND2/" "$STAGE/SpaceCraft/"
+            else
+              echo "[assemble] WARNING: Unity output not found in dist/SpaceCraft, $CAND1, or $CAND2"
+            fi
+          fi
           # Top-level site index
           if [[ -f WebSites/index.html ]]; then
             cp -f WebSites/index.html "$STAGE/index.html"
@@ -336,5 +353,5 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: site.zip
+          name: site
           path: site.zip
