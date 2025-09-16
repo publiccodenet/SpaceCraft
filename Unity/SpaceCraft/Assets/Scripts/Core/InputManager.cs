@@ -135,6 +135,76 @@ public class InputManager : MonoBehaviour
     public string viewMode = "magnets";
     
     [ExposedParameter(
+        "View Seek Position Speed", 
+        Category = "View", 
+        Description = "How quickly the camera centers toward the target", 
+        Min = 0.1f, 
+        Max = 20f, 
+        Default = 1f, 
+        Visible = true)]
+    public float viewSeekPositionSpeed = 1f;
+    
+    [ExposedParameter(
+        "View Seek Zoom Speed", 
+        Category = "View", 
+        Description = "How quickly the camera zooms toward the target", 
+        Min = 0.1f, 
+        Max = 20f, 
+        Default = 1f, 
+        Visible = true)]
+    public float viewSeekZoomSpeed = 1f;
+    
+    [ExposedParameter(
+        "View Seek Margin", 
+        Category = "View", 
+        Description = "Extra scale multiplier to fit bounds (1.0 = tight)", 
+        Min = 1.0f, 
+        Max = 2.0f, 
+        Default = 1.05f, 
+        Visible = true)]
+    public float viewSeekScale = 1.02f;
+    
+    [ExposedParameter(
+        "Selection View Ortho Size", 
+        Category = "View", 
+        Description = "Ortho size when seeking to a selected item", 
+        Min = 0.5f, 
+        Max = 200f, 
+        Default = 5f, 
+        Visible = true)]
+    public float selectionViewOrthoSize = 5f;
+    
+    [ExposedParameter(
+        "Attract Dwell Seconds", 
+        Category = "View", 
+        Description = "Pause at an item before hopping to the next in attract mode", 
+        Min = 0f, 
+        Max = 30f, 
+        Default = 2f, 
+        Visible = true)]
+    public float attractDwellSeconds = 2f;
+
+    [ExposedParameter(
+        "Top UI Height (px)",
+        Category = "View",
+        Description = "Pixels reserved at top of screen (world camera excluded)",
+        Min = 0f,
+        Max = 400f,
+        Default = 100f,
+        Visible = true)]
+    public float topUiHeightPixels = 100f;
+
+    [ExposedParameter(
+        "Magnets View Margin", 
+        Category = "View", 
+        Description = "Extra margin multiplier used only in magnets view", 
+        Min = 1.0f, 
+        Max = 2.0f, 
+        Default = 1.06f, 
+        Visible = true)]
+    public float magnetsViewMargin = 1.06f;
+    
+    [ExposedParameter(
         "Scale Animation Speed", 
         Category = "View", 
         Description = "How quickly items change size", 
@@ -189,11 +259,11 @@ public class InputManager : MonoBehaviour
     private bool capsLockToggled = false;
 
     [Header("Camera Boundaries")]
-    public float minX = -12f;
-    public float maxX = 12f;
-    public float minZ = -12f;
-    public float maxZ = 12f;
-    public float minZoom = 10f;
+    public float minX = -1000f;
+    public float maxX = 1000f;
+    public float minZ = -1000f;
+    public float maxZ = 1000f;
+    public float minZoom = 2f;
     public float maxZoom = 100f;
     public float cameraVelocitySmoothingFactor = 0.05f; // for smooth release physics
     public float cameraFrictionFactor = 0.999f;
@@ -227,6 +297,11 @@ public class InputManager : MonoBehaviour
     private Vector3 previousMousePosition;
     private Vector3 cameraVelocity = Vector3.zero;
     private Vector3 filteredVelocity = Vector3.zero;
+    private bool viewSeekEnabled = false;
+    private Vector2 viewSeekTargetCenter = Vector2.zero;
+    private float viewSeekTargetOrtho = 20f;
+    private ItemView attractCurrentTarget = null;
+    private float attractLastPickTime = 0f;
     private bool cameraPhysicsEnabled = true;
     private float lastDragTime;
     private Vector3 dragStartPosition;
@@ -244,6 +319,7 @@ public class InputManager : MonoBehaviour
         public float time;
         public VelocitySample(Vector3 pos, float t) { position = pos; time = t; }
     }
+    
     private List<VelocitySample> velocityBuffer = new List<VelocitySample>();
     private const int VELOCITY_BUFFER_SIZE = 10; // Keep last N samples
     private const float VELOCITY_SAMPLE_WINDOW = 0.1f; // Use samples from last 100ms (from main)
@@ -257,6 +333,7 @@ public class InputManager : MonoBehaviour
         if (cameraController != null)
         {
             _mainCamera = cameraController.controlledCamera;
+            ApplyTopUiViewport();
         }
         
         UpdatePhysicsMaterials();
@@ -266,22 +343,225 @@ public class InputManager : MonoBehaviour
     void Update()
     {
         HandleInput();
-            UpdateHoveredItem();
+        UpdateHoveredItem();
         UpdatePhysicsMaterials();
-        if (cameraPhysicsEnabled)
-        {
-            ApplyCameraPhysics();
-        }
-        // Restore keyboard handling
         HandleKeyboardInput();
+        // If resolution changes, keep viewport reserved for top UI
+        ApplyTopUiViewport();
+    }
+
+    private void ApplyTopUiViewport()
+    {
+        if (_mainCamera == null) return;
+        float h = Mathf.Max(0f, topUiHeightPixels);
+        float pixelH = Mathf.Max(1f, (float)_mainCamera.pixelHeight);
+        float yMin = h / pixelH;
+        yMin = Mathf.Clamp01(yMin);
+        float height = Mathf.Max(1f / Mathf.Max(1f, pixelH), 1f - yMin); // ensure at least 1px high
+        Rect r = _mainCamera.rect;
+        r.x = 0f;
+        r.width = 1f;
+        r.y = 0f; // viewport starts at bottom
+        r.height = height; // exclude top strip, clamped to >=1px
+        _mainCamera.rect = r;
     }
     
     void FixedUpdate()
     {
         // Apply magnet physics forces
-            ApplyMagnetForces();
+        ApplyMagnetForces();
         // Apply continuous thrust during physics
         ApplyContinuousThrust();
+
+
+        switch (viewMode) {
+
+            case "attract":
+                viewSeekEnabled = true;
+                ViewSeekAttract();
+                break;
+
+            case "magnets":
+                viewSeekEnabled = true;
+                ViewSeekMagnets();
+                break;
+
+            case "selection":
+                viewSeekEnabled = true;
+                ViewSeekSelection();
+                break;
+
+            case "manual":
+            default:
+                viewSeekEnabled = false;
+                break;
+
+        }
+
+        if (viewSeekEnabled)
+        {
+            ApplyViewSeek();
+        }
+        else if (cameraPhysicsEnabled)
+        {
+            ApplyCameraPhysics();
+        }
+
+    }
+    
+    void ViewSeekAttract()
+    {
+        ItemView[] allItems = FindObjectsByType<ItemView>(FindObjectsSortMode.None);
+        if (allItems.Length == 0)
+        {
+            viewSeekEnabled = false;
+            return;
+        }
+        bool needPick = attractCurrentTarget == null;
+        if (!needPick)
+        {
+            // If arrived and dwell elapsed, pick a new target
+            float arrivedDist = ViewSeekDistance();
+            if (arrivedDist < 0.05f && (Time.realtimeSinceStartup - attractLastPickTime) >= attractDwellSeconds)
+            {
+                needPick = true;
+            }
+        }
+        if (needPick)
+        {
+            int idx = Random.Range(0, allItems.Length);
+            attractCurrentTarget = allItems[idx];
+            attractLastPickTime = Time.realtimeSinceStartup;
+        }
+        if (attractCurrentTarget != null)
+        {
+            // Reuse selection logic targetting
+            Vector3 p = attractCurrentTarget.transform.position;
+            viewSeekTargetCenter = new Vector2(p.x, p.z);
+            viewSeekTargetOrtho = Mathf.Clamp(selectionViewOrthoSize, minZoom, maxZoom);
+        }
+    }
+
+    void ViewSeekMagnets()
+    {
+        // Compute bbox of all items that are affected by any enabled magnet.
+        // If no magnets or no affected items, fall back to bbox of all items.
+        ItemView[] allItems = FindObjectsByType<ItemView>(FindObjectsSortMode.None);
+        if (allItems.Length == 0)
+        {
+            viewSeekEnabled = false;
+            return;
+        }
+
+        MagnetView[] magnets = FindObjectsByType<MagnetView>(FindObjectsSortMode.None);
+        bool anyMagnet = false;
+        foreach (var m in magnets)
+        {
+            if (m != null && m.magnetEnabled) { anyMagnet = true; break; }
+        }
+
+        bool anyAffected = false;
+        Vector3 min = new Vector3(float.PositiveInfinity, 0, float.PositiveInfinity);
+        Vector3 max = new Vector3(float.NegativeInfinity, 0, float.NegativeInfinity);
+
+        if (anyMagnet)
+        {
+            foreach (var item in allItems)
+            {
+                if (item == null) continue;
+                Vector3 pos = item.transform.position;
+                Vector3 net = Vector3.zero;
+                foreach (var mag in magnets)
+                {
+                    if (mag == null || !mag.magnetEnabled) continue;
+                    net += mag.CalculateMagneticForce(item, pos);
+                }
+                if (net.sqrMagnitude > 0.00001f)
+                {
+                    anyAffected = true;
+                    if (pos.x < min.x) min.x = pos.x;
+                    if (pos.z < min.z) min.z = pos.z;
+                    if (pos.x > max.x) max.x = pos.x;
+                    if (pos.z > max.z) max.z = pos.z;
+                }
+            }
+        }
+
+        if (!anyAffected)
+        {
+            // Fallback: use all items' bbox
+            foreach (var item in allItems)
+            {
+                if (item == null) continue;
+                Vector3 pos = item.transform.position;
+                if (pos.x < min.x) min.x = pos.x;
+                if (pos.z < min.z) min.z = pos.z;
+                if (pos.x > max.x) max.x = pos.x;
+                if (pos.z > max.z) max.z = pos.z;
+            }
+        }
+
+        Vector2 center = new Vector2((min.x + max.x) * 0.5f, (min.z + max.z) * 0.5f);
+        float width = Mathf.Max(0.1f, max.x - min.x);
+        float height = Mathf.Max(0.1f, max.z - min.z);
+        // Add an item-visual padding so top/bottom rows are not clipped
+        float perItemPad = 1.0f; // world units padding per edge
+        width += perItemPad * 2f;
+        height += perItemPad * 2f;
+        // Convert bbox to orthographic size using camera aspect; ensure both axes fit with margin
+        float aspect = (_mainCamera != null && _mainCamera.pixelHeight > 0) ? ((float)_mainCamera.pixelWidth / (float)_mainCamera.pixelHeight) : 1f;
+        float modeMargin = viewMode == "magnets" ? (viewSeekScale * magnetsViewMargin) : viewSeekScale;
+        float halfWidth = (width * 0.5f) * modeMargin;
+        float halfHeight = (height * 0.5f) * modeMargin;
+        float orthoFromWidth = (aspect > 0.0001f) ? (halfWidth / aspect) : halfWidth;
+        float orthoFromHeight = halfHeight;
+        float targetOrtho = Mathf.Clamp(Mathf.Max(orthoFromWidth, orthoFromHeight), minZoom, maxZoom);
+
+        viewSeekTargetCenter = center;
+        viewSeekTargetOrtho = targetOrtho;
+    }
+
+    void ViewSeekSelection()
+    {
+        if (spaceCraft == null) return;
+        if (spaceCraft.SelectedItemIds.Count == 0)
+        {
+            viewSeekEnabled = false;
+            return;
+        }
+        string id = spaceCraft.SelectedItemIds[0];
+        ItemView item = spaceCraft.FindItemViewById(id);
+        if (item == null)
+        {
+            viewSeekEnabled = false;
+            return;
+        }
+        Vector3 pos = item.transform.position;
+        viewSeekTargetCenter = new Vector2(pos.x, pos.z);
+        viewSeekTargetOrtho = Mathf.Clamp(selectionViewOrthoSize, minZoom, maxZoom);
+    }
+
+    void ApplyViewSeek()
+    {
+        if (!viewSeekEnabled) return;
+        if (_mainCamera == null || cameraController == null || cameraController.cameraRig == null) return;
+
+        // Smoothly move center
+        Vector3 current = cameraController.cameraRig.position;
+        Vector3 desired = new Vector3(viewSeekTargetCenter.x, current.y, viewSeekTargetCenter.y);
+        float posT = 1f - Mathf.Exp(-viewSeekPositionSpeed * Time.deltaTime);
+        Vector3 next = Vector3.Lerp(current, desired, posT);
+        cameraController.cameraRig.position = new Vector3(
+            Mathf.Clamp(next.x, minX, maxX),
+            next.y,
+            Mathf.Clamp(next.z, minZ, maxZ)
+        );
+
+        // Smoothly adjust zoom (orthographic size)
+        float currentOrtho = _mainCamera.orthographicSize;
+        float targetOrtho = Mathf.Clamp(viewSeekTargetOrtho, minZoom, maxZoom);
+        float zoomT = 1f - Mathf.Exp(-viewSeekZoomSpeed * Time.deltaTime);
+        _mainCamera.orthographicSize = Mathf.Lerp(currentOrtho, targetOrtho, zoomT);
     }
 
     private void HandleInput()
@@ -892,6 +1172,13 @@ public class InputManager : MonoBehaviour
     private Vector3 GetWorldPositionAtScreenCenter()
     {
         return GetWorldPositionAtScreenPoint(new Vector3(_mainCamera.pixelWidth / 2f, _mainCamera.pixelHeight / 2f, 0));
+    }
+
+    private float ViewSeekDistance()
+    {
+        if (cameraController == null || cameraController.cameraRig == null) return float.PositiveInfinity;
+        Vector2 center = new Vector2(cameraController.cameraRig.position.x, cameraController.cameraRig.position.z);
+        return Vector2.Distance(center, viewSeekTargetCenter) + Mathf.Abs(_mainCamera.orthographicSize - viewSeekTargetOrtho) * 0.01f;
     }
 
     private void HandleMouseZoom(float scrollWheelDelta)
