@@ -1,9 +1,5 @@
 import { Register, ReactiveProperty, IoSlider2d, IoSlider2dProps } from 'io-gui';
 
-type MagnetJoystickProps = IoSlider2dProps & {
-  ctrlTtimeout?: number;
-}
-
 @Register
 export class MagnetJoystick extends IoSlider2d {
 
@@ -14,20 +10,16 @@ export class MagnetJoystick extends IoSlider2d {
         }
     `;
   }
-
-  @ReactiveProperty({type: Number, value: 25})
-  declare ctrlTtimeout: number;
-
   private _isLooping = false;
 
-  constructor(args: MagnetJoystickProps = {}) {
+  constructor(args: IoSlider2dProps = {}) {
     super(args);
     this.controlLoop = this.controlLoop.bind(this);
   }
   controlLoop() {
     if (this._isLooping) {
       this.dispatch('control');
-      setTimeout(this.controlLoop, this.ctrlTtimeout);
+      requestAnimationFrame(this.controlLoop);
     }
   }
   onPointerdown(event: PointerEvent) {
@@ -47,6 +39,6 @@ export class MagnetJoystick extends IoSlider2d {
   }
 }
 
-export const magnetJoystick = function(arg0: MagnetJoystickProps) {
+export const magnetJoystick = function(arg0: IoSlider2dProps) {
   return MagnetJoystick.vConstructor(arg0);
 };

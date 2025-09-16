@@ -17,7 +17,7 @@ function generateMagnetDataFromMetadata(metadata: Array<MagnetViewMetadata>): Ma
 
 
 @Register
-export class TabMagnet extends TabBase {
+export class TabArrange extends TabBase {
     static get Style() {
         return /* css */`
           :host {
@@ -85,7 +85,7 @@ export class TabMagnet extends TabBase {
         const magnets = this.simulatorState.magnets || [];
 
         this.render([
-            h2('Magnets'),
+            h2('Arrange'),
             p('Create magnets to attract related items'),
             div({class: 'input-row'}, [
                 ioString({id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp}),
@@ -96,6 +96,6 @@ export class TabMagnet extends TabBase {
     }
 }
 
-export const tabMagnet = function(arg0: TabBaseProps) {
-    return TabMagnet.vConstructor(arg0);
+export const tabArrange = function(arg0: TabBaseProps) {
+    return TabArrange.vConstructor(arg0);
 };
