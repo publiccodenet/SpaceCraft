@@ -44,13 +44,18 @@ public static class Build
             PlayerSettings.WebGL.template = templateName;
         }
         
-        //string buildPath = Path.Combine("Builds", "SpaceCraft");
-        // Build directly into WebSites/SpaceCraft at top level of repo.
+        // Default dev output (existing behavior)
         string buildPath = Path.Combine("..", "..", "WebSites", "SpaceCraft");
+        // Allow CI override via env var or CLI
+        buildPath = ResolveOutputPath(buildPath);
+        Debug.Log($"[Build] Output path: {buildPath}");
+
+        // Ensure scenes are configured
+        var scenes = EnsureScenesConfigured();
         
         BuildPlayerOptions options = new BuildPlayerOptions
         {
-            scenes = GetBuildScenes(),
+            scenes = scenes,
             locationPathName = buildPath,
             target = BuildTarget.WebGL,
             options = BuildOptions.Development // Add development flag if needed
@@ -87,11 +92,18 @@ public static class Build
         }
         // --- End Force --- 
         
+        // Default prod output (existing behavior)
         string buildPath = Path.Combine("Builds", "SpaceCraft");
+        // Allow CI override via env var or CLI
+        buildPath = ResolveOutputPath(buildPath);
+        Debug.Log($"[Build] Output path: {buildPath}");
+
+        // Ensure scenes are configured
+        var scenes = EnsureScenesConfigured();
         
         BuildPlayerOptions options = new BuildPlayerOptions
         {
-            scenes = GetBuildScenes(),
+            scenes = scenes,
             locationPathName = buildPath,
             target = BuildTarget.WebGL,
             options = BuildOptions.None
@@ -106,8 +118,7 @@ public static class Build
     {
         // Ensure build directory exists
         string buildPath = Path.GetFullPath(options.locationPathName); // Get full path
-        string buildDir = Path.GetDirectoryName(buildPath);
-        Directory.CreateDirectory(buildDir);
+        Directory.CreateDirectory(buildPath);
 
         // --- PRE-BUILD STEP: Remove symlinks from build target directory --- 
         Debug.Log($"[Build Pre-Clean] Cleaning symlinks from: {buildPath}");
@@ -194,15 +205,66 @@ public static class Build
         }
     }
 
-    private static string[] GetBuildScenes()
+    private static string[] EnsureScenesConfigured()
     {
-        // Get all enabled scenes from the build settings
-        var scenes = new string[EditorBuildSettings.scenes.Length];
-        for (int i = 0; i < scenes.Length; i++)
+        // If there are enabled scenes already, return them
+        var enabled = System.Array.FindAll(EditorBuildSettings.scenes, s => s.enabled);
+        if (enabled.Length > 0)
         {
-            scenes[i] = EditorBuildSettings.scenes[i].path;
+            string[] paths = new string[enabled.Length];
+            for (int i = 0; i < enabled.Length; i++) paths[i] = enabled[i].path;
+            return paths;
         }
-        return scenes;
+
+        // Discover all .unity scenes under Assets and configure Build Settings
+        Debug.Log("[Build] No enabled scenes in Build Settings; falling back to discover all .unity scenes under Assets/");
+        string[] discovered = new string[0];
+        try
+        {
+            discovered = Directory.GetFiles("Assets", "*.unity", SearchOption.AllDirectories);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Build] Failed to enumerate scenes: {ex.Message}");
+        }
+
+        if (discovered.Length > 0)
+        {
+            var buildScenes = new EditorBuildSettingsScene[discovered.Length];
+            for (int i = 0; i < discovered.Length; i++)
+            {
+                buildScenes[i] = new EditorBuildSettingsScene(discovered[i], true);
+                Debug.Log($"[Build] Including scene: {discovered[i]}");
+            }
+            EditorBuildSettings.scenes = buildScenes;
+            return discovered;
+        }
+
+        Debug.LogError("[Build] No scenes found to build. Configure Build Settings or add scenes under Assets/.");
+        return discovered; // may be empty; BuildPipeline will fail and surface error
+    }
+
+    private static string ResolveOutputPath(string defaultPath)
+    {
+        // 1) Command line arg: -scOut <path> or --scOut=<path>
+        var args = Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == "-scOut" && i + 1 < args.Length)
+            {
+                return args[i + 1];
+            }
+            if (args[i].StartsWith("--scOut="))
+            {
+                var val = args[i].Substring("--scOut=".Length);
+                if (!string.IsNullOrEmpty(val)) return val;
+            }
+        }
+
+        // 2) Environment variable fallback
+        var envOut = Environment.GetEnvironmentVariable("SC_BUILD_OUTPUT");
+        if (!string.IsNullOrEmpty(envOut)) return envOut;
+        return defaultPath;
     }
 
     private static bool IsCommandLineBuild()

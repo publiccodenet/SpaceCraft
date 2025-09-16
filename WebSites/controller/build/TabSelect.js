@@ -21,13 +21,28 @@ let TabSelect = class TabSelect extends TabBase {
             }
         `;
     }
+    static get Listeners() {
+        return {
+            'pointerdown': 'onPointerdown',
+            'touchstart': ['preventDefault', { passive: false }],
+            'touchmove': ['preventDefault', { passive: false }],
+            'wheel': 'onScroll',
+        };
+    }
+    preventDefault(event) {
+        event.preventDefault();
+    }
     onPointerdown(event) {
-        super.onPointerdown(event);
+        this.setPointerCapture(event.pointerId);
+        this.addEventListener('pointerup', this.onPointerup);
+        this.addEventListener('pointercancel', this.onPointerup);
         this.startX = event.clientX;
         this.startY = event.clientY;
     }
     onPointerup(event) {
-        super.onPointerup(event);
+        this.releasePointerCapture(event.pointerId);
+        this.removeEventListener('pointerup', this.onPointerup);
+        this.removeEventListener('pointercancel', this.onPointerup);
         const dx = event.clientX - this.startX;
         const dy = event.clientY - this.startY;
         const distance = Math.sqrt(dx * dx + dy * dy);

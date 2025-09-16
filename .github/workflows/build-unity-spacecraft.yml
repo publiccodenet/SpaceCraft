@@ -1,0 +1,345 @@
+###################################################################################################
+# Build Unity SpaceCraft – GitHub Actions (Ubuntu runner)
+#
+# Overview
+# - Builds the Unity SpaceCraft project for WebGL on GitHub-hosted Linux runners.
+# - Auto-detects Unity version from ProjectVersion.txt (override via input).
+# - Supports Production/Development profiles or a fully custom build method.
+# - Caches the Unity Library folder for faster imports/compiles between runs.
+# - Downloads real LFS asset blobs for the checked-out commit (required for Unity).
+# - Uploads build artifacts for later download/deploy.
+#
+# Requirements (repo secrets)
+# - UNITY_LICENSE: Unity license file contents (game-ci format) or ULF text.
+# - UNITY_EMAIL: Unity account email (for legacy activation flows in builder).
+# - UNITY_PASSWORD: Unity account password (for legacy activation flows in builder).
+#
+# Inputs (workflow_dispatch)
+# - unityVersion: Unity Editor version (e.g., 2022.3.45f1). Use 'auto' to parse ProjectVersion.txt.
+# - projectPath: Path to the Unity project. Defaults to Unity/SpaceCraft.
+# - targetPlatform: Build target (WebGL). Extendable if needed.
+# - buildProfile: Convenience selector mapping to build methods (Production/Development).
+# - buildMethod: Explicit Unity C# method string, overrides buildProfile. Example:
+#     SpaceCraft.Editor.Builds.BuildWebGLProduction
+#
+# Build method expectations (Unity side)
+# - The selected build method should be a static C# function callable by Unity with:
+#     - No arguments (or signature supported by Unity batchmode).
+#     - It should configure build options and write the WebGL build output into the project Build/ path
+#       or another deterministic directory consumed by artifact upload below.
+# - Example namespace/class/method naming is provided here as a convention; implement accordingly.
+#
+# Caching strategy
+# - Caches the Library/ folder per (OS, Unity version, Packages/manifest.json hash) to reduce reimport.
+# - On cache hits, compilations and imports should be much faster.
+# - We intentionally do not cache Temp/ or final Build/ outputs; those are uploaded as artifacts.
+#
+# LFS and checkout
+# - actions/checkout is configured with lfs: true and fetch-depth: 1
+#   - Ensures real LFS blobs for the current commit are available to the build.
+#   - Uses shallow history for speed (no need for full Git history in CI).
+#
+# Artifacts
+# - Uploads the default game-ci build/ directory and the project Build/ directory.
+# - Adjust artifact paths if your build method writes to a different location.
+#
+# Invocation examples
+# - Production (auto-detect Unity, default project path):
+#     unityVersion: auto
+#     buildProfile: WebGLProductionBuild
+# - Development:
+#     unityVersion: auto
+#     buildProfile: WebGLDevelopmentBuild
+# - Explicit method (overrides profile mapping):
+#     buildMethod: SpaceCraft.Editor.Builds.BuildWebGLProduction
+#
+# Notes
+# - This workflow focuses on GitHub-hosted runners (no self-hosted required).
+# - For further speed-ups, consider enabling editor caching in the action if appropriate and supported
+#   by your environment, or splitting content generation into a separate, cacheable step.
+###################################################################################################
+name: Build Unity SpaceCraft
+
+on:
+  workflow_dispatch:
+    inputs:
+      unityVersion:
+        description: "Unity Editor version (e.g. 2022.3.45f1). Use 'auto' to detect from ProjectVersion.txt"
+        required: false
+        default: "auto"
+        type: string
+      projectPath:
+        description: "Unity project path"
+        required: false
+        default: "Unity/SpaceCraft"
+        type: string
+      targetPlatform:
+        description: "Unity target platform"
+        required: false
+        default: "WebGL"
+        type: choice
+        options:
+          - WebGL
+      buildProfile:
+        description: "Build profile token (maps to a Unity build method)"
+        required: false
+        default: "WebGLProductionBuild"
+        type: choice
+        options:
+          - WebGLProductionBuild
+          - WebGLDevelopmentBuild
+      buildMethod:
+        description: "Explicit Unity build method (overrides buildProfile). Example: SpaceCraft.Editor.Builds.BuildWebGLProduction"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  build:
+    name: Build ${{ inputs.targetPlatform }} (${{ inputs.buildProfile }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    env:
+      PROJECT_PATH: ${{ inputs.projectPath }}
+      TARGET_PLATFORM: ${{ inputs.targetPlatform }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 1
+
+      - name: Ensure LFS files are materialized (smudged)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "[lfs] git lfs version:" && git lfs version || true
+          echo "[lfs] Pulling LFS objects (broad)"
+          git lfs pull --exclude="" --include="" || true
+          echo "[lfs] Forcing checkout (smudge) of LFS pointers"
+          git lfs checkout || true
+
+      - name: Detect Unity version and resolve project path
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "[detect] GITHUB_WORKSPACE=${{ github.workspace }}"
+          echo "[detect] inputs.projectPath='${{ inputs.projectPath }}' inputs.unityVersion='${{ inputs.unityVersion }}'"
+          echo "[detect] Workspace root listing:"
+          ls -la "${{ github.workspace }}" || true
+
+          # If version provided, honor it and still resolve project path for later steps
+          REQ_VER="${{ inputs.unityVersion }}"
+          PROJ_PATH_IN="${{ inputs.projectPath }}"
+          CANDIDATE_FILE="${{ github.workspace }}/${PROJ_PATH_IN}/ProjectSettings/ProjectVersion.txt"
+          echo "[detect] Initial candidate file: $CANDIDATE_FILE"
+          echo "[detect] Listing input project path: '${PROJ_PATH_IN}'"
+          ls -la "${{ github.workspace }}/${PROJ_PATH_IN}" || true
+
+          if [[ ! -f "$CANDIDATE_FILE" ]]; then
+            echo "[detect] Input projectPath not found: $CANDIDATE_FILE" >&2
+            echo "[detect] Searching for ProjectVersion.txt under workspace..."
+            MAPFILE -t FOUND < <(find "${{ github.workspace }}" -type f -path "*/ProjectSettings/ProjectVersion.txt" | sort)
+            echo "[detect] Found ${#FOUND[@]} candidates"
+            if [[ ${#FOUND[@]} -eq 0 ]]; then
+              echo "[detect] No ProjectVersion.txt found in repository" >&2
+              exit 1
+            fi
+            CANDIDATE_FILE="${FOUND[0]}"
+            echo "[detect] Using detected ProjectVersion.txt: $CANDIDATE_FILE"
+            echo "[detect] Candidates (up to 10):" && printf '%s\n' "${FOUND[@]:0:10}"
+          fi
+
+          # Derive resolved project path (folder containing ProjectSettings)
+          RESOLVED_PROJECT_PATH="$(cd "$(dirname "$CANDIDATE_FILE")/.." && pwd)"
+          # Convert to path relative to workspace for downstream steps
+          RESOLVED_PROJECT_PATH_REL="${RESOLVED_PROJECT_PATH#"${{ github.workspace }}/"}"
+          echo "projectPath=$RESOLVED_PROJECT_PATH_REL" >> "$GITHUB_OUTPUT"
+          echo "[detect] RESOLVED_PROJECT_PATH=$RESOLVED_PROJECT_PATH"
+          echo "[detect] RESOLVED_PROJECT_PATH_REL=$RESOLVED_PROJECT_PATH_REL"
+          echo "[detect] ProjectSettings listing:" && ls -la "$RESOLVED_PROJECT_PATH/ProjectSettings" || true
+          echo "[detect] cat ProjectVersion.txt (pre-smudge):" && cat "$CANDIDATE_FILE" || true
+
+          # If file still looks like an LFS pointer, try to smudge just this file and re-check
+          if head -n 1 "$CANDIDATE_FILE" | grep -q '^version https://git-lfs.github.com/spec/v1'; then
+            echo "[detect] ProjectVersion.txt appears to be an LFS pointer; attempting smudge"
+            git lfs checkout -- "$CANDIDATE_FILE" || true
+            git lfs pull --include="$RESOLVED_PROJECT_PATH_REL/ProjectSettings/ProjectVersion.txt" --exclude="" || true
+            echo "[detect] cat ProjectVersion.txt (post-smudge):" && cat "$CANDIDATE_FILE" || true
+          fi
+
+          if [[ "$REQ_VER" != "auto" && -n "$REQ_VER" ]]; then
+            echo "[detect] Using provided unityVersion: $REQ_VER"
+            echo "version=$REQ_VER" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          VERSION=$(grep -E "^m_EditorVersion:\s*" "$CANDIDATE_FILE" | sed -E 's/^m_EditorVersion:\s*([^[:space:]]+).*/\1/')
+          if [[ -z "$VERSION" ]]; then
+            echo "[detect] Failed to parse Unity version from ProjectVersion.txt" >&2
+            exit 1
+          fi
+          echo "[detect] Detected Unity version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Log build configuration
+        shell: bash
+        run: |
+          echo "[config] projectPath='${{ steps.detect.outputs.projectPath }}'"
+          echo "[config] unityVersion='${{ steps.detect.outputs.version }}'"
+          echo "[config] targetPlatform='${{ inputs.targetPlatform }}'"
+          echo "[config] buildProfile='${{ inputs.buildProfile }}'"
+
+      - name: Validate Unity activation secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          if [[ -z "${{ secrets.UNITY_LICENSE }}" ]]; then echo "[secrets] UNITY_LICENSE is missing" >&2; missing=1; fi
+          if [[ -z "${{ secrets.UNITY_EMAIL }}" ]]; then echo "[secrets] UNITY_EMAIL is missing" >&2; missing=1; fi
+          if [[ -z "${{ secrets.UNITY_PASSWORD }}" ]]; then echo "[secrets] UNITY_PASSWORD is missing" >&2; missing=1; fi
+          if [[ "$missing" -ne 0 ]]; then
+            echo "[secrets] One or more required secrets are missing. Per GameCI v4 Personal license activation, provide UNITY_LICENSE, UNITY_EMAIL, UNITY_PASSWORD." >&2
+            exit 1
+          fi
+
+      - name: Cache Unity Library (project import cache)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.detect.outputs.projectPath }}/Library
+          key: ${{ runner.os }}-unity-library-${{ steps.detect.outputs.version }}-${{ hashFiles(format('{0}/Packages/manifest.json', steps.detect.outputs.projectPath)) }}
+          restore-keys: |
+            ${{ runner.os }}-unity-library-${{ steps.detect.outputs.version }}-
+
+      - name: Compute build method
+        id: compute
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${{ inputs.buildMethod }}" ]]; then
+            METHOD="${{ inputs.buildMethod }}"
+          else
+            case "${{ inputs.buildProfile }}" in
+              WebGLProductionBuild)
+                METHOD="Build.WebGL_Prod"
+                ;;
+              WebGLDevelopmentBuild)
+                METHOD="Build.WebGL_Dev"
+                ;;
+              *)
+                echo "Unknown buildProfile: ${{ inputs.buildProfile }}" >&2
+                exit 1
+                ;;
+            esac
+          fi
+          echo "buildMethod=$METHOD" >> "$GITHUB_OUTPUT"
+          echo "[compute] Selected build method: $METHOD"
+
+      - name: Prepare logs directory
+        shell: bash
+        run: |
+          mkdir -p Logs
+          mkdir -p "${{ steps.detect.outputs.projectPath }}/Logs"
+
+      # Do not pre-create dist; Unity writes under project path, we stage after
+
+      - name: Unity - Builder
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: ${{ steps.detect.outputs.projectPath }}
+          targetPlatform: ${{ inputs.targetPlatform }}
+          unityVersion: ${{ steps.detect.outputs.version }}
+          buildMethod: ${{ steps.compute.outputs.buildMethod }}
+          customParameters: -logFile Logs/Editor.log -stackTraceLogType Full
+          runAsHostUser: true
+          
+
+      - name: Setup Node.js
+        if: success()
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install controller dependencies
+        if: success()
+        working-directory: WebSites/controller
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "[controller] PWD=$(pwd) contents:" && ls -la
+          if [[ -f package-lock.json ]]; then
+            echo "[controller] Using npm ci"
+            npm ci
+          else
+            echo "[controller] package-lock.json not found; using npm install"
+            npm install
+          fi
+
+      - name: Install pnpm for build script
+        if: success()
+        working-directory: WebSites/controller
+        shell: bash
+        run: |
+          echo "[controller] Ensuring pnpm is available in $(pwd)"
+          npm i -g pnpm@8
+
+      - name: Build controller
+        if: success()
+        working-directory: WebSites/controller
+        shell: bash
+        run: |
+          echo "[controller] Building in $(pwd)"
+          npm run build
+
+      - name: Assemble flat artifact (no wrapper directory)
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          STAGE="dist"
+          SRC_BUILDS="${{ steps.detect.outputs.projectPath }}/Builds/SpaceCraft"
+          echo "[assemble] Expecting Unity output at $SRC_BUILDS"
+          test -d "$SRC_BUILDS" || { echo "[assemble] ERROR: Unity output missing at $SRC_BUILDS" >&2; exit 1; }
+          rm -rf "$STAGE"
+          mkdir -p "$STAGE/SpaceCraft" "$STAGE/controller"
+          rsync -a "$SRC_BUILDS/" "$STAGE/SpaceCraft/"
+          # Top-level site index
+          if [[ -f WebSites/index.html ]]; then
+            cp -f WebSites/index.html "$STAGE/index.html"
+          fi
+          # Controller site
+          if [[ -f WebSites/controller/index.html ]]; then
+            cp -f WebSites/controller/index.html "$STAGE/controller/index.html"
+          fi
+          if [[ -d WebSites/controller/lib ]]; then
+            cp -R WebSites/controller/lib "$STAGE/controller/lib"
+          fi
+          if [[ -d WebSites/controller/build ]]; then
+            cp -R WebSites/controller/build "$STAGE/controller/build"
+          fi
+          echo "[assemble] Final artifact layout:"
+          (cd "$STAGE" && find . -maxdepth 2 -type f | sed 's#^./##')
+
+      - name: Package site.zip (flat contents)
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f site.zip
+          (cd dist && zip -r ../site.zip .)
+          echo "[package] Created site.zip"
+
+      - name: Upload site.zip artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: site.zip
