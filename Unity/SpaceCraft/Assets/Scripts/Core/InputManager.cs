@@ -7,19 +7,11 @@ using System.Collections.Generic;
 /// </summary>
 public class InputManager : MonoBehaviour
 {
-    [Header("View")]
-    [ExposedParameter(
-        "View Mode",
-        Category = "View",
-        Description = "Current view mode: magnets, selection or manual",
-        Default = "magnets",
-        Visible = true
-    )]
-    public string viewMode = "magnets";
-    [Header("Physics Materials")]
+    [Header("Physics")]
+
     [ExposedParameter(
         "Static Friction", 
-        Category = "Physics Materials", 
+        Category = "Physics", 
         Description = "Resistance to start moving", 
         Min = 0f, Max = 20f, 
         Default = 0.5f, Visible = true)]
@@ -27,7 +19,7 @@ public class InputManager : MonoBehaviour
     
     [ExposedParameter(
         "Dynamic Friction", 
-        Category = "Physics Materials", 
+        Category = "Physics", 
         Description = "Resistance while moving", 
         Min = 0f, Max = 20f, 
         Default = 0.3f, Visible = true)]
@@ -35,16 +27,15 @@ public class InputManager : MonoBehaviour
     
     [ExposedParameter(
         "Bounciness", 
-        Category = "Physics Materials",
+        Category = "Physics",
         Description = "How much items bounce when they collide", 
         Min = 0f, Max = 1f, 
         Default = 0.3f, Visible = true)]
     public float bounciness = 0.3f;
-    
-    [Header("Rigidbody Settings")]
+
     [ExposedParameter(
         "Rigidbody Drag", 
-        Category = "Rigidbody", 
+        Category = "Physics", 
         Description = "Linear drag for all items", 
         Min = 0f, Max = 20f, 
         Default = 1.5f, Visible = true)]
@@ -52,7 +43,7 @@ public class InputManager : MonoBehaviour
     
     [ExposedParameter(
         "Angular Drag", 
-        Category = "Rigidbody", 
+        Category = "Physics", 
         Description = "Angular drag for all items", 
         Min = 0f, Max = 20f, 
         Default = 5f, Visible = true)]
@@ -60,13 +51,14 @@ public class InputManager : MonoBehaviour
     
     [ExposedParameter(
         "Max Item Velocity", 
-        Category = "Physics Limits",
+        Category = "Physics",
         Description = "Maximum speed limit for items", 
         Min = 1f, Max = 100f, 
         Default = 30f, Visible = true)]
     public float maxItemVelocity = 30f;
     
-    [Header("Mouse Controls")]
+    [Header("Mouse")]
+
     [ExposedParameter(
         "Tap Scale", 
         Category = "Mouse", 
@@ -90,7 +82,8 @@ public class InputManager : MonoBehaviour
         Min = 1f, Max = 50f, 
         Default = 5f, Visible = true)]
     public float selectionThrustForce = 5f;
-    
+
+
     public bool enableItemDragging = true;
     public float mouseVelocityMultiplier = 1f;
     public float dragMassMultiplier = 10f;
@@ -98,39 +91,52 @@ public class InputManager : MonoBehaviour
     public float throwStrength = 3f;
     public float throwSensitivity = 2f;
 
-    [Header("Navigator Controller")]
+    [Header("Controller")]
+
     [ExposedParameter(
-        "Navigator Pan Sensitivity", 
-        Category = "Navigator Controller", 
-        Description = "Scales pan movement from navigator.", 
+        "View Pan Sensitivity", 
+        Category = "Controller", 
+        Description = "Scales pan movement from view.", 
         Min = 0.01f, 
         Max = 1f, 
         Default = 0.1f
     )]
-    public float navigatorPanScaleFactor = 0.1f;
+    public float viewPanScaleFactor = 0.1f;
+
     [ExposedParameter(
-        "Navigator Zoom Sensitivity", 
-        Category = "Navigator Controller", 
-        Description = "Zoom speed from navigator input.", 
+        "View Zoom Sensitivity", 
+        Category = "Controller", 
+        Description = "Zoom speed from view input.", 
         Min = 0.1f, 
         Max = 5f, 
         Default = 1f
     )]
-    public float navigatorZoomFactor = 1f;
+    public float viewZoomFactor = 1f;
+
     [ExposedParameter(
-        "Navigator Velocity Factor", 
-        Category = "Navigator Controller", 
+        "View Velocity Factor", 
+        Category = "Controller", 
         Description = "Multiplier for velocity-based pan.", 
         Min = 0.1f, 
         Max = 5f, 
         Default = 1f
     )]
-    public float navigatorVelocityFactor = 1f;
+    public float viewVelocityFactor = 1f;
 
-    // Missing properties that other classes depend on
+    [Header("View")]
+
+    [ExposedParameter(
+        "View Mode",
+        Category = "View",
+        Description = "Current view mode: magnets, selection, manual, or attract",
+        Default = "magnets",
+        Visible = true
+    )]
+    public string viewMode = "magnets";
+    
     [ExposedParameter(
         "Scale Animation Speed", 
-        Category = "Animation", 
+        Category = "View", 
         Description = "How quickly items change size", 
         Min = 0.1f, 
         Max = 10f, 
@@ -140,7 +146,7 @@ public class InputManager : MonoBehaviour
     
     [ExposedParameter(
         "Selection Scale Min", 
-        Category = "Selection", 
+        Category = "View", 
         Description = "Minimum selection scale", 
         Min = 0.1f, 
         Max = 2f, 
@@ -150,7 +156,7 @@ public class InputManager : MonoBehaviour
     
     [ExposedParameter(
         "Selection Scale", 
-        Category = "Selection", 
+        Category = "View", 
         Description = "Selection scale multiplier", 
         Min = 0.5f, 
         Max = 3f, 
@@ -160,16 +166,15 @@ public class InputManager : MonoBehaviour
     
     [ExposedParameter(
         "Selection Tap Scale", 
-        Category = "Selection", 
+        Category = "View", 
         Description = "Tap scale multiplier", 
         Min = 0.5f, 
         Max = 3f, 
         Default = 1.2f, 
         Visible = true)]
+    [UnityEngine.Serialization.FormerlySerializedAs("selectionTapScale")]
     public float SelectionTapScale = 1.2f;
-    private float selectionTapScale = 1.1f; // original internal default
-    public float SelectionTapScaleAccessor => selectionTapScale;
-
+ 
     public float panSpeed = 10f;
 
     private Dictionary<KeyCode, Vector3> thrustDirections = new Dictionary<KeyCode, Vector3>
@@ -567,29 +572,29 @@ public class InputManager : MonoBehaviour
             if (magnet == null || !magnet.magnetEnabled) continue;
             
             foreach (ItemView itemView in allItems)
-        {
-            if (itemView?.GetComponent<Rigidbody>() == null) continue;
-            
-            Rigidbody rb = itemView.GetComponent<Rigidbody>();
-                if (rb.isKinematic) continue;
-                
-                Vector3 magneticForce = magnet.CalculateMagneticForce(itemView, itemView.transform.position);
-                
-                if (magneticForce.magnitude > 0.001f)
-                {
-                    rb.AddForce(magneticForce, ForceMode.Force);
-                    
-                    if (rb.IsSleeping() && magneticForce.magnitude > 0.1f)
-                {
-                    rb.WakeUp();
-                    }
-                }
-                
-            if (rb.linearVelocity.magnitude > maxItemVelocity)
             {
-                rb.linearVelocity = rb.linearVelocity.normalized * maxItemVelocity;
+                if (itemView?.GetComponent<Rigidbody>() == null) continue;
+                
+                Rigidbody rb = itemView.GetComponent<Rigidbody>();
+                    if (rb.isKinematic) continue;
+                    
+                    Vector3 magneticForce = magnet.CalculateMagneticForce(itemView, itemView.transform.position);
+                    
+                    if (magneticForce.magnitude > 0.001f)
+                    {
+                        rb.AddForce(magneticForce, ForceMode.Force);
+                        
+                        if (rb.IsSleeping() && magneticForce.magnitude > 0.1f)
+                        {
+                            rb.WakeUp();
+                        }
+                    }
+                    
+                if (rb.linearVelocity.magnitude > maxItemVelocity)
+                {
+                    rb.linearVelocity = rb.linearVelocity.normalized * maxItemVelocity;
+                }
             }
-        }
         }
     }
     
@@ -599,8 +604,6 @@ public class InputManager : MonoBehaviour
         return new List<ItemView>(allItemViewsArray);
     }
     
-    // --- Restored Camera Methods ---
-
     private Vector3 GetWorldPositionAtScreenPoint(Vector3 screenPos)
     {
         Plane plane = new Plane(Vector3.up, Vector3.zero); // Ground plane
@@ -813,8 +816,6 @@ public class InputManager : MonoBehaviour
         return cameraBaseVelocityThreshold * zoomScale;
     }
     
-    // --- Restored Bridge API Methods ---
-
     public void PushCameraPosition(string controllerId, string controllerName, string screenId, float panXDelta, float panYDelta)
     {
         if (cameraController == null)
@@ -824,7 +825,7 @@ public class InputManager : MonoBehaviour
         }
 
         Vector3 worldDelta = new Vector3(-panXDelta, 0, panYDelta);
-        worldDelta *= (_mainCamera.orthographicSize * navigatorPanScaleFactor);
+        worldDelta *= (_mainCamera.orthographicSize * viewPanScaleFactor);
 
         cameraPhysicsEnabled = false;
         cameraVelocity = Vector3.zero;
@@ -844,7 +845,7 @@ public class InputManager : MonoBehaviour
         if (Mathf.Approximately(zoomDelta, 0)) return;
 
         float currentZoom = _mainCamera.orthographicSize;
-        float zoomMultiplier = 1.0f + (zoomDelta * navigatorZoomFactor); 
+        float zoomMultiplier = 1.0f + (zoomDelta * viewZoomFactor); 
         zoomMultiplier = Mathf.Max(0.01f, zoomMultiplier);
         float targetZoom = currentZoom * zoomMultiplier;
         targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
@@ -861,7 +862,7 @@ public class InputManager : MonoBehaviour
         }
 
         Vector3 worldVelocityDelta = new Vector3(-panXDelta, 0, panYDelta);
-        worldVelocityDelta *= navigatorVelocityFactor; 
+        worldVelocityDelta *= viewVelocityFactor; 
 
         cameraVelocity += worldVelocityDelta;
         cameraPhysicsEnabled = true;
@@ -1024,7 +1025,7 @@ public class InputManager : MonoBehaviour
                 ItemView selectedItem = spaceCraft.FindItemViewById(selectedId);
                 if (selectedItem != null)
                 {
-                    float tapScale = selectionTapScale;
+                    float tapScale = SelectionTapScale;
                     float newScale = selectedItem.CurrentScale * tapScale;
                     selectedItem.SetCurrentScale(newScale);
                 }

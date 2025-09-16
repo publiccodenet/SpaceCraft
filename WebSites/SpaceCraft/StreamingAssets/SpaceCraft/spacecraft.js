@@ -60,7 +60,7 @@
 //
 // --- SUPABASE EVENTS (From clients to simulator) ---
 // 'broadcast' { event: 'pan' }: 
-//    - From controller: {clientId, clientType, clientName, panXDelta, panYDelta, screenId, targetSimulatorId} (navigate tab)
+//    - From controller: {clientId, clientType, clientName, panXDelta, panYDelta, screenId, targetSimulatorId} (view tab)
 //    - From controller: {clientId, clientType, clientName, selectXDelta, selectYDelta, screenId, targetSimulatorId} (select tab)
 //    - Used for continuous movement input
 // 'broadcast' { event: 'zoom' }:
