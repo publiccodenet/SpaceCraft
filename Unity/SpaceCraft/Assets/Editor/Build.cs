@@ -241,11 +241,7 @@ public static class Build
 
     private static string ResolveOutputPath(string defaultPath)
     {
-        // 1) Environment variable
-        var envOut = Environment.GetEnvironmentVariable("SC_BUILD_OUTPUT");
-        if (!string.IsNullOrEmpty(envOut)) return envOut;
-
-        // 2) Command line arg: -scOut <path> or --scOut=<path>
+        // 1) Command line arg: -scOut <path> or --scOut=<path>
         var args = Environment.GetCommandLineArgs();
         for (int i = 0; i < args.Length; i++)
         {
@@ -259,6 +255,10 @@ public static class Build
                 if (!string.IsNullOrEmpty(val)) return val;
             }
         }
+
+        // 2) Environment variable fallback
+        var envOut = Environment.GetEnvironmentVariable("SC_BUILD_OUTPUT");
+        if (!string.IsNullOrEmpty(envOut)) return envOut;
         return defaultPath;
     }
 
