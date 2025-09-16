@@ -245,6 +245,14 @@ jobs:
           mkdir -p Logs
           mkdir -p "${{ steps.detect.outputs.projectPath }}/Logs"
 
+      - name: Prepare dist path (clean, recreate, set perms)
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          mkdir -p dist/SpaceCraft
+          chmod -R 777 dist
+
       - name: Unity - Builder
         uses: game-ci/unity-builder@v4
         env:
