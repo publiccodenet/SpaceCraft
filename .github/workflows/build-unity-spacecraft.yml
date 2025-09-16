@@ -245,13 +245,7 @@ jobs:
           mkdir -p Logs
           mkdir -p "${{ steps.detect.outputs.projectPath }}/Logs"
 
-      - name: Prepare dist path (clean, recreate, set perms)
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf dist
-          mkdir -p dist/SpaceCraft
-          chmod -R 777 dist
+      # Do not pre-create dist; Unity writes under project path, we stage after
 
       - name: Unity - Builder
         uses: game-ci/unity-builder@v4
@@ -259,13 +253,12 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          SC_BUILD_OUTPUT: ${{ github.workspace }}/dist/SpaceCraft
         with:
           projectPath: ${{ steps.detect.outputs.projectPath }}
           targetPlatform: ${{ inputs.targetPlatform }}
           unityVersion: ${{ steps.detect.outputs.version }}
           buildMethod: ${{ steps.compute.outputs.buildMethod }}
-          customParameters: -logFile Logs/Editor.log -stackTraceLogType Full --scOut=${{ github.workspace }}/dist/SpaceCraft
+          customParameters: -logFile Logs/Editor.log -stackTraceLogType Full
           runAsHostUser: true
           
 
@@ -312,25 +305,12 @@ jobs:
         run: |
           set -euo pipefail
           STAGE="dist"
-          echo "[assemble] Expecting Unity output at $STAGE/SpaceCraft"
-          test -d "$STAGE/SpaceCraft" || { echo "[assemble] ERROR: Unity output missing at $STAGE/SpaceCraft" >&2; exit 1; }
-          mkdir -p "$STAGE/controller"
-          # If Unity output missing, try common fallback paths
-          if [[ ! -d "$STAGE/SpaceCraft" ]]; then
-            CAND1="${{ steps.detect.outputs.projectPath }}/Builds/SpaceCraft"
-            CAND2="WebSites/SpaceCraft"
-            if [[ -d "$CAND1" ]]; then
-              echo "[assemble] Fallback: copying from $CAND1"
-              mkdir -p "$STAGE/SpaceCraft"
-              rsync -a "$CAND1/" "$STAGE/SpaceCraft/"
-            elif [[ -d "$CAND2" ]]; then
-              echo "[assemble] Fallback: copying from $CAND2"
-              mkdir -p "$STAGE/SpaceCraft"
-              rsync -a "$CAND2/" "$STAGE/SpaceCraft/"
-            else
-              echo "[assemble] WARNING: Unity output not found in dist/SpaceCraft, $CAND1, or $CAND2"
-            fi
-          fi
+          SRC_BUILDS="${{ steps.detect.outputs.projectPath }}/Builds/SpaceCraft"
+          echo "[assemble] Expecting Unity output at $SRC_BUILDS"
+          test -d "$SRC_BUILDS" || { echo "[assemble] ERROR: Unity output missing at $SRC_BUILDS" >&2; exit 1; }
+          rm -rf "$STAGE"
+          mkdir -p "$STAGE/SpaceCraft" "$STAGE/controller"
+          rsync -a "$SRC_BUILDS/" "$STAGE/SpaceCraft/"
           # Top-level site index
           if [[ -f WebSites/index.html ]]; then
             cp -f WebSites/index.html "$STAGE/index.html"
