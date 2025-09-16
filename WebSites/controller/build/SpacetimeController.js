@@ -5,13 +5,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var SpacetimeController_1;
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, ThemeSingleton, div } from 'io-gui';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ReactiveProperty, ThemeSingleton, div } from 'io-gui';
 import { contentStore } from './services/ContentStore.js';
 import { tabView } from './TabView.js';
 import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
-import { tabMagnet } from './TabMagnet.js';
-import { tabAdjust } from './TabAdjust.js';
+import { tabArrange } from './TabArrange.js';
 import { SimulatorState } from './SimulatorState.js';
 ThemeSingleton.themeID = 'dark';
 function generateClientId() {
@@ -77,6 +76,33 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             :host > io-navigator {
                 flex: 1 1 auto;
                 overflow: hidden;
+            }
+            :host > io-navigator > io-menu-options {
+              padding: 0 1px !important;
+              background: transparent;
+              border: 1px solid #555;
+              border-width: 1px 0;
+            }
+            :host > io-navigator > io-menu-options > io-menu-item {
+              height: inherit;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              flex: 1 1 auto;
+              padding: 1em;
+              border-radius: 0;
+              background: transparent;
+              border: none;
+            }
+            :host > io-navigator > io-menu-options > io-menu-item[selected] {
+              background: #222;
+              border: none;
+            }
+            :host > io-navigator > io-menu-options > span.divider {
+              margin: 0 !important;
+              border-color: #555;
+              border-width: 0 1px 0 0;
+              opacity: 1;
             }
             :host io-object {
                 flex: 1 1 auto;
@@ -177,22 +203,19 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 option: new MenuOption({
                     id: 'root',
                     options: [
-                        { id: 'About', icon: '📖' },
                         { id: 'View', icon: '👀' },
                         { id: 'Select', icon: '👆' },
                         { id: 'Inspect', icon: '🔍' },
-                        { id: 'Magnet', icon: '🧲' },
-                        { id: 'Adjust', icon: '⚙️' },
+                        { id: 'Arrange', icon: '🧲' },
                     ],
-                    selectedID: $({ key: 'page', storage: 'hash', value: 'About' })
+                    selectedID: $({ key: 'page', storage: 'hash', value: 'Arrange' })
                 }),
                 elements: [
-                    ioMarkdown({ id: 'About', src: './docs/About.md' }),
+                    // ioMarkdown({id: 'About', src: './docs/About.md'}),
                     tabView({ id: 'View', controller: this, simulatorState: this.simulatorState }),
                     tabSelect({ id: 'Select', controller: this, simulatorState: this.simulatorState }),
                     tabInspect({ id: 'Inspect', controller: this, simulatorState: this.simulatorState }),
-                    tabMagnet({ id: 'Magnet', controller: this, simulatorState: this.simulatorState }),
-                    tabAdjust({ id: 'Adjust', controller: this, simulatorState: this.simulatorState }),
+                    tabArrange({ id: 'Arrange', controller: this, simulatorState: this.simulatorState }),
                 ]
             })
         ]);

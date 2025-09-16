@@ -17,7 +17,7 @@ function generateMagnetDataFromMetadata(metadata) {
     });
     return data;
 }
-let TabMagnet = class TabMagnet extends TabBase {
+let TabArrange = class TabArrange extends TabBase {
     static get Style() {
         return /* css */ `
           :host {
@@ -79,7 +79,7 @@ let TabMagnet = class TabMagnet extends TabBase {
     changed() {
         const magnets = this.simulatorState.magnets || [];
         this.render([
-            h2('Magnets'),
+            h2('Arrange'),
             p('Create magnets to attract related items'),
             div({ class: 'input-row' }, [
                 ioString({ id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp }),
@@ -89,11 +89,11 @@ let TabMagnet = class TabMagnet extends TabBase {
         ]);
     }
 };
-TabMagnet = __decorate([
+TabArrange = __decorate([
     Register
-], TabMagnet);
-export { TabMagnet };
-export const tabMagnet = function (arg0) {
-    return TabMagnet.vConstructor(arg0);
+], TabArrange);
+export { TabArrange };
+export const tabArrange = function (arg0) {
+    return TabArrange.vConstructor(arg0);
 };
-//# sourceMappingURL=TabMagnet.js.map
+//# sourceMappingURL=TabArrange.js.map

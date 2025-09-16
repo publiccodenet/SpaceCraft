@@ -215,7 +215,7 @@ class SpaceCraftSim {
                 targetHtml: SpaceCraftSim.controllerHtmlPath,
                 // No type parameter - will default to about tab
                 label: "Controller",
-                position: "center"
+                position: "top-right"
             }
         ];
         
@@ -406,8 +406,7 @@ class SpaceCraftSim {
             const spacecraftLink = document.createElement('div');
             spacecraftLink.classList.add('qrcode-link'); // Add a general class for styling
             spacecraftLink.style.cursor = 'pointer';
-            spacecraftLink.style.top = '20px';
-            spacecraftLink.innerHTML = '<a href="https://archive.org/" target="_blank"><img src="StreamingAssets/SpaceCraft/internet_archive_europe_logo.jpeg"></a><br><a href="https://www.spacecraft.ing/" target="_blank"><img src="StreamingAssets/SpaceCraft/spacecraft_logo.png" width="193"></a>';
+            spacecraftLink.innerHTML = '<a href="https://archive.org/" target="_blank"><img src="StreamingAssets/SpaceCraft/internet_archive_europe_logo.jpeg" width="96"></a><a href="https://www.spacecraft.ing/" target="_blank"><img src="StreamingAssets/SpaceCraft/spacecraft_logo.png" width="96" style="padding-top: 5px"></a>';
             spacecraftLink.classList.add(`qr-position-top-left`);
             qrContainer.appendChild(spacecraftLink);
 

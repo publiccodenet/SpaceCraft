@@ -156,6 +156,10 @@ a { /* Style for the QR code links */
 
 /* --- Positioning Classes --- */
 
+.half-scale {
+    scale: 0.5;
+}
+
 .qr-position-top-left {
     top: 60px; /* Increased from 15px to push below header */
     left: 15px;

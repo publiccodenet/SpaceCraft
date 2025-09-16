@@ -81,7 +81,7 @@ let MagnetItem = class MagnetItem extends IoElement {
             h2(this.magnet.title),
             ioObject({ value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups,
                 widgets: new Map([[
-                        Object, magnetJoystick({ value: [0, 0], min: [-0.1, -0.1], max: [0.1, 0.1], '@control': this.onJoystickControl, ctrlTtimeout: 20 })
+                        Object, magnetJoystick({ value: [0, 0], min: [-0.1, -0.1], max: [0.1, 0.1], '@control': this.onJoystickControl })
                     ]])
             }),
             ioButton({ label: 'Delete', action: this.onDeleteMagnet, class: 'red' })

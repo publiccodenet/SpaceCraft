@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { Register, ReactiveProperty, IoSlider2d } from 'io-gui';
+import { Register, IoSlider2d } from 'io-gui';
 let MagnetJoystick = class MagnetJoystick extends IoSlider2d {
     static get Style() {
         return /* css */ `
@@ -21,7 +21,7 @@ let MagnetJoystick = class MagnetJoystick extends IoSlider2d {
     controlLoop() {
         if (this._isLooping) {
             this.dispatch('control');
-            setTimeout(this.controlLoop, this.ctrlTtimeout);
+            requestAnimationFrame(this.controlLoop);
         }
     }
     onPointerdown(event) {
@@ -40,9 +40,6 @@ let MagnetJoystick = class MagnetJoystick extends IoSlider2d {
         this._isLooping = false;
     }
 };
-__decorate([
-    ReactiveProperty({ type: Number, value: 25 })
-], MagnetJoystick.prototype, "ctrlTtimeout", void 0);
 MagnetJoystick = __decorate([
     Register
 ], MagnetJoystick);
