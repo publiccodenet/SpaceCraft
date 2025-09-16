@@ -80,13 +80,11 @@ export class TabSelect extends TabBase {
 
         // Resolve cover base from content store (built-in StreamingAssets path or external)
         const shared: any = (this.controller as any).simulatorState || {};
-        const contentKey = (shared as any).contentKey || (shared as any).contentIndexUrl;
-        const contentRec = contentStore.getContent(contentKey);
         const assetsBase = (shared as any).assetsBaseUrl || '../SpaceCraft/StreamingAssets/Content/';
 
         this.render([
-            h2('TAP or SWIPE to select items'),
-            selected ? div([
+            h2('SWIPE to select items'),
+            selected.id ? div([
                 img({src: `${assetsBase}collections/scifi/items/${selected.id}/cover.jpg`, alt: `Cover for ${selected.title}`, class: 'cover-image'}),
                 h4(selected.title || 'Untitled'),
                 div({class: 'description', innerHTML: description}),
