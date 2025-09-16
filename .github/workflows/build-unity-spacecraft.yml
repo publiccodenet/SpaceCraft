@@ -259,8 +259,7 @@ jobs:
           buildMethod: ${{ steps.compute.outputs.buildMethod }}
           customParameters: -logFile Logs/Editor.log -stackTraceLogType Full
           runAsHostUser: true
-          cacheUnity: true
-          cacheVersioning: semantic
+          
 
       - name: Setup Node.js
         if: success()
@@ -324,10 +323,18 @@ jobs:
           echo "[assemble] Final artifact layout:"
           (cd "$STAGE" && find . -maxdepth 2 -type f | sed 's#^./##')
 
-      - name: Upload build artifacts
+      - name: Package site.zip (flat contents)
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f site.zip
+          (cd dist && zip -r ../site.zip .)
+          echo "[package] Created site.zip"
+
+      - name: Upload site.zip artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SpaceCraft-${{ inputs.targetPlatform }}-${{ inputs.buildProfile }}
-          path: |
-            dist/**
+          name: site.zip
+          path: site.zip
