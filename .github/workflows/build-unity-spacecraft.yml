@@ -257,6 +257,7 @@ jobs:
           targetPlatform: ${{ inputs.targetPlatform }}
           unityVersion: ${{ steps.detect.outputs.version }}
           buildMethod: ${{ steps.compute.outputs.buildMethod }}
+          customParameters: -logFile Logs/Editor.log -stackTraceLogType Full --scOut=${{ github.workspace }}/dist/SpaceCraft
           customParameters: -logFile Logs/Editor.log -stackTraceLogType Full
           runAsHostUser: true
           

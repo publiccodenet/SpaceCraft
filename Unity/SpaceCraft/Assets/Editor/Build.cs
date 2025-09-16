@@ -46,13 +46,9 @@ public static class Build
         
         // Default dev output (existing behavior)
         string buildPath = Path.Combine("..", "..", "WebSites", "SpaceCraft");
-        // Allow CI override via env var
-        var envOut = Environment.GetEnvironmentVariable("SC_BUILD_OUTPUT");
-        if (!string.IsNullOrEmpty(envOut))
-        {
-            buildPath = envOut;
-            Debug.Log($"[Build] Overriding output via SC_BUILD_OUTPUT => {buildPath}");
-        }
+        // Allow CI override via env var or CLI
+        buildPath = ResolveOutputPath(buildPath);
+        Debug.Log($"[Build] Output path: {buildPath}");
         
         BuildPlayerOptions options = new BuildPlayerOptions
         {
@@ -95,13 +91,9 @@ public static class Build
         
         // Default prod output (existing behavior)
         string buildPath = Path.Combine("Builds", "SpaceCraft");
-        // Allow CI override via env var
-        var envOut = Environment.GetEnvironmentVariable("SC_BUILD_OUTPUT");
-        if (!string.IsNullOrEmpty(envOut))
-        {
-            buildPath = envOut;
-            Debug.Log($"[Build] Overriding output via SC_BUILD_OUTPUT => {buildPath}");
-        }
+        // Allow CI override via env var or CLI
+        buildPath = ResolveOutputPath(buildPath);
+        Debug.Log($"[Build] Output path: {buildPath}");
         
         BuildPlayerOptions options = new BuildPlayerOptions
         {
@@ -245,6 +237,29 @@ public static class Build
         }
 
         return scenes;
+    }
+
+    private static string ResolveOutputPath(string defaultPath)
+    {
+        // 1) Environment variable
+        var envOut = Environment.GetEnvironmentVariable("SC_BUILD_OUTPUT");
+        if (!string.IsNullOrEmpty(envOut)) return envOut;
+
+        // 2) Command line arg: -scOut <path> or --scOut=<path>
+        var args = Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == "-scOut" && i + 1 < args.Length)
+            {
+                return args[i + 1];
+            }
+            if (args[i].StartsWith("--scOut="))
+            {
+                var val = args[i].Substring("--scOut=".Length);
+                if (!string.IsNullOrEmpty(val)) return val;
+            }
+        }
+        return defaultPath;
     }
 
     private static bool IsCommandLineBuild()
