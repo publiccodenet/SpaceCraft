@@ -112,8 +112,7 @@ public static class Build
     {
         // Ensure build directory exists
         string buildPath = Path.GetFullPath(options.locationPathName); // Get full path
-        string buildDir = Path.GetDirectoryName(buildPath);
-        Directory.CreateDirectory(buildDir);
+        Directory.CreateDirectory(buildPath);
 
         // --- PRE-BUILD STEP: Remove symlinks from build target directory --- 
         Debug.Log($"[Build Pre-Clean] Cleaning symlinks from: {buildPath}");
