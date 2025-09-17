@@ -23,6 +23,9 @@ export class TabArrange extends TabBase {
           :host {
               display: block;
           }
+          :host p {
+              margin: 0 0 0.5em 0; /* tight top spacing */
+          }
           :host .input-row {
               display: flex;
               flex-direction: row;
@@ -85,8 +88,7 @@ export class TabArrange extends TabBase {
         const magnets = this.simulatorState.magnets || [];
 
         this.render([
-            h2('Arrange'),
-            p('Create magnets to attract related items'),
+            p('Create and arrange magnets to attract related items'),
             div({class: 'input-row'}, [
                 ioString({id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp}),
                 ioButton({label: 'Add', action: this.onCreateMagnet})

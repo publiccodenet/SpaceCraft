@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { h2, p, Register, ioString, ioButton, div } from 'io-gui';
+import { p, Register, ioString, ioButton, div } from 'io-gui';
 import { TabBase } from './TabBase.js';
 import { magnetItem } from './MagnetItem.js';
 function generateMagnetDataFromMetadata(metadata) {
@@ -22,6 +22,9 @@ let TabArrange = class TabArrange extends TabBase {
         return /* css */ `
           :host {
               display: block;
+          }
+          :host p {
+              margin: 0 0 0.5em 0; /* tight top spacing */
           }
           :host .input-row {
               display: flex;
@@ -79,8 +82,7 @@ let TabArrange = class TabArrange extends TabBase {
     changed() {
         const magnets = this.simulatorState.magnets || [];
         this.render([
-            h2('Arrange'),
-            p('Create magnets to attract related items'),
+            p('Create and arrange magnets to attract related items'),
             div({ class: 'input-row' }, [
                 ioString({ id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp }),
                 ioButton({ label: 'Add', action: this.onCreateMagnet })

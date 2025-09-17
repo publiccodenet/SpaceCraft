@@ -1,4 +1,4 @@
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton, div, IoOptionSelect, IoOptionSelectProps } from 'io-gui';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton, div, img, a, IoOptionSelect, IoOptionSelectProps } from 'io-gui';
 import { contentStore } from './services/ContentStore.js';
 import type { SimulatorSharedContent } from './types/Content.js';
 import { tabView } from './TabView.js';
@@ -60,19 +60,38 @@ export class SpacetimeController extends IoElement {
             :host .top-controls {
                 display: flex;
                 align-items: center;
-                gap: 6px;
+                justify-content: flex-start; /* inline flow: icons then buttons */
+                gap: 8px;
                 padding: 4px 6px;
                 flex-wrap: wrap;
+            }
+            :host .top-logos {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+            :host .top-logos a {
+                display: inline-flex;
+            }
+            :host .top-logos img {
+                height: 35px; /* half-height for HiDPI (retina) while staying crisp */
+                width: auto;
+                display: block;
             }
             :host .sim-list {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 6px;
+                gap: 8px;
+                justify-content: flex-start;
+                flex: 1 1 auto;
+                align-items: center;
             }
             :host .sim-btn {
                 display: inline-flex;
                 align-items: center;
-                padding: 4px 10px;
+                padding: 3px 10px;
                 border-radius: 12px;
                 border: 1px solid var(--io-color-2, #555);
                 background: var(--io-bg-1, #222);
@@ -82,6 +101,7 @@ export class SpacetimeController extends IoElement {
                 -webkit-user-select: none;
                 white-space: nowrap;
                 transition: none;
+                font-size: 0.9em; /* slightly smaller label */
             }
             :host .sim-btn[selected] {
                 font-weight: 700;
@@ -221,18 +241,42 @@ export class SpacetimeController extends IoElement {
         void this.simulatorRosterTick;
 
         const simList = Array.from((this.currentSimulators && this.currentSimulators.values && this.currentSimulators.values()) ? this.currentSimulators.values() : []) as any[];
-        const hasSims = simList.length > 0;
         const simOptions = simList
-            .map((s: any) => ({ id: (s.clientName || s.clientId), value: s.clientId, hue: ((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) ? (((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) - 1) % 8) / 8 : 0) }))
+            // Render only sims with a non-zero simulator index
+            .filter((s: any) => {
+                const idx = s.simulatorIndex || (s.shared && s.shared.simulatorIndex) || 0;
+                return idx > 0;
+            })
+            .map((s: any) => ({
+                id: (() => {
+                    const idx = s.simulatorIndex || (s.shared && s.shared.simulatorIndex);
+                    const base = (s.clientName || (s.shared && s.shared.clientName) || 'SpaceCraft');
+                    return (idx ? `${base} ${idx}` : base);
+                })(),
+                value: s.clientId,
+                hue: s.simulatorHue
+            }))
             .sort((a, b) => a.id.localeCompare(b.id, undefined, { sensitivity: 'base' }));
-        if (!hasSims) simOptions.push({ id: '(none)', value: '(none)', hue: 0 });
 
         this.render([
-            // Top simulator control row (always visible)
+            // Top header row: left logos, right-justified simulator list
             div({ class: 'top-controls' }, [
+                div({ class: 'top-logos' }, [
+                    // Use content assets (not StreamingAssets)
+                    div({class: 'logo iae'}, [
+                        a({href: 'https://archive.org/', target: '_blank'}, [
+                            img({src: 'content/internet_archive_europe_logo.jpeg', alt: 'Internet Archive Europe'})
+                        ])
+                    ]),
+                    div({class: 'logo sc'}, [
+                        a({href: 'https://www.spacecraft.ing/', target: '_blank'}, [
+                            img({src: 'content/spacecraft_logo.png', alt: 'SpaceCraft'})
+                        ])
+                    ])
+                ]),
                 div({ class: 'sim-list' }, [
                     ...simOptions.map(opt => {
-                        const hueDeg = Math.round(opt.hue * 360);
+                        const hueDeg = Math.round((opt.hue as number) * 360);
                         const isSelected = (opt.value === (this.currentSimulatorId || ''));
                         return div({
                             class: `sim-btn${isSelected ? ' is-selected' : ''}`,
@@ -242,7 +286,7 @@ export class SpacetimeController extends IoElement {
                                 borderColor: `hsl(${hueDeg} 60% 45%)`,
                             },
                             '@click': () => this.onTopBarSimulatorClick(opt.value)
-                        }, `🚀 ${opt.id}`);
+                        }, `${opt.id}`);
                     })
                 ]),
             ]),
@@ -252,19 +296,18 @@ export class SpacetimeController extends IoElement {
                 option: new MenuOption({
                     id: 'root',
                     options: [
+                        {id: 'Arrange', icon: '🧲'},
                         {id: 'View', icon: '👀'},
                         {id: 'Select', icon: '👆'},
                         {id: 'Inspect', icon: '🔍'},
-                        {id: 'Arrange', icon: '🧲'},
                     ],
                     selectedID: $({key: 'page', storage: 'hash', value: 'Arrange'})
                 }),
                 elements: [
-                    // ioMarkdown({id: 'About', src: './docs/About.md'}),
+                    tabArrange({id: 'Arrange', controller: this, simulatorState: this.simulatorState}),
                     tabView({id: 'View', controller: this, simulatorState: this.simulatorState}),
                     tabSelect({id: 'Select', controller: this, simulatorState: this.simulatorState}),
                     tabInspect({id: 'Inspect', controller: this, simulatorState: this.simulatorState}),
-                    tabArrange({id: 'Arrange', controller: this, simulatorState: this.simulatorState}),
                 ]
             })
         ]);

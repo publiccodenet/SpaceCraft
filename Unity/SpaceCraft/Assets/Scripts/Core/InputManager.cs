@@ -140,9 +140,9 @@ public class InputManager : MonoBehaviour
         Description = "How quickly the camera centers toward the target", 
         Min = 0.1f, 
         Max = 20f, 
-        Default = 1f, 
+        Default = 0.7f, 
         Visible = true)]
-    public float viewSeekPositionSpeed = 1f;
+    public float viewSeekPositionSpeed = 0.7f;
     
     [ExposedParameter(
         "View Seek Zoom Speed", 
@@ -150,9 +150,9 @@ public class InputManager : MonoBehaviour
         Description = "How quickly the camera zooms toward the target", 
         Min = 0.1f, 
         Max = 20f, 
-        Default = 1f, 
+        Default = 0.7f, 
         Visible = true)]
-    public float viewSeekZoomSpeed = 1f;
+    public float viewSeekZoomSpeed = 0.7f;
     
     [ExposedParameter(
         "View Seek Margin", 
@@ -190,9 +190,9 @@ public class InputManager : MonoBehaviour
         Description = "Pixels reserved at top of screen (world camera excluded)",
         Min = 0f,
         Max = 400f,
-        Default = 100f,
+        Default = 0f,
         Visible = true)]
-    public float topUiHeightPixels = 100f;
+    public float topUiHeightPixels = 0f;
 
     [ExposedParameter(
         "Magnets View Margin", 
@@ -259,16 +259,19 @@ public class InputManager : MonoBehaviour
     private bool capsLockToggled = false;
 
     [Header("Camera Boundaries")]
-    public float minX = -1000f;
-    public float maxX = 1000f;
-    public float minZ = -1000f;
-    public float maxZ = 1000f;
+    public float minX = -5000f;
+    public float maxX = 5000f;
+    public float minZ = -5000f;
+    public float maxZ = 5000f;
     public float minZoom = 2f;
     public float maxZoom = 100f;
     public float cameraVelocitySmoothingFactor = 0.05f; // for smooth release physics
     public float cameraFrictionFactor = 0.999f;
     public float cameraBounceFactor = 0.9f;
     public float cameraBaseVelocityThreshold = 2.0f;
+    
+    // Track last known screen height so we only recompute viewport when needed
+    private int lastScreenHeightPx = 0;
     public float cameraReleaseVelocityDamping = 0.3f;
     public float scrollWheelZoomFactor = 5f;
     public float keyboardZoomFactor = 5f;
@@ -346,24 +349,28 @@ public class InputManager : MonoBehaviour
         UpdateHoveredItem();
         UpdatePhysicsMaterials();
         HandleKeyboardInput();
-        // If resolution changes, keep viewport reserved for top UI
-        ApplyTopUiViewport();
     }
 
     private void ApplyTopUiViewport()
     {
         if (_mainCamera == null) return;
-        float h = Mathf.Max(0f, topUiHeightPixels);
-        float pixelH = Mathf.Max(1f, (float)_mainCamera.pixelHeight);
-        float yMin = h / pixelH;
-        yMin = Mathf.Clamp01(yMin);
-        float height = Mathf.Max(1f / Mathf.Max(1f, pixelH), 1f - yMin); // ensure at least 1px high
-        Rect r = _mainCamera.rect;
-        r.x = 0f;
-        r.width = 1f;
-        r.y = 0f; // viewport starts at bottom
-        r.height = height; // exclude top strip, clamped to >=1px
-        _mainCamera.rect = r;
+        try
+        {
+            float h = Mathf.Max(0f, topUiHeightPixels);
+            // Use the screen height (CSS pixels) to avoid feedback loops with camera pixelHeight
+            float pixelH = Mathf.Max(1f, (float)Screen.height);
+            float yMin = Mathf.Clamp01(h / pixelH);
+            // If header would take entire height, fall back to full viewport to prevent stretching
+            float height = 1f - yMin;
+            if (height < 0.1f)
+            {
+                height = 1f;
+                yMin = 0f;
+            }
+            Rect r = new Rect(0f, 0f, 1f, height);
+            _mainCamera.rect = r;
+        }
+        catch { }
     }
     
     void FixedUpdate()

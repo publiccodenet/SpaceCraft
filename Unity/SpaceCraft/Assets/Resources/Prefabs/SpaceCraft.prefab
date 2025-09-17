@@ -662,8 +662,8 @@ MonoBehaviour:
   viewZoomFactor: 1
   viewVelocityFactor: 1
   viewMode: magnets
-  viewSeekPositionSpeed: 2
-  viewSeekZoomSpeed: 2
+  viewSeekPositionSpeed: 0.7
+  viewSeekZoomSpeed: 0.7
   viewSeekScale: 1.02
   selectionViewOrthoSize: 3
   attractDwellSeconds: 2
@@ -672,10 +672,10 @@ MonoBehaviour:
   SelectionScale: 1.2
   SelectionTapScale: 1.5
   panSpeed: 3
-  minX: -30
-  maxX: 30
-  minZ: -40
-  maxZ: 20
+  minX: -150
+  maxX: 150
+  minZ: -200
+  maxZ: 100
   minZoom: 0.01
   maxZoom: 200
   cameraVelocitySmoothingFactor: 0.05

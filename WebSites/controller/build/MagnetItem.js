@@ -4,7 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { IoElement, Register, ReactiveProperty, h2, ioNumberSlider, ioObject, ioButton, ioString, ioBoolean } from 'io-gui';
+import { IoElement, Register, ReactiveProperty, h2, div, ioNumberSlider, ioObject, ioButton, ioString, ioBoolean } from 'io-gui';
 import { magnetJoystick } from './MagnetJoystick.js';
 function generateMagnetEditorConfig(metadata) {
     const viewConfig = [];
@@ -46,19 +46,26 @@ let MagnetItem = class MagnetItem extends IoElement {
             :host {
                 display: flex;
                 flex-direction: column;
-                gap: 0.5em;
+                gap: 0.4em;
                 border: var(--io_border);
                 border-color: var(--io_borderColorOutset);
-                margin: 0.5em 0;
-                padding: 0.5em;
+                margin: 0.4em 0;
+                padding: 0.4em;
                 border-radius: var(--io_borderRadius);
                 background-color: var(--io_bgColor);
             }
-            :host > h3 {
-                margin: 0 1em 0 0;
+            :host .header {
+                display: flex;
+                align-items: center;
+                gap: 0.75em;
             }
-            :host > io-slider-2d {
-                align-self: flex-start;
+            :host .header > h2 {
+                margin: 0;
+                line-height: 1.2;
+            }
+            :host .header > io-slider-2d, :host .header > magnet-joystick, :host .header > io-slider2d {
+                margin-left: auto;
+                align-self: center;
             }
     `;
     }
@@ -78,11 +85,15 @@ let MagnetItem = class MagnetItem extends IoElement {
         const magnetEditorConfig = generateMagnetEditorConfig(this.controller.magnetViewMetadata);
         const magnetEditorGroups = generateMagnetEditorGroups(this.controller.magnetViewMetadata);
         this.render([
-            h2(this.magnet.title),
-            ioObject({ value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups,
-                widgets: new Map([[
-                        Object, magnetJoystick({ value: [0, 0], min: [-0.1, -0.1], max: [0.1, 0.1], '@control': this.onJoystickControl })
-                    ]])
+            div({ class: 'header' }, [
+                h2(this.magnet.title),
+                magnetJoystick({ value: [0, 0], min: [-0.1, -0.1], max: [0.1, 0.1], '@control': this.onJoystickControl })
+            ]),
+            ioObject({
+                value: this.magnet,
+                label: 'Magnet Data',
+                config: magnetEditorConfig,
+                groups: magnetEditorGroups
             }),
             ioButton({ label: 'Delete', action: this.onDeleteMagnet, class: 'red' })
         ]);

@@ -260,7 +260,6 @@ jobs:
           buildMethod: ${{ steps.compute.outputs.buildMethod }}
           customParameters: -logFile Logs/Editor.log -stackTraceLogType Full
           runAsHostUser: true
-          
 
       - name: Setup Node.js
         if: success()
@@ -312,19 +311,12 @@ jobs:
           mkdir -p "$STAGE/SpaceCraft" "$STAGE/controller"
           rsync -a "$SRC_BUILDS/" "$STAGE/SpaceCraft/"
           # Top-level site index
-          if [[ -f WebSites/index.html ]]; then
-            cp -f WebSites/index.html "$STAGE/index.html"
-          fi
+          cp -f WebSites/index.html "$STAGE/index.html"
           # Controller site
-          if [[ -f WebSites/controller/index.html ]]; then
-            cp -f WebSites/controller/index.html "$STAGE/controller/index.html"
-          fi
-          if [[ -d WebSites/controller/lib ]]; then
-            cp -R WebSites/controller/lib "$STAGE/controller/lib"
-          fi
-          if [[ -d WebSites/controller/build ]]; then
-            cp -R WebSites/controller/build "$STAGE/controller/build"
-          fi
+          cp -f WebSites/controller/index.html "$STAGE/controller/index.html"
+          cp -R WebSites/controller/lib "$STAGE/controller/lib"
+          cp -R WebSites/controller/content "$STAGE/controller/content"
+          cp -R WebSites/controller/build "$STAGE/controller/build"
           echo "[assemble] Final artifact layout:"
           (cd "$STAGE" && find . -maxdepth 2 -type f | sed 's#^./##')
 
