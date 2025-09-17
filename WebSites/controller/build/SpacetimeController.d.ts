@@ -41,6 +41,7 @@ export declare class SpacetimeController extends IoElement {
     connect(): void;
     ready(): void;
     changed(): void;
+    onTopBarSimulatorClick(simId: string): void;
     sendPanEvent(deltaX: number, deltaY: number): void;
     sendZoomEvent(zoomDelta: number): void;
     sendSelectEvent(action: string): void;

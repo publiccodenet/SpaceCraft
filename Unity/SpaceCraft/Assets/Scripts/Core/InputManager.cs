@@ -205,6 +205,16 @@ public class InputManager : MonoBehaviour
     public float magnetsViewMargin = 1.06f;
     
     [ExposedParameter(
+        "Magnet BBox Padding",
+        Category = "View",
+        Description = "Extra padding (world units) applied around each magnet in magnets view bbox",
+        Min = 0f,
+        Max = 10f,
+        Default = 2f,
+        Visible = true)]
+    public float magnetsBBoxPadding = 2f;
+
+    [ExposedParameter(
         "Scale Animation Speed", 
         Category = "View", 
         Description = "How quickly items change size", 

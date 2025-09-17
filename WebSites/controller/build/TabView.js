@@ -4,10 +4,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { h2, div, Register, ioOptionSelect, MenuOption } from 'io-gui';
+import { h2, div, Register, IoOptionSelect, MenuOption } from 'io-gui';
 import { VIEW_MODE_OPTIONS, DEFAULT_VIEW_MODE } from './types/ViewMode.js';
 import { TabBase } from './TabBase.js';
-const viewModeOption = new MenuOption({ options: VIEW_MODE_OPTIONS });
 let TabView = class TabView extends TabBase {
     static get Style() {
         return /* css */ `
@@ -51,8 +50,6 @@ let TabView = class TabView extends TabBase {
         this.addEventListener('pointercancel', this.onPointerup);
     }
     onPointermove(event) {
-        if (this.simulatorState?.viewMode !== 'manual')
-            return;
         if (event.movementX || event.movementY) {
             this.controller.sendPanEvent(event.movementX * 0.03, event.movementY * 0.03);
         }
@@ -64,8 +61,6 @@ let TabView = class TabView extends TabBase {
         this.removeEventListener('pointercancel', this.onPointerup);
     }
     onWheel(event) {
-        if (this.simulatorState?.viewMode !== 'manual')
-            return;
         this.controller.sendZoomEvent(event.deltaY * 0.01);
     }
     onViewModeChange(event) {
@@ -83,13 +78,13 @@ let TabView = class TabView extends TabBase {
         this.render([
             div({ class: 'view-controls' }, [
                 h2('View Mode:'),
-                ioOptionSelect({
+                IoOptionSelect.vConstructor({
                     value: vm,
-                    option: viewModeOption,
+                    option: new MenuOption({ options: VIEW_MODE_OPTIONS }),
                     '@value-input': (e) => this.onViewModeChange(e)
                 }),
             ]),
-            vm === 'manual' ? h2('DRAG to pan • SCROLL to zoom') : null,
+            h2('DRAG to pan • SCROLL to zoom'),
         ]);
     }
 };

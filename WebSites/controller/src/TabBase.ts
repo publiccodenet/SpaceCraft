@@ -15,10 +15,12 @@ export class TabBase extends IoElement {
                 flex: 1 1 auto;
                 display: flex;
                 flex-direction: column;
-                align-items: center;
+                align-items: stretch; /* allow children to take full width */
                 justify-content: flex-start;
-                padding: 0 1em;
-                overflow-y: auto;
+                padding: 0.5em 0.75em;
+                overflow: auto; /* enable scrolling by default for tall tab content */
+                height: 100%;
+                min-height: 0; /* allow inner flex children to shrink and scroll */
             }
         `;
     }

@@ -1,4 +1,4 @@
-import { IoElement, Register, ioIcon, ioNavigator, MenuOption, Storage as $, ReactiveProperty, IoElementProps, ThemeSingleton, div, h3, span } from 'io-gui';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton, div, img, a, IoOptionSelect, IoOptionSelectProps } from 'io-gui';
 import { contentStore } from './services/ContentStore.js';
 import type { SimulatorSharedContent } from './types/Content.js';
 import { tabView } from './TabView.js';
@@ -49,39 +49,34 @@ export class SpacetimeController extends IoElement {
             :host {
                 display: flex;
                 flex-direction: column;
-                height: 100%;
+                height: 100vh; /* lock to viewport height so inner tabs can scroll */
                 width: 100%;
+                min-height: 0; /* allow children to define scrollable area */
             }
             :host .header {
                 display: flex;
-                align-items: center;
-                gap: 6px;
-                padding: 4px 12px;
+                align-items: center; /* vertical centering */
+                justify-content: flex-start; /* inline flow: icons then buttons */
+                gap: 8px;
+                padding: 5px; /* at least 5px padding around row */
+                flex-wrap: wrap; /* allow wrap if needed, but all are siblings */
+                margin-bottom: 5px; /* ensure gap above tab row */
             }
-            :host .header > .title {
-              flex: 1 1 auto;
-              flex-direction: column;
+            :host .header a.logo {
+                display: inline-flex;
+                padding: 5px; /* at least 5px around icons */
             }
-            :host .header > .title > h3 {
-              text-align: center;
-              margin: 0.25em 0;
+            :host .header a.logo img {
+                height: 35px; /* half-height for HiDPI (retina) while staying crisp */
+                width: auto;
+                display: block;
             }
-            :host .header > .title > span {
-              display: block;
-              text-align: center;
-              font-size: 0.8em;
-              margin: 0.25em 0;
-              color: #999;
-            }
-            /* :host .sim-list {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-            }
+            /* chips will be direct children of header after logos; wrapping allowed by header */
             :host .sim-btn {
                 display: inline-flex;
                 align-items: center;
-                padding: 4px 10px;
+                padding: 5px 10px; /* at least 5px padding on buttons */
+                margin: 5px; /* keep 5px gap around each button */
                 border-radius: 12px;
                 border: 1px solid var(--io-color-2, #555);
                 background: var(--io-bg-1, #222);
@@ -91,6 +86,7 @@ export class SpacetimeController extends IoElement {
                 -webkit-user-select: none;
                 white-space: nowrap;
                 transition: none;
+                font-size: 0.9em; /* slightly smaller label */
             }
             :host .sim-btn[selected] {
                 font-weight: 700;
@@ -110,6 +106,14 @@ export class SpacetimeController extends IoElement {
             } */
             :host > io-navigator {
                 flex: 1 1 auto;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                min-height: 0; /* allow inner selector to size and scroll */
+            }
+            :host > io-navigator > io-selector {
+                flex: 1 1 auto;
+                min-height: 0; /* critical: lets tab hosts scroll instead of growing */
                 overflow: hidden;
             }
             :host > io-navigator > io-menu-options {
@@ -219,7 +223,6 @@ export class SpacetimeController extends IoElement {
             console.error('[Controller] Connection failed:', error);
         }
     }
-
     
     ready() {
         this.changed();
@@ -230,34 +233,45 @@ export class SpacetimeController extends IoElement {
         void this.simulatorRosterTick;
 
         const simList = Array.from((this.currentSimulators && this.currentSimulators.values && this.currentSimulators.values()) ? this.currentSimulators.values() : []) as any[];
-        const hasSims = simList.length > 0;
         const simOptions = simList
-            .map((s: any) => ({ id: (s.clientName || s.clientId), value: s.clientId, hue: ((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) ? (((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) - 1) % 8) / 8 : 0) }))
+            // Render only sims with a non-zero simulator index
+            .filter((s: any) => {
+                const idx = s.simulatorIndex || (s.shared && s.shared.simulatorIndex) || 0;
+                return idx > 0;
+            })
+            .map((s: any) => ({
+                id: (() => {
+                    const idx = s.simulatorIndex || (s.shared && s.shared.simulatorIndex);
+                    const base = (s.clientName || (s.shared && s.shared.clientName) || 'SpaceCraft');
+                    return (idx ? `${base} ${idx}` : base);
+                })(),
+                value: s.clientId,
+                hue: s.simulatorHue
+            }))
             .sort((a, b) => a.id.localeCompare(b.id, undefined, { sensitivity: 'base' }));
-        if (!hasSims) simOptions.push({ id: '(none)', value: '(none)', hue: 0 });
 
         this.render([
+            // Top header row: simple siblings (logos then chips), all wrap together
             div({ class: 'header' }, [
-              ioIcon({value: 'sc:logo', size: 'medium'}),
-              div({class: 'title'}, [
-                h3('archive dynamics: tag magnetism'),
-                span('current collection: ' + (this.simulatorState.currentCollection.id || 'None')),
-              ])
-              // div({ class: 'sim-list' }, [
-              //     ...simOptions.map(opt => {
-              //         const hueDeg = Math.round(opt.hue * 360);
-              //         const isSelected = (opt.value === (this.currentSimulatorId || ''));
-              //         return div({
-              //             class: `sim-btn${isSelected ? ' is-selected' : ''}`,
-              //             selected: isSelected,
-              //             style: {
-              //                 background: `hsl(${hueDeg} 60% 20%)`,
-              //                 borderColor: `hsl(${hueDeg} 60% 45%)`,
-              //             },
-              //             '@click': () => this.onTopBarSimulatorClick(opt.value)
-              //         }, `🚀 ${opt.id}`);
-              //     })
-              // ]),
+                a({href: 'https://archive.org/', target: '_blank', class: 'logo'}, [
+                    img({src: 'content/internet_archive_europe_logo.jpeg', alt: 'Internet Archive Europe'})
+                ]),
+                a({href: 'https://www.spacecraft.ing/', target: '_blank', class: 'logo'}, [
+                    img({src: 'content/spacecraft_logo.png', alt: 'SpaceCraft'})
+                ]),
+                ...simOptions.map(opt => {
+                    const hueDeg = Math.round((opt.hue as number) * 360);
+                    const isSelected = (opt.value === (this.currentSimulatorId || ''));
+                    return div({
+                        class: `sim-btn${isSelected ? ' is-selected' : ''}`,
+                        selected: isSelected,
+                        style: {
+                            background: `hsl(${hueDeg} 60% 20%)`,
+                            borderColor: `hsl(${hueDeg} 60% 45%)`,
+                        },
+                        '@click': () => this.onTopBarSimulatorClick(opt.value)
+                    }, `${opt.id}`);
+                })
             ]),
             ioNavigator({
                 menu: 'top',
@@ -265,29 +279,28 @@ export class SpacetimeController extends IoElement {
                 option: new MenuOption({
                     id: 'root',
                     options: [
-                        {id: 'View', icon: 'sc:view'},
-                        {id: 'Select', icon: 'sc:select'},
-                        {id: 'Inspect', icon: 'sc:inspect'},
-                        {id: 'Arrange', icon: 'sc:arrange'},
+                        {id: 'Arrange', icon: '🧲'},
+                        {id: 'View', icon: '👀'},
+                        {id: 'Select', icon: '👆'},
+                        {id: 'Inspect', icon: '🔍'},
                     ],
                     selectedID: $({key: 'page', storage: 'hash', value: 'Arrange'})
                 }),
                 elements: [
-                    // ioMarkdown({id: 'About', src: './docs/About.md'}),
+                    tabArrange({id: 'Arrange', controller: this, simulatorState: this.simulatorState}),
                     tabView({id: 'View', controller: this, simulatorState: this.simulatorState}),
                     tabSelect({id: 'Select', controller: this, simulatorState: this.simulatorState}),
                     tabInspect({id: 'Inspect', controller: this, simulatorState: this.simulatorState}),
-                    tabArrange({id: 'Arrange', controller: this, simulatorState: this.simulatorState}),
                 ]
             })
         ]);
     }
 
-    // onTopBarSimulatorClick(simId: string) {
-    //     if (simId && simId !== this.currentSimulatorId) {
-    //         (this as any).setCurrentSimulator?.(simId);
-    //     }
-    // }
+    onTopBarSimulatorClick(simId: string) {
+        if (simId && simId !== this.currentSimulatorId) {
+            (this as any).setCurrentSimulator?.(simId);
+        }
+    }
 
     // === UNITY COMMUNICATION ===
 

@@ -90,6 +90,17 @@ public class MagnetView : BaseView
     )]
     public new bool enabled = true;
     
+    [ExposedParameter(
+        "Min Near-Match Length",
+        Category = "Search",
+        Description = "Minimum token length to allow near-equal match (1 char off)",
+        Min = 2f,
+        Max = 12f,
+        Default = 5f,
+        Visible = true
+    )]
+    [SerializeField] public int minNearMatchLength = 5;
+    
     // ================== MAGNETIC FIELD ==================
 
     [ExposedParameter(
@@ -219,12 +230,12 @@ public class MagnetView : BaseView
     )]
     [SerializeField] public float orbitEjectRadius= 7f;
     
-    [SerializeField] private float _scoreMin = 0.5f;
+    [SerializeField] private float _scoreMin = 0.8f;
     [ExposedParameter(
         "Score Min", 
         Category = "Magnetic Field", 
         Description = "Minimum relevance score for items to be affected by this magnet", 
-        Default = 0.5f, 
+        Default = 0.8f, 
         Visible = true,
         Min = 0f, 
         Max = 1f, 
@@ -654,28 +665,24 @@ public class MagnetView : BaseView
                     // Exact substring match
                     matchScore = 1.0f;
                 }
-                else if (searchToken.Contains(itemToken))
-                {
-                    // Reverse substring match
-                    matchScore = 0.8f;
-                }
                 else
                 {
-                    // Fuzzy match using Levenshtein distance
-                    int maxLength = Mathf.Max(searchToken.Length, itemToken.Length);
-                    if (maxLength == 0) continue;
-                    
-                    int distance = CalculateLevenshteinDistance(searchToken, itemToken);
-                    float similarity = 1f - ((float)distance / maxLength);
-                    
-                    // Only count as match if similarity is above threshold
-                    if (similarity > 0.6f)
+                    // Optional near-equal match: allow only for sufficiently long tokens
+                    // and only if they differ by exactly one substitution (no insert/delete)
+                    if (itemToken.Length >= minNearMatchLength && searchToken.Length >= minNearMatchLength && itemToken.Length == searchToken.Length)
                     {
-                        matchScore = similarity * 0.6f; // Fuzzy matches are worth less than exact matches
+                        if (CountCharDifferences(itemToken, searchToken) == 1)
+                        {
+                            matchScore = 0.85f; // near-equal
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
                     else
                     {
-                        continue; // No match
+                        continue;
                     }
                 }
                 
@@ -731,6 +738,22 @@ public class MagnetView : BaseView
         }
         
         return distance[source.Length, target.Length];
+    }
+
+    private static int CountCharDifferences(string a, string b)
+    {
+        if (a == null || b == null) return int.MaxValue;
+        if (a.Length != b.Length) return int.MaxValue;
+        int diffs = 0;
+        for (int i = 0; i < a.Length; i++)
+        {
+            if (a[i] != b[i])
+            {
+                diffs++;
+                if (diffs > 2) break; // fast exit
+            }
+        }
+        return diffs;
     }
     
     /// <summary>
