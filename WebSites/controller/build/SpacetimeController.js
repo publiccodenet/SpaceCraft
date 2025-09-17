@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var SpacetimeController_1;
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ReactiveProperty, ThemeSingleton, div, img, a } from 'io-gui';
+import { IoElement, Register, ioIcon, ioNavigator, MenuOption, Storage as $, ReactiveProperty, ThemeSingleton, div, h3, span } from 'io-gui';
 import { contentStore } from './services/ContentStore.js';
 import { tabView } from './TabView.js';
 import { tabSelect } from './TabSelect.js';
@@ -35,38 +35,33 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             :host .header {
                 display: flex;
                 align-items: center;
-                justify-content: flex-start; /* inline flow: icons then buttons */
-                gap: 8px;
-                padding: 4px 6px;
-                flex-wrap: wrap;
+                gap: 6px;
+                padding: 4px 12px;
             }
-            :host .top-logos {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                flex: 0 0 auto;
-                white-space: nowrap;
+            :host .header > .title {
+              flex: 1 1 auto;
+              flex-direction: column;
             }
-            :host .top-logos a {
-                display: inline-flex;
+            :host .header > .title > h3 {
+              text-align: center;
+              margin: 0.25em 0;
             }
-            :host .top-logos img {
-                height: 35px; /* half-height for HiDPI (retina) while staying crisp */
-                width: auto;
-                display: block;
+            :host .header > .title > span {
+              display: block;
+              text-align: center;
+              font-size: 0.8em;
+              margin: 0.25em 0;
+              color: #999;
             }
-            :host .sim-list {
+            /* :host .sim-list {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 8px;
-                justify-content: flex-start;
-                flex: 1 1 auto;
-                align-items: center;
+                gap: 6px;
             }
             :host .sim-btn {
                 display: inline-flex;
                 align-items: center;
-                padding: 3px 10px;
+                padding: 4px 10px;
                 border-radius: 12px;
                 border: 1px solid var(--io-color-2, #555);
                 background: var(--io-bg-1, #222);
@@ -76,7 +71,6 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 -webkit-user-select: none;
                 white-space: nowrap;
                 transition: none;
-                font-size: 0.9em; /* slightly smaller label */
             }
             :host .sim-btn[selected] {
                 font-weight: 700;
@@ -193,53 +187,34 @@ let SpacetimeController = class SpacetimeController extends IoElement {
         // Force re-render of simulator menu on roster updates
         void this.simulatorRosterTick;
         const simList = Array.from((this.currentSimulators && this.currentSimulators.values && this.currentSimulators.values()) ? this.currentSimulators.values() : []);
+        const hasSims = simList.length > 0;
         const simOptions = simList
-            // Render only sims with a non-zero simulator index
-            .filter((s) => {
-            const idx = s.simulatorIndex || (s.shared && s.shared.simulatorIndex) || 0;
-            return idx > 0;
-        })
-            .map((s) => ({
-            id: (() => {
-                const idx = s.simulatorIndex || (s.shared && s.shared.simulatorIndex);
-                const base = (s.clientName || (s.shared && s.shared.clientName) || 'SpaceCraft');
-                return (idx ? `${base} ${idx}` : base);
-            })(),
-            value: s.clientId,
-            hue: s.simulatorHue
-        }))
+            .map((s) => ({ id: (s.clientName || s.clientId), value: s.clientId, hue: ((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) ? (((s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) - 1) % 8) / 8 : 0) }))
             .sort((a, b) => a.id.localeCompare(b.id, undefined, { sensitivity: 'base' }));
+        if (!hasSims)
+            simOptions.push({ id: '(none)', value: '(none)', hue: 0 });
         this.render([
-            // Top header row: left logos, right-justified simulator list
-            div({ class: 'top-controls' }, [
-                div({ class: 'top-logos' }, [
-                    // Use content assets (not StreamingAssets)
-                    div({ class: 'logo iae' }, [
-                        a({ href: 'https://archive.org/', target: '_blank' }, [
-                            img({ src: 'content/internet_archive_europe_logo.jpeg', alt: 'Internet Archive Europe' })
-                        ])
-                    ]),
-                    div({ class: 'logo sc' }, [
-                        a({ href: 'https://www.spacecraft.ing/', target: '_blank' }, [
-                            img({ src: 'content/spacecraft_logo.png', alt: 'SpaceCraft' })
-                        ])
-                    ])
-                ]),
-                div({ class: 'sim-list' }, [
-                    ...simOptions.map(opt => {
-                        const hueDeg = Math.round(opt.hue * 360);
-                        const isSelected = (opt.value === (this.currentSimulatorId || ''));
-                        return div({
-                            class: `sim-btn${isSelected ? ' is-selected' : ''}`,
-                            selected: isSelected,
-                            style: {
-                                background: `hsl(${hueDeg} 60% 20%)`,
-                                borderColor: `hsl(${hueDeg} 60% 45%)`,
-                            },
-                            '@click': () => this.onTopBarSimulatorClick(opt.value)
-                        }, `${opt.id}`);
-                    })
-                ]),
+            div({ class: 'header' }, [
+                ioIcon({ value: 'sc:logo', size: 'medium' }),
+                div({ class: 'title' }, [
+                    h3('archive dynamics: tag magnetism'),
+                    span('current collection: ' + (this.simulatorState.currentCollection.id || 'None')),
+                ])
+                // div({ class: 'sim-list' }, [
+                //     ...simOptions.map(opt => {
+                //         const hueDeg = Math.round(opt.hue * 360);
+                //         const isSelected = (opt.value === (this.currentSimulatorId || ''));
+                //         return div({
+                //             class: `sim-btn${isSelected ? ' is-selected' : ''}`,
+                //             selected: isSelected,
+                //             style: {
+                //                 background: `hsl(${hueDeg} 60% 20%)`,
+                //                 borderColor: `hsl(${hueDeg} 60% 45%)`,
+                //             },
+                //             '@click': () => this.onTopBarSimulatorClick(opt.value)
+                //         }, `🚀 ${opt.id}`);
+                //     })
+                // ]),
             ]),
             ioNavigator({
                 menu: 'top',
@@ -247,18 +222,19 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 option: new MenuOption({
                     id: 'root',
                     options: [
-                        { id: 'Arrange', icon: '🧲' },
-                        { id: 'View', icon: '👀' },
-                        { id: 'Select', icon: '👆' },
-                        { id: 'Inspect', icon: '🔍' },
+                        { id: 'View', icon: 'sc:view' },
+                        { id: 'Select', icon: 'sc:select' },
+                        { id: 'Inspect', icon: 'sc:inspect' },
+                        { id: 'Arrange', icon: 'sc:arrange' },
                     ],
                     selectedID: $({ key: 'page', storage: 'hash', value: 'Arrange' })
                 }),
                 elements: [
-                    tabArrange({ id: 'Arrange', controller: this, simulatorState: this.simulatorState }),
+                    // ioMarkdown({id: 'About', src: './docs/About.md'}),
                     tabView({ id: 'View', controller: this, simulatorState: this.simulatorState }),
                     tabSelect({ id: 'Select', controller: this, simulatorState: this.simulatorState }),
                     tabInspect({ id: 'Inspect', controller: this, simulatorState: this.simulatorState }),
+                    tabArrange({ id: 'Arrange', controller: this, simulatorState: this.simulatorState }),
                 ]
             })
         ]);
