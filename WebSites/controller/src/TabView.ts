@@ -1,6 +1,8 @@
-import { h2, div, Register, IoOptionSelect, MenuOption, IoOptionSelectProps, ListenerDefinition } from 'io-gui';
+import { h2, div, Register, ioOptionSelect, MenuOption, ListenerDefinition } from 'io-gui';
 import { VIEW_MODE_OPTIONS, DEFAULT_VIEW_MODE } from './types/ViewMode.js';
 import { TabBase, TabBaseProps } from './TabBase.js';
+
+const viewModeOption = new MenuOption({ options: VIEW_MODE_OPTIONS });
 
 @Register
 export class TabView extends TabBase {
@@ -48,6 +50,7 @@ export class TabView extends TabBase {
         this.addEventListener('pointercancel', this.onPointerup);
     }
     onPointermove(event: PointerEvent) {
+        if (this.simulatorState?.viewMode !== 'manual') return;
         if (event.movementX || event.movementY) {
             this.controller.sendPanEvent(
                 event.movementX * 0.03,
@@ -63,6 +66,7 @@ export class TabView extends TabBase {
     }
 
     onWheel(event: WheelEvent) {
+      if (this.simulatorState?.viewMode !== 'manual') return;
       this.controller.sendZoomEvent(event.deltaY * 0.01);
     }
 
@@ -81,13 +85,13 @@ export class TabView extends TabBase {
         this.render([
             div({ class: 'view-controls' }, [
                 h2('View Mode:'),
-                IoOptionSelect.vConstructor({
+                ioOptionSelect({
                     value: vm,
-                    option: new MenuOption({ options: VIEW_MODE_OPTIONS }),
+                    option: viewModeOption,
                     '@value-input': (e: CustomEvent) => this.onViewModeChange(e)
-                } as IoOptionSelectProps),
+                }),
             ]),
-            h2('DRAG to pan • SCROLL to zoom'),
+            vm === 'manual' ? h2('DRAG to pan • SCROLL to zoom') : null,
         ]);
     }
 }
