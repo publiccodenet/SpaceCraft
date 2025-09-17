@@ -285,6 +285,14 @@ let SpacetimeController = class SpacetimeController extends IoElement {
     sendPushMagnetEvent(magnetId, deltaX, deltaY) {
         this.sendEventToSimulator('pushMagnet', { magnetId, deltaX, deltaY });
     }
+    // Push a single item by id (joystick on Select tab)
+    sendPushItemEvent(itemId, deltaX, deltaY) {
+        try {
+            console.log('[Controller] sendPushItemEvent', { itemId, deltaX, deltaY });
+        }
+        catch { }
+        this.sendEventToSimulator('pushItem', { itemId, deltaX, deltaY });
+    }
     sendEventToSimulator(eventType, data) {
         if (!this.clientChannel) {
             console.error('[Controller] Cannot send event - no client channel');
@@ -306,9 +314,11 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             type: 'broadcast',
             event: eventType,
             payload: payload
-        }).catch((err) => {
-            console.error(`[Controller] Send '${eventType}' failed:`, err);
-        });
+        }).then(() => { try {
+            console.log(`[Controller] Sent '${eventType}'`, payload);
+        }
+        catch { } })
+            .catch((err) => { console.error(`[Controller] Send '${eventType}' failed:`, err); });
     }
     setupPresenceHandlers() {
         this.clientChannel

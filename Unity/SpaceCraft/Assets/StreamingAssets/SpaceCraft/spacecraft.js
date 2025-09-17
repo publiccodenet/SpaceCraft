@@ -1093,6 +1093,47 @@ class SpaceCraftSim {
                 }
             })
 
+            // Push a single item by ID in simulator world space (from controller Select tab joystick)
+            .on('broadcast', { event: 'pushItem' }, (data) => {
+                try {
+                    const payload = data && data.payload || {};
+                    try { console.log('[Sim] pushItem event received', JSON.parse(JSON.stringify(payload))); } catch {}
+
+                    // Respect targeting if provided
+                    if (payload.targetSimulatorId && payload.targetSimulatorId !== this.identity.clientId) {
+                        try { console.log('[Sim] pushItem ignored: targeted for other simulator', { targetSimulatorId: payload.targetSimulatorId, myId: this.identity.clientId }); } catch {}
+                        return;
+                    }
+
+                    const itemId = payload.itemId;
+                    const dx = Number(payload.deltaX);
+                    const dy = Number(payload.deltaY);
+
+                    if (!itemId || !isFinite(dx) || !isFinite(dy)) {
+                        try { console.warn('[Sim] pushItem invalid payload', { itemId, dx, dy }); } catch {}
+                        return;
+                    }
+
+                    if (!this.spaceCraft) {
+                        try { console.warn('[Sim] pushItem aborted: this.spaceCraft is not ready'); } catch {}
+                        return;
+                    }
+
+                    // Prefer calling the exposed C# method via bridge updateObject (explicit)
+                    try { console.log('[Sim] pushItem invoking bridge.updateObject → method:PushItem', { itemId, dx, dy }); } catch {}
+                    try {
+                        bridge.updateObject(this.spaceCraft, {
+                            "method:PushItem": [itemId, dx, dy]
+                        });
+                        try { console.log('[Sim] pushItem dispatched to Unity'); } catch {}
+                    } catch (e) {
+                        try { console.error('[Sim] pushItem bridge call failed', e); } catch {}
+                    }
+                } catch (outer) {
+                    try { console.error('[Sim] pushItem handler error', outer); } catch {}
+                }
+            })
+
             .on('broadcast', { event: 'setViewMode' }, (data) => {
                 if (data.payload.targetSimulatorId && data.payload.targetSimulatorId !== this.identity.clientId) {
                     return;

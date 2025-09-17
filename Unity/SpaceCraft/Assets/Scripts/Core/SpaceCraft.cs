@@ -1208,4 +1208,19 @@ public class SpaceCraft : BridgeObject
     {
         inputManager.PushCameraVelocity(controllerId, controllerName, panXDelta, panYDelta);
     }
+
+    /// <summary>
+    /// Public API to push an item by id with a small delta in world units.
+    /// Exposed to JS via bridge.updateObject(this.spaceCraft, { "method:PushItem": [itemId, dx, dy] })
+    /// </summary>
+    public void PushItem(string itemId, float dx, float dy)
+    {
+        if (string.IsNullOrEmpty(itemId)) return;
+        var itemView = FindItemSafe(itemId);
+        if (itemView == null) return;
+        var rb = itemView.GetComponent<Rigidbody>();
+        if (rb == null) return;
+        Vector3 newPosition = itemView.transform.position + new Vector3(dx, 0f, dy);
+        rb.MovePosition(newPosition);
+    }
 }

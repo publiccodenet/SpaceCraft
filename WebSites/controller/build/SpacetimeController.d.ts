@@ -49,6 +49,7 @@ export declare class SpacetimeController extends IoElement {
     sendUpdateMagnetEvent(magnetData: Magnet): void;
     sendDeleteMagnetEvent(magnetId: string): void;
     sendPushMagnetEvent(magnetId: string, deltaX: number, deltaY: number): void;
+    sendPushItemEvent(itemId: string, deltaX: number, deltaY: number): void;
     sendEventToSimulator(eventType: string, data: any): void;
     setupPresenceHandlers(): void;
     subscribeToChannel(): void;
