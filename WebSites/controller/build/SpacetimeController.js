@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var SpacetimeController_1;
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ReactiveProperty, ThemeSingleton, div } from 'io-gui';
+import { IoElement, Register, ioIcon, ioNavigator, MenuOption, Storage as $, ReactiveProperty, ThemeSingleton, div, h3, span } from 'io-gui';
 import { contentStore } from './services/ContentStore.js';
 import { tabView } from './TabView.js';
 import { tabSelect } from './TabSelect.js';
@@ -32,14 +32,28 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 height: 100%;
                 width: 100%;
             }
-            :host .top-controls {
+            :host .header {
                 display: flex;
                 align-items: center;
                 gap: 6px;
-                padding: 4px 6px;
-                flex-wrap: wrap;
+                padding: 4px 12px;
             }
-            :host .sim-list {
+            :host .header > .title {
+              flex: 1 1 auto;
+              flex-direction: column;
+            }
+            :host .header > .title > h3 {
+              text-align: center;
+              margin: 0.25em 0;
+            }
+            :host .header > .title > span {
+              display: block;
+              text-align: center;
+              font-size: 0.8em;
+              margin: 0.25em 0;
+              color: #999;
+            }
+            /* :host .sim-list {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 6px;
@@ -73,7 +87,7 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                             0 0 6px rgba(255,255,255,0.35);
                 outline: 2px solid rgba(255,255,255,0.6);
                 outline-offset: -2px;
-            }
+            } */
             :host > io-navigator {
                 flex: 1 1 auto;
                 overflow: hidden;
@@ -180,23 +194,27 @@ let SpacetimeController = class SpacetimeController extends IoElement {
         if (!hasSims)
             simOptions.push({ id: '(none)', value: '(none)', hue: 0 });
         this.render([
-            // Top simulator control row (always visible)
-            div({ class: 'top-controls' }, [
-                div({ class: 'sim-list' }, [
-                    ...simOptions.map(opt => {
-                        const hueDeg = Math.round(opt.hue * 360);
-                        const isSelected = (opt.value === (this.currentSimulatorId || ''));
-                        return div({
-                            class: `sim-btn${isSelected ? ' is-selected' : ''}`,
-                            selected: isSelected,
-                            style: {
-                                background: `hsl(${hueDeg} 60% 20%)`,
-                                borderColor: `hsl(${hueDeg} 60% 45%)`,
-                            },
-                            '@click': () => this.onTopBarSimulatorClick(opt.value)
-                        }, `🚀 ${opt.id}`);
-                    })
-                ]),
+            div({ class: 'header' }, [
+                ioIcon({ value: 'sc:logo', size: 'medium' }),
+                div({ class: 'title' }, [
+                    h3('archive dynamics: tag magnetism'),
+                    span('current collection: ' + (this.simulatorState.currentCollection.id || 'None')),
+                ])
+                // div({ class: 'sim-list' }, [
+                //     ...simOptions.map(opt => {
+                //         const hueDeg = Math.round(opt.hue * 360);
+                //         const isSelected = (opt.value === (this.currentSimulatorId || ''));
+                //         return div({
+                //             class: `sim-btn${isSelected ? ' is-selected' : ''}`,
+                //             selected: isSelected,
+                //             style: {
+                //                 background: `hsl(${hueDeg} 60% 20%)`,
+                //                 borderColor: `hsl(${hueDeg} 60% 45%)`,
+                //             },
+                //             '@click': () => this.onTopBarSimulatorClick(opt.value)
+                //         }, `🚀 ${opt.id}`);
+                //     })
+                // ]),
             ]),
             ioNavigator({
                 menu: 'top',
@@ -221,17 +239,11 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             })
         ]);
     }
-    onTopBarSimulatorChange(event) {
-        const newId = event.detail?.value;
-        if (newId && newId !== this.currentSimulatorId && newId !== '(none)') {
-            this.setCurrentSimulator?.(newId);
-        }
-    }
-    onTopBarSimulatorClick(simId) {
-        if (simId && simId !== this.currentSimulatorId) {
-            this.setCurrentSimulator?.(simId);
-        }
-    }
+    // onTopBarSimulatorClick(simId: string) {
+    //     if (simId && simId !== this.currentSimulatorId) {
+    //         (this as any).setCurrentSimulator?.(simId);
+    //     }
+    // }
     // === UNITY COMMUNICATION ===
     sendPanEvent(deltaX, deltaY) {
         this.sendEventToSimulator('pan', { panXDelta: deltaX, panYDelta: deltaY });
