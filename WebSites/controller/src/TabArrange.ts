@@ -1,4 +1,4 @@
-import { h2, p, Register, ioString, ioButton, div, IoString } from 'io-gui';
+import { p, Register, ioString, ioButton, div, IoString } from 'io-gui';
 import { TabBase, TabBaseProps } from './TabBase.js';
 import { magnetItem } from './MagnetItem.js';
 import type { Magnet } from './types/Magnet';
