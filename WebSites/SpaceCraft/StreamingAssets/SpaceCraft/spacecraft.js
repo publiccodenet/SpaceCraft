@@ -112,7 +112,6 @@ class SpaceCraftSim {
     static deepIndexPath = 'StreamingAssets/Content/index-deep.json';
     static controllerHtmlPath = '../controller/';
     static clientChannelName = 'spacecraft';
-    static simulatorNamePrefix = 'SpaceCraft';
     
     /**
      * Get the channel name from URL query parameter or use default
@@ -173,7 +172,7 @@ class SpaceCraftSim {
         this.identity = {
             clientId: this.clientId, // Unique ID for this simulator instance
             clientType: "simulator", // Fixed type for simulator
-            clientName: SpaceCraftSim.simulatorNamePrefix, // Start without a number; will assign on presence
+            clientName: this.state?.currentCollection?.name || "SpaceCraft",
             simulatorIndex: 0,
             startTime: Date.now() // When this simulator instance started
         };
@@ -373,6 +372,36 @@ class SpaceCraftSim {
                 linkElement.href = fullAbsoluteUrl; // Allow right-click/copy link
                 linkElement.target = '_blank';
                 linkElement.rel = 'noopener noreferrer';
+                // Optional testing: open controller in a sized popup window on laptop clicks
+                linkElement.addEventListener('click', (ev) => {
+                    try {
+                        // Easter egg: Shift-click opens another SpaceCraft simulator window (same URL, no simulatorIndex)
+                        if (ev.shiftKey && ev.button === 0) {
+                            ev.preventDefault();
+                            const simUrl = new URL(window.location.href);
+                            simUrl.searchParams.delete('simulatorIndex');
+                            // Match current simulator window size and cascade a bit
+                            const w = Math.max(300, (window.outerWidth || window.innerWidth || 800));
+                            const h = Math.max(300, (window.outerHeight || window.innerHeight || 600));
+                            const left = (typeof window.screenX === 'number') ? Math.max(0, window.screenX + 24) : Math.max(0, Math.floor((screen.width - w) / 2));
+                            const top = (typeof window.screenY === 'number') ? Math.max(0, window.screenY + 24) : Math.max(0, Math.floor((screen.height - h) / 2));
+                            window.open(
+                                simUrl.toString(),
+                                'SpaceCraftSimulator',
+                                `width=${w},height=${h},left=${left},top=${top},noopener,noreferrer,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes`
+                            );
+                            return;
+                        }
+                        // Only intercept to open phone-sized controller if not a modified click (no ctrl/cmd/alt or middle-click)
+                        if (ev.button === 0 && !ev.metaKey && !ev.ctrlKey && !ev.altKey) {
+                            ev.preventDefault();
+                            const w = 430, h = 844; // slightly wider phone-like window
+                            const left = Math.max(0, Math.floor((screen.width - w) / 2));
+                            const top = Math.max(0, Math.floor((screen.height - h) / 2));
+                            window.open(fullAbsoluteUrl, 'SpaceCraftController', `width=${w},height=${h},left=${left},top=${top},noopener,noreferrer,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes`);
+                        }
+                    } catch {}
+                });
 
                 // Add position class if defined
                 if (definition.position) {
@@ -584,16 +613,34 @@ class SpaceCraftSim {
 
         // Load content
         this.loadedContent = await this.fetchContent();
+        try { console.log('[Sim] content loaded'); } catch {}
         
         // DIRECT OBJECT ACCESS - collections is an object, not an array
+        try { console.log('[Sim] collections keys:', Object.keys(this.loadedContent && this.loadedContent.collections || {})); } catch {}
         const defaultCollection = this.loadedContent.collections[this.state.currentCollectionId];
+        try { console.log('[Sim] defaultCollection lookup:', this.state.currentCollectionId, '→', !!defaultCollection, defaultCollection); } catch {}
         if (defaultCollection) {
             // Store minimal collection metadata without items array
+            const metaObj = (defaultCollection.collection || defaultCollection || {});
+            const derivedName = metaObj.name || metaObj.title || defaultCollection.name || defaultCollection.title || '';
+            const derivedDesc = metaObj.description || defaultCollection.description || '';
             this.state.currentCollection = {
                 id: defaultCollection.id,
-                name: defaultCollection.collection.name,
-                description: defaultCollection.collection.description
+                name: derivedName,
+                description: derivedDesc
             };
+            // Use collection name for simulator identity/state before presence publish
+            try {
+                const collName = this.state.currentCollection && this.state.currentCollection.name;
+                console.log('[Sim] currentCollection computed:', this.state.currentCollection);
+                if (collName && typeof collName === 'string' && collName.trim().length > 0) {
+                    console.log('[Sim] setting identity name from collection:', collName);
+                    this.identity.clientName = collName;
+                    this.state.clientName = collName;
+                } else {
+                    console.warn('[Sim] collection name missing/empty; identity remains:', this.identity.clientName);
+                }
+            } catch {}
             
             // Store array of item IDs from the itemsIndex (single source of truth)
             this.state.currentCollectionItems = defaultCollection.itemsIndex;
@@ -628,6 +675,7 @@ class SpaceCraftSim {
             this.state.unityMetaHash = 'dev-meta-hash';
         } catch {}
 
+        try { console.log('[Sim] setupSupabase with identity:', this.identity && this.identity.clientName); } catch {}
         this.setupSupabase();
 
         // Sync tags to presence immediately after loading
@@ -1236,9 +1284,7 @@ class SpaceCraftSim {
                 }
             });
 
-        // Attempt to restore previously assigned simulator index for this channel (persists across reconnects)
-        // Intentionally NOT restoring simulatorIndex from localStorage to avoid duplicate indices across tabs
-        try { console.log('[Sim] init: not restoring simulatorIndex from localStorage; will negotiate via presence'); } catch {}
+        // Simulator index is negotiated via presence; never restore from localStorage
 
         this.syncStateToPresence();
     }
@@ -1260,6 +1306,50 @@ class SpaceCraftSim {
             if (this.simulatorIndex && this.simulatorIndex > 0) return;
             const state = this.clientChannel && this.clientChannel.presenceState ? this.clientChannel.presenceState() : null;
             if (!state) return;
+            // Prefer an explicit simulatorIndex from URL if it's free
+            let urlIndex = 0;
+            try {
+                const url = new URL(window.location.href);
+                urlIndex = parseInt(url.searchParams.get('simulatorIndex') || '0', 10) || 0;
+            } catch {}
+            if (urlIndex > 0) {
+                let taken = false;
+                Object.values(state || {}).forEach((arr) => {
+                    (arr || []).forEach((p) => {
+                        if (p.clientType === 'simulator') {
+                            if (p.simulatorIndex === urlIndex) taken = true;
+                            if (p.shared && p.shared.simulatorIndex === urlIndex) taken = true;
+                        }
+                    });
+                });
+                if (!taken) {
+                const prefix = SpaceCraftSim.simulatorNamePrefix;
+                    this.simulatorIndex = urlIndex;
+                    const hueDegs = [120, 210, 55, 180, 300, 30, 270, 0];
+                    const hues = hueDegs.map(d => (d % 360) / 360);
+                    this.simulatorHue = hues[(this.simulatorIndex - 1) % hues.length];
+                const nextName = this.identity.clientName || `${prefix} ${this.simulatorIndex}`;
+                this.identity.clientName = nextName;
+                    this.identity.simulatorIndex = this.simulatorIndex;
+                    this.identity.simulatorHue = this.simulatorHue;
+                    this.state.clientName = nextName;
+                    this.state.simulatorIndex = this.simulatorIndex;
+                    this.state.simulatorHue = this.simulatorHue;
+                    this.state.maxIndexSeen = Math.max(this.state.maxIndexSeen || 0, this.simulatorIndex);
+                    try { bridge.updateObject(this.spaceCraft, { simulatorIndex: this.simulatorIndex, simulatorHue: this.simulatorHue }); } catch {}
+                    // Persist index in our own URL for refreshes and QR generation
+                    try {
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('simulatorIndex', String(this.simulatorIndex));
+                        window.history.replaceState({}, '', url.toString());
+                    } catch {}
+                    this.syncStateToPresence();
+                    if (this.domContentLoaded) {
+                        this.generateQRCodes();
+                    }
+                    return; // done
+                }
+            }
             const prefix = SpaceCraftSim.simulatorNamePrefix;
             // Compute observed max from presence (explicit index, name suffix) and shared maxIndexSeen
             try { console.log('[Sim] ensureUniqueSimulatorName start; presence keys=', Object.keys(state || {})); } catch {}
@@ -1329,8 +1419,8 @@ class SpaceCraftSim {
                     const hueDegs = [120, 210, 55, 180, 300, 30, 270, 0];
                     const hues = hueDegs.map(d => (d % 360) / 360);
                     this.simulatorHue = hues[(this.simulatorIndex - 1) % hues.length];
-                    const nextName = `${prefix} ${this.simulatorIndex}`;
-                    this.identity.clientName = nextName;
+                const nextName = this.identity.clientName || `${prefix} ${this.simulatorIndex}`;
+                this.identity.clientName = nextName;
                     this.identity.simulatorIndex = this.simulatorIndex;
                     this.identity.simulatorHue = this.simulatorHue;
                     this.state.clientName = nextName;

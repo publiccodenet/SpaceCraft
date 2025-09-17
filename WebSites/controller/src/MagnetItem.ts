@@ -1,4 +1,4 @@
-import { IoElement, IoElementProps, Register, ReactiveProperty, h2, ioNumberSlider, ioObject, ioButton, PropertyConfig, ioString, ioBoolean, PropertyGroups } from 'io-gui';
+import { IoElement, IoElementProps, Register, ReactiveProperty, h2, div, ioNumberSlider, ioObject, ioButton, PropertyConfig, ioString, ioBoolean, PropertyGroups } from 'io-gui';
 import { SpacetimeController } from './SpacetimeController.js';
 import type { Magnet } from './types/Magnet';
 import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
@@ -53,19 +53,26 @@ export class MagnetItem extends IoElement {
             :host {
                 display: flex;
                 flex-direction: column;
-                gap: 0.5em;
+                gap: 0.4em;
                 border: var(--io_border);
                 border-color: var(--io_borderColorOutset);
-                margin: 0.5em 0;
-                padding: 0.5em;
+                margin: 0.4em 0;
+                padding: 0.4em;
                 border-radius: var(--io_borderRadius);
                 background-color: var(--io_bgColor);
             }
-            :host > h3 {
-                margin: 0 1em 0 0;
+            :host .header {
+                display: flex;
+                align-items: center;
+                gap: 0.75em;
             }
-            :host > io-slider-2d {
-                align-self: flex-start;
+            :host .header > h2 {
+                margin: 0;
+                line-height: 1.2;
+            }
+            :host .header > io-slider-2d, :host .header > magnet-joystick, :host .header > io-slider2d {
+                margin-left: auto;
+                align-self: center;
             }
     `;
     }
@@ -93,11 +100,15 @@ export class MagnetItem extends IoElement {
         const magnetEditorConfig = generateMagnetEditorConfig(this.controller.magnetViewMetadata);
         const magnetEditorGroups = generateMagnetEditorGroups(this.controller.magnetViewMetadata);
         this.render([
-            h2(this.magnet.title),
-            ioObject({value: this.magnet, label: 'Magnet Data', config: magnetEditorConfig, groups: magnetEditorGroups,
-              widgets: new Map([[
-                Object, magnetJoystick({value: [0, 0], min: [-0.1, -0.1], max: [0.1, 0.1], '@control': this.onJoystickControl})
-              ]])
+            div({class: 'header'}, [
+                h2(this.magnet.title),
+                magnetJoystick({value: [0, 0], min: [-0.1, -0.1], max: [0.1, 0.1], '@control': this.onJoystickControl})
+            ]),
+            ioObject({
+                value: this.magnet,
+                label: 'Magnet Data',
+                config: magnetEditorConfig,
+                groups: magnetEditorGroups
             }),
             ioButton({label: 'Delete', action: this.onDeleteMagnet, class: 'red'})
         ]);
