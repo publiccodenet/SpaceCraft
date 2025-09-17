@@ -1,4 +1,4 @@
-import { Register, ReactiveProperty, IoSlider2d, IoSlider2dProps } from 'io-gui';
+import { Register, IoSlider2d, IoSlider2dProps } from 'io-gui';
 
 @Register
 export class MagnetJoystick extends IoSlider2d {

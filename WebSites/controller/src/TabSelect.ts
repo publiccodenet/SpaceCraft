@@ -1,6 +1,5 @@
 import { h2, p, Register, div, img, h4, ListenerDefinition } from 'io-gui';
 import { TabBase, TabBaseProps } from './TabBase.js';
-import { contentStore } from './services/ContentStore.js';
 
 const GESTURE_THRESHOLD = 20;
 

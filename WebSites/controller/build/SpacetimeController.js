@@ -12,6 +12,7 @@ import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
 import { tabArrange } from './TabArrange.js';
 import { SimulatorState } from './SimulatorState.js';
+import './Icons.js';
 ThemeSingleton.themeID = 'dark';
 function generateClientId() {
     return 'controller-' + Math.random().toString(36).substr(2, 9);
@@ -203,10 +204,10 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 option: new MenuOption({
                     id: 'root',
                     options: [
-                        { id: 'View', icon: '👀' },
-                        { id: 'Select', icon: '👆' },
-                        { id: 'Inspect', icon: '🔍' },
-                        { id: 'Arrange', icon: '🧲' },
+                        { id: 'View', icon: 'sc:view' },
+                        { id: 'Select', icon: 'sc:select' },
+                        { id: 'Inspect', icon: 'sc:inspect' },
+                        { id: 'Arrange', icon: 'sc:arrange' },
                     ],
                     selectedID: $({ key: 'page', storage: 'hash', value: 'Arrange' })
                 }),
