@@ -1,4 +1,4 @@
-import { IoElement, h2, Register, IoElementProps, Property, ReactiveProperty, ListenerDefinition } from 'io-gui';
+import { IoElement, h2, Register, IoElementProps, Property, ReactiveProperty } from 'io-gui';
 import { SpacetimeController } from './SpacetimeController.js';
 import { SimulatorState } from './SimulatorState.js';
 

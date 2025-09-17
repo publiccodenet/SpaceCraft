@@ -1,4 +1,4 @@
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton, div, IoOptionSelect, IoOptionSelectProps } from 'io-gui';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ReactiveProperty, IoElementProps, ThemeSingleton, div } from 'io-gui';
 import { contentStore } from './services/ContentStore.js';
 import type { SimulatorSharedContent } from './types/Content.js';
 import { tabView } from './TabView.js';
@@ -6,6 +6,7 @@ import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
 import { tabArrange } from './TabArrange.js';
 import { SimulatorState } from './SimulatorState.js';
+import './Icons.js';
 import type { Magnet } from './types/Magnet';
 import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
 
@@ -252,10 +253,10 @@ export class SpacetimeController extends IoElement {
                 option: new MenuOption({
                     id: 'root',
                     options: [
-                        {id: 'View', icon: '👀'},
-                        {id: 'Select', icon: '👆'},
-                        {id: 'Inspect', icon: '🔍'},
-                        {id: 'Arrange', icon: '🧲'},
+                        {id: 'View', icon: 'sc:view'},
+                        {id: 'Select', icon: 'sc:select'},
+                        {id: 'Inspect', icon: 'sc:inspect'},
+                        {id: 'Arrange', icon: 'sc:arrange'},
                     ],
                     selectedID: $({key: 'page', storage: 'hash', value: 'Arrange'})
                 }),

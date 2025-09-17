@@ -1,5 +1,6 @@
 import { IoElement, IoElementProps } from 'io-gui';
 import { SimulatorState } from './SimulatorState.js';
+import './Icons.js';
 import type { Magnet } from './types/Magnet';
 import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
 type PresenceState = {
