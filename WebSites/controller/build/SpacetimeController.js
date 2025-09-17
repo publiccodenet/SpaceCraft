@@ -29,44 +29,34 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             :host {
                 display: flex;
                 flex-direction: column;
-                height: 100%;
+                height: 100vh; /* lock to viewport height so inner tabs can scroll */
                 width: 100%;
+                min-height: 0; /* allow children to define scrollable area */
             }
             :host .header {
                 display: flex;
-                align-items: center;
+                align-items: center; /* vertical centering */
                 justify-content: flex-start; /* inline flow: icons then buttons */
                 gap: 8px;
-                padding: 4px 6px;
-                flex-wrap: wrap;
+                padding: 5px; /* at least 5px padding around row */
+                flex-wrap: wrap; /* allow wrap if needed, but all are siblings */
+                margin-bottom: 5px; /* ensure gap above tab row */
             }
-            :host .top-logos {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                flex: 0 0 auto;
-                white-space: nowrap;
-            }
-            :host .top-logos a {
+            :host .header a.logo {
                 display: inline-flex;
+                padding: 5px; /* at least 5px around icons */
             }
-            :host .top-logos img {
+            :host .header a.logo img {
                 height: 35px; /* half-height for HiDPI (retina) while staying crisp */
                 width: auto;
                 display: block;
             }
-            :host .sim-list {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-                justify-content: flex-start;
-                flex: 1 1 auto;
-                align-items: center;
-            }
+            /* chips will be direct children of header after logos; wrapping allowed by header */
             :host .sim-btn {
                 display: inline-flex;
                 align-items: center;
-                padding: 3px 10px;
+                padding: 5px 10px; /* at least 5px padding on buttons */
+                margin: 5px; /* keep 5px gap around each button */
                 border-radius: 12px;
                 border: 1px solid var(--io-color-2, #555);
                 background: var(--io-bg-1, #222);
@@ -96,6 +86,14 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             } */
             :host > io-navigator {
                 flex: 1 1 auto;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                min-height: 0; /* allow inner selector to size and scroll */
+            }
+            :host > io-navigator > io-selector {
+                flex: 1 1 auto;
+                min-height: 0; /* critical: lets tab hosts scroll instead of growing */
                 overflow: hidden;
             }
             :host > io-navigator > io-menu-options {
@@ -210,36 +208,27 @@ let SpacetimeController = class SpacetimeController extends IoElement {
         }))
             .sort((a, b) => a.id.localeCompare(b.id, undefined, { sensitivity: 'base' }));
         this.render([
-            // Top header row: left logos, right-justified simulator list
-            div({ class: 'top-controls' }, [
-                div({ class: 'top-logos' }, [
-                    // Use content assets (not StreamingAssets)
-                    div({ class: 'logo iae' }, [
-                        a({ href: 'https://archive.org/', target: '_blank' }, [
-                            img({ src: 'content/internet_archive_europe_logo.jpeg', alt: 'Internet Archive Europe' })
-                        ])
-                    ]),
-                    div({ class: 'logo sc' }, [
-                        a({ href: 'https://www.spacecraft.ing/', target: '_blank' }, [
-                            img({ src: 'content/spacecraft_logo.png', alt: 'SpaceCraft' })
-                        ])
-                    ])
+            // Top header row: simple siblings (logos then chips), all wrap together
+            div({ class: 'header' }, [
+                a({ href: 'https://archive.org/', target: '_blank', class: 'logo' }, [
+                    img({ src: 'content/internet_archive_europe_logo.jpeg', alt: 'Internet Archive Europe' })
                 ]),
-                div({ class: 'sim-list' }, [
-                    ...simOptions.map(opt => {
-                        const hueDeg = Math.round(opt.hue * 360);
-                        const isSelected = (opt.value === (this.currentSimulatorId || ''));
-                        return div({
-                            class: `sim-btn${isSelected ? ' is-selected' : ''}`,
-                            selected: isSelected,
-                            style: {
-                                background: `hsl(${hueDeg} 60% 20%)`,
-                                borderColor: `hsl(${hueDeg} 60% 45%)`,
-                            },
-                            '@click': () => this.onTopBarSimulatorClick(opt.value)
-                        }, `${opt.id}`);
-                    })
+                a({ href: 'https://www.spacecraft.ing/', target: '_blank', class: 'logo' }, [
+                    img({ src: 'content/spacecraft_logo.png', alt: 'SpaceCraft' })
                 ]),
+                ...simOptions.map(opt => {
+                    const hueDeg = Math.round(opt.hue * 360);
+                    const isSelected = (opt.value === (this.currentSimulatorId || ''));
+                    return div({
+                        class: `sim-btn${isSelected ? ' is-selected' : ''}`,
+                        selected: isSelected,
+                        style: {
+                            background: `hsl(${hueDeg} 60% 20%)`,
+                            borderColor: `hsl(${hueDeg} 60% 45%)`,
+                        },
+                        '@click': () => this.onTopBarSimulatorClick(opt.value)
+                    }, `${opt.id}`);
+                })
             ]),
             ioNavigator({
                 menu: 'top',
@@ -263,11 +252,11 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             })
         ]);
     }
-    // onTopBarSimulatorClick(simId: string) {
-    //     if (simId && simId !== this.currentSimulatorId) {
-    //         (this as any).setCurrentSimulator?.(simId);
-    //     }
-    // }
+    onTopBarSimulatorClick(simId) {
+        if (simId && simId !== this.currentSimulatorId) {
+            this.setCurrentSimulator?.(simId);
+        }
+    }
     // === UNITY COMMUNICATION ===
     sendPanEvent(deltaX, deltaY) {
         this.sendEventToSimulator('pan', { panXDelta: deltaX, panYDelta: deltaY });

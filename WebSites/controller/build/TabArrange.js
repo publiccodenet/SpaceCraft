@@ -21,7 +21,23 @@ let TabArrange = class TabArrange extends TabBase {
     static get Style() {
         return /* css */ `
           :host {
-              display: block;
+              display: flex;
+              flex-direction: column;
+              gap: 0.5em;
+              padding: 0.5em;
+              overflow: hidden; /* let inner content scroll */
+              min-height: 0;
+          }
+          :host .content {
+              display: flex;
+              flex-direction: column;
+              gap: 0.5em;
+              overflow: auto; /* scrolling container */
+              min-height: 0;
+              flex: 1 1 auto;
+              height: 100%;
+              max-height: calc(100vh - 180px); /* viewport-constrained to force scroll regardless of parent */
+              -webkit-overflow-scrolling: touch;
           }
           :host p {
               margin: 0 0 0.5em 0; /* tight top spacing */
@@ -30,6 +46,9 @@ let TabArrange = class TabArrange extends TabBase {
               display: flex;
               flex-direction: row;
               gap: 10px;
+          }
+          :host .input-row, :host magnet-item, :host .magnet-item {
+              width: 100%; /* full width items */
           }
           :host .input-row > io-string {
               flex: 1 1 auto;
@@ -82,12 +101,14 @@ let TabArrange = class TabArrange extends TabBase {
     changed() {
         const magnets = this.simulatorState.magnets || [];
         this.render([
-            p('Create and arrange magnets to attract related items'),
-            div({ class: 'input-row' }, [
-                ioString({ id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp }),
-                ioButton({ label: 'Add', action: this.onCreateMagnet })
-            ]),
-            ...magnets.map(magnet => magnetItem({ magnet: magnet, controller: this.controller }))
+            div({ class: 'content' }, [
+                p('Create and arrange magnets to attract related items'),
+                div({ class: 'input-row' }, [
+                    ioString({ id: 'magnet-name-input', placeholder: 'Magnet Search String', live: true, '@keyup': this.onKeyUp }),
+                    ioButton({ label: 'Add', action: this.onCreateMagnet })
+                ]),
+                ...magnets.map(magnet => magnetItem({ magnet: magnet, controller: this.controller }))
+            ])
         ]);
     }
 };
