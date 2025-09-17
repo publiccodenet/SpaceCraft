@@ -12,6 +12,7 @@ import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
 import { tabArrange } from './TabArrange.js';
 import { SimulatorState } from './SimulatorState.js';
+import './Icons.js';
 ThemeSingleton.themeID = 'dark';
 function generateClientId() {
     return 'controller-' + Math.random().toString(36).substr(2, 9);
@@ -31,7 +32,7 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                 height: 100%;
                 width: 100%;
             }
-            :host .top-controls {
+            :host .header {
                 display: flex;
                 align-items: center;
                 justify-content: flex-start; /* inline flow: icons then buttons */
@@ -92,7 +93,7 @@ let SpacetimeController = class SpacetimeController extends IoElement {
                             0 0 6px rgba(255,255,255,0.35);
                 outline: 2px solid rgba(255,255,255,0.6);
                 outline-offset: -2px;
-            }
+            } */
             :host > io-navigator {
                 flex: 1 1 auto;
                 overflow: hidden;
@@ -262,17 +263,11 @@ let SpacetimeController = class SpacetimeController extends IoElement {
             })
         ]);
     }
-    onTopBarSimulatorChange(event) {
-        const newId = event.detail?.value;
-        if (newId && newId !== this.currentSimulatorId && newId !== '(none)') {
-            this.setCurrentSimulator?.(newId);
-        }
-    }
-    onTopBarSimulatorClick(simId) {
-        if (simId && simId !== this.currentSimulatorId) {
-            this.setCurrentSimulator?.(simId);
-        }
-    }
+    // onTopBarSimulatorClick(simId: string) {
+    //     if (simId && simId !== this.currentSimulatorId) {
+    //         (this as any).setCurrentSimulator?.(simId);
+    //     }
+    // }
     // === UNITY COMMUNICATION ===
     sendPanEvent(deltaX, deltaY) {
         this.sendEventToSimulator('pan', { panXDelta: deltaX, panYDelta: deltaY });

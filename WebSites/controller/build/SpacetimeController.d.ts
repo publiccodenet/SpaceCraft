@@ -1,5 +1,6 @@
 import { IoElement, IoElementProps } from 'io-gui';
 import { SimulatorState } from './SimulatorState.js';
+import './Icons.js';
 import type { Magnet } from './types/Magnet';
 import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
 type PresenceState = {
@@ -40,8 +41,6 @@ export declare class SpacetimeController extends IoElement {
     connect(): void;
     ready(): void;
     changed(): void;
-    onTopBarSimulatorChange(event: CustomEvent): void;
-    onTopBarSimulatorClick(simId: string): void;
     sendPanEvent(deltaX: number, deltaY: number): void;
     sendZoomEvent(zoomDelta: number): void;
     sendSelectEvent(action: string): void;

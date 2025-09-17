@@ -6,6 +6,7 @@ import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
 import { tabArrange } from './TabArrange.js';
 import { SimulatorState } from './SimulatorState.js';
+import './Icons.js';
 import type { Magnet } from './types/Magnet';
 import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
 
@@ -41,12 +42,6 @@ type SimulatorPresence = {
   startTime: number;
 }
 
-type SimulatorTakeoverPayload = {
-  newSimulatorId: string;
-  newSimulatorName: string;
-  startTime: number;
-}
-
 @Register
 export class SpacetimeController extends IoElement {
     static get Style() {
@@ -57,7 +52,7 @@ export class SpacetimeController extends IoElement {
                 height: 100%;
                 width: 100%;
             }
-            :host .top-controls {
+            :host .header {
                 display: flex;
                 align-items: center;
                 justify-content: flex-start; /* inline flow: icons then buttons */
@@ -118,7 +113,7 @@ export class SpacetimeController extends IoElement {
                             0 0 6px rgba(255,255,255,0.35);
                 outline: 2px solid rgba(255,255,255,0.6);
                 outline-offset: -2px;
-            }
+            } */
             :host > io-navigator {
                 flex: 1 1 auto;
                 overflow: hidden;
@@ -313,18 +308,11 @@ export class SpacetimeController extends IoElement {
         ]);
     }
 
-    onTopBarSimulatorChange(event: CustomEvent) {
-        const newId = (event as any).detail?.value;
-        if (newId && newId !== this.currentSimulatorId && newId !== '(none)') {
-            (this as any).setCurrentSimulator?.(newId);
-        }
-    }
-
-    onTopBarSimulatorClick(simId: string) {
-        if (simId && simId !== this.currentSimulatorId) {
-            (this as any).setCurrentSimulator?.(simId);
-        }
-    }
+    // onTopBarSimulatorClick(simId: string) {
+    //     if (simId && simId !== this.currentSimulatorId) {
+    //         (this as any).setCurrentSimulator?.(simId);
+    //     }
+    // }
 
     // === UNITY COMMUNICATION ===
 
