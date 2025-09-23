@@ -41,6 +41,10 @@ export declare class SpacetimeController extends IoElement {
     connect(): void;
     ready(): void;
     changed(): void;
+    handleHashChange(): void;
+    updateViewModeTabUnderline(): void;
+    handleMenuClickCapture(ev: MouseEvent): void;
+    simulatorStateMutated(): void;
     onTopBarSimulatorClick(simId: string): void;
     sendPanEvent(deltaX: number, deltaY: number): void;
     sendZoomEvent(zoomDelta: number): void;

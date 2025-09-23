@@ -1,10 +1,12 @@
-import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton, div, img, a, IoOptionSelect, IoOptionSelectProps } from 'io-gui';
+import { IoElement, Register, ioNavigator, MenuOption, Storage as $, ioMarkdown, ReactiveProperty, IoElementProps, ThemeSingleton, div, img, a } from 'io-gui';
+import { VIEW_MODE_OPTIONS, DEFAULT_VIEW_MODE, ViewMode } from './types/ViewMode.js';
 import { contentStore } from './services/ContentStore.js';
 import type { SimulatorSharedContent } from './types/Content.js';
 import { tabView } from './TabView.js';
 import { tabSelect } from './TabSelect.js';
 import { tabInspect } from './TabInspect.js';
 import { tabArrange } from './TabArrange.js';
+import { tabAbout } from './TabAbout.js';
 import { SimulatorState } from './SimulatorState.js';
 import './Icons.js';
 import type { Magnet } from './types/Magnet';
@@ -96,14 +98,22 @@ export class SpacetimeController extends IoElement {
                 outline: 2px solid rgba(255,255,255,0.6);
                 outline-offset: -2px;
             }
-            :host .sim-btn.is-selected {
+			:host .sim-btn.is-selected {
                 font-weight: 700;
                 filter: brightness(1.6) saturate(1.4);
                 box-shadow: 0 0 0 2px rgba(255,255,255,0.8) inset,
                             0 0 6px rgba(255,255,255,0.35);
                 outline: 2px solid rgba(255,255,255,0.6);
                 outline-offset: -2px;
-            } */
+			} */
+            
+			:host .sim-none {
+				margin: 5px;
+				padding: 6px 10px;
+				border: 1px dashed #555;
+				border-radius: 10px;
+				color: #aaa;
+			}
             :host > io-navigator {
                 flex: 1 1 auto;
                 overflow: hidden;
@@ -132,10 +142,16 @@ export class SpacetimeController extends IoElement {
               border-radius: 0;
               background: transparent;
               border: none;
+              color: #000;
             }
             :host > io-navigator > io-menu-options > io-menu-item[selected] {
               background: #222;
               border: none;
+            }
+            :host > io-navigator > io-menu-options > io-menu-item[vmselected] {
+              text-decoration: underline;
+              text-decoration-thickness: 2px;
+              text-underline-offset: 2px;
             }
             :host > io-navigator > io-menu-options > span.divider {
               margin: 0 !important;
@@ -226,6 +242,14 @@ export class SpacetimeController extends IoElement {
     
     ready() {
         this.changed();
+        // Send initial viewMode based on current tab and watch for tab changes
+        this.handleHashChange();
+        try { window.addEventListener('hashchange', (ev: HashChangeEvent) => this.handleHashChange()); } catch {}
+        // Capture tab clicks for logging
+        try {
+            const root: any = (this as any).shadowRoot || this;
+            root.addEventListener('click', (ev: MouseEvent) => this.handleMenuClickCapture(ev), { capture: true } as any);
+        } catch {}
     }
 
     changed() {
@@ -279,14 +303,16 @@ export class SpacetimeController extends IoElement {
                 option: new MenuOption({
                     id: 'root',
                     options: [
-                        {id: 'Arrange', icon: '🧲'},
-                        {id: 'View', icon: '👀'},
-                        {id: 'Select', icon: '👆'},
-                        {id: 'Inspect', icon: '🔍'},
+                        {id: 'About', icon: '🚀', value: 'about'},
+                        {id: 'Arrange', icon: '🧲', value: 'arrange'},
+                        {id: 'View', icon: '👀', value: 'view'},
+                        {id: 'Select', icon: '👆', value: 'select'},
+                        {id: 'Inspect', icon: '🔍', value: 'inspect'},
                     ],
-                    selectedID: $({key: 'page', storage: 'hash', value: 'Arrange'})
+                    selectedID: $({key: 'page', storage: 'hash', value: 'About'})
                 }),
                 elements: [
+                    tabAbout({id: 'About', controller: this, simulatorState: this.simulatorState}),
                     tabArrange({id: 'Arrange', controller: this, simulatorState: this.simulatorState}),
                     tabView({id: 'View', controller: this, simulatorState: this.simulatorState}),
                     tabSelect({id: 'Select', controller: this, simulatorState: this.simulatorState}),
@@ -294,6 +320,67 @@ export class SpacetimeController extends IoElement {
                 ]
             })
         ]);
+
+        // After render, underline the tab that matches simulator viewMode
+        try { requestAnimationFrame(() => this.updateViewModeTabUnderline()); } catch {}
+    }
+
+    // Parse current tab id from location.hash and broadcast as viewMode
+    handleHashChange() {
+        try {
+            const hash = (window.location && window.location.hash || '').replace(/^#/, '');
+            const params = new URLSearchParams(hash);
+            const page = (params.get('page') || 'About').trim();
+            const mode = page.toLowerCase();
+            try { console.log('[Controller] hashchange → page:', page, 'mode:', mode, 'simId:', this.currentSimulatorId); } catch {}
+            if (['about','arrange','view','select','inspect'].includes(mode)) {
+                try { console.log('[Controller] sending setViewMode from tab click', { mode, currentSimulatorId: this.currentSimulatorId }); } catch {}
+                this.sendEventToSimulator('setViewMode', { mode });
+            }
+        } catch {}
+    }
+
+    // Visually mark the tab that matches the current simulator viewMode
+    updateViewModeTabUnderline() {
+        try {
+            const mode = (this.simulatorState?.viewMode || '').toLowerCase();
+            try { console.log('[Controller] viewMode presence update →', mode); } catch {}
+            const root = (this as any).shadowRoot || document;
+            const items = root.querySelectorAll(':host > io-navigator > io-menu-options > io-menu-item, io-navigator > io-menu-options > io-menu-item');
+            items.forEach((el: Element) => {
+                const val = (((el as any).value) || (el.getAttribute && el.getAttribute('value')) || '').toString().toLowerCase();
+                if (mode && val === mode) el.setAttribute('vmselected', '');
+                else el.removeAttribute('vmselected');
+            });
+        } catch {}
+    }
+
+    // Log menu item clicks (tab clicks)
+    handleMenuClickCapture(ev: MouseEvent) {
+        try {
+            const path = (ev.composedPath && (ev.composedPath() as any[])) || [];
+            const item = path.find((el: any) => el && typeof el.tagName === 'string' && el.tagName.toUpperCase() === 'IO-MENU-ITEM');
+            if (item && typeof item.textContent === 'string') {
+                const txt = (item.textContent as string).trim();
+                // Derive mode strictly from current hash (exact tab ID)
+                const hash = (window.location && window.location.hash || '').replace(/^#/, '');
+                const params = new URLSearchParams(hash);
+                const page = (params.get('page') || 'About').trim();
+                const mode = page.toLowerCase();
+                console.log('[Controller] tab click captured →', txt, 'mode(from-hash):', mode);
+                const allowed = ['about','arrange','view','select','inspect'];
+                if (allowed.includes(mode)) {
+                    try { console.log('[Controller] sending setViewMode (direct from click)', { mode, currentSimulatorId: this.currentSimulatorId }); } catch {}
+                    this.sendEventToSimulator('setViewMode', { mode });
+                }
+            }
+        } catch {}
+    }
+
+    simulatorStateMutated() {
+        try { console.log('[Controller] simulatorStateMutated → viewMode:', (this.simulatorState?.viewMode || '')); } catch {}
+        // Update underline without re-rendering everything
+        this.updateViewModeTabUnderline();
     }
 
     onTopBarSimulatorClick(simId: string) {
@@ -388,9 +475,68 @@ export class SpacetimeController extends IoElement {
                     })));
                 } catch {}
 
-                const simulator = this.findSimulator(presenceState);
-                
-                if (simulator) {
+				const simulator = this.findSimulator(presenceState);
+				
+				const simArray = Array.from(this.currentSimulators.values()) as any[];
+				if (simArray.length === 0) {
+					// No simulators available: clear selection and state, update UI
+					this.currentSimulatorId = null;
+					this.magnetViewMetadata = [];
+					try { console.log('[Controller] No simulators present → clearing UI state'); } catch {}
+					this.simulatorState.update({
+						clientId: '',
+						clientName: '',
+						clientType: '',
+						currentCollection: {},
+						currentCollectionId: '',
+						currentCollectionItems: [],
+						currentScreenId: '',
+						highlightedItem: {},
+						highlightedItemId: '',
+						highlightedItemIds: [],
+						magnets: [],
+						screenIds: [],
+						selectedItem: {},
+						selectedItemId: '',
+						selectedItemIds: [],
+						lastUpdated: '',
+						tags: [],
+						updateCounter: 0,
+						viewMode: 'magnets',
+					} as any);
+					// bump tick so header shows "(No Simulators)"
+					this.simulatorRosterTick = (this.simulatorRosterTick || 0) + 1;
+					return;
+				}
+
+				// If our current simulator vanished, pick a fallback by index
+				if (!this.currentSimulatorId || !this.currentSimulators.has(this.currentSimulatorId)) {
+					let target: any = null;
+					// try to match previous index if we had one
+					let prevIndex = 0;
+					try {
+						const prev = simArray.find((s: any) => s.clientId === this.currentSimulatorId);
+						prevIndex = prev ? (prev.simulatorIndex || (prev.shared && prev.shared.simulatorIndex) || 0) : 0;
+					} catch {}
+					if (prevIndex > 0) {
+						target = simArray.find((s: any) => (s.simulatorIndex || (s.shared && s.shared.simulatorIndex)) === prevIndex) || null;
+					}
+					// otherwise choose the highest index below previous, else lowest index
+					if (!target) {
+						const byIndex = [...simArray].sort((a: any, b: any) => {
+							const ia = a.simulatorIndex || (a.shared && a.shared.simulatorIndex) || 0;
+							const ib = b.simulatorIndex || (b.shared && b.shared.simulatorIndex) || 0;
+							return ia - ib;
+						});
+						target = byIndex[0] || null;
+					}
+					if (target) {
+						this.currentSimulatorId = target.clientId;
+						try { console.log('[Controller] Fallback selected simulator', { clientId: target.clientId, index: target.simulatorIndex || (target.shared && target.shared.simulatorIndex) }); } catch {}
+					}
+				}
+
+				if (simulator) {
                     // Resolve content for current simulator (async, fire-and-forget)
                     const shared = (simulator.shared || {}) as SimulatorSharedContent;
                     contentStore.ensureContent({
@@ -439,10 +585,10 @@ export class SpacetimeController extends IoElement {
                         console.log('[Controller] roster updated (tick', this.simulatorRosterTick, '):', list);
                         console.log('[Controller] currentSimulatorId:', this.currentSimulatorId);
                     } catch {}
-                } else {
-                    // No simulator selected yet; still bump tick to refresh menu state
-                    this.simulatorRosterTick = (this.simulatorRosterTick || 0) + 1;
-                }
+				} else {
+					// No simulator selected yet; still bump tick to refresh menu state
+					this.simulatorRosterTick = (this.simulatorRosterTick || 0) + 1;
+				}
             });
     }
 

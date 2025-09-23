@@ -1,11 +1,13 @@
 import { TabBase, TabBaseProps } from './TabBase.js';
 export declare class TabSelect extends TabBase {
+    static get Listeners(): {
+        pointerdown: string;
+        'tab-selected': string;
+    };
+    onTabSelected(): void;
     static get Style(): string;
     startX: number;
     startY: number;
-    static get Listeners(): {
-        pointerdown: string;
-    };
     preventDefault(event: Event): void;
     onPointerdown(event: PointerEvent): void;
     onPointerup(event: PointerEvent): void;

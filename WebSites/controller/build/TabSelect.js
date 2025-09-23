@@ -9,6 +9,16 @@ import { magnetJoystick } from './MagnetJoystick.js';
 import { TabBase } from './TabBase.js';
 const GESTURE_THRESHOLD = 20;
 let TabSelect = class TabSelect extends TabBase {
+    static get Listeners() {
+        return {
+            'pointerdown': 'onPointerdown',
+            'tab-selected': 'onTabSelected',
+        };
+    }
+    onTabSelected() {
+        // Select → selection
+        this.controller?.sendEventToSimulator('setViewMode', { mode: 'selection' });
+    }
     static get Style() {
         return /* css */ `
             :host {
@@ -74,11 +84,6 @@ let TabSelect = class TabSelect extends TabBase {
                 text-align: left;
             }
         `;
-    }
-    static get Listeners() {
-        return {
-            'pointerdown': 'onPointerdown',
-        };
     }
     preventDefault(event) {
         event.preventDefault();

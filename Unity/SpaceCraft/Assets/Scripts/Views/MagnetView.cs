@@ -219,16 +219,40 @@ public class MagnetView : BaseView
     [SerializeField] public float orbitEjectStrength = 10f;
     
     [ExposedParameter(
+        "Orbit Deflect Strength",
+        Category = "Magnetic Field",
+        Description = "Reduced outward force applied to items already influenced by one or more magnets.", 
+        Default = 2f, 
+        Visible = true,
+        Min = 0f, 
+        Max = 100f, 
+        Step = 0.1f
+    )]
+    [SerializeField] public float orbitDeflectStrength = 2f;
+    
+    [ExposedParameter(
         "Orbit Eject Radius",
         Category = "Magnetic Field",
         Description = "Outward force applied to items with scores below the minimum threshold.", 
-        Default = 15f, 
+        Default = 7f, 
         Visible = true,
         Min = 0f, 
         Max = 100f, 
         Step = 0.1f
     )]
     [SerializeField] public float orbitEjectRadius= 7f;
+    
+    [ExposedParameter(
+        "Orbit Deflect Radius",
+        Category = "Magnetic Field",
+        Description = "Radius for reduced repulsion when item is influenced by other magnets.", 
+        Default = 7f, 
+        Visible = true,
+        Min = 0f, 
+        Max = 100f, 
+        Step = 0.1f
+    )]
+    [SerializeField] public float orbitDeflectRadius = 7f;
     
     [SerializeField] private float _scoreMin = 0.8f;
     [ExposedParameter(
@@ -436,6 +460,16 @@ public class MagnetView : BaseView
     /// </summary>
     public Vector3 CalculateMagneticForce(ItemView itemView, Vector3 itemPosition)
     {
+        // Backwards-compat overload: default no deflection knowledge
+        return CalculateMagneticForce(itemView, itemPosition, false);
+    }
+
+    /// <summary>
+    /// Calculates magnetic force. If itemAffectedByOtherMagnets is true, repulsion inside eject radius
+    /// will use orbitDeflectStrength instead of orbitEjectStrength.
+    /// </summary>
+    public Vector3 CalculateMagneticForce(ItemView itemView, Vector3 itemPosition, bool itemAffectedByOtherMagnets)
+    {
         if (!magnetEnabled || itemView?.Model == null) return Vector3.zero;
 
         float score = CalculateItemScore(itemView.Model);
@@ -454,15 +488,17 @@ public class MagnetView : BaseView
         // EJECTION LOGIC for items that don't meet the minimum score
         if (score < scoreMin)
         {
-            // Only apply ejection inside the orbitEjectRadius
-            if (orbitEjectStrength <= 0.001f || distance >= orbitEjectRadius) return Vector3.zero;
+            // Only apply ejection/deflection inside the appropriate radius
+            float radius = itemAffectedByOtherMagnets ? orbitDeflectRadius : orbitEjectRadius;
+            float strengthParam = itemAffectedByOtherMagnets ? orbitDeflectStrength : orbitEjectStrength;
+            if (strengthParam <= 0.001f || distance >= radius) return Vector3.zero;
 
             // Ejection force is strongest for items with score 0, and falls to 0 as score approaches scoreMin
             float scoreFactor = 1f - (score / Mathf.Max(scoreMin, 0.0001f));
             scoreFactor = Mathf.Clamp01(scoreFactor);
 
             // Have the ejection force fall off towards the edge of the ejection radius
-            float ejectU = distance / Mathf.Max(orbitEjectRadius, 0.0001f); // 0 at center, 1 at eject edge
+            float ejectU = distance / Mathf.Max(radius, 0.0001f); // 0 at center, 1 at edge
             float s = Mathf.Clamp01(magnetSoftness);
             float ejectEdgeWidth = 0.5f * s;
             float ejectEdgeFactor;
@@ -477,7 +513,7 @@ public class MagnetView : BaseView
                 ejectEdgeFactor = (ejectU < 1f) ? 1f : 0f;
             }
 
-            float forceStrength = orbitEjectStrength * scoreFactor * ejectEdgeFactor;
+            float forceStrength = strengthParam * scoreFactor * ejectEdgeFactor;
             
             // Return outward force (away from magnet)
             return -toMagnet.normalized * forceStrength;
@@ -582,6 +618,22 @@ public class MagnetView : BaseView
 
         // No force for items with score > scoreMax
         return Vector3.zero;
+    }
+
+    /// <summary>
+    /// Returns true if this magnet would attract or orbit the item (meets score threshold
+    /// and lies within the magnet's influence radius).
+    /// </summary>
+    public bool WouldAttract(ItemView itemView, Vector3 itemPosition)
+    {
+        if (!magnetEnabled || itemView?.Model == null) return false;
+        float score = CalculateItemScore(itemView.Model);
+        if (score < scoreMin || score > scoreMax) return false;
+        Vector3 toMagnet = transform.position - itemPosition;
+        float distance = toMagnet.magnitude;
+        float innerR = Mathf.Max(0f, magnetHoleRadius);
+        float outerR = Mathf.Max(innerR, magnetRadius);
+        return distance < outerR;
     }
 
     // Cubic Hermite smoothstep

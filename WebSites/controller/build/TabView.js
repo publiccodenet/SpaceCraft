@@ -4,8 +4,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { h2, div, Register, IoOptionSelect, MenuOption } from 'io-gui';
-import { VIEW_MODE_OPTIONS, DEFAULT_VIEW_MODE } from './types/ViewMode.js';
+import { h2, Register } from 'io-gui';
+import { DEFAULT_VIEW_MODE } from './types/ViewMode.js';
 import { TabBase } from './TabBase.js';
 let TabView = class TabView extends TabBase {
     static get Style() {
@@ -38,6 +38,7 @@ let TabView = class TabView extends TabBase {
             'touchstart': ['preventDefault', { passive: false }],
             'touchmove': ['preventDefault', { passive: false }],
             'wheel': 'onWheel',
+            'tab-selected': 'onTabSelected',
         };
     }
     preventDefault(event) {
@@ -63,6 +64,10 @@ let TabView = class TabView extends TabBase {
     onWheel(event) {
         this.controller.sendZoomEvent(event.deltaY * 0.01);
     }
+    onTabSelected() {
+        // View → manual
+        this.controller?.sendEventToSimulator('setViewMode', { mode: 'manual' });
+    }
     onViewModeChange(event) {
         const newMode = event.detail?.value;
         if (!newMode || !this.controller?.clientChannel)
@@ -76,14 +81,6 @@ let TabView = class TabView extends TabBase {
     changed() {
         const vm = this.simulatorState?.viewMode || DEFAULT_VIEW_MODE;
         this.render([
-            div({ class: 'view-controls' }, [
-                h2('View Mode:'),
-                IoOptionSelect.vConstructor({
-                    value: vm,
-                    option: new MenuOption({ options: VIEW_MODE_OPTIONS }),
-                    '@value-input': (e) => this.onViewModeChange(e)
-                }),
-            ]),
             h2('DRAG to pan • SCROLL to zoom'),
         ]);
     }

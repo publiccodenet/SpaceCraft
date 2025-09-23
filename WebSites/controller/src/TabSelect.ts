@@ -6,6 +6,16 @@ const GESTURE_THRESHOLD = 20;
 
 @Register
 export class TabSelect extends TabBase {
+    static get Listeners() {
+        return {
+            'pointerdown': 'onPointerdown',
+            'tab-selected': 'onTabSelected',
+        };
+    }
+    onTabSelected() {
+        // Select → selection
+        (this as any).controller?.sendEventToSimulator('setViewMode', { mode: 'selection' });
+    }
     static get Style() {
         return /* css */`
             :host {
@@ -76,11 +86,7 @@ export class TabSelect extends TabBase {
     declare startX: number;
     declare startY: number;
 
-    static get Listeners() {
-        return {
-            'pointerdown': 'onPointerdown',
-        };
-    }
+    
 
     preventDefault(event: Event) {
         event.preventDefault();
