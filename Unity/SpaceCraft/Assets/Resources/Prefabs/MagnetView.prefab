@@ -118,11 +118,17 @@ MonoBehaviour:
   magnetSoftness: 0
   magnetHoleRadius: 0
   magnetHoleStrength: 0
-  _scoreMin: 0
+  _scoreMin: 0.8
   _scoreMax: 1
   viewScale: 1
   viewScaleInitial: 0.01
   magnetMaterial: {fileID: 2100000, guid: 2610998a9e1a94c63a3d4e941db2602e, type: 2}
+  orbitForce: 0
+  orbitWidth: 4
+  orbitEjectStrength: 10
+  orbitEjectRadius: 10
+  orbitDeflectStrength: 2
+  orbitDeflectRadius: 7
 --- !u!1 &7411782117926916970
 GameObject:
   m_ObjectHideFlags: 0

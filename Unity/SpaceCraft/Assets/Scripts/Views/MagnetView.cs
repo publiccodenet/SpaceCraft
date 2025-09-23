@@ -234,13 +234,13 @@ public class MagnetView : BaseView
         "Orbit Eject Radius",
         Category = "Magnetic Field",
         Description = "Outward force applied to items with scores below the minimum threshold.", 
-        Default = 7f, 
+        Default = 10f, 
         Visible = true,
         Min = 0f, 
         Max = 100f, 
         Step = 0.1f
     )]
-    [SerializeField] public float orbitEjectRadius= 7f;
+    [SerializeField] public float orbitEjectRadius= 10f;
     
     [ExposedParameter(
         "Orbit Deflect Radius",
