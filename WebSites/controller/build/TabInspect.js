@@ -7,6 +7,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { Register, iframe } from 'io-gui';
 import { TabBase } from './TabBase.js';
 let TabInspect = class TabInspect extends TabBase {
+    static get Listeners() {
+        return {
+            'tab-selected': 'onTabSelected'
+        };
+    }
+    onTabSelected() {
+        // Inspect → selection
+        this.controller?.sendEventToSimulator('setViewMode', { mode: 'selection' });
+    }
     static get Style() {
         return /* css */ `
             :host {

@@ -3,6 +3,15 @@ import { TabBase, TabBaseProps } from './TabBase.js';
 
 @Register
 export class TabInspect extends TabBase {
+    static get Listeners() {
+        return {
+            'tab-selected': 'onTabSelected'
+        } as any;
+    }
+    onTabSelected() {
+        // Inspect → selection
+        (this as any).controller?.sendEventToSimulator('setViewMode', { mode: 'selection' });
+    }
     static get Style() {
         return /* css */`
             :host {

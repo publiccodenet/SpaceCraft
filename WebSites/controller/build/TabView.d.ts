@@ -7,12 +7,14 @@ export declare class TabView extends TabBase {
         touchstart: ListenerDefinition;
         touchmove: ListenerDefinition;
         wheel: string;
+        'tab-selected': string;
     };
     preventDefault(event: Event): void;
     onPointerdown(event: PointerEvent): void;
     onPointermove(event: PointerEvent): void;
     onPointerup(event: PointerEvent): void;
     onWheel(event: WheelEvent): void;
+    onTabSelected(): void;
     onViewModeChange(event: CustomEvent): void;
     changed(): void;
 }
