@@ -9,7 +9,7 @@ import { TabBase } from './TabBase.js';
 import { magnetItem } from './MagnetItem.js';
 function generateMagnetDataFromMetadata(metadata) {
     const data = {};
-    (metadata || []).forEach((field) => {
+    metadata.forEach((field) => {
         // Only set fields with non-null defaults; otherwise omit so Unity prefab values remain
         if (field.defaultValue !== null && field.defaultValue !== undefined) {
             data[field.name] = field.defaultValue;
@@ -18,15 +18,6 @@ function generateMagnetDataFromMetadata(metadata) {
     return data;
 }
 let TabArrange = class TabArrange extends TabBase {
-    static get Listeners() {
-        return {
-            'tab-selected': 'onTabSelected'
-        };
-    }
-    onTabSelected() {
-        // Arrange → magnets
-        this.controller?.sendEventToSimulator('setViewMode', { mode: 'magnets' });
-    }
     static get Style() {
         return /* css */ `
           :host {

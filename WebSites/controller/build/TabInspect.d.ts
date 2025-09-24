@@ -1,7 +1,5 @@
 import { TabBase, TabBaseProps } from './TabBase.js';
 export declare class TabInspect extends TabBase {
-    static get Listeners(): any;
-    onTabSelected(): void;
     static get Style(): string;
     changed(): void;
 }

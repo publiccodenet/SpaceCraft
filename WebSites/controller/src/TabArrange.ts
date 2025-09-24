@@ -6,7 +6,7 @@ import type { MagnetViewMetadata } from './types/MagnetViewMetatada.js';
 
 function generateMagnetDataFromMetadata(metadata: Array<MagnetViewMetadata>): Magnet {
   const data = {} as any;
-  (metadata || []).forEach((field) => {
+  metadata.forEach((field) => {
     // Only set fields with non-null defaults; otherwise omit so Unity prefab values remain
     if (field.defaultValue !== null && field.defaultValue !== undefined) {
       data[field.name as keyof Magnet] = field.defaultValue;
@@ -18,15 +18,6 @@ function generateMagnetDataFromMetadata(metadata: Array<MagnetViewMetadata>): Ma
 
 @Register
 export class TabArrange extends TabBase {
-    static get Listeners() {
-        return {
-            'tab-selected': 'onTabSelected'
-        } as any;
-    }
-    onTabSelected() {
-        // Arrange → magnets
-        (this as any).controller?.sendEventToSimulator('setViewMode', { mode: 'magnets' });
-    }
     static get Style() {
         return /* css */`
           :host {

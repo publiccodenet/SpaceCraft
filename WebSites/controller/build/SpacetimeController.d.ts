@@ -41,10 +41,6 @@ export declare class SpacetimeController extends IoElement {
     connect(): void;
     ready(): void;
     changed(): void;
-    handleHashChange(): void;
-    updateViewModeTabUnderline(): void;
-    handleMenuClickCapture(ev: MouseEvent): void;
-    simulatorStateMutated(): void;
     onTopBarSimulatorClick(simId: string): void;
     sendPanEvent(deltaX: number, deltaY: number): void;
     sendZoomEvent(zoomDelta: number): void;
@@ -53,7 +49,6 @@ export declare class SpacetimeController extends IoElement {
     sendUpdateMagnetEvent(magnetData: Magnet): void;
     sendDeleteMagnetEvent(magnetId: string): void;
     sendPushMagnetEvent(magnetId: string, deltaX: number, deltaY: number): void;
-    sendPushItemEvent(itemId: string, deltaX: number, deltaY: number): void;
     sendEventToSimulator(eventType: string, data: any): void;
     setupPresenceHandlers(): void;
     subscribeToChannel(): void;

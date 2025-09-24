@@ -128,11 +128,11 @@ public class InputManager : MonoBehaviour
     [ExposedParameter(
         "View Mode",
         Category = "View",
-        Description = "Current view mode (tab id): about, arrange, view, select, inspect",
-        Default = "arrange",
+        Description = "Current view mode: magnets, selection, manual, or attract",
+        Default = "magnets",
         Visible = true
     )]
-    public string viewMode = "arrange";
+    public string viewMode = "magnets";
     
     [ExposedParameter(
         "View Seek Position Speed", 
@@ -391,28 +391,24 @@ public class InputManager : MonoBehaviour
         ApplyContinuousThrust();
 
 
-        // Use tab ids only: about, arrange, view, select, inspect
-        string _mode = (viewMode ?? "").ToLowerInvariant();
+        switch (viewMode) {
 
-        switch (_mode) {
-
-            case "about":
+            case "attract":
                 viewSeekEnabled = true;
                 ViewSeekAttract();
                 break;
 
-            case "arrange":
+            case "magnets":
                 viewSeekEnabled = true;
                 ViewSeekMagnets();
                 break;
 
-            case "select":
-            case "inspect":
+            case "selection":
                 viewSeekEnabled = true;
                 ViewSeekSelection();
                 break;
 
-            case "view":
+            case "manual":
             default:
                 viewSeekEnabled = false;
                 break;
@@ -868,40 +864,29 @@ public class InputManager : MonoBehaviour
         ItemView[] allItems = FindObjectsByType<ItemView>(FindObjectsSortMode.None);
         if (allItems.Length == 0) return;
         
-        // Precompute, for each item, whether any magnet (other than the one applying force)
-        // would attract/affect it. This lets MagnetView modulate ejection using orbitDeflectStrength.
-        Dictionary<ItemView, bool> itemAffected = new Dictionary<ItemView, bool>(allItems.Length);
-        foreach (var itemView in allItems)
-        {
-            bool affected = false;
-            Vector3 pos = itemView.transform.position;
-            foreach (var m in allMagnets)
-            {
-                if (m == null || !m.magnetEnabled) continue;
-                if (m.WouldAttract(itemView, pos)) { affected = true; break; }
-            }
-            itemAffected[itemView] = affected;
-        }
-
         foreach (MagnetView magnet in allMagnets)
         {
             if (magnet == null || !magnet.magnetEnabled) continue;
+            
             foreach (ItemView itemView in allItems)
             {
                 if (itemView?.GetComponent<Rigidbody>() == null) continue;
+                
                 Rigidbody rb = itemView.GetComponent<Rigidbody>();
-                if (rb.isKinematic) continue;
-
-                bool affectedElsewhere = false;
-                if (itemAffected.TryGetValue(itemView, out bool v)) affectedElsewhere = v;
-                // If this magnet alone is affecting, we still pass the global flag;
-                // MagnetView will choose orbitDeflectStrength only for repulsion.
-                Vector3 magneticForce = magnet.CalculateMagneticForce(itemView, itemView.transform.position, affectedElsewhere);
-                if (magneticForce.magnitude > 0.001f)
-                {
-                    rb.AddForce(magneticForce, ForceMode.Force);
-                    if (rb.IsSleeping() && magneticForce.magnitude > 0.1f) rb.WakeUp();
-                }
+                    if (rb.isKinematic) continue;
+                    
+                    Vector3 magneticForce = magnet.CalculateMagneticForce(itemView, itemView.transform.position);
+                    
+                    if (magneticForce.magnitude > 0.001f)
+                    {
+                        rb.AddForce(magneticForce, ForceMode.Force);
+                        
+                        if (rb.IsSleeping() && magneticForce.magnitude > 0.1f)
+                        {
+                            rb.WakeUp();
+                        }
+                    }
+                    
                 if (rb.linearVelocity.magnitude > maxItemVelocity)
                 {
                     rb.linearVelocity = rb.linearVelocity.normalized * maxItemVelocity;

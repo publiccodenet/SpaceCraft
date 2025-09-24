@@ -92,8 +92,8 @@ public static class Build
         }
         // --- End Force --- 
         
-        // Default prod output (match Development build location)
-        string buildPath = Path.Combine("..", "..", "WebSites", "SpaceCraft");
+        // Default prod output (existing behavior)
+        string buildPath = Path.Combine("Builds", "SpaceCraft");
         // Allow CI override via env var or CLI
         buildPath = ResolveOutputPath(buildPath);
         Debug.Log($"[Build] Output path: {buildPath}");
